@@ -29,7 +29,7 @@
 		</plugin>
 		<plugin interceptor="indi.mybatis.flying.interceptors.EnhancedCachingInterceptor">
 			<property name="cacheEnabled" value="true" />
-			<property name="annotationPackage" value="indi.mybatis.flying" />
+			<property name="annotationPackage" value="indi.mybatis.flying.mapper" />
 		</plugin>
 	</plugins>
 </configuration>
