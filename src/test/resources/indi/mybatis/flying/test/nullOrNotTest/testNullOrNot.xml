@@ -1,0 +1,6 @@
+<dataset>
+	<account_ ID="1" NAME="ann" PASSWORD="5a690d842935c51f26f473e025c1b97a"
+		OPLOCK="1" STATUS="p" ROLE_ID="1" />
+	<account_ ID="2" NAME="bob" EMAIL="an%%n@live.cn"
+		PASSWORD="5a690d842935c51f26f473e025c1b97a" OPLOCK="1" STATUS="p" />
+</dataset>

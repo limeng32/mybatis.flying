@@ -40,7 +40,7 @@ import indi.mybatis.flying.models.Sortable;
  */
 @Intercepts({ @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
 		RowBounds.class, ResultHandler.class }) })
-public class PaginationFixInteceptor implements Interceptor {
+public class PaginationFixInterceptor implements Interceptor {
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 

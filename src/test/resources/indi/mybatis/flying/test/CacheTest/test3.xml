@@ -1,0 +1,6 @@
+<dataset>
+	<account_ NAME="ann" />
+	<detail_ NAME="细节" />
+	<loginlog_ LOGINIP="0.0.0.1" />
+	<role_ NAME="新权限" />
+</dataset>

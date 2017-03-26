@@ -96,6 +96,7 @@ public class PaginationInterceptor implements Interceptor {
 				ReflectHelper.setValueByFieldName(boundSql, "sql", pageSql);
 			} else {
 			}
+		} else {
 		}
 		return ivk.proceed();
 	}

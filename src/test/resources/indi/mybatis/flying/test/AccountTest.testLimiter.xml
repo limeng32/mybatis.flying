@@ -1,0 +1,14 @@
+<dataset>
+	<account_ ID="1" NAME="bob" EMAIL="bob@live.cn_"
+		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
+		ACTIVATEVALUE="" OPLOCK="1" />
+	<account_ ID="2" NAME="ann" EMAIL="ann@live.cn"
+		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
+		ACTIVATEVALUE="" OPLOCK="1" />
+	<account_ ID="3" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
+		ACTIVATEVALUE="" OPLOCK="1" />
+	<account_ ID="4" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="6a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
+		ACTIVATEVALUE="" OPLOCK="1" />
+</dataset>

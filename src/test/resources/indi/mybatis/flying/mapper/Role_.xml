@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="indi.mybatis.flying.mapper.RoleMapper">
+	<cache />
+
+	<select id="select" resultMap="result">#{id}</select>
+
+	<select id="selectAll" resultMap="result">#{cacheKey}</select>
+
+	<select id="selectOne" resultMap="result">#{cacheKey}</select>
+
+	<select id="count" resultType="int">#{cacheKey}</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id"></insert>
+
+	<update id="update" />
+
+	<update id="updatePersistent" />
+
+	<delete id="delete" />
+
+	<update id="disable" />
+
+	<update id="enable" />
+
+	<resultMap id="result" type="Role_" autoMapping="true">
+		<id property="id" column="id" />
+	</resultMap>
+</mapper>
