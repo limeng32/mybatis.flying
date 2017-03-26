@@ -1,5 +1,7 @@
 package indi.mybatis.flying.test;
 
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,10 +25,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role_;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
@@ -180,5 +184,61 @@ public class CacheTest {
 
 		Detail_ detail2 = detailService.select(d.getId());
 		Assert.assertEquals(newName2, detail2.getLoginLog().getAccount().getRole().getName());
+	}
+
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testPagination.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testPagination.result.xml")
+	public void testPagination() {
+		String name1 = "ann", name2 = "bob", name3 = "carl", name4 = "duke";
+
+		Account_ a1 = new Account_();
+		a1.setId(1);
+		a1.setName(name1);
+		accountService.insert(a1);
+
+		Account_ a2 = new Account_();
+		a2.setId(2);
+		a2.setName(name2);
+		accountService.insert(a2);
+
+		Account_ a3 = new Account_();
+		a3.setId(3);
+		a3.setName(name3);
+		accountService.insert(a3);
+
+		Account_ a4 = new Account_();
+		a4.setId(4);
+		a4.setName(name4);
+		accountService.insert(a4);
+
+		Account_Condition ac = new Account_Condition();
+		ac.setLimiter(new PageParam(1, 2));
+		Collection<Account_> c1 = accountService.selectAll(ac);
+		Assert.assertEquals(2, c1.size());
+		for (Account_ a : c1) {
+			if (a.getId() == 1) {
+				Assert.assertEquals(name1, a.getName());
+			} else {
+				Assert.assertEquals(name2, a.getName());
+			}
+		}
+
+		ac.setLimiter(new PageParam(2, 2));
+		Collection<Account_> c2 = accountService.selectAll(ac);
+		Assert.assertEquals(2, c2.size());
+		for (Account_ a : c2) {
+			if (a.getId() == 3) {
+				Assert.assertEquals(name3, a.getName());
+			} else {
+				Assert.assertEquals(name4, a.getName());
+			}
+		}
+
+		accountService.delete(a1);
+		accountService.delete(a2);
+		accountService.delete(a3);
+		accountService.delete(a4);
 	}
 }
