@@ -23,6 +23,7 @@ import indi.mybatis.flying.models.QueryMapper;
 import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
 import indi.mybatis.flying.statics.ConditionType;
+import indi.mybatis.flying.statics.HandlerPaths;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -253,13 +254,13 @@ public class SqlBuilder {
 				.append(",typeHandler=");
 		switch (type) {
 		case Like:
-			whereSql.append("limeng32.mybatis.mybatisPlugin.mapperPlugin.handler.ConditionLikeHandler");
+			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
 			break;
 		case HeadLike:
-			whereSql.append("limeng32.mybatis.mybatisPlugin.mapperPlugin.handler.ConditionHeadLikeHandler");
+			whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
 			break;
 		case TailLike:
-			whereSql.append("limeng32.mybatis.mybatisPlugin.mapperPlugin.handler.ConditionTailLikeHandler");
+			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
 			break;
 		default:
 			throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");

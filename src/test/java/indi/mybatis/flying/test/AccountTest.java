@@ -70,9 +70,9 @@ public class AccountTest {
 	/** 测试insert功能（有乐观锁） */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testInsert.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/AccountTest.testInsert.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testInsert.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.xml")
 	public void testInsert() {
 		Account_ a = new Account_();
 		a.setId(1);
@@ -87,9 +87,9 @@ public class AccountTest {
 	/** 测试update功能（有乐观锁） */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/AccountTest.testUpdate.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/AccountTest.testUpdate.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testUpdate.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testUpdate.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testUpdate.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testUpdate.xml")
 	public void testUpdate() {
 		Account_ a = accountService.select(1);
 		a.setEmail("ann@tom.com");
@@ -100,9 +100,9 @@ public class AccountTest {
 	/** 测试delete功能 */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/AccountTest.testDelete.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/AccountTest.testDelete.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testDelete.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testDelete.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")
 	public void testDelete() {
 		Account_ a = accountService.select(1);
 		accountService.delete(a);
@@ -111,8 +111,8 @@ public class AccountTest {
 	/** 测试sorter功能 */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/AccountTest.testSorter.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testSorter.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
 	public void testSorter() {
 		Account_Condition ac = new Account_Condition();
 		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.desc)));
@@ -134,8 +134,8 @@ public class AccountTest {
 	/** 测试limiter功能 */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/AccountTest.testLimiter.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testLimiter.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testLimiter.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testLimiter.xml")
 	public void testLimiter() {
 		Account_Condition ac = new Account_Condition();
 		ac.setLimiter(new PageParam(1, 2));
@@ -156,9 +156,9 @@ public class AccountTest {
 	/** 测试CostumizeStatus功能 */
 	@Test
 	@IfProfileValue(name = "VOLATILE", value = "true")
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/AccountTest.testCostumizeStatus.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/AccountTest.testCostumizeStatus.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/AccountTest.testCostumizeStatus.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.xml")
 	public void testCostumizeStatus() {
 		Account_ a = accountService.select(1);
 		Assert.assertEquals("发布", a.getStatus().text());
