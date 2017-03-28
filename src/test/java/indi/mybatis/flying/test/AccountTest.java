@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -67,6 +68,7 @@ public class AccountTest {
 
 	/** 测试insert功能（有乐观锁） */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.xml")
@@ -83,6 +85,7 @@ public class AccountTest {
 
 	/** 测试update功能（有乐观锁） */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testUpdate.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testUpdate.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testUpdate.xml")
@@ -95,6 +98,7 @@ public class AccountTest {
 
 	/** 测试delete功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testDelete.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")
@@ -105,6 +109,7 @@ public class AccountTest {
 
 	/** 测试sorter功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
 	public void testSorter() {
@@ -127,6 +132,7 @@ public class AccountTest {
 
 	/** 测试limiter功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testLimiter.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testLimiter.xml")
 	public void testLimiter() {
@@ -148,6 +154,7 @@ public class AccountTest {
 
 	/** 测试CostumizeStatus功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testCostumizeStatus.xml")
@@ -172,6 +179,7 @@ public class AccountTest {
 
 	/** 测试ignoredSelect功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
@@ -204,6 +212,7 @@ public class AccountTest {
 
 	/** 测试deputyRole */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDeputy.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testDeputy.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testDeputy.xml")
@@ -228,6 +237,7 @@ public class AccountTest {
 
 	/** 更多的测试deputyRole */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDeputy2.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testDeputy2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testDeputy2.xml")

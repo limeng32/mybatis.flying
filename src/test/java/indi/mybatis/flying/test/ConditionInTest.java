@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -55,6 +56,7 @@ public class ConditionInTest {
 
 	/** 测试无外键情况下condition:in功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn.xml")
 	public void testConditionIn() {
@@ -77,6 +79,7 @@ public class ConditionInTest {
 
 	/** 测试有外键情况下condition:in功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn2.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn2.xml")
 	public void testConditionIn2() {
@@ -99,6 +102,7 @@ public class ConditionInTest {
 
 	/** 测试无外键情况下condition:in功能且变量类型为数字的情况 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn3.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn3.xml")
 	public void testConditionIn3() {
@@ -113,6 +117,7 @@ public class ConditionInTest {
 
 	/** 测试无外键情况下condition:in功能且变量类型为时间的情况 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn4.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn4.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn4.xml")

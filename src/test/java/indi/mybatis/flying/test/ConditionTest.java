@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -68,6 +69,7 @@ public class ConditionTest {
 
 	/** 测试condition:like功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testConditionLike.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testConditionLike.xml")
 	public void testConditionLike() {
@@ -81,6 +83,7 @@ public class ConditionTest {
 
 	/** 测试condition:like功能2：在parameter为null和为空字符串时的情况 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testConditionLike2.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testConditionLike2.xml")
 	public void testConditionLike2() {
@@ -96,6 +99,7 @@ public class ConditionTest {
 
 	/** 测试condition:headLike功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testConditionHeadLike.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testConditionHeadLike.xml")
 	public void testConditionHeadLike() {
@@ -109,6 +113,7 @@ public class ConditionTest {
 
 	/** 测试condition:tailLike功能 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testConditionTailLike.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testConditionTailLike.xml")
 	public void testConditionTailLike() {
@@ -133,6 +138,7 @@ public class ConditionTest {
 	}
 
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testMultiLikeAND.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testMultiLikeAND.xml")
 	public void testMultiLikeAND() {
@@ -174,6 +180,7 @@ public class ConditionTest {
 	}
 
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testMultiLikeOR.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testMultiLikeOR.xml")
 	public void testMultiLikeOR() {
@@ -216,6 +223,7 @@ public class ConditionTest {
 
 	/** 测试多重外键情况下sorter是否能正确发挥作用 */
 	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testSorterWithMultiAssociation.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/conditionTest/testSorterWithMultiAssociation.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testSorterWithMultiAssociation.xml")
