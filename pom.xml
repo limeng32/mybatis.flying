@@ -138,7 +138,25 @@
 			<version>${commons-codec.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.groboutils</groupId>
+			<artifactId>groboutils-core</artifactId>
+			<version>5</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.groboutils</groupId>
+			<artifactId>groboutils-core</artifactId>
+			<version>5</version>
+		</dependency>
 	</dependencies>
+	<repositories>
+		<!-- GroboUtils -->
+		<repository>
+			<id>opensymphony-releases</id>
+			<name>Opensymphony Releases</name>
+			<url>https://oss.sonatype.org/content/repositories/opensymphony-releases</url>
+		</repository>
+	</repositories>
 	<build>
 		<pluginManagement>
 			<plugins>
