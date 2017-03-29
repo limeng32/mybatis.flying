@@ -224,17 +224,11 @@ public class CacheTest {
 				Assert.assertEquals(name2, a.getName());
 			}
 		}
+		Assert.assertEquals(2, ac.getLimiter().getMaxPageNum());
 
-		ac.setLimiter(new PageParam(2, 2));
-		Collection<Account_> c2 = accountService.selectAll(ac);
-		Assert.assertEquals(2, c2.size());
-		for (Account_ a : c2) {
-			if (a.getId() == 3) {
-				Assert.assertEquals(name3, a.getName());
-			} else {
-				Assert.assertEquals(name4, a.getName());
-			}
-		}
+		ac.setLimiter(new PageParam(1, 2));
+		c1 = accountService.selectAll(ac);
+		Assert.assertEquals(2, ac.getLimiter().getMaxPageNum());
 
 		accountService.delete(a1);
 		accountService.delete(a2);

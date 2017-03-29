@@ -20,6 +20,8 @@
 		<typeHandler handler="AdvancedStringTypeHandler" />
 	</typeHandlers>
 	<plugins>
+		<plugin interceptor="indi.mybatis.flying.interceptors.PaginationFixInteceptor">
+		</plugin>
 		<plugin interceptor="indi.mybatis.flying.interceptors.AutoMapperInterceptor">
 			<property name="dialect" value="mysql" />
 		</plugin>

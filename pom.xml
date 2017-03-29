@@ -4,7 +4,7 @@
 
 	<groupId>indi.mybatis</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -143,18 +143,31 @@
 			<artifactId>groboutils-core</artifactId>
 			<version>5</version>
 		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.groboutils</groupId>
-			<artifactId>groboutils-core</artifactId>
-			<version>5</version>
-		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>dpm-Release</id>
+			<name>Demo Release Repository</name>
+			<url>http://vpn.dpm.im:8081/nexus/content/repositories/releases//</url>
+		</repository>
+		<snapshotRepository>
+			<id>dpm-Snapshot</id>
+			<name>Demo Snapshot Repository</name>
+			<url>http://vpn.dpm.im:8081/nexus/content/repositories/snapshots//</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<repositories>
 		<!-- GroboUtils -->
 		<repository>
 			<id>opensymphony-releases</id>
 			<name>Opensymphony Releases</name>
 			<url>https://oss.sonatype.org/content/repositories/opensymphony-releases</url>
+		</repository>
+		<!-- Nexus -->
+		<repository>
+			<id>dpm</id>
+			<name>Team dpm Repository</name>
+			<url>http://vpn.dpm.im:8081/nexus/content/repositories/releases/</url>
 		</repository>
 	</repositories>
 	<build>
