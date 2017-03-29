@@ -20,10 +20,12 @@
 		<typeHandler handler="AdvancedStringTypeHandler" />
 	</typeHandlers>
 	<plugins>
-		<plugin interceptor="indi.mybatis.flying.interceptors.PaginationFixInteceptor">
-		</plugin>
 		<plugin interceptor="indi.mybatis.flying.interceptors.AutoMapperInterceptor">
 			<property name="dialect" value="mysql" />
+		</plugin>
+
+		<!-- 如果决定使用mybatis自带缓存，必须使用插件PaginationFixInteceptor以解决分页缓存问题， 且必须在EnhancedCachingInterceptor插件之前声明 -->
+		<plugin interceptor="indi.mybatis.flying.interceptors.PaginationFixInteceptor">
 		</plugin>
 		<plugin interceptor="indi.mybatis.flying.interceptors.EnhancedCachingInterceptor">
 			<property name="cacheEnabled" value="true" />
