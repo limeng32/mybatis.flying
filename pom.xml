@@ -4,7 +4,7 @@
 
 	<groupId>indi.mybatis</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
