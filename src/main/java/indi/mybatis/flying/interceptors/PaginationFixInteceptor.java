@@ -64,25 +64,25 @@ public class PaginationFixInteceptor implements Interceptor {
 	}
 
 	private <E> List<E> query(MetaObject metaExecutor, Object[] args) throws SQLException {
-		MappedStatement ms = (MappedStatement) args[0];
-		Object parameterObject = args[1];
+		MappedStatement mappedStatement = (MappedStatement) args[0];
+		Object parameter = args[1];
 		RowBounds rowBounds = (RowBounds) args[2];
 		ResultHandler resultHandler = (ResultHandler) args[3];
-		BoundSql boundSql = ms.getBoundSql(parameterObject);
-		CacheKey cacheKey = createCacheKey(ms, parameterObject, rowBounds, boundSql);
-		return this.query(metaExecutor, ms, cacheKey, parameterObject, rowBounds, resultHandler, boundSql);
+		BoundSql boundSql = mappedStatement.getBoundSql(parameter);
+		CacheKey cacheKey = createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
+		return this.query(metaExecutor, mappedStatement, cacheKey, parameter, rowBounds, resultHandler, boundSql);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E> List<E> query(MetaObject metaExecutor, MappedStatement ms, CacheKey cacheKey, Object parameterObject,
-			RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-		MetaObject metaParameter = MetaObject.forObject(parameterObject, DEFAULT_OBJECT_FACTORY,
+	private <E> List<E> query(MetaObject metaExecutor, MappedStatement mappedStatement, CacheKey cacheKey,
+			Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+		MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY);
 		// 当需要分页查询时，缓存里加入page信息
 		if (metaParameter.getOriginalObject() instanceof Conditionable) {
-			Cache cache = ms.getCache();
+			Cache cache = mappedStatement.getCache();
 			if (cache != null) {
-				if (ms.isUseCache() && resultHandler == null) {
+				if (mappedStatement.isUseCache() && resultHandler == null) {
 					if (!(Boolean) metaExecutor.getValue("dirty")) {
 						cache.getReadWriteLock().readLock().lock();
 						try {
@@ -105,7 +105,7 @@ public class PaginationFixInteceptor implements Interceptor {
 					}
 				}
 				Executor delegate = (Executor) metaExecutor.getValue("delegate");
-				List<E> list = delegate.query(ms, parameterObject, rowBounds, resultHandler, cacheKey, boundSql);
+				List<E> list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
 				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
 				HashMap<String, Object> cachedMap = new HashMap<String, Object>();
 				cachedMap.put("limiter", metaParameter.getValue("limiter"));
@@ -115,24 +115,23 @@ public class PaginationFixInteceptor implements Interceptor {
 			}
 		}
 		Executor executor = (Executor) metaExecutor.getOriginalObject();
-		return executor.query(ms, parameterObject, rowBounds, resultHandler, cacheKey, boundSql);
+		return executor.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
 	}
 
-	private CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds,
+	private CacheKey createCacheKey(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
 			BoundSql boundSql) {
 		CacheKey cacheKey = new CacheKey();
-		cacheKey.update(ms.getId());
+		cacheKey.update(mappedStatement.getId());
 		cacheKey.update(rowBounds.getOffset());
 		cacheKey.update(rowBounds.getLimit());
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		cacheKey.update(boundSql.getSql());
-		MetaObject metaObject = MetaObject.forObject(parameterObject, DEFAULT_OBJECT_FACTORY,
-				DEFAULT_OBJECT_WRAPPER_FACTORY);
+		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 
-		if (parameterMappings.size() > 0 && parameterObject != null) {
-			TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
-			if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
-				cacheKey.update(parameterObject);
+		if (parameterMappings.size() > 0 && parameter != null) {
+			TypeHandlerRegistry typeHandlerRegistry = mappedStatement.getConfiguration().getTypeHandlerRegistry();
+			if (typeHandlerRegistry.hasTypeHandler(parameter.getClass())) {
+				cacheKey.update(parameter);
 			} else {
 				for (ParameterMapping parameterMapping : parameterMappings) {
 					String propertyName = parameterMapping.getProperty();
