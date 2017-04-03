@@ -32,6 +32,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis</groupId>
@@ -142,6 +143,7 @@
 			<groupId>net.sourceforge.groboutils</groupId>
 			<artifactId>groboutils-core</artifactId>
 			<version>5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
