@@ -3,13 +3,13 @@
 <mapper namespace="indi.mybatis.flying.mapper.DetailMapper">
 	<cache />
 
-	<select id="select" resultMap="result">#{id}</select>
+	<select id="select" resultMap="result">#{_flying_}</select>
 
-	<select id="selectAll" resultMap="result">#{cacheKey}</select>
+	<select id="selectAll" resultMap="result">#{_flying_}</select>
 
-	<select id="selectOne" resultMap="result">#{cacheKey}</select>
+	<select id="selectOne" resultMap="result">#{_flying_}</select>
 
-	<select id="count" resultType="int">#{cacheKey}</select>
+	<select id="count" resultType="int">#{_flying_}</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id"></insert>
 

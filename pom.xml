@@ -4,7 +4,7 @@
 
 	<groupId>indi.mybatis</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.1.2</version>
+	<version>0.7.0</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -137,7 +137,6 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>${commons-codec.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.groboutils</groupId>

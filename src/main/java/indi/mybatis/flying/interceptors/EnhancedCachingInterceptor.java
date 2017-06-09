@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
@@ -28,12 +29,15 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import com.alibaba.fastjson.JSON;
+
 import indi.mybatis.flying.cache.CacheKeysPool;
 import indi.mybatis.flying.cache.EnhancedCachingManager;
 import indi.mybatis.flying.cache.EnhancedCachingManagerImpl;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
+import indi.mybatis.flying.statics.ActionType;
 
 @Intercepts(value = {
 		@Signature(args = { MappedStatement.class, Object.class, RowBounds.class,
@@ -48,6 +52,8 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static EnhancedCachingManager cachingManager = EnhancedCachingManagerImpl.getInstance();
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+
+	public static final String _FLYING_ = "_flying_";
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -266,6 +272,28 @@ public class EnhancedCachingInterceptor implements Interceptor {
 		return executor.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
 	}
 
+	private boolean isSelectType(String statementId) {
+		boolean ret = false;
+		String id = statementId.substring(statementId.lastIndexOf(".") + 1);
+		ActionType actionType = ActionType.valueOf(id);
+		switch (actionType) {
+		case count:
+			ret = true;
+			break;
+		case select:
+			ret = true;
+			break;
+		case selectAll:
+			ret = true;
+			break;
+		case selectOne:
+			ret = true;
+			break;
+		default:
+		}
+		return ret;
+	}
+
 	private CacheKey createCacheKey(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
 			BoundSql boundSql) {
 		CacheKey cacheKey = new CacheKey();
@@ -283,7 +311,12 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			} else {
 				for (ParameterMapping parameterMapping : parameterMappings) {
 					String propertyName = parameterMapping.getProperty();
-					if (metaObject.hasGetter(propertyName)) {
+					if (_FLYING_.equals(propertyName)) {
+						if (isSelectType(mappedStatement.getId())) {
+							String _cacheKey = DigestUtils.md5Hex(JSON.toJSONString(parameter));
+							cacheKey.update(_cacheKey);
+						}
+					} else if (metaObject.hasGetter(propertyName)) {
 						cacheKey.update(metaObject.getValue(propertyName));
 					} else if (boundSql.hasAdditionalParameter(propertyName)) {
 						cacheKey.update(boundSql.getAdditionalParameter(propertyName));
