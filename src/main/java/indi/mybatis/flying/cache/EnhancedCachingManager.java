@@ -16,17 +16,16 @@ import org.apache.ibatis.cache.Cache;
  * 操作执行时，会根据此update操作对应的StatementId，查看此StatementId是否指定了要刷新的查询缓存，然后指定此
  * 
  * 
- * @author louluan
- * @date 2014-12-5
+ * @author louluan,limeng32
  */
 public interface EnhancedCachingManager {
 
 	public boolean isInitialized();
 
 	/**
-	 * MyBatis是否开启了二级缓存，即 <setting name="cacheEnabled" value="true"/>
+	 * MyBatis是否开启了二级缓存，即 {setting name="cacheEnabled" value="true"/}
 	 * 
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isCacheEnabled();
 
@@ -36,8 +35,8 @@ public interface EnhancedCachingManager {
 	 * 
 	 * @param properties
 	 *            properties 中至少包含两个属性： dependency : 该值表示着缓存依赖配置文件的位置
-	 *            cacheEnbled : "true" or
-	 *            "false",该配置必须要与<setting name="cacheEnabled">的值保持一致
+	 *            cacheEnbled : "true" or "false",该配置必须要与{setting
+	 *            name="cacheEnabled"}的值保持一致
 	 */
 	public void initialize(Properties properties);
 
@@ -45,6 +44,7 @@ public interface EnhancedCachingManager {
 	 * 将Session会话级别产生的CacheKey缓冲池中的数据 更新到全局CacheKey缓冲池中
 	 * 
 	 * @param sessionCacheKeysPool
+	 *            会话级别缓冲池
 	 */
 	public void refreshCacheKey(CacheKeysPool sessionCacheKeysPool);
 
@@ -55,15 +55,18 @@ public interface EnhancedCachingManager {
 	 * ，如果有，则将依赖关系中的statementId的查询缓存全部清空
 	 * 
 	 * @param set
+	 *            需要清空的缓存
 	 */
 	public void clearRelatedCaches(Set<String> set);
 
 	/**
 	 * 如果MyBatis开启了二级缓存，并且本查询的StatementId使用了二级缓存，并且对应的Mapper配置了缓存，
-	 * 则将此StatementId和Cache已键值对的形式存储到全局缓存管理器中
+	 * 则将此StatementId和Cache以键值对的形式存储到全局缓存管理器中
 	 * 
 	 * @param statementId
+	 *            查询名称
 	 * @param cache
+	 *            缓冲
 	 */
 	public void appendStatementCacheMap(String statementId, Cache cache);
 

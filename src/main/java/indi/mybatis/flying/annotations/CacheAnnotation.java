@@ -21,6 +21,8 @@ public @interface CacheAnnotation {
 	/**
 	 * 
 	 * 目标方法是用于触发还是用于观察，前者为trigger，后者为observer。
+	 * 
+	 * @return CacheRoleType
 	 */
 	CacheRoleType role();
 }

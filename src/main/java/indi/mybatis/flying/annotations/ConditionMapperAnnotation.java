@@ -22,6 +22,8 @@ public @interface ConditionMapperAnnotation {
 	/**
 	 * 
 	 * 对应数据库表的字段名称
+	 * 
+	 * @return String
 	 */
 	String dbFieldName();
 

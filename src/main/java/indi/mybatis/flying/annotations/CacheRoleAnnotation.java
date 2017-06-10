@@ -20,12 +20,16 @@ public @interface CacheRoleAnnotation {
 	/**
 	 * 
 	 * 当前类对哪些类作为Observer
+	 * 
+	 * @return Class[]
 	 */
 	Class<?>[] ObserverClass();
 
 	/**
 	 * 
 	 * 当前类对哪些类作为Trigger
+	 * 
+	 * @return Class[]
 	 */
 	Class<?>[] TriggerClass();
 

@@ -450,8 +450,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成insert sql语句
 	 * 
 	 * @param object
-	 * @return sql
+	 *            pojo
+	 * @return String
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildInsertSql(Object object) throws Exception {
 		if (null == object) {
@@ -501,8 +503,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成update sql语句
 	 * 
 	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildUpdateSql(Object object) throws Exception {
 		if (null == object) {
@@ -568,8 +572,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成update持久态对象的 sql语句
 	 * 
 	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildUpdatePersistentSql(Object object) throws Exception {
 		if (null == object) {
@@ -630,8 +636,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成delete sql语句
 	 * 
 	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildDeleteSql(Object object) throws Exception {
 		if (null == object) {
@@ -666,10 +674,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成query sql语句
 	 * 
 	 * @param clazz
+	 *            pojo Class
 	 * @return sql
-	 * @throws Exception
 	 */
-	public static String buildSelectSql(Class<?> clazz) throws Exception {
+	public static String buildSelectSql(Class<?> clazz) {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
 		String tableName = tma.tableName();
@@ -702,8 +710,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成query sql语句
 	 * 
 	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildSelectAllSql(Object object) throws Exception {
 		if (null == object) {
@@ -729,9 +739,11 @@ public class SqlBuilder {
 	/**
 	 * 由传入的对象生成query sql语句
 	 * 
-	 * @param clazz
+	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildSelectOneSql(Object object) throws Exception {
 		if (null == object) {
@@ -761,8 +773,10 @@ public class SqlBuilder {
 	 * 由传入的对象生成count sql语句
 	 * 
 	 * @param object
+	 *            pojo
 	 * @return sql
 	 * @throws Exception
+	 *             RuntimeException
 	 */
 	public static String buildCountSql(Object object) throws Exception {
 		if (null == object) {

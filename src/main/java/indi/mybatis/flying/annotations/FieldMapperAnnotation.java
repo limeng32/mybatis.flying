@@ -13,7 +13,7 @@ import indi.mybatis.flying.statics.OpLockType;
 /**
  * 用于描述java对象字段对应的数据库表字段的注解（数据库字段名，对应数据库其他表的主键字段的名称，是否为数据库主键，字段对应的jdbc类型）
  * 
- * @author david
+ * @author david,limeng32
  * 
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -23,24 +23,32 @@ public @interface FieldMapperAnnotation {
 	/**
 	 * 
 	 * 对应数据库表的字段名称
+	 * 
+	 * @return String
 	 */
 	String dbFieldName();
 
 	/**
 	 * 
 	 * 如果是外键，对应数据库其他表的主键字段的名称。默认为空，表示不是外键。
+	 * 
+	 * @return String
 	 */
 	String dbAssociationUniqueKey() default "";
 
 	/**
 	 * 
 	 * 此变量是否对应数据库表的主键。默认为否。
+	 * 
+	 * @return boolean
 	 */
 	boolean isUniqueKey() default false;
 
 	/**
 	 * 
 	 * 此变量是否是乐观锁，默认不是。
+	 * 
+	 * @return OpLockType
 	 */
 	OpLockType opLockType() default OpLockType.Null;
 
@@ -48,12 +56,16 @@ public @interface FieldMapperAnnotation {
 	 * 
 	 * 字段用JDBC接口存入数据库需要设置的数据类型,Integer,Long,Short,Float,Double,String,Date
 	 * ,Timestamp,Time
+	 * 
+	 * @return JdbcType
 	 */
 	JdbcType jdbcType();
 
 	/**
 	 * 
 	 * 是否在select时忽略。默认为false。
+	 * 
+	 * @return boolean
 	 */
 	boolean ignoredSelect() default false;
 }
