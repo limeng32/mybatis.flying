@@ -47,6 +47,7 @@
 		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
 		<unitils.version>3.4.2</unitils.version>
 		<commons-codec.version>1.10</commons-codec.version>
+		<plugin.gpg.version>1.6</plugin.gpg.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -289,12 +290,31 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- GPG <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
-						<version>1.5</version> <executions> <execution> <phase>verify</phase> <goals> 
-						<goal>sign</goal> </goals> </execution> </executions> </plugin> <plugin> 
-						<groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
-						<version>1.0</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
-						<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${plugin.gpg.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>oss</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 			<distributionManagement>
