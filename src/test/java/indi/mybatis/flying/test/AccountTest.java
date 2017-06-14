@@ -33,11 +33,13 @@ import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service.Role2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -54,6 +56,9 @@ public class AccountTest {
 
 	@Autowired
 	private LoginLogService loginLogService;
+
+	@Autowired
+	private Role2Service role2Service;
 
 	@BeforeClass
 	public static void prepareDatabase() {
@@ -81,6 +86,9 @@ public class AccountTest {
 		a.setActivated(true);
 		a.setActivateValue("");
 		accountService.insert(a);
+		Role2_ role2_ = new Role2_();
+		role2_.setName("new");
+		role2Service.insert(role2_);
 	}
 
 	/** 测试update功能（有乐观锁） */
