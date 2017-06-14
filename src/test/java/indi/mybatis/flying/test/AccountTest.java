@@ -2,7 +2,8 @@ package indi.mybatis.flying.test;
 
 import java.util.Collection;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,7 +47,7 @@ import indi.mybatis.flying.service.LoginLogService;
 public class AccountTest {
 
 	@Autowired
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	private AccountService accountService;
@@ -63,7 +64,6 @@ public class AccountTest {
 	@Test
 	public void testDataSource() {
 		Assert.assertNotNull(dataSource);
-		Assert.assertNotNull(dataSource.getUsername());
 	}
 
 	/** 测试insert功能（有乐观锁） */

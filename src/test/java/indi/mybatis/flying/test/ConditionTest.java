@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class ConditionTest {
 	}
 
 	@Autowired
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	private AccountService accountService;
@@ -64,7 +65,6 @@ public class ConditionTest {
 	@Test
 	public void testDataSource() {
 		Assert.assertNotNull(dataSource);
-		Assert.assertNotNull(dataSource.getUsername());
 	}
 
 	/** 测试condition:like功能 */
