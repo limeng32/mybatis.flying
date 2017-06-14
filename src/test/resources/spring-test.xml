@@ -42,12 +42,12 @@
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
-	<bean id="mapperScannerConfigurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="indi.mybatis.flying.mapper" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
-	</bean>
 	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="indi.mybatis.flying.mapper" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	<bean id="mapperScannerConfigurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="indi.mybatis.flying.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
 	</bean>
 </beans>
