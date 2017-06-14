@@ -39,7 +39,7 @@ import indi.mybatis.flying.service.RoleService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class)
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource2", "dataSource" })
 @ContextConfiguration("classpath:spring-test.xml")
 public class CacheTest {
 

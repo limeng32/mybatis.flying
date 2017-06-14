@@ -48,6 +48,7 @@
 		<unitils.version>3.4.2</unitils.version>
 		<commons-codec.version>1.10</commons-codec.version>
 		<plugin.gpg.version>1.6</plugin.gpg.version>
+		<mysql-connector-java.version>5.1.31</mysql-connector-java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -165,6 +166,12 @@
 			<artifactId>groboutils-core</artifactId>
 			<version>5</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<repositories>
