@@ -38,11 +38,13 @@ import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
+import indi.mybatis.flying.pojo.Source2LoginLog_;
 import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
-import indi.mybatis.flying.service.Role2Service;
+import indi.mybatis.flying.service2.Role2Service;
+import indi.mybatis.flying.service2.Source2LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -62,6 +64,9 @@ public class AccountTest {
 
 	@Autowired
 	private Role2Service role2Service;
+
+	@Autowired
+	private Source2LoginLogService source2LoginLogService;
 
 	@BeforeClass
 	public static void prepareDatabase() {
@@ -95,9 +100,18 @@ public class AccountTest {
 		a.setActivated(true);
 		a.setActivateValue("");
 		accountService.insert(a);
+
 		Role2_ role2_ = new Role2_();
 		role2_.setName("new");
 		role2Service.insert(role2_);
+
+		LoginLog_ loginLog_ = new LoginLog_();
+		loginLog_.setLoginIP("old");
+		loginLogService.insert(loginLog_);
+
+		Source2LoginLog_ source2LoginLog_ = new Source2LoginLog_();
+		source2LoginLog_.setLoginIP("new");
+		source2LoginLogService.insert(source2LoginLog_);
 	}
 
 	/** 测试update功能（有乐观锁） */

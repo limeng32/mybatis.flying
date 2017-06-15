@@ -1,4 +1,4 @@
-package indi.mybatis.flying.service;
+package indi.mybatis.flying.service2;
 
 import java.util.Collection;
 
