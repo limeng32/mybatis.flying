@@ -5,56 +5,56 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import indi.mybatis.flying.mapper2.Source2LoginLogMapper;
-import indi.mybatis.flying.pojo.Source2LoginLog_;
+import indi.mybatis.flying.mapper2.LoginLogSource2Mapper;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
-public class Source2LoginLogService extends ServiceSupport<Source2LoginLog_> implements Source2LoginLogMapper {
+public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> implements LoginLogSource2Mapper {
 
 	@Autowired
-	private Source2LoginLogMapper mapper;
+	private LoginLogSource2Mapper mapper;
 
 //	@Autowired
 //	private DetailService detailService;
 
 	@Override
-	public Source2LoginLog_ select(Object id) {
+	public LoginLogSource2 select(Object id) {
 		return supportSelect(mapper, id);
 	}
 
 	@Override
-	public Source2LoginLog_ selectOne(Source2LoginLog_ t) {
+	public LoginLogSource2 selectOne(LoginLogSource2 t) {
 		return supportSelectOne(mapper, t);
 	}
 
 	@Override
-	public void insert(Source2LoginLog_ t) {
+	public void insert(LoginLogSource2 t) {
 		supportInsert(mapper, t);
 	}
 
 	@Override
-	public int update(Source2LoginLog_ t) {
+	public int update(LoginLogSource2 t) {
 		return supportUpdate(mapper, t);
 	}
 
 	@Override
-	public Collection<Source2LoginLog_> selectAll(Source2LoginLog_ t) {
+	public Collection<LoginLogSource2> selectAll(LoginLogSource2 t) {
 		return supportSelectAll(mapper, t);
 	}
 
 	@Override
-	public int updatePersistent(Source2LoginLog_ t) {
+	public int updatePersistent(LoginLogSource2 t) {
 		return supportUpdatePersistent(mapper, t);
 	}
 
 	@Override
-	public int delete(Source2LoginLog_ t) {
+	public int delete(LoginLogSource2 t) {
 		return supportDelete(mapper, t);
 	}
 
 	@Override
-	public int count(Source2LoginLog_ t) {
+	public int count(LoginLogSource2 t) {
 		return supportCount(mapper, t);
 	}
 

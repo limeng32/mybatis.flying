@@ -9,7 +9,7 @@ import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 
 @TableMapperAnnotation(tableName = "LoginLog_")
-public class Source2LoginLog_ extends PojoSupport<Source2LoginLog_> implements Serializable {
+public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

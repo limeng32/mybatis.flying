@@ -35,16 +35,16 @@ import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
-import indi.mybatis.flying.pojo.Source2LoginLog_;
 import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
-import indi.mybatis.flying.service2.Source2LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -63,10 +63,10 @@ public class AccountTest {
 	private LoginLogService loginLogService;
 
 	@Autowired
-	private Role2Service role2Service;
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Autowired
-	private Source2LoginLogService source2LoginLogService;
+	private Role2Service role2Service;
 
 	@BeforeClass
 	public static void prepareDatabase() {
@@ -109,9 +109,12 @@ public class AccountTest {
 		loginLog_.setLoginIP("old");
 		loginLogService.insert(loginLog_);
 
-		Source2LoginLog_ source2LoginLog_ = new Source2LoginLog_();
-		source2LoginLog_.setLoginIP("new");
-		source2LoginLogService.insert(source2LoginLog_);
+		LoginLogSource2 loginLogSource2 = new LoginLogSource2();
+		loginLogSource2.setLoginIP("new");
+		loginLogSource2Service.insert(loginLogSource2);
+		Collection<LoginLogSource2> c = loginLogSource2Service.selectAll(new LoginLogSource2());
+		LoginLogSource2[] loginLogSource2s = c.toArray(new LoginLogSource2[1]);
+		Assert.assertEquals("new", loginLogSource2s[0].getLoginIP());
 	}
 
 	/** 测试update功能（有乐观锁） */
