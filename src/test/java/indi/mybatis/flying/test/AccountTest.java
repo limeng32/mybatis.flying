@@ -124,7 +124,12 @@ public class AccountTest {
 		Account2_ account2_ = new Account2_();
 		account2_.setEmail("l@x.com");
 		account2_.setNickname("nick");
+		account2_.setRole(role2_);
 		account2Service.insert(account2_);
+
+		Collection<Account2_> c2 = account2Service.selectAll(new Account2_());
+		Account2_[] account2_s = c2.toArray(new Account2_[1]);
+		Assert.assertEquals("new", account2_s[0].getRole().getName());
 	}
 
 	/** 测试update功能（有乐观锁） */

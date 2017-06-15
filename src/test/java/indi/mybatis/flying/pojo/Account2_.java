@@ -55,10 +55,9 @@ public class Account2_ extends PojoSupport<Account2_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "nickname", jdbcType = JdbcType.VARCHAR)
 	private String nickname;
 
-	// @FieldMapperAnnotation(dbFieldName = "role_id", jdbcType =
-	// JdbcType.INTEGER, dbAssociationUniqueKey = "id")
-	// private Role_ role;
-	//
+	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
+	private Role2_ role;
+
 	// @FieldMapperAnnotation(dbFieldName = "deputy_id", jdbcType =
 	// JdbcType.INTEGER, dbAssociationUniqueKey = "id")
 	// private Role_ roleDeputy;
@@ -185,24 +184,24 @@ public class Account2_ extends PojoSupport<Account2_> implements Serializable {
 	// }
 	// }
 	//
-	// public Role_ getRole() {
-	// return role;
-	// }
-	//
-	// public void setRole(Role_ newRole) {
-	// if (this.role == null || !this.role.equals(newRole)) {
-	// if (this.role != null) {
-	// Role_ oldRole = this.role;
-	// this.role = null;
-	// oldRole.removeAccount(this);
-	// }
-	// if (newRole != null) {
-	// this.role = newRole;
-	// this.role.addAccount(this);
-	// }
-	// }
-	// }
-	//
+	public Role2_ getRole() {
+		return role;
+	}
+
+	public void setRole(Role2_ newRole) {
+		if (this.role == null || !this.role.equals(newRole)) {
+			if (this.role != null) {
+				Role2_ oldRole = this.role;
+				this.role = null;
+				oldRole.removeAccount(this);
+			}
+			if (newRole != null) {
+				this.role = newRole;
+				this.role.addAccount(this);
+			}
+		}
+	}
+
 	// public Role_ getRoleDeputy() {
 	// return roleDeputy;
 	// }

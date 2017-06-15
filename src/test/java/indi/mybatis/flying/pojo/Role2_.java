@@ -18,6 +18,8 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
+	
+	private java.util.Collection<Account2_> account;
 
 	@Override
 	public Integer getId() {
@@ -36,4 +38,53 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 		this.id = id;
 	}
 
+	public java.util.Collection<Account2_> getAccount() {
+		if (account == null)
+			account = new java.util.LinkedHashSet<Account2_>();
+		return account;
+	}
+
+	public java.util.Iterator<Account2_> getIteratorAccount() {
+		if (account == null)
+			account = new java.util.LinkedHashSet<Account2_>();
+		return account.iterator();
+	}
+
+	public void setAccount(java.util.Collection<Account2_> newAccount) {
+		removeAllAccount();
+		for (java.util.Iterator<Account2_> iter = newAccount.iterator(); iter.hasNext();)
+			addAccount((Account2_) iter.next());
+	}
+
+	public void addAccount(Account2_ newAccount) {
+		if (newAccount == null)
+			return;
+		if (this.account == null)
+			this.account = new java.util.LinkedHashSet<Account2_>();
+		if (!this.account.contains(newAccount)) {
+			this.account.add(newAccount);
+			newAccount.setRole(this);
+		}
+	}
+
+	public void removeAccount(Account2_ oldAccount) {
+		if (oldAccount == null)
+			return;
+		if (this.account != null)
+			if (this.account.contains(oldAccount)) {
+				this.account.remove(oldAccount);
+				oldAccount.setRole((Role2_) null);
+			}
+	}
+
+	public void removeAllAccount() {
+		if (account != null) {
+			Account2_ oldAccount;
+			for (java.util.Iterator<Account2_> iter = getIteratorAccount(); iter.hasNext();) {
+				oldAccount = (Account2_) iter.next();
+				iter.remove();
+				oldAccount.setRole((Role2_) null);
+			}
+		}
+	}
 }
