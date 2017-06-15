@@ -34,6 +34,7 @@ import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
+import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.LoginLog_;
@@ -43,6 +44,7 @@ import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
 
@@ -58,6 +60,9 @@ public class AccountTest {
 
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private Account2Service account2Service;
 
 	@Autowired
 	private LoginLogService loginLogService;
@@ -115,6 +120,11 @@ public class AccountTest {
 		Collection<LoginLogSource2> c = loginLogSource2Service.selectAll(new LoginLogSource2());
 		LoginLogSource2[] loginLogSource2s = c.toArray(new LoginLogSource2[1]);
 		Assert.assertEquals("new", loginLogSource2s[0].getLoginIP());
+
+		Account2_ account2_ = new Account2_();
+		account2_.setEmail("l@x.com");
+		account2_.setNickname("nick");
+		account2Service.insert(account2_);
 	}
 
 	/** 测试update功能（有乐观锁） */

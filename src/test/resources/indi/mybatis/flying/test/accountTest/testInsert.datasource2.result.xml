@@ -1,4 +1,5 @@
 <dataset>
-	<role2_ NAME="new" />
+	<account2_ EMAIL="l@x.com" NICKNAME="nick" />
 	<loginlog_ LOGINIP="new" />
+	<role2_ NAME="new" />
 </dataset>
