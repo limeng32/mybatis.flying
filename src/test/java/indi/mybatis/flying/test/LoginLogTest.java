@@ -31,7 +31,7 @@ import indi.mybatis.flying.service.LoginLogService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource", "dataSource2" })
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
 @ContextConfiguration("classpath:spring-test.xml")
 public class LoginLogTest {
 
@@ -42,14 +42,14 @@ public class LoginLogTest {
 	}
 
 	@Autowired
-	private DataSource dataSource;
+	private DataSource dataSource1;
 
 	@Autowired
 	private LoginLogService loginLogService;
 
 	@Test
 	public void testDataSource() {
-		Assert.assertNotNull(dataSource);
+		Assert.assertNotNull(dataSource1);
 	}
 
 	/** 测试insert功能（无乐观锁） */

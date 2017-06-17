@@ -47,6 +47,7 @@ import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service.TransactiveService;
+import indi.mybatis.flying.service.TransactiveService4;
 import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
@@ -56,12 +57,12 @@ import indi.mybatis.flying.service2.TransactiveService3;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource", "dataSource2" })
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
 @ContextConfiguration("classpath:spring-test.xml")
 public class AccountTest {
 
 	@Autowired
-	private DataSource dataSource;
+	private DataSource dataSource1;
 
 	@Autowired
 	private AccountService accountService;
@@ -87,6 +88,9 @@ public class AccountTest {
 	@Autowired
 	private TransactiveService3 transactiveService3;
 
+	@Autowired
+	private TransactiveService4 transactiveService4;
+
 	@BeforeClass
 	public static void prepareDatabase() {
 		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
@@ -95,20 +99,20 @@ public class AccountTest {
 
 	@Test
 	public void testDataSource() {
-		Assert.assertNotNull(dataSource);
+		Assert.assertNotNull(dataSource1);
 	}
 
 	/** 测试insert功能（有乐观锁） */
 	@Test
 	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetups({
-			@DatabaseSetup(connection = "dataSource", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.xml"),
 			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.xml") })
 	@ExpectedDatabases({
-			@ExpectedDatabase(connection = "dataSource", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
 			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.result.xml") })
 	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.result.xml") })
 	public void testInsert() {
 		Account_ a = new Account_();
@@ -149,13 +153,13 @@ public class AccountTest {
 	@Test
 	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetups({
-			@DatabaseSetup(connection = "dataSource", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.xml"),
 			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.xml") })
 	@ExpectedDatabases({
-			@ExpectedDatabase(connection = "dataSource", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
 			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
 	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
 	public void testTransactive() {
 		try {
@@ -176,6 +180,44 @@ public class AccountTest {
 		try {
 			transactiveService3.testTransactive();
 		} catch (Configurer2Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive2.datasource2.result.xml") })
+	public void testTransactive2() {
+		try {
+			transactiveService.addAccountTransactive();
+		} catch (ConfigurerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive3.datasource2.result.xml") })
+	public void testTransactive3() {
+		try {
+			transactiveService4.testTransactive();
+		} catch (ConfigurerException e) {
 			e.printStackTrace();
 		}
 	}

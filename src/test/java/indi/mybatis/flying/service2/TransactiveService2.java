@@ -49,4 +49,12 @@ public class TransactiveService2 {
 		role2Service.insert(role2);
 		throw new Configurer2Exception("zxc");
 	}
+
+	@Transactional(rollbackFor = {
+			Configurer2Exception.class }, readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+	public void addAccount2Transactive3() {
+		Role2_ role2 = new Role2_();
+		role2.setName("role2_");
+		role2Service.insert(role2);
+	}
 }

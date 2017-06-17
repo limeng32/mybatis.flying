@@ -14,7 +14,7 @@
        	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
 	<context:component-scan base-package="indi.mybatis.flying.*" />
-	<bean id="dataSource"
+	<bean id="dataSource1"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.h2.Driver" />
 		<property name="url"
@@ -32,7 +32,7 @@
 	</bean>
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dataSource1" />
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
@@ -51,15 +51,15 @@
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
 	</bean>
 	
+	<bean id="txManager1"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource1"></property>
+	</bean>
 	<bean id="txManager2"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource2"></property>
 	</bean>
-	<tx:annotation-driven transaction-manager="txManager2" />
 	
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
-	<tx:annotation-driven transaction-manager="txManager" />
+	<tx:annotation-driven transaction-manager="txManager2" />
+	<tx:annotation-driven transaction-manager="txManager1" />
 </beans>

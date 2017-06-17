@@ -43,7 +43,7 @@ import indi.mybatis.flying.service.LoginLogService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource", "dataSource2" })
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
 @ContextConfiguration("classpath:spring-test.xml")
 public class ConditionTest {
 
@@ -54,7 +54,7 @@ public class ConditionTest {
 	}
 
 	@Autowired
-	private DataSource dataSource;
+	private DataSource dataSource1;
 
 	@Autowired
 	private AccountService accountService;
@@ -64,7 +64,7 @@ public class ConditionTest {
 
 	@Test
 	public void testDataSource() {
-		Assert.assertNotNull(dataSource);
+		Assert.assertNotNull(dataSource1);
 	}
 
 	/** 测试condition:like功能 */
