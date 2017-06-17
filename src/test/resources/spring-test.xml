@@ -50,4 +50,16 @@
 		<property name="basePackage" value="indi.mybatis.flying.mapper2" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
 	</bean>
+	
+	<bean id="txManager2"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource2"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager2" />
+	
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
 </beans>

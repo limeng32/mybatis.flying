@@ -30,6 +30,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.exceptions.Configurer2Exception;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.PageParam;
@@ -44,9 +45,11 @@ import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service.TransactiveService;
 import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
+import indi.mybatis.flying.service2.TransactiveService2;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -72,6 +75,12 @@ public class AccountTest {
 
 	@Autowired
 	private Role2Service role2Service;
+
+	@Autowired
+	private TransactiveService transactiveService;
+
+	@Autowired
+	private TransactiveService2 transactiveService2;
 
 	@BeforeClass
 	public static void prepareDatabase() {
@@ -130,6 +139,30 @@ public class AccountTest {
 		Collection<Account2_> c2 = account2Service.selectAll(new Account2_());
 		Account2_[] account2_s = c2.toArray(new Account2_[1]);
 		Assert.assertEquals("new", account2_s[0].getRole().getName());
+	}
+
+	@Test
+	@IfProfileValue(name = "CACHE", value = "false")
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
+	public void testTransactive() {
+		try {
+			transactiveService2.addAccount2Transactive();
+		} catch (Configurer2Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			transactiveService.addAccountTransactive();
+		} catch (Configurer2Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/** 测试update功能（有乐观锁） */
