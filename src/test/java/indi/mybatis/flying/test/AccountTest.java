@@ -31,6 +31,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.exceptions.Configurer2Exception;
+import indi.mybatis.flying.exceptions.ConfigurerException;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.PageParam;
@@ -50,6 +51,7 @@ import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
 import indi.mybatis.flying.service2.TransactiveService2;
+import indi.mybatis.flying.service2.TransactiveService3;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -81,6 +83,9 @@ public class AccountTest {
 
 	@Autowired
 	private TransactiveService2 transactiveService2;
+
+	@Autowired
+	private TransactiveService3 transactiveService3;
 
 	@BeforeClass
 	public static void prepareDatabase() {
@@ -160,6 +165,16 @@ public class AccountTest {
 		}
 		try {
 			transactiveService.addAccountTransactive();
+		} catch (ConfigurerException e) {
+			e.printStackTrace();
+		}
+		try {
+			transactiveService2.addAccount2Transactive2();
+		} catch (Configurer2Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			transactiveService3.testTransactive();
 		} catch (Configurer2Exception e) {
 			e.printStackTrace();
 		}

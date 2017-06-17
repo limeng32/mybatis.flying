@@ -21,10 +21,18 @@ public class TransactiveService {
 
 	@Transactional(rollbackFor = {
 			ConfigurerException.class }, readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-	public void addAccountTransactive() throws Configurer2Exception {
+	public void addAccountTransactive() throws ConfigurerException {
 		Role_ role2 = new Role_();
 		role2.setName("role_");
 		roleService.insert(role2);
-		throw new Configurer2Exception("qwe");
+		throw new ConfigurerException("qwe");
+	}
+
+	@Transactional(rollbackFor = {
+			ConfigurerException.class }, readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+	public void addAccountTransactive2() {
+		Role_ role2 = new Role_();
+		role2.setName("role_");
+		roleService.insert(role2);
 	}
 }
