@@ -14,22 +14,11 @@
        	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
 	<context:component-scan base-package="indi.mybatis.flying.*" />
-	<!-- <bean id="dataSource1"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url"
-			value="jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE" />
-		<property name="username" value="sa"></property>
-		<property name="password" value=""></property>
-	</bean> -->
-	<bean id="dataSource1"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url"
-			value="jdbc:mysql://115.28.134.232:3306/multi?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true"></property>
-		<property name="username" value="tester"></property>
-		<property name="password" value="renzhigang"></property>
-	</bean>
+	<!-- <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="org.h2.Driver" /> <property name="url" 
+		value="jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE" 
+		/> <property name="username" value="sa"></property> <property name="password" 
+		value=""></property> </bean> -->
 	<bean id="dataSource2"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
@@ -38,11 +27,13 @@
 		<property name="username" value="restma"></property>
 		<property name="password" value="Aptx4869"></property>
 	</bean>
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="configLocation" value="classpath:Configuration.xml" />
-		<property name="dataSource" ref="dataSource1" />
-		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
-		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
+	<bean id="dataSource1"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://115.28.134.232:3306/multi?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true"></property>
+		<property name="username" value="tester"></property>
+		<property name="password" value="renzhigang"></property>
 	</bean>
 	<bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
@@ -50,24 +41,18 @@
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper2/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
-	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="indi.mybatis.flying.mapper" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:Configuration.xml" />
+		<property name="dataSource" ref="dataSource1" />
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
+		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
 	<bean id="mapperScannerConfigurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="indi.mybatis.flying.mapper2" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
 	</bean>
-	
-	<bean id="txManager1"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource1"></property>
+	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="indi.mybatis.flying.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
-	<bean id="txManager2"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource2"></property>
-	</bean>
-	
-	<tx:annotation-driven transaction-manager="txManager2" />
-	<tx:annotation-driven transaction-manager="txManager1" />
 </beans>

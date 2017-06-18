@@ -33,11 +33,8 @@ import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
-import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.LoginLog_;
-import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
@@ -54,9 +51,9 @@ import indi.mybatis.flying.service2.TransactiveService3;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
-@ContextConfiguration("classpath:spring-test.xml")
-public class AccountTest {
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource2", "dataSource1" })
+@ContextConfiguration("classpath:spring-test2.xml")
+public class AccountTest2 {
 
 	@Autowired
 	private DataSource dataSource1;
@@ -88,13 +85,6 @@ public class AccountTest {
 	@Autowired
 	private TransactiveService4 transactiveService4;
 
-	// @BeforeClass
-	// public static void prepareDatabase() {
-	// new
-	// EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-	// .addScript("classpath:/INIT_TABLE.sql").build();
-	// }
-
 	@Test
 	public void testDataSource() {
 		Assert.assertNotNull(dataSource1);
@@ -104,48 +94,51 @@ public class AccountTest {
 	@Test
 	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetups({
-			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.xml"),
-			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.xml") })
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.xml") })
 	@ExpectedDatabases({
-			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
-			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.result.xml") })
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.result.xml") })
 	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource.result.xml"),
-			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.result.xml") })
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.result.xml") })
 	public void testInsert() {
-		Account_ a = new Account_();
-		a.setId(1);
-		a.setName("ann");
-		a.setEmail("ann@live.cn");
-		a.setPassword("5a690d842935c51f26f473e025c1b97a");
-		a.setActivated(true);
-		a.setActivateValue("");
-		accountService.insert(a);
-
-		Role2_ role2_ = new Role2_();
-		role2_.setName("new");
-		role2Service.insert(role2_);
-
-		LoginLog_ loginLog_ = new LoginLog_();
-		loginLog_.setLoginIP("old");
-		loginLogService.insert(loginLog_);
-
-		LoginLogSource2 loginLogSource2 = new LoginLogSource2();
-		loginLogSource2.setLoginIP("new");
-		loginLogSource2Service.insert(loginLogSource2);
-		Collection<LoginLogSource2> c = loginLogSource2Service.selectAll(new LoginLogSource2());
-		LoginLogSource2[] loginLogSource2s = c.toArray(new LoginLogSource2[1]);
-		Assert.assertEquals("new", loginLogSource2s[0].getLoginIP());
-
-		Account2_ account2_ = new Account2_();
-		account2_.setEmail("l@x.com");
-		account2_.setNickname("nick");
-		account2_.setRole(role2_);
-		account2Service.insert(account2_);
-
-		Collection<Account2_> c2 = account2Service.selectAll(new Account2_());
-		Account2_[] account2_s = c2.toArray(new Account2_[1]);
-		Assert.assertEquals("new", account2_s[0].getRole().getName());
+		// Account_ a = new Account_();
+		// a.setId(1);
+		// a.setName("ann");
+		// a.setEmail("ann@live.cn");
+		// a.setPassword("5a690d842935c51f26f473e025c1b97a");
+		// a.setActivated(true);
+		// a.setActivateValue("");
+		// accountService.insert(a);
+		//
+		// Role2_ role2_ = new Role2_();
+		// role2_.setName("new");
+		// role2Service.insert(role2_);
+		//
+		// LoginLog_ loginLog_ = new LoginLog_();
+		// loginLog_.setLoginIP("old");
+		// loginLogService.insert(loginLog_);
+		//
+		// LoginLogSource2 loginLogSource2 = new LoginLogSource2();
+		// loginLogSource2.setLoginIP("new");
+		// loginLogSource2Service.insert(loginLogSource2);
+		// Collection<LoginLogSource2> c = loginLogSource2Service.selectAll(new
+		// LoginLogSource2());
+		// LoginLogSource2[] loginLogSource2s = c.toArray(new
+		// LoginLogSource2[1]);
+		// Assert.assertEquals("new", loginLogSource2s[0].getLoginIP());
+		//
+		// Account2_ account2_ = new Account2_();
+		// account2_.setEmail("l@x.com");
+		// account2_.setNickname("nick");
+		// account2_.setRole(role2_);
+		// account2Service.insert(account2_);
+		//
+		// Collection<Account2_> c2 = account2Service.selectAll(new
+		// Account2_());
+		// Account2_[] account2_s = c2.toArray(new Account2_[1]);
+		// Assert.assertEquals("new", account2_s[0].getRole().getName());
 	}
 
 	@Test
@@ -156,9 +149,14 @@ public class AccountTest {
 	@ExpectedDatabases({
 			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
 			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
-	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
-			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml") })
+	// @DatabaseTearDowns({
+	// @DatabaseTearDown(connection = "dataSource1", type =
+	// DatabaseOperation.DELETE_ALL, value =
+	// "/indi/mybatis/flying/test/accountTest/testTransactive.datasource.result.xml"),
+	// @DatabaseTearDown(connection = "dataSource2", type =
+	// DatabaseOperation.DELETE_ALL, value =
+	// "/indi/mybatis/flying/test/accountTest/testTransactive.datasource2.result.xml")
+	// })
 	public void testTransactive() {
 		try {
 			transactiveService2.addAccount2Transactive();
