@@ -49,6 +49,8 @@
 		<commons-codec.version>1.10</commons-codec.version>
 		<plugin.gpg.version>1.6</plugin.gpg.version>
 		<mysql-connector-java.version>5.1.31</mysql-connector-java.version>
+		<atomikos.version>3.9.3</atomikos.version>
+		<jta.version>1.1</jta.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -172,6 +174,41 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-java.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jta</artifactId>
+			<version>${atomikos.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions</artifactId>
+			<version>${atomikos.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>atomikos-util</artifactId>
+			<version>${atomikos.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>${jta.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jdbc</artifactId>
+			<version>3.9.3</version>
 		</dependency>
 	</dependencies>
 	<repositories>
