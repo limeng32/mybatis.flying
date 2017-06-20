@@ -38,12 +38,6 @@ public class NotEqualConditionTest {
 	@Autowired
 	private LoginLogService loginLogService;
 
-	@BeforeClass
-	public static void prepareDatabase() {
-		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-				.addScript("classpath:/INIT_TABLE.sql").build();
-	}
-
 	/** 测试condition:greaterThan功能 */
 	@Test
 	@IfProfileValue(name = "CACHE", value = "false")

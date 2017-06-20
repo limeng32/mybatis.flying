@@ -52,7 +52,7 @@ import indi.mybatis.flying.service2.TransactiveService3;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource2", "dataSource1" })
-@ContextConfiguration("classpath:spring-test2.xml")
+@ContextConfiguration("classpath:spring-test.xml")
 public class AccountTest2 {
 
 	@Autowired

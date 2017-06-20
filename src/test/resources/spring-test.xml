@@ -3,6 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xsi:schemaLocation="  
         http://www.springframework.org/schema/beans   
         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
@@ -10,6 +11,8 @@
         http://www.springframework.org/schema/context/spring-context-3.2.xsd  
        	http://www.springframework.org/schema/aop
        	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+       	http://www.springframework.org/schema/jdbc
+       	http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
        	http://www.springframework.org/schema/tx
        	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
@@ -21,48 +24,50 @@
 		value=""></property> </bean> -->
 	<bean id="dataSource1" class="com.atomikos.jdbc.AtomikosDataSourceBean"
 		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="multi" />
-		<property name="xaDataSourceClassName"
-			value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+		<property name="uniqueResourceName" value="testdb" />
+		<property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" />
 		<property name="xaProperties">
 			<props>
-				<prop key="user">tester</prop>
-				<prop key="password">renzhigang</prop>
-				<prop key="URL">jdbc:mysql://115.28.134.232:3306/multi?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true
+				<prop key="user">sa</prop>
+				<prop key="password"></prop>
+				<prop key="URL">jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 				</prop>
 			</props>
 		</property>
 		<property name="minPoolSize" value="1" />
 		<property name="maxPoolSize" value="3" />
 		<property name="maxIdleTime" value="60" />
-
-		<!-- <property name="driverClassName" value="com.mysql.jdbc.Driver"></property> 
-			<property name="url" value="jdbc:mysql://115.28.134.232:3306/multi?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true"></property> 
-			<property name="username" value="tester"></property> <property name="password" 
-			value="renzhigang"></property> -->
 	</bean>
+	<!-- 测试环境下初始化dataSource1表结构 -->
+	<jdbc:initialize-database data-source="dataSource1"
+		ignore-failures="ALL">
+		<jdbc:script location="classpath:/INIT_TABLE.sql"
+			encoding="UTF-8" />
+	</jdbc:initialize-database>
+
 	<bean id="dataSource2" class="com.atomikos.jdbc.AtomikosDataSourceBean"
 		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="volatile" />
-		<property name="xaDataSourceClassName"
-			value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+		<property name="uniqueResourceName" value="testdb2" />
+		<property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" />
 		<property name="xaProperties">
 			<props>
-				<prop key="user">restma</prop>
-				<prop key="password">Aptx4869</prop>
-				<prop key="URL">jdbc:mysql://115.28.134.232:3306/volatile?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true
+				<prop key="user">sa</prop>
+				<prop key="password"></prop>
+				<prop key="URL">jdbc:h2:mem:testdb2;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 				</prop>
 			</props>
 		</property>
 		<property name="minPoolSize" value="1" />
 		<property name="maxPoolSize" value="3" />
 		<property name="maxIdleTime" value="60" />
-
-		<!-- <property name="driverClassName" value="com.mysql.jdbc.Driver"></property> 
-			<property name="url" value="jdbc:mysql://115.28.134.232:3306/volatile?autoReconnect=true&amp;characterEncoding=UTF8&amp;failOverReadOnly=false&amp;autoReconnectForPools=true"></property> 
-			<property name="username" value="restma"></property> <property name="password" 
-			value="Aptx4869"></property> -->
 	</bean>
+	<!-- 测试环境下初始化dataSource2表结构 -->
+	<jdbc:initialize-database data-source="dataSource2"
+		ignore-failures="ALL">
+		<jdbc:script location="classpath:/INIT_TABLE2.sql"
+			encoding="UTF-8" />
+	</jdbc:initialize-database>
+
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource1" />
@@ -104,20 +109,4 @@
 		<property name="allowCustomIsolationLevels" value="true" />
 	</bean>
 	<tx:annotation-driven transaction-manager="springTransactionManager" />
-
-	<!-- <aop:aspectj-autoproxy /> <aop:config proxy-target-class="true"> <aop:advisor 
-		pointcut="execution(* *com.lantii.service..*(..))" advice-ref="txAdvice" 
-		/> </aop:config> <tx:advice id="txAdvice" transaction-manager="springTransactionManager"> 
-		<tx:attributes> <tx:method name="get*" propagation="REQUIRED" read-only="true" 
-		/> <tx:method name="find*" propagation="REQUIRED" read-only="true" /> <tx:method 
-		name="has*" propagation="REQUIRED" read-only="true" /> <tx:method name="locate*" 
-		propagation="REQUIRED" read-only="true" /> <tx:method name="*" propagation="REQUIRED" 
-		rollback-for="Exception" /> </tx:attributes> </tx:advice> -->
-
-	<!-- <bean id="txManager1" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
-		<property name="dataSource" ref="dataSource1"></property> </bean> <bean id="txManager2" 
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
-		<property name="dataSource" ref="dataSource2"></property> </bean> <tx:annotation-driven 
-		transaction-manager="txManager2" /> <tx:annotation-driven transaction-manager="txManager1" 
-		/> -->
 </beans>

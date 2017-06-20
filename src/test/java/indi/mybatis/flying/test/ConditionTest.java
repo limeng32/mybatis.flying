@@ -47,12 +47,6 @@ import indi.mybatis.flying.service.LoginLogService;
 @ContextConfiguration("classpath:spring-test.xml")
 public class ConditionTest {
 
-	@BeforeClass
-	public static void prepareDatabase() {
-		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-				.addScript("classpath:/INIT_TABLE.sql").build();
-	}
-
 	@Autowired
 	private DataSource dataSource1;
 

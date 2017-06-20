@@ -39,12 +39,6 @@ public class InternalCacheTest extends TestCase {
 	@Autowired
 	private AccountService accountService;
 
-	@BeforeClass
-	public static void prepareDatabase() {
-		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-				.addScript("classpath:/INIT_TABLE.sql").build();
-	}
-
 	private class acctionSelect extends TestRunnable {
 
 		public void runTest() throws Throwable {

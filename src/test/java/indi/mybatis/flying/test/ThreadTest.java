@@ -38,12 +38,6 @@ public class ThreadTest extends TestCase {
 	@Autowired
 	private AccountService accountService;
 
-	@BeforeClass
-	public static void prepareDatabase() {
-		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-				.addScript("classpath:/INIT_TABLE.sql").build();
-	}
-
 	private class accountInsert extends TestRunnable {
 
 		private Integer id;

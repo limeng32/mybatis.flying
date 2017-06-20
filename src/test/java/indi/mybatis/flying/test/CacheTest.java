@@ -55,12 +55,6 @@ public class CacheTest {
 	@Autowired
 	private RoleService roleService;
 
-	@BeforeClass
-	public static void prepareDatabase() {
-		new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-				.addScript("classpath:/INIT_TABLE.sql").build();
-	}
-
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/test.xml")

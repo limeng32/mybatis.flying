@@ -5,9 +5,12 @@ import java.util.Collection;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -87,13 +90,6 @@ public class AccountTest {
 
 	@Autowired
 	private TransactiveService4 transactiveService4;
-
-	// @BeforeClass
-	// public static void prepareDatabase() {
-	// new
-	// EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("classpath:/H2_TYPE.sql")
-	// .addScript("classpath:/INIT_TABLE.sql").build();
-	// }
 
 	@Test
 	public void testDataSource() {
