@@ -82,9 +82,12 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		if ("true".equals(cacheEnabled)) {
 			this.cacheEnabled = true;
 		}
-		String annotationPackageName = properties.getProperty("annotationPackage");
-		dealPackageInit(annotationPackageName);
-		dealPackageInit2(annotationPackageName);
+		String annotationPackages = properties.getProperty("annotationPackage");
+		String[] annotationPackageNames = annotationPackages.split(",");
+		for (String annotationPackageName : annotationPackageNames) {
+			dealPackageInit(annotationPackageName);
+			dealPackageInit2(annotationPackageName);
+		}
 	}
 
 	private void dealPackageInit(String annotationPackageName) {

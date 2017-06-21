@@ -5,12 +5,17 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import indi.mybatis.flying.mapper2.Account2Mapper;
 import indi.mybatis.flying.mapper2.Role2Mapper;
+import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
 public class Role2Service extends ServiceSupport<Role2_> implements Role2Mapper {
+
+	@Autowired
+	private Account2Mapper account2Mapper;
 
 	@Autowired
 	private Role2Mapper mapper;
@@ -53,6 +58,13 @@ public class Role2Service extends ServiceSupport<Role2_> implements Role2Mapper 
 	@Override
 	public int count(Role2_ t) {
 		return supportCount(mapper, t);
+	}
+
+	@Override
+	public void loadAccount(Role2_ role2_, Account2_ account2_) {
+		role2_.removeAllAccount();
+		account2_.setRole(role2_);
+		role2_.setAccount(account2Mapper.selectAll(account2_));
 	}
 
 }

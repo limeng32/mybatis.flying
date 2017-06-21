@@ -17,11 +17,7 @@
        	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
 	<context:component-scan base-package="indi.mybatis.flying.*" />
-	<!-- <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
-		<property name="driverClassName" value="org.h2.Driver" /> <property name="url" 
-		value="jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE" 
-		/> <property name="username" value="sa"></property> <property name="password" 
-		value=""></property> </bean> -->
+	
 	<bean id="dataSource1" class="com.atomikos.jdbc.AtomikosDataSourceBean"
 		init-method="init" destroy-method="close">
 		<property name="uniqueResourceName" value="testdb" />
