@@ -48,10 +48,30 @@ import indi.mybatis.flying.utils.ReflectHelper;
  */
 @Intercepts({ @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class }) })
 public class AutoMapperInterceptor implements Interceptor {
+	private static String dialect = "";
+
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-	private static String dialect = "";
+
+	private static final String H = "h";
+	private static final String TARGET = "target";
+	private static final String SETTING_PARAMETERS = "setting parameters";
+	private static final String DELEGATE = "delegate";
+	private static final String MAPPEDSTATEMENT = "mappedStatement";
+	private static final String DIALECT = "dialect";
+	private static final String SQL = "sql";
+
+	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
+	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
+	private static final String DELEGATE_BOUNDSQL_PARAMETERMAPPINGS = "delegate.boundSql.parameterMappings";
+	private static final String DELEGATE_CONFIGURATION = "delegate.configuration";
+	private static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
+
+	private static final String DOT = ".";
+	private static final String QUESTION_MARK = "?";
+
+	private static final String MYSQL = "mysql";
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -59,26 +79,25 @@ public class AutoMapperInterceptor implements Interceptor {
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY);
-		// 分离代理对象链
-		while (metaStatementHandler.hasGetter("h")) {
-			Object object = metaStatementHandler.getValue("h");
+		/* 分离代理对象链 */
+		while (metaStatementHandler.hasGetter(H)) {
+			Object object = metaStatementHandler.getValue(H);
 			metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 		}
-		// 分离最后一个代理对象的目标类
-		while (metaStatementHandler.hasGetter("target")) {
-			Object object = metaStatementHandler.getValue("target");
+		/* 分离最后一个代理对象的目标类 */
+		while (metaStatementHandler.hasGetter(TARGET)) {
+			Object object = metaStatementHandler.getValue(TARGET);
 			metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 		}
-		String originalSql = (String) metaStatementHandler.getValue("delegate.boundSql.sql");
-		Configuration configuration = (Configuration) metaStatementHandler.getValue("delegate.configuration");
-		Object parameterObject = metaStatementHandler.getValue("delegate.boundSql.parameterObject");
+		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
+		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
+		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 
-		if (null == originalSql || "".equals(originalSql) || "?".equals(originalSql)) {
+		if (null == originalSql || "".equals(originalSql) || QUESTION_MARK.equals(originalSql)) {
 			String newSql = "";
-			MappedStatement mappedStatement = (MappedStatement) metaStatementHandler
-					.getValue("delegate.mappedStatement");
+			MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 			String id = mappedStatement.getId();
-			id = id.substring(id.lastIndexOf(".") + 1);
+			id = id.substring(id.lastIndexOf(DOT) + 1);
 			ActionType actionType = ActionType.valueOf(id);
 			switch (actionType) {
 			case count:
@@ -109,20 +128,17 @@ public class AutoMapperInterceptor implements Interceptor {
 			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
-			metaStatementHandler.setValue("delegate.boundSql.sql", sqlSource.getBoundSql(parameterObject).getSql());
-			metaStatementHandler.setValue("delegate.boundSql.parameterMappings", parameterMappings);
+			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
+			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
 		}
 
-		// 开始处理分页问题
+		/* 开始处理分页问题 */
 		if (invocation.getTarget() instanceof RoutingStatementHandler) {
-			// RoutingStatementHandler statementHandler =
-			// (RoutingStatementHandler) invocation.getTarget();
 			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper.getValueByFieldName(statementHandler,
-					"delegate");
+					DELEGATE);
 			MappedStatement mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate,
-					"mappedStatement");
+					MAPPEDSTATEMENT);
 			BoundSql boundSql = delegate.getBoundSql();
-			// Object parameterObject = boundSql.getParameterObject();
 			if (parameterObject == null) {
 				throw new NullPointerException("parameterObject error");
 			} else if (parameterObject instanceof Conditionable) {
@@ -130,7 +146,8 @@ public class AutoMapperInterceptor implements Interceptor {
 				String sql = boundSql.getSql();
 				if (condition.getLimiter() != null) {
 					Connection connection = (Connection) invocation.getArgs()[0];
-					String countSql = "select count(0) from (" + sql + ") myCount";
+					String countSql = new StringBuffer("select count(0) from (").append(sql).append(") myCount")
+							.toString();
 					PreparedStatement countStmt = connection.prepareStatement(countSql);
 					BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
 							boundSql.getParameterMappings(), parameterObject);
@@ -145,14 +162,14 @@ public class AutoMapperInterceptor implements Interceptor {
 					condition.getLimiter().setTotalCount(count);
 				}
 				String pageSql = generatePageSql(sql, condition);
-				ReflectHelper.setValueByFieldName(boundSql, "sql", pageSql);
+				ReflectHelper.setValueByFieldName(boundSql, SQL, pageSql);
 			} else {
 			}
 		}
-		// 调用原始statementHandler的prepare方法完成原本的逻辑
+		/* 调用原始statementHandler的prepare方法完成原本的逻辑 */
 		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
 		statementHandler.prepare((Connection) invocation.getArgs()[0]);
-		// 传递给下一个拦截器处理
+		/* 传递给下一个拦截器处理 */
 		return invocation.proceed();
 	}
 
@@ -167,7 +184,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public void setProperties(Properties properties) {
-		dialect = properties.getProperty("dialect");
+		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
 			try {
 				throw new PropertyException("dialect property is not found!");
@@ -185,7 +202,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	@SuppressWarnings("unchecked")
 	private void setParameters(PreparedStatement ps, MappedStatement mappedStatement, BoundSql boundSql,
 			Object parameterObject) throws SQLException {
-		ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
+		ErrorContext.instance().activity(SETTING_PARAMETERS).object(mappedStatement.getParameterMap().getId());
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		if (parameterMappings != null) {
 			Configuration configuration = mappedStatement.getConfiguration();
@@ -228,7 +245,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		if (condition != null && (dialect != null || !dialect.equals(""))) {
 			StringBuffer pageSql = new StringBuffer();
 			switch (dialect) {
-			case "mysql":
+			case MYSQL:
 				if (condition.getSorter() == null) {
 					pageSql.append(sql);
 				} else {

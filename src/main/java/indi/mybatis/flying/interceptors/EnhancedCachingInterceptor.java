@@ -53,27 +53,43 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 
-	public static final String _FLYING_ = "_flying_";
+	private static final String FLYING = "_flying_";
+
+	private static final String CLOSE = "close";
+	private static final String COMMIT = "commit";
+	private static final String QUERY = "query";
+	private static final String ROLLBACK = "rollback";
+	private static final String UPDATE = "update";
+
+	private static final String H = "h";
+	private static final String TARGET = "target";
+
+	private static final String DELEGATE = "delegate";
+	private static final String TCM = "tcm";
+	private static final String DIRTY = "dirty";
+	private static final String LIMITER = "limiter";
+	private static final String LIST = "list";
+
+	private static final String DOT = ".";
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		String name = invocation.getMethod().getName();
 		Object result = null;
 		switch (name) {
-		case "commit":
-			result = processCommit(invocation);
-			break;
-		case "close":
+		case CLOSE:
 			result = processClose(invocation);
 			break;
-		case "query":
+		case COMMIT:
+			result = processCommit(invocation);
+			break;
+		case QUERY:
 			result = processQuery(invocation);
 			break;
-		case "rollback":
+		case ROLLBACK:
 			result = processRollback(invocation);
 			break;
-		case "update":
-
+		case UPDATE:
 			result = processUpdate(invocation);
 			break;
 		default:
@@ -106,12 +122,16 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			Object[] args = invocation.getArgs();
 			MappedStatement mappedStatement = (MappedStatement) args[0];
 
-			// 如果本条statementId表示的查询语句配置了 flushCache=true，则清空querCacheOnCommit缓存
+			/*
+			 * 如果本条statementId表示的查询语句配置了 flushCache=true，则清空querCacheOnCommit缓存
+			 */
 			if (mappedStatement.isFlushCacheRequired()) {
 				queryCacheOnCommit.clear();
 			}
-			// 如果本条statementId表示的查询语句配置了使用缓存，并且二级缓存不为空，则将StatementId
-			// 和对应的二级缓存对象映射关系添加到全局缓存映射管理器中
+			/*
+			 * 如果本条statementId表示的查询语句配置了使用缓存，并且二级缓存不为空，
+			 * 则将StatementId和对应的二级缓存对象映射关系添加到全局缓存映射管理器中
+			 */
 			if (mappedStatement.isUseCache() && mappedStatement.getCache() != null) {
 				cachingManager.appendStatementCacheMap(mappedStatement.getId(), mappedStatement.getCache());
 			}
@@ -128,14 +148,14 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			Executor executorProxy = (Executor) invocation.getTarget();
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
 					DEFAULT_OBJECT_WRAPPER_FACTORY);
-			// 分离代理对象链
-			while (metaExecutor.hasGetter("h")) {
-				Object object = metaExecutor.getValue("h");
+			/* 分离代理对象链 */
+			while (metaExecutor.hasGetter(H)) {
+				Object object = metaExecutor.getValue(H);
 				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 			}
-			// 分离最后一个代理对象的目标类
-			while (metaExecutor.hasGetter("target")) {
-				Object object = metaExecutor.getValue("target");
+			/* 分离最后一个代理对象的目标类 */
+			while (metaExecutor.hasGetter(TARGET)) {
+				Object object = metaExecutor.getValue(TARGET);
 				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 			}
 
@@ -203,8 +223,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	}
 
 	/**
-	 * 
-	 * 
 	 * Executor插件配置信息加载点 properties中有 "dependency" 属性来指示
 	 * 配置的缓存依赖配置信息，读取文件，初始化EnhancedCacheManager
 	 */
@@ -231,24 +249,24 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
 		MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY);
-		// 当需要分页查询时，缓存里加入page信息
+		/* 当需要分页查询时，缓存里加入page信息 */
 		if (metaParameter.getOriginalObject() instanceof Conditionable) {
 			Cache cache = mappedStatement.getCache();
-			if (cache != null && metaExecutor.hasGetter("delegate")) {
+			if (cache != null && metaExecutor.hasGetter(DELEGATE)) {
 				if (mappedStatement.isUseCache() && resultHandler == null) {
-					if (!(Boolean) metaExecutor.getValue("dirty")) {
+					if (!(Boolean) metaExecutor.getValue(DIRTY)) {
 						cache.getReadWriteLock().readLock().lock();
 						try {
 							synchronized (cache) {
 								Object value = cache.getObject(cacheKey);
 								if (value != null) {
 									HashMap<String, Object> cachedMap = (HashMap<String, Object>) value;
-									Limitable cachedPage = (Limitable) cachedMap.get("limiter");
+									Limitable cachedPage = (Limitable) cachedMap.get(LIMITER);
 									Limitable originalPage = ((Conditionable) metaParameter.getOriginalObject())
 											.getLimiter();
 									if (null != originalPage && null != cachedPage) {
 										originalPage.setTotalCount(cachedPage.getTotalCount());
-										return (List<E>) cachedMap.get("list");
+										return (List<E>) cachedMap.get(LIST);
 									}
 								} else {
 								}
@@ -258,12 +276,12 @@ public class EnhancedCachingInterceptor implements Interceptor {
 						}
 					}
 				}
-				Executor delegate = (Executor) metaExecutor.getValue("delegate");
+				Executor delegate = (Executor) metaExecutor.getValue(DELEGATE);
 				List<E> list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
+				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue(TCM);
 				HashMap<String, Object> cachedMap = new HashMap<String, Object>();
-				cachedMap.put("limiter", metaParameter.getValue("limiter"));
-				cachedMap.put("list", list);
+				cachedMap.put(LIMITER, metaParameter.getValue(LIMITER));
+				cachedMap.put(LIST, list);
 				tcm.putObject(cache, cacheKey, cachedMap);
 				return list;
 			}
@@ -274,7 +292,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 
 	private boolean isSelectType(String statementId) {
 		boolean ret = false;
-		String id = statementId.substring(statementId.lastIndexOf(".") + 1);
+		String id = statementId.substring(statementId.lastIndexOf(DOT) + 1);
 		ActionType actionType = ActionType.valueOf(id);
 		switch (actionType) {
 		case count:
@@ -311,7 +329,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			} else {
 				for (ParameterMapping parameterMapping : parameterMappings) {
 					String propertyName = parameterMapping.getProperty();
-					if (_FLYING_.equals(propertyName)) {
+					if (FLYING.equals(propertyName)) {
 						if (isSelectType(mappedStatement.getId())) {
 							String _cacheKey = DigestUtils.md5Hex(JSON.toJSONString(parameter));
 							cacheKey.update(_cacheKey);
@@ -324,7 +342,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 				}
 			}
 		}
-		// 当需要分页查询时，将page参数里的当前页和每页数加到cachekey里
+		/* 当需要分页查询时，将page参数里的当前页和每页数加到cachekey里 */
 		if (metaObject.getOriginalObject() instanceof Conditionable) {
 			Sortable sorter = ((Conditionable) metaObject.getOriginalObject()).getSorter();
 			if (sorter != null) {

@@ -33,10 +33,60 @@ import indi.mybatis.flying.utils.ReflectHelper;
  * 
  */
 public class SqlBuilder {
-	/** 缓存TableMapper */
+
+	/* 缓存TableMapper */
 	private static Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
-	/** 缓存QueryMapper */
+	/* 缓存QueryMapper */
 	private static Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
+
+	private static final String DOT = ".";
+	private static final String COMMA = ",";
+
+	private static final String JDBCTYPE_EQUAL = "jdbcType=";
+	private static final String COMMA_TYPEHANDLER_EQUAL = ",typeHandler=";
+	private static final String CLOSEPAREN_ = ") ";
+	private static final String CLOSEBRACE_AND_ = "} and ";
+	private static final String CLOSEBRACE_OR_ = "} or ";
+	private static final String WHERE_ = " where ";
+	private static final String POUND_OPENBRACE = "#{";
+	private static final String OPENBRACKET = "[";
+	private static final String CLOSEBRACKET = "]";
+	private static final String CLOSEBRACE_COMMA = "},";
+	private static final String CLOSEPAREN__AND_ = ") and ";
+	private static final String AND = "and";
+	private static final String FROM = " from ";
+	private static final String CLOSEPAREN = ")";
+	private static final String ASTERISK = "*";
+	private static final String INSERT_INTO_ = "insert into ";
+	private static final String SELECT_ = "select ";
+	private static final String SELECT_COUNT_OPENPAREN = "select count(";
+	private static final String EQUAL_POUND_OPENBRACE = "=#{";
+	private static final String DELETE_FROM_ = "delete from ";
+	private static final String COMMA_JDBCTYPE_EQUAL = ",jdbcType=";
+	private static final String PLUS_1 = "+1";
+	private static final String CLOSEBRACE = "}";
+	private static final String CONDITIONLIKEHANDLER = "ConditionLikeHandler";
+	private static final String VALUES_OPENPAREN = "values(";
+	private static final String UPDATE_ = "update ";
+
+	private static final String _AND_ = " and ";
+	private static final String _EQUAL_ = " = ";
+	private static final String _GREATER_ = " > ";
+	private static final String _GREATER_EQUAL_ = " >= ";
+	private static final String _IN_OPENPAREN = " in(";
+	private static final String _IS = " is";
+	private static final String _LEFT_JOIN_ = " left join ";
+	private static final String _LESS_ = " < ";
+	private static final String _LESS_EQUAL_ = " <= ";
+	private static final String _LESS_GREATER_ = " <> ";
+	private static final String _LIKE__POUND_OPENBRACE = " like #{";
+	private static final String _LIMIT_1 = " limit 1";
+	private static final String _NOT = " not";
+	private static final String _NULL = " null";
+	private static final String _ON_ = " on ";
+	private static final String _OPENPAREN = " (";
+	private static final String _OR_ = " or ";
+	private static final String _SET_ = " set ";
 
 	/**
 	 * 由传入的dto对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
@@ -241,17 +291,17 @@ public class SqlBuilder {
 	private static void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
 			TableName tableName, String fieldNamePrefix) {
 		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
-		whereSql.append(" like #{");
+		whereSql.append(_LIKE__POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
-			whereSql.append(fieldNamePrefix).append(".");
+			whereSql.append(fieldNamePrefix).append(DOT);
 		}
 		if (conditionMapper.isForeignKey()) {
-			whereSql.append(conditionMapper.getFieldName()).append(".").append(conditionMapper.getForeignFieldName());
+			whereSql.append(conditionMapper.getFieldName()).append(DOT).append(conditionMapper.getForeignFieldName());
 		} else {
 			whereSql.append(conditionMapper.getFieldName());
 		}
-		whereSql.append(",").append("jdbcType=").append(conditionMapper.getJdbcType().toString())
-				.append(",typeHandler=");
+		whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
+				.append(COMMA_TYPEHANDLER_EQUAL);
 		switch (type) {
 		case Like:
 			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
@@ -265,7 +315,7 @@ public class SqlBuilder {
 		default:
 			throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
 		}
-		whereSql.append("} and ");
+		whereSql.append(CLOSEBRACE_AND_);
 	}
 
 	private static void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
@@ -278,12 +328,12 @@ public class SqlBuilder {
 			case In:
 				break;
 			case NotIn:
-				tempWhereSql.append(" not");
+				tempWhereSql.append(_NOT);
 				break;
 			default:
 				throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
 			}
-			tempWhereSql.append(" in(");
+			tempWhereSql.append(_IN_OPENPAREN);
 			int j = -1;
 			boolean allNull = true;
 			for (Object s : multiConditionC) {
@@ -292,23 +342,25 @@ public class SqlBuilder {
 					if (allNull) {
 						allNull = false;
 					}
-					tempWhereSql.append("#{");
+					tempWhereSql.append(POUND_OPENBRACE);
 					if (fieldNamePrefix != null) {
-						tempWhereSql.append(fieldNamePrefix).append(".");
+						tempWhereSql.append(fieldNamePrefix).append(DOT);
 					}
 					if (conditionMapper.isForeignKey()) {
-						tempWhereSql.append(conditionMapper.getFieldName()).append(".")
-								.append(conditionMapper.getForeignFieldName()).append("[").append(j).append("]");
+						tempWhereSql.append(conditionMapper.getFieldName()).append(DOT)
+								.append(conditionMapper.getForeignFieldName()).append(OPENBRACKET).append(j)
+								.append(CLOSEBRACKET);
 					} else {
-						tempWhereSql.append(conditionMapper.getFieldName()).append("[").append(j).append("]");
+						tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
+								.append(CLOSEBRACKET);
 					}
-					tempWhereSql.append(",").append("jdbcType=").append(conditionMapper.getJdbcType().toString())
-							.append("},");
+					tempWhereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
+							.append(CLOSEBRACE_COMMA);
 				}
 			}
 			if (!allNull) {
-				tempWhereSql.delete(tempWhereSql.lastIndexOf(","), tempWhereSql.lastIndexOf(",") + 1);
-				tempWhereSql.append(") and ");
+				tempWhereSql.delete(tempWhereSql.lastIndexOf(COMMA), tempWhereSql.lastIndexOf(COMMA) + 1);
+				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
 		}
@@ -320,7 +372,7 @@ public class SqlBuilder {
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
-			tempWhereSql.append(" (");
+			tempWhereSql.append(_OPENPAREN);
 			int j = -1;
 			boolean allNull = true;
 			for (String s : multiConditionList) {
@@ -330,26 +382,28 @@ public class SqlBuilder {
 						allNull = false;
 					}
 					handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
-					tempWhereSql.append(" like #{");
+					tempWhereSql.append(_LIKE__POUND_OPENBRACE);
 					if (fieldNamePrefix != null) {
-						tempWhereSql.append(fieldNamePrefix).append(".");
+						tempWhereSql.append(fieldNamePrefix).append(DOT);
 					}
 					if (conditionMapper.isForeignKey()) {
-						tempWhereSql.append(conditionMapper.getFieldName()).append(".")
-								.append(conditionMapper.getForeignFieldName()).append("[").append(j).append("]");
+						tempWhereSql.append(conditionMapper.getFieldName()).append(DOT)
+								.append(conditionMapper.getForeignFieldName()).append(OPENBRACKET).append(j)
+								.append(CLOSEBRACKET);
 					} else {
-						tempWhereSql.append(conditionMapper.getFieldName()).append("[").append(j).append("]");
+						tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
+								.append(CLOSEBRACKET);
 					}
-					tempWhereSql.append(",").append("jdbcType=").append(conditionMapper.getJdbcType().toString())
-							.append(",typeHandler=");
+					tempWhereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
+							.append(COMMA_TYPEHANDLER_EQUAL);
 					switch (type) {
 					case MultiLikeAND:
-						tempWhereSql.append("ConditionLikeHandler");
-						tempWhereSql.append("} and ");
+						tempWhereSql.append(CONDITIONLIKEHANDLER);
+						tempWhereSql.append(CLOSEBRACE_AND_);
 						break;
 					case MultiLikeOR:
-						tempWhereSql.append("ConditionLikeHandler");
-						tempWhereSql.append("} or ");
+						tempWhereSql.append(CONDITIONLIKEHANDLER);
+						tempWhereSql.append(CLOSEBRACE_OR_);
 						break;
 					default:
 						throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
@@ -359,14 +413,14 @@ public class SqlBuilder {
 			if (!allNull) {
 				switch (type) {
 				case MultiLikeAND:
-					tempWhereSql.delete(tempWhereSql.lastIndexOf(" and "), tempWhereSql.lastIndexOf(" and ") + 5);
+					tempWhereSql.delete(tempWhereSql.lastIndexOf(_AND_), tempWhereSql.lastIndexOf(_AND_) + 5);
 					break;
 				case MultiLikeOR:
-					tempWhereSql.delete(tempWhereSql.lastIndexOf(" or "), tempWhereSql.lastIndexOf(" or ") + 4);
+					tempWhereSql.delete(tempWhereSql.lastIndexOf(_OR_), tempWhereSql.lastIndexOf(_OR_) + 4);
 					break;
 				default:
 				}
-				tempWhereSql.append(") and ");
+				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
 		}
@@ -375,19 +429,19 @@ public class SqlBuilder {
 	private static void dealConditionEqual(Object object, StringBuffer whereSql, Mapperable mapper, TableName tableName,
 			String fieldNamePrefix) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
-		whereSql.append(" = #{");
+		whereSql.append(EQUAL_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
-			whereSql.append(fieldNamePrefix).append(".");
+			whereSql.append(fieldNamePrefix).append(DOT);
 		}
 		if (mapper.isForeignKey()) {
-			whereSql.append(mapper.getFieldName()).append(".").append(mapper.getForeignFieldName());
+			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
 		if (mapper.getJdbcType() != null) {
-			whereSql.append(",").append("jdbcType=").append(mapper.getJdbcType().toString());
+			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		whereSql.append("} and ");
+		whereSql.append(CLOSEBRACE_AND_);
 	}
 
 	private static void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
@@ -395,47 +449,47 @@ public class SqlBuilder {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		switch (type) {
 		case GreaterThan:
-			whereSql.append(" > ");
+			whereSql.append(_GREATER_);
 			break;
 		case GreaterOrEqual:
-			whereSql.append(" >= ");
+			whereSql.append(_GREATER_EQUAL_);
 			break;
 		case LessThan:
-			whereSql.append(" < ");
+			whereSql.append(_LESS_);
 			break;
 		case LessOrEqual:
-			whereSql.append(" <= ");
+			whereSql.append(_LESS_EQUAL_);
 			break;
 		case NotEqual:
-			whereSql.append(" <> ");
+			whereSql.append(_LESS_GREATER_);
 			break;
 		default:
 			throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
 		}
-		whereSql.append("#{");
+		whereSql.append(POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
-			whereSql.append(fieldNamePrefix).append(".");
+			whereSql.append(fieldNamePrefix).append(DOT);
 		}
 		if (mapper.isForeignKey()) {
-			whereSql.append(mapper.getFieldName()).append(".").append(mapper.getForeignFieldName());
+			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
 		if (mapper.getJdbcType() != null) {
-			whereSql.append(",").append("jdbcType=").append(mapper.getJdbcType().toString());
+			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		whereSql.append("} and ");
+		whereSql.append(CLOSEBRACE_AND_);
 	}
 
 	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
 			TableName tableName, String fieldNamePrefix) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
-		whereSql.append(" is");
+		whereSql.append(_IS);
 		if (!isNull) {
-			whereSql.append(" not");
+			whereSql.append(_NOT);
 		}
-		whereSql.append(" null").append(" and ");
+		whereSql.append(_NULL).append(_AND_);
 	}
 
 	private static void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName,
@@ -467,8 +521,8 @@ public class SqlBuilder {
 		StringBuffer tableSql = new StringBuffer();
 		StringBuffer valueSql = new StringBuffer();
 
-		tableSql.append("insert into ").append(tableName).append("(");
-		valueSql.append("values(");
+		tableSql.append(INSERT_INTO_).append(tableName).append(_OPENPAREN);
+		valueSql.append(VALUES_OPENPAREN);
 
 		boolean allFieldNull = true;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
@@ -480,23 +534,24 @@ public class SqlBuilder {
 				ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), value);
 			}
 			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append(",");
-			valueSql.append("#{");
+			tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
+			valueSql.append(POUND_OPENBRACE);
 			if (fieldMapper.isForeignKey()) {
-				valueSql.append(fieldMapper.getFieldName()).append(".").append(fieldMapper.getForeignFieldName());
+				valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				valueSql.append(fieldMapper.getFieldName());
 			}
-			valueSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString()).append("},");
+			valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
+					.append(CLOSEBRACE_COMMA);
 		}
 		if (allFieldNull) {
 			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
 					+ "'s all fields are null, how can i build sql for it?!");
 		}
 
-		tableSql.delete(tableSql.lastIndexOf(","), tableSql.lastIndexOf(",") + 1);
-		valueSql.delete(valueSql.lastIndexOf(","), valueSql.lastIndexOf(",") + 1);
-		return tableSql.append(") ").append(valueSql).append(")").toString();
+		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
+		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
+		return tableSql.append(CLOSEPAREN_).append(valueSql).append(CLOSEPAREN).toString();
 	}
 
 	/**
@@ -520,9 +575,9 @@ public class SqlBuilder {
 		String tableName = tma.tableName();
 
 		StringBuffer tableSql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
-		tableSql.append("update ").append(tableName).append(" set ");
+		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
 		boolean allFieldNull = true;
 
@@ -532,25 +587,25 @@ public class SqlBuilder {
 				continue;
 			}
 			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append("=#{");
+			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 			if (fieldMapper.isForeignKey()) {
-				tableSql.append(fieldMapper.getFieldName()).append(".").append(fieldMapper.getForeignFieldName());
+				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
 			}
-			tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
-			tableSql.append("}");
+			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
-				tableSql.append("+1");
+				tableSql.append(PLUS_1);
 			}
-			tableSql.append(",");
+			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
 			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
 					+ "'s all fields are null, how can i build sql for it?!");
 		}
 
-		tableSql.delete(tableSql.lastIndexOf(","), tableSql.lastIndexOf(",") + 1);
+		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
@@ -558,13 +613,14 @@ public class SqlBuilder {
 				throw new RuntimeException(
 						"Unique key '" + fieldMapper.getDbFieldName() + "' can't be null, build update sql failed!");
 			}
-			whereSql.append("=#{").append(fieldMapper.getFieldName()).append(",").append("jdbcType=")
-					.append(fieldMapper.getJdbcType().toString()).append("} and ");
+			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
+					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
-			whereSql.append(f.getDbFieldName()).append("=#{").append(f.getFieldName()).append("} and ");
+			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
+					.append(CLOSEBRACE_AND_);
 		}
-		whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return tableSql.append(whereSql).toString();
 	}
 
@@ -589,32 +645,33 @@ public class SqlBuilder {
 		String tableName = tma.tableName();
 
 		StringBuffer tableSql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
-		tableSql.append("update ").append(tableName).append(" set ");
+		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append("=#{");
+			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 			if (fieldMapper.isForeignKey()) {
-				tableSql.append(fieldMapper.getFieldName()).append(".").append(fieldMapper.getForeignFieldName());
+				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
 			}
-			tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString()).append("}");
+			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
+					.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
-				tableSql.append("+1");
+				tableSql.append(PLUS_1);
 			}
-			tableSql.append(",");
+			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
 			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
 					+ "'s all fields are null, how can i build sql for it?!");
 		}
 
-		tableSql.delete(tableSql.lastIndexOf(","), tableSql.lastIndexOf(",") + 1);
+		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
@@ -622,13 +679,14 @@ public class SqlBuilder {
 				throw new RuntimeException("Unique key '" + fieldMapper.getDbFieldName()
 						+ "' can't be null, build updatePersistent sql failed!");
 			}
-			whereSql.append("=#{").append(fieldMapper.getFieldName()).append(",jdbcType=")
-					.append(fieldMapper.getJdbcType().toString()).append("} and ");
+			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA_JDBCTYPE_EQUAL)
+					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
-			whereSql.append(f.getDbFieldName()).append("=#{").append(f.getFieldName()).append("} and ");
+			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
+					.append(CLOSEBRACE_AND_);
 		}
-		whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return tableSql.append(whereSql).toString();
 	}
 
@@ -652,7 +710,7 @@ public class SqlBuilder {
 
 		StringBuffer sql = new StringBuffer();
 
-		sql.append("delete from ").append(tableName).append(" where ");
+		sql.append(DELETE_FROM_).append(tableName).append(WHERE_);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			sql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
@@ -660,13 +718,14 @@ public class SqlBuilder {
 				throw new RuntimeException(
 						"Unique key '" + fieldMapper.getDbFieldName() + "' can't be null, build delete sql failed!");
 			}
-			sql.append("=#{").append(fieldMapper.getFieldName()).append(",").append("jdbcType=")
-					.append(fieldMapper.getJdbcType().toString()).append("} and ");
+			sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
-			sql.append(f.getDbFieldName()).append("=#{").append(f.getFieldName()).append("} and ");
+			sql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
+					.append(CLOSEBRACE_AND_);
 		}
-		sql.delete(sql.lastIndexOf("and"), sql.lastIndexOf("and") + 3);
+		sql.delete(sql.lastIndexOf(AND), sql.lastIndexOf(AND) + 3);
 		return sql.toString();
 	}
 
@@ -682,27 +741,27 @@ public class SqlBuilder {
 		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
 		String tableName = tma.tableName();
 
-		StringBuffer selectSql = new StringBuffer("select ");
+		StringBuffer selectSql = new StringBuffer(SELECT_);
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if (!fieldMapper.isIgnoredSelect()) {
-				selectSql.append(fieldMapper.getDbFieldName()).append(",");
+				selectSql.append(fieldMapper.getDbFieldName()).append(COMMA);
 			}
 		}
 
-		if (selectSql.indexOf(",") > -1) {
-			selectSql.delete(selectSql.lastIndexOf(","), selectSql.lastIndexOf(",") + 1);
+		if (selectSql.indexOf(COMMA) > -1) {
+			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
 
-		selectSql.append(" from ").append(tableName);
+		selectSql.append(FROM).append(tableName);
 
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
-			whereSql.append("=#{").append(fieldMapper.getFieldName()).append(",").append("jdbcType=")
-					.append(fieldMapper.getJdbcType().toString()).append("} and ");
+			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
+					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
 		}
-		whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return selectSql.append(whereSql).toString();
 	}
 
@@ -719,19 +778,19 @@ public class SqlBuilder {
 		if (null == object) {
 			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
 		}
-		StringBuffer selectSql = new StringBuffer("select ");
-		StringBuffer fromSql = new StringBuffer(" from ");
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer selectSql = new StringBuffer(SELECT_);
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai);
 
-		if (selectSql.indexOf(",") > -1) {
-			selectSql.delete(selectSql.lastIndexOf(","), selectSql.lastIndexOf(",") + 1);
+		if (selectSql.indexOf(COMMA) > -1) {
+			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
-		if (" where ".equals(whereSql.toString())) {
+		if (WHERE_.equals(whereSql.toString())) {
 			whereSql = new StringBuffer();
-		} else if (whereSql.indexOf("and") > -1) {
-			whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		} else if (whereSql.indexOf(AND) > -1) {
+			whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		}
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
@@ -752,21 +811,21 @@ public class SqlBuilder {
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}
-		StringBuffer selectSql = new StringBuffer("select ");
-		StringBuffer fromSql = new StringBuffer(" from ");
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer selectSql = new StringBuffer(SELECT_);
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai);
 
-		if (selectSql.indexOf(",") > -1) {
-			selectSql.delete(selectSql.lastIndexOf(","), selectSql.lastIndexOf(",") + 1);
+		if (selectSql.indexOf(COMMA) > -1) {
+			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
-		if (" where ".equals(whereSql.toString())) {
+		if (WHERE_.equals(whereSql.toString())) {
 			whereSql = new StringBuffer();
-		} else if (whereSql.indexOf("and") > -1) {
-			whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		} else if (whereSql.indexOf(AND) > -1) {
+			whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		}
-		return selectSql.append(fromSql).append(whereSql).append(" limit 1").toString();
+		return selectSql.append(fromSql).append(whereSql).append(_LIMIT_1).toString();
 	}
 
 	/**
@@ -789,7 +848,7 @@ public class SqlBuilder {
 				((TableMapperAnnotation) tableMapper.getTableMapperAnnotation()).tableName(), 0);
 
 		StringBuffer selectSql = new StringBuffer();
-		selectSql.append("select count(").append(tableName.sqlWhere());
+		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
 		/*
 		 * 如果有且只有一个主键，采用select count("主键")的方式；如果无主键或有多个主键（联合主键），采用select
 		 * count(*)的方式。
@@ -797,22 +856,22 @@ public class SqlBuilder {
 		if (tableMapper.getUniqueKeyNames().length == 1) {
 			selectSql.append(tableMapper.getUniqueKeyNames()[0].getDbFieldName());
 		} else {
-			selectSql.append("*");
+			selectSql.append(ASTERISK);
 		}
-		selectSql.append(")");
+		selectSql.append(CLOSEPAREN);
 
-		StringBuffer fromSql = new StringBuffer(" from ");
-		StringBuffer whereSql = new StringBuffer(" where ");
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
 		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai);
 
-		if (selectSql.indexOf(",") > -1) {
-			selectSql.delete(selectSql.lastIndexOf(","), selectSql.lastIndexOf(",") + 1);
+		if (selectSql.indexOf(COMMA) > -1) {
+			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
-		if (" where ".equals(whereSql.toString())) {
+		if (WHERE_.equals(whereSql.toString())) {
 			whereSql = new StringBuffer();
-		} else if (whereSql.indexOf("and") > -1) {
-			whereSql.delete(whereSql.lastIndexOf("and"), whereSql.lastIndexOf("and") + 3);
+		} else if (whereSql.indexOf(AND) > -1) {
+			whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		}
 
 		return selectSql.append(fromSql).append(whereSql).toString();
@@ -854,7 +913,7 @@ public class SqlBuilder {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if (!fieldMapper.isIgnoredSelect()) {
-					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(",");
+					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(COMMA);
 				}
 			}
 		}
@@ -867,12 +926,12 @@ public class SqlBuilder {
 			/* 处理fieldPerfix */
 			temp = originFieldMapper.getFieldName();
 			if (fieldPerfix != null) {
-				temp = fieldPerfix + "." + temp;
+				temp = fieldPerfix + DOT + temp;
 			}
 			/* 处理fromSql */
-			fromSql.append(" left join ").append(tableName.sqlSelect()).append(" on ")
-					.append(originTableName.sqlWhere()).append(originFieldMapper.getDbFieldName()).append(" = ")
-					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
+			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
+					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
+					.append(originFieldMapper.getDbAssociationUniqueKey());
 		}
 
 		/* 处理fieldMapper中的条件 */
@@ -970,12 +1029,12 @@ public class SqlBuilder {
 			/* 处理fieldPerfix */
 			temp = originFieldMapper.getFieldName();
 			if (fieldPerfix != null) {
-				temp = fieldPerfix + "." + temp;
+				temp = fieldPerfix + DOT + temp;
 			}
 			/* 处理fromSql */
-			fromSql.append(" left join ").append(tableName.sqlSelect()).append(" on ")
-					.append(originTableName.sqlWhere()).append(originFieldMapper.getDbFieldName()).append(" = ")
-					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
+			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
+					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
+					.append(originFieldMapper.getDbAssociationUniqueKey());
 		}
 
 		/* 处理fieldMapper中的条件 */
