@@ -15,6 +15,8 @@ import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
+import indi.mybatis.flying.exception.BuildSqlException;
+import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
@@ -263,9 +265,8 @@ public class SqlBuilder {
 			c = c.getSuperclass();
 		}
 		if (c.equals(Object.class)) {
-			throw new RuntimeException(
-					"Class " + clazz.getName() + " and all its parents has no 'TableMapperAnnotation', "
-							+ "which has the database table information," + " I can't build 'TableMapper' for it.");
+			throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.noTableMapperAnnotation.toString())
+					.append(clazz.getName()).toString());
 		}
 		return c;
 	}
@@ -313,7 +314,7 @@ public class SqlBuilder {
 			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
 			break;
 		default:
-			throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
 		whereSql.append(CLOSEBRACE_AND_);
 	}
@@ -331,7 +332,7 @@ public class SqlBuilder {
 				tempWhereSql.append(_NOT);
 				break;
 			default:
-				throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
+				throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 			}
 			tempWhereSql.append(_IN_OPENPAREN);
 			int j = -1;
@@ -406,7 +407,7 @@ public class SqlBuilder {
 						tempWhereSql.append(CLOSEBRACE_OR_);
 						break;
 					default:
-						throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
+						throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 					}
 				}
 			}
@@ -464,7 +465,7 @@ public class SqlBuilder {
 			whereSql.append(_LESS_GREATER_);
 			break;
 		default:
-			throw new RuntimeException("Sorry,I refuse to build sql for an ambiguous condition!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
 		whereSql.append(POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -511,7 +512,7 @@ public class SqlBuilder {
 	 */
 	public static String buildInsertSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
@@ -545,8 +546,7 @@ public class SqlBuilder {
 					.append(CLOSEBRACE_COMMA);
 		}
 		if (allFieldNull) {
-			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
-					+ "'s all fields are null, how can i build sql for it?!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
@@ -565,7 +565,7 @@ public class SqlBuilder {
 	 */
 	public static String buildUpdateSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
@@ -601,8 +601,7 @@ public class SqlBuilder {
 			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
-			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
-					+ "'s all fields are null, how can i build sql for it?!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
@@ -610,8 +609,8 @@ public class SqlBuilder {
 			whereSql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
-				throw new RuntimeException(
-						"Unique key '" + fieldMapper.getDbFieldName() + "' can't be null, build update sql failed!");
+				throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
+						.append(fieldMapper.getDbFieldName()).toString());
 			}
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
 					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
@@ -635,7 +634,7 @@ public class SqlBuilder {
 	 */
 	public static String buildUpdatePersistentSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
@@ -667,8 +666,7 @@ public class SqlBuilder {
 			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
-			throw new RuntimeException("Are you joking? Object " + object.getClass().getName()
-					+ "'s all fields are null, how can i build sql for it?!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
@@ -676,8 +674,9 @@ public class SqlBuilder {
 			whereSql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
-				throw new RuntimeException("Unique key '" + fieldMapper.getDbFieldName()
-						+ "' can't be null, build updatePersistent sql failed!");
+				throw new BuildSqlException(
+						new StringBuffer(BuildSqlExceptionEnum.updatePersistentUniqueKeyIsNull.toString())
+								.append(fieldMapper.getDbFieldName()).toString());
 			}
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA_JDBCTYPE_EQUAL)
 					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
@@ -701,7 +700,7 @@ public class SqlBuilder {
 	 */
 	public static String buildDeleteSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
@@ -715,8 +714,8 @@ public class SqlBuilder {
 			sql.append(fieldMapper.getDbFieldName());
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
-				throw new RuntimeException(
-						"Unique key '" + fieldMapper.getDbFieldName() + "' can't be null, build delete sql failed!");
+				throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.deleteUniqueKeyIsNull.toString())
+						.append(fieldMapper.getDbFieldName()).toString());
 			}
 			sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
@@ -776,7 +775,7 @@ public class SqlBuilder {
 	 */
 	public static String buildSelectAllSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 		StringBuffer fromSql = new StringBuffer(FROM);
@@ -806,7 +805,7 @@ public class SqlBuilder {
 	 */
 	public static String buildSelectOneSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
@@ -839,7 +838,7 @@ public class SqlBuilder {
 	 */
 	public static String buildCountSql(Object object) throws Exception {
 		if (null == object) {
-			throw new RuntimeException("Sorry,I refuse to build sql for a null object!");
+			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));

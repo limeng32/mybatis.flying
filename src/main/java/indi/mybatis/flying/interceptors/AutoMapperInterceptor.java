@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import javax.xml.bind.PropertyException;
-
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.ErrorContext;
-import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.executor.statement.BaseStatementHandler;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -39,6 +36,8 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 import indi.mybatis.flying.builders.SqlBuilder;
+import indi.mybatis.flying.exception.AutoMapperException;
+import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.ReflectHelper;
@@ -70,6 +69,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static final String DOT = ".";
 	private static final String QUESTION_MARK = "?";
+	private static final String _LIMIT_1 = " limit 1";
 
 	private static final String MYSQL = "mysql";
 
@@ -140,7 +140,7 @@ public class AutoMapperInterceptor implements Interceptor {
 					MAPPEDSTATEMENT);
 			BoundSql boundSql = delegate.getBoundSql();
 			if (parameterObject == null) {
-				throw new NullPointerException("parameterObject error");
+				throw new AutoMapperException(AutoMapperExceptionEnum.parameterObjectIsNull);
 			} else if (parameterObject instanceof Conditionable) {
 				Conditionable condition = (Conditionable) parameterObject;
 				String sql = boundSql.getSql();
@@ -187,9 +187,9 @@ public class AutoMapperInterceptor implements Interceptor {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
 			try {
-				throw new PropertyException("dialect property is not found!");
-			} catch (PropertyException e) {
-				e.printStackTrace();
+				throw new AutoMapperException(AutoMapperExceptionEnum.dialectPropertyCannotFound);
+			} catch (AutoMapperException e) {
+				logger.error(e.getMessage());
 			}
 		}
 	}
@@ -232,8 +232,10 @@ public class AutoMapperInterceptor implements Interceptor {
 					}
 					TypeHandler<Object> typeHandler = (TypeHandler<Object>) parameterMapping.getTypeHandler();
 					if (typeHandler == null) {
-						throw new ExecutorException("There was no TypeHandler found for parameter " + propertyName
-								+ " of statement " + mappedStatement.getId());
+						throw new AutoMapperException(
+								new StringBuffer(AutoMapperExceptionEnum.noTypeHandlerSuitable.toString())
+										.append(propertyName).append(" of statement ").append(mappedStatement.getId())
+										.toString());
 					}
 					typeHandler.setParameter(ps, i + 1, value, parameterMapping.getJdbcType());
 				}
@@ -249,10 +251,10 @@ public class AutoMapperInterceptor implements Interceptor {
 				if (condition.getSorter() == null) {
 					pageSql.append(sql);
 				} else {
-					if (sql.endsWith(" limit 1")) {
+					if (sql.endsWith(_LIMIT_1)) {
 						pageSql.append(sql.substring(0, sql.length() - 8));
 						pageSql.append(condition.getSorter().toSql());
-						pageSql.append(" limit 1");
+						pageSql.append(_LIMIT_1);
 					} else {
 						pageSql.append(sql);
 						pageSql.append(condition.getSorter().toSql());
