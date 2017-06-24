@@ -48,7 +48,7 @@ import indi.mybatis.flying.statics.ActionType;
 		@Signature(args = { boolean.class }, method = "close", type = Executor.class) })
 public class EnhancedCachingInterceptor implements Interceptor {
 	private static CacheKeysPool queryCacheOnCommit = new CacheKeysPool();
-	private static Set<String> updateStatementOnCommit = new HashSet<String>();
+	private static Set<String> updateStatementOnCommit = new HashSet<String>(16);
 	private static EnhancedCachingManager cachingManager = EnhancedCachingManagerImpl.getInstance();
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
