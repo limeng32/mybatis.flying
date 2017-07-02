@@ -65,7 +65,6 @@ public class ThreadTest extends TestCase {
 	 * 主线程会等待子线程全部执行完后再结束
 	 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/threadTest/testExampleThread.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/threadTest/testExampleThread.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/threadTest/testExampleThread.result.xml")

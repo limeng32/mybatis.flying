@@ -41,7 +41,6 @@ public class NullOrNotTest {
 
 	/** 测试NullOrNot关键字 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/nullOrNotTest/testNullOrNot.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/nullOrNotTest/testNullOrNot.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/nullOrNotTest/testNullOrNot.xml")

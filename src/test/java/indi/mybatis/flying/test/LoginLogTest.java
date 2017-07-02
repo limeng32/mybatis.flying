@@ -48,7 +48,6 @@ public class LoginLogTest {
 
 	/** 测试insert功能（无乐观锁） */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/loginLogTest/testInsert.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/loginLogTest/testInsert.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/loginLogTest/testInsert.xml")

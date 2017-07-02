@@ -45,7 +45,6 @@ public class SelectOneTest {
 
 	/** 测试selectOne1 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.result.xml")
@@ -67,7 +66,6 @@ public class SelectOneTest {
 
 	/** 测试selectOne2 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
@@ -92,7 +90,6 @@ public class SelectOneTest {
 
 	/** 测试selectOne3，缓存测试 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")

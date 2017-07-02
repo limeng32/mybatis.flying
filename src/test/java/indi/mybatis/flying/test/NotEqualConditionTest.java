@@ -40,7 +40,6 @@ public class NotEqualConditionTest {
 
 	/** 测试condition:greaterThan功能 */
 	@Test
-	@IfProfileValue(name = "CACHE", value = "false")
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/notEqualConditionTest/testConditionGreaterThan.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/notEqualConditionTest/testConditionGreaterThan.xml")
 	public void testConditionGreaterThan() {
