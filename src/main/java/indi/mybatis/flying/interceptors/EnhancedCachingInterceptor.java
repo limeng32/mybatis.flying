@@ -258,8 +258,9 @@ public class EnhancedCachingInterceptor implements Interceptor {
 		if (metaParameter.getOriginalObject() instanceof Conditionable) {
 			Cache cache = mappedStatement.getCache();
 			if (cache != null && metaExecutor.hasGetter(DELEGATE)) {
-				if (mappedStatement.isUseCache() && resultHandler == null) {
-					if (!(Boolean) metaExecutor.getValue(DIRTY)) {
+				if (mappedStatement.isUseCache() && resultHandler == null && cache.getReadWriteLock() != null) {
+					if (!mappedStatement.isFlushCacheRequired()) {
+						// tcm.clear(cache);
 						cache.getReadWriteLock().readLock().lock();
 						try {
 							synchronized (cache) {
@@ -281,9 +282,9 @@ public class EnhancedCachingInterceptor implements Interceptor {
 						}
 					}
 				}
+				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue(TCM);
 				Executor delegate = (Executor) metaExecutor.getValue(DELEGATE);
 				List<E> list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue(TCM);
 				HashMap<String, Object> cachedMap = new HashMap<String, Object>();
 				cachedMap.put(LIMITER, metaParameter.getValue(LIMITER));
 				cachedMap.put(LIST, list);
@@ -335,7 +336,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			} else {
 				for (ParameterMapping parameterMapping : parameterMappings) {
 					String propertyName = parameterMapping.getProperty();
-					if (FLYING.equals(propertyName)) {
+					if (FLYING.equals(propertyName) || propertyName == null || "id".equals(propertyName)) {
 						if (isSelectType(mappedStatement.getId())) {
 							String _cacheKey = DigestUtils.md5Hex(JSON.toJSONString(parameter));
 							cacheKey.update(_cacheKey);
