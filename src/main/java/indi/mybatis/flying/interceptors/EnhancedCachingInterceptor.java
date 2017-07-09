@@ -20,7 +20,9 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
@@ -52,6 +54,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static EnhancedCachingManager cachingManager = EnhancedCachingManagerImpl.getInstance();
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
 	private static final String FLYING = "_flying_";
 
@@ -147,16 +150,18 @@ public class EnhancedCachingInterceptor implements Interceptor {
 
 			Executor executorProxy = (Executor) invocation.getTarget();
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
-					DEFAULT_OBJECT_WRAPPER_FACTORY);
+					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 			/* 分离代理对象链 */
 			while (metaExecutor.hasGetter(H)) {
 				Object object = metaExecutor.getValue(H);
-				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
+				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+						DEFAULT_REFLECTOR_FACTORY);
 			}
 			/* 分离最后一个代理对象的目标类 */
 			while (metaExecutor.hasGetter(TARGET)) {
 				Object object = metaExecutor.getValue(TARGET);
-				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
+				metaExecutor = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+						DEFAULT_REFLECTOR_FACTORY);
 			}
 
 			return this.query(metaExecutor, args);
@@ -248,7 +253,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private <E> List<E> query(MetaObject metaExecutor, MappedStatement mappedStatement, CacheKey cacheKey,
 			Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
 		MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
-				DEFAULT_OBJECT_WRAPPER_FACTORY);
+				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 		/* 当需要分页查询时，缓存里加入page信息 */
 		if (metaParameter.getOriginalObject() instanceof Conditionable) {
 			Cache cache = mappedStatement.getCache();
@@ -320,7 +325,8 @@ public class EnhancedCachingInterceptor implements Interceptor {
 		cacheKey.update(rowBounds.getLimit());
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		cacheKey.update(boundSql.getSql());
-		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
+		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+				DEFAULT_REFLECTOR_FACTORY);
 
 		if (parameterMappings.size() > 0 && parameter != null) {
 			TypeHandlerRegistry typeHandlerRegistry = mappedStatement.getConfiguration().getTypeHandlerRegistry();
