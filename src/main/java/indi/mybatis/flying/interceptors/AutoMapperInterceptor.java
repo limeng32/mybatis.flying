@@ -56,8 +56,6 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
-	private static final String H = "h";
-	private static final String TARGET = "target";
 	private static final String SETTING_PARAMETERS = "setting parameters";
 	private static final String DELEGATE = "delegate";
 	private static final String MAPPEDSTATEMENT = "mappedStatement";
@@ -82,18 +80,6 @@ public class AutoMapperInterceptor implements Interceptor {
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
-		/* 分离代理对象链 */
-		while (metaStatementHandler.hasGetter(H)) {
-			Object object = metaStatementHandler.getValue(H);
-			metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
-					DEFAULT_REFLECTOR_FACTORY);
-		}
-		/* 分离最后一个代理对象的目标类 */
-		while (metaStatementHandler.hasGetter(TARGET)) {
-			Object object = metaStatementHandler.getValue(TARGET);
-			metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
-					DEFAULT_REFLECTOR_FACTORY);
-		}
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);

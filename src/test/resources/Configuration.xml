@@ -3,7 +3,7 @@
 <configuration>
 	<settings>
 		<setting name="logImpl" value="LOG4J" />
-		<setting name="cacheEnabled" value="false" />
+		<setting name="cacheEnabled" value="${mybatis.cacheEnabled}" />
 		<setting name="lazyLoadingEnabled" value="false" />
 		<setting name="aggressiveLazyLoading" value="false" />
 		<setting name="localCacheScope" value="SESSION" />
@@ -20,11 +20,9 @@
 		<typeHandler handler="AdvancedStringTypeHandler" />
 	</typeHandlers>
 	<plugins>
-		<plugin interceptor="indi.mybatis.flying.interceptors.EnhancedCachingInterceptor">
-			<property name="cacheEnabled" value="true" />
-			<property name="annotationPackage"
-				value="indi.mybatis.flying.mapper,indi.mybatis.flying.mapper2" />
-		</plugin>
+		<!-- <plugin interceptor="indi.mybatis.flying.interceptors.EnhancedCachingInterceptor"> 
+			<property name="cacheEnabled" value="true" /> <property name="annotationPackage" 
+			value="indi.mybatis.flying.mapper,indi.mybatis.flying.mapper2" /> </plugin> -->
 		<plugin interceptor="indi.mybatis.flying.interceptors.AutoMapperInterceptor">
 			<property name="dialect" value="mysql" />
 		</plugin>
