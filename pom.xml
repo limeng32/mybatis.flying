@@ -284,7 +284,7 @@
 			</activation>
 			<id>cache</id>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cacheEnabled>true</mybatis.cacheEnabled>
 			</properties>
 		</profile>
 

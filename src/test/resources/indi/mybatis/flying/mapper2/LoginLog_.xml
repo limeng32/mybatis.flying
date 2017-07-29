@@ -3,13 +3,13 @@
 <mapper namespace="indi.mybatis.flying.mapper2.LoginLogSource2Mapper">
 	<cache />
 
-	<select id="select" resultMap="result">#{id}</select>
+	<select id="select" resultMap="result">#{cacheKey}</select>
 
-	<select id="selectAll" resultMap="result">#{id}</select>
+	<select id="selectAll" resultMap="result">#{cacheKey}</select>
 
-	<select id="selectOne" resultMap="result">#{id}</select>
+	<select id="selectOne" resultMap="result">#{cacheKey}</select>
 
-	<select id="count" resultType="int">#{id}</select>
+	<select id="count" resultType="int">#{cacheKey}</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id"></insert>
 

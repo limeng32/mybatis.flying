@@ -10,11 +10,11 @@ public abstract class PojoSupport<T extends PojoSupport<T>> implements PojoFace<
 	@Override
 	abstract public Object getId();
 
-//	@Override
-//	@JSONField(serialize = false)
-//	public String getCacheKey() {
-//		return DigestUtils.md5Hex(JSON.toJSONString(this));
-//	}
+	@Override
+	@JSONField(serialize = false)
+	public String getCacheKey() {
+		return DigestUtils.md5Hex(JSON.toJSONString(this));
+	}
 
 	@Override
 	public int hashCode() {
