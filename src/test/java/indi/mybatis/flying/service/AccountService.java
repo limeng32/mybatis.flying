@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import indi.mybatis.flying.mapper.AccountMapper;
 import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
@@ -15,9 +15,6 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 
 	@Autowired
 	private AccountMapper mapper;
-
-	@Autowired
-	private LoginLogService loginLogService;
 
 	@Override
 	public Account_ select(Object id) {
@@ -60,9 +57,16 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
-	public void loadLoginLog(Account_ account, LoginLog_ loginLog) {
-		loginLog.setAccount(account);
-		account.setLoginLog(loginLogService.selectAll(loginLog));
+	public void loadRole(Role_ role, Account_ account) {
+		role.removeAllAccount();
+		account.setRole(role);
+		role.setAccount(mapper.selectAll(account));
 	}
 
+	@Override
+	public void loadRoleDeputy(Role_ roleDeputy, Account_ accountDeputy) {
+		roleDeputy.removeAllAccountDeputy();
+		accountDeputy.setRoleDeputy(roleDeputy);
+		roleDeputy.setAccountDeputy(mapper.selectAll(accountDeputy));
+	}
 }

@@ -5,7 +5,6 @@ import java.util.Collection;
 import indi.mybatis.flying.annotations.CacheAnnotation;
 import indi.mybatis.flying.annotations.CacheRoleAnnotation;
 import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
@@ -44,5 +43,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Account_ t);
 
-	public void loadLoginLog(Account_ account, LoginLog_ loginLog);
+	public void loadRole(Role_ role, Account_ account);
+
+	public void loadRoleDeputy(Role_ roleDeputy, Account_ accountDeputy);
 }

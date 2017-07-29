@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import indi.mybatis.flying.mapper.DetailMapper;
 import indi.mybatis.flying.pojo.Detail_;
+import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
@@ -53,5 +54,12 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	@Override
 	public int count(Detail_ t) {
 		return supportCount(mapper, t);
+	}
+	
+	@Override
+	public void loadLoginLog(LoginLog_ loginlog, Detail_ detail) {
+		loginlog.removeAllDetail();
+		detail.setLoginLog(loginlog);
+		loginlog.setDetail(mapper.selectAll(detail));
 	}
 }

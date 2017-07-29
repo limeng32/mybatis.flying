@@ -142,6 +142,17 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		if (!this.loginLog.contains(newLoginLog)) {
 			this.loginLog.add(newLoginLog);
 			newLoginLog.setAccount(this);
+		} else {
+			for (LoginLog_ temp : this.loginLog) {
+				if (newLoginLog.equals(temp)) {
+					if (temp != newLoginLog) {
+						removeLoginLog(temp);
+						this.loginLog.add(newLoginLog);
+						newLoginLog.setAccount(this);
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -150,6 +161,14 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 			return;
 		if (this.loginLog != null)
 			if (this.loginLog.contains(oldLoginLog)) {
+				for (LoginLog_ temp : this.loginLog) {
+					if (oldLoginLog.equals(temp)) {
+						if (temp != oldLoginLog) {
+							temp.setAccount((Account_) null);
+						}
+						break;
+					}
+				}
 				this.loginLog.remove(oldLoginLog);
 				oldLoginLog.setAccount((Account_) null);
 			}
@@ -163,6 +182,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 				iter.remove();
 				oldLoginLog.setAccount((Account_) null);
 			}
+			loginLog.clear();
 		}
 	}
 

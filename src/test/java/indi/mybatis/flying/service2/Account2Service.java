@@ -5,13 +5,10 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import indi.mybatis.flying.mapper.AccountMapper;
 import indi.mybatis.flying.mapper2.Account2Mapper;
 import indi.mybatis.flying.pojo.Account2_;
-import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
-import indi.mybatis.flying.service.LoginLogService;
 
 @Service
 public class Account2Service extends ServiceSupport<Account2_> implements Account2Mapper {
@@ -62,10 +59,11 @@ public class Account2Service extends ServiceSupport<Account2_> implements Accoun
 		return supportCount(mapper, t);
 	}
 
-//	@Override
-//	public void loadLoginLog(Account_ account, LoginLog_ loginLog) {
-//		loginLog.setAccount(account);
-//		account.setLoginLog(loginLogService.selectAll(loginLog));
-//	}
+	@Override
+	public void loadRole2(Role2_ role2_, Account2_ account2_) {
+		role2_.removeAllAccount();
+		account2_.setRole(role2_);
+		role2_.setAccount(mapper.selectAll(account2_));
+	}
 
 }

@@ -95,6 +95,17 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 		if (!this.detail.contains(newDetail)) {
 			this.detail.add(newDetail);
 			newDetail.setLoginLog(this);
+		} else {
+			for (Detail_ temp : this.detail) {
+				if (newDetail.equals(temp)) {
+					if (temp != newDetail) {
+						removeDetail(temp);
+						this.detail.add(newDetail);
+						newDetail.setLoginLog(this);
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -103,6 +114,14 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 			return;
 		if (this.detail != null)
 			if (this.detail.contains(oldDetail)) {
+				for (Detail_ temp : this.detail) {
+					if (oldDetail.equals(temp)) {
+						if (temp != oldDetail) {
+							temp.setLoginLog((LoginLog_) null);
+						}
+						break;
+					}
+				}
 				this.detail.remove(oldDetail);
 				oldDetail.setLoginLog((LoginLog_) null);
 			}
@@ -116,6 +135,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 				iter.remove();
 				oldDetail.setLoginLog((LoginLog_) null);
 			}
+			detail.clear();
 		}
 	}
 

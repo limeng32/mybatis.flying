@@ -42,4 +42,6 @@ public interface DetailMapper extends MapperFace<Detail_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Detail_ t);
+	
+	public void loadLoginLog(LoginLog_ loginLog, Detail_ detail);
 }

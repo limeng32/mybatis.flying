@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import indi.mybatis.flying.mapper.LoginLogMapper;
-import indi.mybatis.flying.pojo.Detail_;
+import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
@@ -15,9 +15,6 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 
 	@Autowired
 	private LoginLogMapper mapper;
-
-	@Autowired
-	private DetailService detailService;
 
 	@Override
 	public LoginLog_ select(Object id) {
@@ -60,8 +57,9 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	}
 
 	@Override
-	public void loadDetail(LoginLog_ loginlog, Detail_ detail) {
-		detail.setLoginLog(loginlog);
-		loginlog.setDetail(detailService.selectAll(detail));
+	public void loadAccount(Account_ account, LoginLog_ loginLog) {
+		account.removeAllLoginLog();
+		loginLog.setAccount(account);
+		account.setLoginLog(mapper.selectAll(loginLog));
 	}
 }

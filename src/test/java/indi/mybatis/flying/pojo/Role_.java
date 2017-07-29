@@ -66,6 +66,17 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 		if (!this.account.contains(newAccount)) {
 			this.account.add(newAccount);
 			newAccount.setRole(this);
+		} else {
+			for (Account_ temp : this.account) {
+				if (newAccount.equals(temp)) {
+					if (temp != newAccount) {
+						removeAccount(temp);
+						this.account.add(newAccount);
+						newAccount.setRole(this);
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -74,6 +85,14 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 			return;
 		if (this.account != null)
 			if (this.account.contains(oldAccount)) {
+				for (Account_ temp : this.account) {
+					if (oldAccount.equals(temp)) {
+						if (temp != oldAccount) {
+							temp.setRole((Role_) null);
+						}
+						break;
+					}
+				}
 				this.account.remove(oldAccount);
 				oldAccount.setRole((Role_) null);
 			}
@@ -87,6 +106,7 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 				iter.remove();
 				oldAccount.setRole((Role_) null);
 			}
+			account.clear();
 		}
 	}
 
@@ -116,6 +136,17 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 		if (!this.accountDeputy.contains(newAccountDeputy)) {
 			this.accountDeputy.add(newAccountDeputy);
 			newAccountDeputy.setRoleDeputy(this);
+		} else {
+			for (Account_ temp : this.account) {
+				if (newAccountDeputy.equals(temp)) {
+					if (temp != newAccountDeputy) {
+						removeAccountDeputy(temp);
+						this.accountDeputy.add(newAccountDeputy);
+						newAccountDeputy.setRole(this);
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -124,6 +155,14 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 			return;
 		if (this.accountDeputy != null)
 			if (this.accountDeputy.contains(oldAccountDeputy)) {
+				for (Account_ temp : this.accountDeputy) {
+					if (oldAccountDeputy.equals(temp)) {
+						if (temp != oldAccountDeputy) {
+							temp.setRole((Role_) null);
+						}
+						break;
+					}
+				}
 				this.accountDeputy.remove(oldAccountDeputy);
 				oldAccountDeputy.setRoleDeputy((Role_) null);
 			}
@@ -137,6 +176,7 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 				iter.remove();
 				oldAccountDeputy.setRoleDeputy((Role_) null);
 			}
+			accountDeputy.clear();
 		}
 	}
 }

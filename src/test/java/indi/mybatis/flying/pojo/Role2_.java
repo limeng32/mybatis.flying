@@ -18,7 +18,7 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
-	
+
 	private java.util.Collection<Account2_> account;
 
 	@Override
@@ -64,6 +64,17 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 		if (!this.account.contains(newAccount)) {
 			this.account.add(newAccount);
 			newAccount.setRole(this);
+		} else {
+			for (Account2_ temp : this.account) {
+				if (newAccount.equals(temp)) {
+					if (temp != newAccount) {
+						removeAccount(temp);
+						this.account.add(newAccount);
+						newAccount.setRole(this);
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -72,6 +83,14 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 			return;
 		if (this.account != null)
 			if (this.account.contains(oldAccount)) {
+				for (Account2_ temp : this.account) {
+					if (oldAccount.equals(temp)) {
+						if (temp != oldAccount) {
+							temp.setRole((Role2_) null);
+						}
+						break;
+					}
+				}
 				this.account.remove(oldAccount);
 				oldAccount.setRole((Role2_) null);
 			}
@@ -85,6 +104,7 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 				iter.remove();
 				oldAccount.setRole((Role2_) null);
 			}
+			account.clear();
 		}
 	}
 }

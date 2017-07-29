@@ -43,5 +43,5 @@ public interface Account2Mapper extends MapperFace<Account2_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Account2_ t);
 
-	// public void loadLoginLog(Account_ account, LoginLog_ loginLog);
+	public void loadRole2(Role2_ role2_, Account2_ account2_);
 }

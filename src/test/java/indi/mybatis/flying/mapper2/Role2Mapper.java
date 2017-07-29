@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import indi.mybatis.flying.annotations.CacheAnnotation;
 import indi.mybatis.flying.annotations.CacheRoleAnnotation;
-import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
@@ -43,7 +42,4 @@ public interface Role2Mapper extends MapperFace<Role2_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Role2_ t);
 
-	public void loadAccount(Role2_ role2_, Account2_ account2_);
-
-	// public void loadAccountDeputy(Role_ roleDeputy, Account_ accountDeputy);
 }
