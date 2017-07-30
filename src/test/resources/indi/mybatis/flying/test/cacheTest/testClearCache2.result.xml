@@ -1,0 +1,16 @@
+<dataset>
+	<role_ ID="1" NAME="root" />
+	<role_ ID="2" NAME="deployer" />
+	<account_ NAME="ann" />
+	<account_ NAME="bob" />
+	<account_ NAME="caq" />
+	<account_ NAME="don" />
+	<account_ NAME="eli" />
+	<account_ NAME="fea" />
+	<account_ NAME="gus" />
+	<account_ NAME="hex" />
+	<account_ NAME="ivy" />
+	<account_ NAME="jak" />
+	<account_ NAME="kir" ROLE_ID="1" />
+	<account_ NAME="lee" ROLE_ID="1" />
+</dataset>

@@ -1,5 +1,6 @@
 package indi.mybatis.flying.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Assert;
@@ -25,6 +26,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
@@ -240,6 +242,104 @@ public class CacheTest {
 		accountService.delete(a4);
 	}
 
+	/* 测试分页缓存的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testClearCache.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testClearCache.result.xml")
+	public void testClearCache() {
+		Role_ r = new Role_(), r2 = new Role_();
+
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("deployer");
+		roleService.insert(r2);
+
+		Account_ a = new Account_(), a2 = new Account_(), a3 = new Account_(), a4 = new Account_(), a5 = new Account_(),
+				a6 = new Account_(), a7 = new Account_(), a8 = new Account_(), a9 = new Account_(),
+				a10 = new Account_(), a11 = new Account_(), a12 = new Account_();
+
+		a.setName("ann");
+		accountService.insert(a);
+
+		a2.setName("bob");
+		accountService.insert(a2);
+
+		a3.setName("caq");
+		accountService.insert(a3);
+
+		a4.setName("don");
+		accountService.insert(a4);
+
+		a5.setName("eli");
+		accountService.insert(a5);
+
+		a6.setName("fea");
+		accountService.insert(a6);
+
+		a7.setName("gus");
+		accountService.insert(a7);
+
+		a8.setName("hex");
+		accountService.insert(a8);
+
+		a9.setName("ivy");
+		accountService.insert(a9);
+
+		a10.setName("jak");
+		accountService.insert(a10);
+
+		a11.setName("kir");
+		a11.setRole(r);
+		accountService.insert(a11);
+
+		a12.setName("lee");
+		a12.setRole(r);
+		accountService.insert(a12);
+		
+		Account_Condition ac = new Account_Condition();
+		ac.setLimiter(new PageParam(1, 10));
+		Collection<Account_> c = accountService.selectAll(ac);
+		Page<Account_> p = new Page<>(c, ac.getLimiter());
+		Assert.assertEquals(2, p.getMaxPageNum());
+		Assert.assertEquals(12, p.getTotalCount());
+		Assert.assertEquals(1, p.getPageNo());
+		Assert.assertEquals(10, p.getPageItems().size());
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setLimiter(new PageParam(2, 10));
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		Page<Account_> p2 = new Page<>(c2, ac2.getLimiter());
+		Assert.assertEquals(2, p2.getMaxPageNum());
+		Assert.assertEquals(12, p2.getTotalCount());
+		Assert.assertEquals(2, p2.getPageNo());
+		Assert.assertEquals(2, p2.getPageItems().size());
+		for (Account_ temp : p2.getPageItems()) {
+			Assert.assertEquals("root", temp.getRole().getName());
+		}
+
+		a11.setRole(r2);
+		accountService.update(a11);
+
+		a12.setRole(r2);
+		accountService.update(a12);
+
+		Account_Condition ac3 = new Account_Condition();
+		ac3.setLimiter(new PageParam(2, 10));
+		Collection<Account_> c3 = accountService.selectAll(ac3);
+		Page<Account_> p3 = new Page<>(c3, ac3.getLimiter());
+		Assert.assertEquals(2, p3.getMaxPageNum());
+		Assert.assertEquals(12, p3.getTotalCount());
+		Assert.assertEquals(2, p3.getPageNo());
+		Assert.assertEquals(2, p3.getPageItems().size());
+		for (Account_ temp : p3.getPageItems()) {
+			Assert.assertEquals("deployer", temp.getRole().getName());
+		}
+	}
+	
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest2/test.datasource2.xml")

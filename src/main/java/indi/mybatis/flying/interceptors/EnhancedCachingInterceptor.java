@@ -124,38 +124,14 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			if (metaParameter.getOriginalObject() instanceof Conditionable) {
 				Cache cache = mappedStatement.getCache();
 				if (cache != null && metaExecutor.hasGetter("delegate")) {
-					if (mappedStatement.isUseCache() && resultHandler == null && cache.getReadWriteLock() != null) {
-//						if (!mappedStatement.isFlushCacheRequired()) {
-							// tcm.clear(cache);
-							cache.getReadWriteLock().readLock().lock();
-							try {
-								synchronized (cache) {
-									Object value = cache.getObject(cacheKey);
-									if (value != null) {
-										HashMap<String, Object> cachedMap = (HashMap<String, Object>) value;
-										Limitable cachedPage = (Limitable) cachedMap.get("limiter");
-										Limitable originalPage = ((Conditionable) metaParameter.getOriginalObject())
-												.getLimiter();
-										if (null != originalPage && null != cachedPage) {
-											originalPage.setTotalCount(cachedPage.getTotalCount());
-											return cachedMap.get("list");
-										}
-									} else {
-									}
-								}
-							} finally {
-								cache.getReadWriteLock().readLock().unlock();
-							}
-//						}
-					}
 					TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
 					Executor delegate = (Executor) metaExecutor.getValue("delegate");
 					Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-//					HashMap<String, Object> cachedMap = new HashMap<String, Object>();
-//					cachedMap.put("limiter", metaParameter.getValue("limiter"));
-//					cachedMap.put("list", list);
-//					tcm.putObject(cache, cacheKey, cachedMap);
-//					return list;
+					HashMap<String, Object> cachedMap = new HashMap<String, Object>();
+					cachedMap.put("limiter", metaParameter.getValue("limiter"));
+					cachedMap.put("list", list);
+					tcm.putObject(cache, cacheKey, cachedMap);
+					return list;
 				}
 			}
 		}
