@@ -106,10 +106,11 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			RowBounds rowBounds = (RowBounds) args[2];
 			Executor executor = (Executor) invocation.getTarget();
 			BoundSql boundSql = mappedStatement.getBoundSql(parameter);
-			
+
 			// 记录本次查询所产生的CacheKey
 			CacheKey cacheKey = executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
-//			CacheKey cacheKey = createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
+			// CacheKey cacheKey = createCacheKey(mappedStatement, parameter,
+			// rowBounds, boundSql);
 			queryCacheOnCommit.putElement(mappedStatement.getId(), cacheKey);
 
 			/* 处理分页 */
@@ -123,15 +124,21 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			/* 当需要分页查询时，缓存里加入page信息 */
 			if (metaParameter.getOriginalObject() instanceof Conditionable) {
 				Cache cache = mappedStatement.getCache();
+				Object value = cache.getObject(cacheKey);
 				if (cache != null && metaExecutor.hasGetter("delegate")) {
 					TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
 					Executor delegate = (Executor) metaExecutor.getValue("delegate");
-					Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-					HashMap<String, Object> cachedMap = new HashMap<String, Object>();
-					cachedMap.put("limiter", metaParameter.getValue("limiter"));
-					cachedMap.put("list", list);
-					tcm.putObject(cache, cacheKey, cachedMap);
-					return list;
+					Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey,
+							boundSql);
+					if (value != null) {
+						return value;
+					} else {
+						HashMap<String, Object> cachedMap = new HashMap<>();
+						cachedMap.put("limiter", metaParameter.getValue("limiter"));
+						cachedMap.put("list", list);
+						tcm.putObject(cache, cacheKey, cachedMap);
+						return list;
+					}
 				}
 			}
 		}
@@ -208,7 +215,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			cachingManager.initialize(properties);
 		}
 	}
-	
+
 	private boolean isSelectType(String statementId) {
 		boolean ret = false;
 		String id = statementId.substring(statementId.lastIndexOf(".") + 1);
