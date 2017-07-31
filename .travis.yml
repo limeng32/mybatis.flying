@@ -4,11 +4,10 @@ jdk:
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
+        - mvn cobertura:cobertura
 install: 
         mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B       
-after_install: 
-        mvn cobertura:cobertura
-after_success:
+after_success: 
   - bash <(curl -s https://codecov.io/bash)
   
 branches:
