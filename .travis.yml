@@ -11,4 +11,4 @@ after_success:
   
 branches:
   only:
-    - master
+    - match-mybatis-3.3.x
