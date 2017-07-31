@@ -1,6 +1,7 @@
 package indi.mybatis.flying.test;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -114,8 +115,13 @@ public class ConditionInTest {
 	public void testConditionIn4() {
 		LoginLog_Condition lc = new LoginLog_Condition();
 		List<Date> timeC = new ArrayList<>();
-		timeC.add(new Date(0));
-		timeC.add(new Date(1000));
+		Calendar c = Calendar.getInstance(), c2 = Calendar.getInstance();
+		c.clear();
+		c2.clear();
+		c.set(1970, 0, 1, 8, 0, 0);
+		c2.set(1970, 0, 1, 8, 0, 1);
+		timeC.add(c.getTime());
+		timeC.add(c2.getTime());
 		lc.setLoginTimeIn(timeC);
 		int count = loginLogService.count(lc);
 		Assert.assertEquals(2, count);

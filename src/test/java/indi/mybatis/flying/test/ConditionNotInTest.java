@@ -1,18 +1,15 @@
 package indi.mybatis.flying.test;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -107,8 +104,13 @@ public class ConditionNotInTest {
 	public void testConditionNotIn4() {
 		LoginLog_Condition lc = new LoginLog_Condition();
 		List<Date> timeC = new ArrayList<>();
-		timeC.add(new Date(0));
-		timeC.add(new Date(1000));
+		Calendar c = Calendar.getInstance(), c2 = Calendar.getInstance();
+		c.clear();
+		c2.clear();
+		c.set(1970, 0, 1, 8, 0, 0);
+		c2.set(1970, 0, 1, 8, 0, 1);
+		timeC.add(c.getTime());
+		timeC.add(c2.getTime());
 		lc.setLoginTimeNotIn(timeC);
 		int count = loginLogService.count(lc);
 		Assert.assertEquals(0, count);

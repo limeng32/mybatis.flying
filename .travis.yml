@@ -3,7 +3,7 @@ jdk:
   - oraclejdk7
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
-        - mvn clean test
+        - mvn clean test -B
 install: 
         mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B       
 after_install: 
