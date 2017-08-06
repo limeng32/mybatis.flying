@@ -51,6 +51,7 @@
 		<mysql-connector-java.version>5.1.31</mysql-connector-java.version>
 		<atomikos.version>3.9.3</atomikos.version>
 		<jta.version>1.1</jta.version>
+		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -245,8 +246,13 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.9</version>
+				<configuration>
+					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<append>true</append>
+				</configuration>
 				<executions>
 					<execution>
+						<id>agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
