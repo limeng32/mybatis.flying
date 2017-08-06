@@ -1,16 +1,16 @@
 <dataset>
 	<role_ ID="1" NAME="rootNew" />
 	<role_ ID="2" NAME="deployer" />
-	<account_ NAME="ann" />
-	<account_ NAME="bob" />
-	<account_ NAME="caq" />
-	<account_ NAME="don" />
-	<account_ NAME="eli" />
-	<account_ NAME="fea" />
-	<account_ NAME="gus" />
-	<account_ NAME="hex" />
-	<account_ NAME="ivy" />
-	<account_ NAME="jak" />
-	<account_ NAME="kir" ROLE_ID="1" />
-	<account_ NAME="lee" ROLE_ID="1" />
+	<account_ NAME="ann" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="bob" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="caq" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="don" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="eli" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="fea" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="gus" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="hex" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="ivy" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="jak" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="kir" EMAIL="" ROLE_ID="1" />
+	<account_ NAME="lee" EMAIL="" ROLE_ID="1" />
 </dataset>

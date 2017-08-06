@@ -1,12 +1,10 @@
 package indi.mybatis.flying.interceptors;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
@@ -29,8 +27,6 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-
-import com.alibaba.fastjson.JSON;
 
 import indi.mybatis.flying.cache.CacheKeysPool;
 import indi.mybatis.flying.cache.EnhancedCachingManager;
@@ -136,10 +132,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 					if (value != null) {
 						return value;
 					} else {
-						HashMap<String, Object> cachedMap = new HashMap<>();
-						cachedMap.put("limiter", metaParameter.getValue("limiter"));
-						cachedMap.put("list", list);
-						tcm.putObject(cache, cacheKey, cachedMap);
+						tcm.putObject(cache, cacheKey, list);
 						return list;
 					}
 				}
