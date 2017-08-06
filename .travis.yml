@@ -1,10 +1,11 @@
 language: java
+sudo: false
 jdk:
   - oraclejdk7
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
-#        - mvn cobertura:cobertura
+        - mvn cobertura:cobertura
 before-install: 
         - pip install --user codecov
 install: 
