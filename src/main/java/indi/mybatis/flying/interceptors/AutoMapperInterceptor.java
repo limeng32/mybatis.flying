@@ -84,10 +84,9 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
-
+		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		if (null == originalSql || "".equals(originalSql) || QUESTION_MARK.equals(originalSql)) {
 			String newSql = "";
-			MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 			String id = mappedStatement.getId();
 			id = id.substring(id.lastIndexOf(DOT) + 1);
 			ActionType actionType = ActionType.valueOf(id);
@@ -128,8 +127,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		if (invocation.getTarget() instanceof RoutingStatementHandler) {
 			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper.getValueByFieldName(statementHandler,
 					DELEGATE);
-			MappedStatement mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate,
-					MAPPEDSTATEMENT);
+			mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
 			BoundSql boundSql = delegate.getBoundSql();
 			if (parameterObject == null) {
 				throw new AutoMapperException(AutoMapperExceptionEnum.parameterObjectIsNull);
@@ -160,7 +158,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 		/* 调用原始statementHandler的prepare方法完成原本的逻辑 */
 		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
-		statementHandler.prepare((Connection) invocation.getArgs()[0], 0);
+		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
 		/* 传递给下一个拦截器处理 */
 		return invocation.proceed();
 	}
