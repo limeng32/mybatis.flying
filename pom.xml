@@ -255,7 +255,7 @@
 						<id>report</id>
 						<phase>package</phase>
 						<goals>
-							<goal>report-aggregate</goal>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
