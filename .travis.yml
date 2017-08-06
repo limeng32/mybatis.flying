@@ -5,6 +5,8 @@ jdk:
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
+        - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-331 -B
+        - mvn clean test -P mybatis-331 -B
         - mvn jacoco:report
         - pip install --user codecov
 install: 
@@ -13,4 +15,4 @@ after_success:
   - codecov
 branches: 
   only:
-    - master
+    - ForMybatis3.3.x
