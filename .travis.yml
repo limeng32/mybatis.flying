@@ -5,7 +5,7 @@ jdk:
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
-        - pip install --user codecov
+        - mvn jacoco:report-aggregate
 install: 
         mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B       
 after_success: 
