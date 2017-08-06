@@ -10,8 +10,8 @@ before-install:
 install: 
         mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B       
 after_success: 
-  - bash <(curl -s https://codecov.io/bash)
-#    - codecov
+#  - bash <(curl -s https://codecov.io/bash)
+    - codecov
   
 branches:
   only:
