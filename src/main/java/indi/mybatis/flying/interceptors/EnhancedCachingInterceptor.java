@@ -1,6 +1,5 @@
 package indi.mybatis.flying.interceptors;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +55,10 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
+	private static final String LIMITER = "limiter";
+	private static final String LIST = "list";
+	private static final String DELEGATE = "delegate";
+
 	public Object intercept(Invocation invocation) throws Throwable {
 		String name = invocation.getMethod().getName();
 		Object result = null;
@@ -108,9 +111,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			BoundSql boundSql = mappedStatement.getBoundSql(parameter);
 
 			// 记录本次查询所产生的CacheKey
-			CacheKey cacheKey = executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
-			// CacheKey cacheKey = createCacheKey(mappedStatement, parameter,
-			// rowBounds, boundSql);
+			CacheKey cacheKey = createCacheKey(mappedStatement, parameter, rowBounds, boundSql, executor);
 			queryCacheOnCommit.putElement(mappedStatement.getId(), cacheKey);
 
 			/* 处理分页 */
@@ -128,8 +129,10 @@ public class EnhancedCachingInterceptor implements Interceptor {
 				if (cache != null && metaExecutor.hasGetter("delegate")) {
 					TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
 					Executor delegate = (Executor) metaExecutor.getValue("delegate");
+
 					Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey,
 							boundSql);
+
 					if (value != null) {
 						return value;
 					} else {
@@ -239,39 +242,33 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	}
 
 	private CacheKey createCacheKey(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
-			BoundSql boundSql) {
-		CacheKey cacheKey = new CacheKey();
-		cacheKey.update(mappedStatement.getId());
-		cacheKey.update(rowBounds.getOffset());
-		cacheKey.update(rowBounds.getLimit());
-		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-		cacheKey.update(boundSql.getSql());
+			BoundSql boundSql, Executor executor) {
 		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 				DEFAULT_REFLECTOR_FACTORY);
+		/* 当需要分页查询时，将page参数里的当前页和每页数加到cachekey里 */
+		if (metaObject.getOriginalObject() instanceof Conditionable) {
+			CacheKey cacheKey = new CacheKey();
+			cacheKey.update(mappedStatement.getId());
+			cacheKey.update(rowBounds.getOffset());
+			cacheKey.update(rowBounds.getLimit());
+			List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+			cacheKey.update(boundSql.getSql());
 
-		if (parameterMappings.size() > 0 && parameter != null) {
-			TypeHandlerRegistry typeHandlerRegistry = mappedStatement.getConfiguration().getTypeHandlerRegistry();
-			if (false) {
-				cacheKey.update(parameter);
-			} else {
-				for (ParameterMapping parameterMapping : parameterMappings) {
-					String propertyName = parameterMapping.getProperty();
-					if (propertyName == null || "id".equals(propertyName)) {
-						if (isSelectType(mappedStatement.getId())) {
-							System.out.println("::::::::::::::::::::::::::::::::::::1");
-							String _cacheKey = DigestUtils.md5Hex(JSON.toJSONString(parameter));
-							cacheKey.update(_cacheKey);
+			if (parameterMappings.size() > 0 && parameter != null) {
+				TypeHandlerRegistry typeHandlerRegistry = mappedStatement.getConfiguration().getTypeHandlerRegistry();
+				if (typeHandlerRegistry.hasTypeHandler(parameter.getClass())) {
+					cacheKey.update(parameter);
+				} else {
+					for (ParameterMapping parameterMapping : parameterMappings) {
+						String propertyName = parameterMapping.getProperty();
+						if (metaObject.hasGetter(propertyName)) {
+							cacheKey.update(metaObject.getValue(propertyName));
+						} else if (boundSql.hasAdditionalParameter(propertyName)) {
+							cacheKey.update(boundSql.getAdditionalParameter(propertyName));
 						}
-					} else if (metaObject.hasGetter(propertyName)) {
-						cacheKey.update(metaObject.getValue(propertyName));
-					} else if (boundSql.hasAdditionalParameter(propertyName)) {
-						cacheKey.update(boundSql.getAdditionalParameter(propertyName));
 					}
 				}
 			}
-		}
-		/* 当需要分页查询时，将page参数里的当前页和每页数加到cachekey里 */
-		if (metaObject.getOriginalObject() instanceof Conditionable) {
 			Sortable sorter = ((Conditionable) metaObject.getOriginalObject()).getSorter();
 			if (sorter != null) {
 				cacheKey.update(sorter.toSql());
@@ -281,7 +278,10 @@ public class EnhancedCachingInterceptor implements Interceptor {
 				cacheKey.update(limiter.getPageNo());
 				cacheKey.update(limiter.getPageSize());
 			}
+			return cacheKey;
+		} else {
+			return executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
 		}
-		return cacheKey;
 	}
+
 }
