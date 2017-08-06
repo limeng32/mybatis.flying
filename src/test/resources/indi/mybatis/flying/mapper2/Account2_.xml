@@ -3,7 +3,7 @@
 <mapper namespace="indi.mybatis.flying.mapper2.Account2Mapper">
 	<cache />
 
-	<select id="select" resultMap="result">#{cacheKey}</select>
+	<select id="select" resultMap="result">#{id}</select>
 
 	<select id="selectAll" resultMap="result">#{cacheKey}</select>
 
