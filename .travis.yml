@@ -13,4 +13,4 @@ after_success:
   - codecov
 branches: 
   only:
-    - ForMybatis3.3.x
+    - master
