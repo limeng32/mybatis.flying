@@ -47,7 +47,8 @@ import indi.mybatis.flying.utils.ReflectHelper;
 /**
  * 通过拦截StatementHandler的prepare方法，根据参数parameterObject配置的注解信息，自动生成sql语句。
  */
-@Intercepts({ @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class }) })
+@Intercepts({
+		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
 	private static String dialect = "";
 
@@ -159,7 +160,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 		/* 调用原始statementHandler的prepare方法完成原本的逻辑 */
 		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
-		statementHandler.prepare((Connection) invocation.getArgs()[0]);
+		statementHandler.prepare((Connection) invocation.getArgs()[0], 0);
 		/* 传递给下一个拦截器处理 */
 		return invocation.proceed();
 	}
