@@ -17,9 +17,7 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
@@ -49,7 +47,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	EnhancedCachingManager cachingManager = EnhancedCachingManagerImpl.getInstance();
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
 	private static final String LIMITER = "limiter";
 	private static final String LIST = "list";
@@ -115,9 +112,9 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			ResultHandler resultHandler = (ResultHandler) args[3];
 			Executor executorProxy = (Executor) invocation.getTarget();
 			MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
-					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+					DEFAULT_OBJECT_WRAPPER_FACTORY);
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
-					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+					DEFAULT_OBJECT_WRAPPER_FACTORY);
 			/* 当需要分页查询时，缓存里加入page信息 */
 			if (metaParameter.getOriginalObject() instanceof Conditionable) {
 				Cache cache = mappedStatement.getCache();
@@ -236,8 +233,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 
 	private CacheKey createCacheKey(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
 			BoundSql boundSql, Executor executor) {
-		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
-				DEFAULT_REFLECTOR_FACTORY);
+		MetaObject metaObject = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
 		/* 当需要分页查询时，将page参数里的当前页和每页数加到cachekey里 */
 		if (metaObject.getOriginalObject() instanceof Conditionable) {
 			CacheKey cacheKey = new CacheKey();
