@@ -5,6 +5,14 @@ jdk:
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
+        - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-341 -B
+        - mvn clean test -P mybatis-341 -B
+        - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-342 -B
+        - mvn clean test -P mybatis-342 -B
+        - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-343 -B
+        - mvn clean test -P mybatis-343 -B
+        - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-344 -B
+        - mvn clean test -P mybatis-344 -B
         - mvn jacoco:report
         - pip install --user codecov
 install: 
