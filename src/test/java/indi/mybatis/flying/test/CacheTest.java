@@ -1,6 +1,8 @@
 package indi.mybatis.flying.test;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -433,14 +435,14 @@ public class CacheTest {
 		for (Account_ temp : p.getPageItems()) {
 			Assert.assertEquals("root", temp.getRole().getName());
 		}
-		
+
 		Account_Condition ac1 = new Account_Condition();
 		ac1.setLimiter(new PageParam(2, 10));
 		ac1.setEmail("");
 		Role_ rc1 = new Role_();
 		rc1.setId(1);
 		ac1.setRole(rc1);
-		Collection<Account_> c1= accountService.selectAll(ac1);
+		Collection<Account_> c1 = accountService.selectAll(ac1);
 
 		role.setName("rootNew");
 		roleService.update(role);
@@ -545,5 +547,132 @@ public class CacheTest {
 
 		account2_ = account2Service.select(a2.getId());
 		Assert.assertEquals(newRoleName, account2_.getRole().getName());
+	}
+
+	/* 测试在select查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_ account = accountService.select(1);
+		Assert.assertEquals("ann", account.getRole().getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_ account2 = accountService.select(1);
+		Assert.assertEquals("ann", account2.getRole().getName());
+	}
+
+	/* 测试在selectAll查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect2() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_ ac = new Account_();
+		ac.setEmail("email");
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_ ac2 = new Account_();
+		ac2.setEmail("email");
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
+	}
+
+	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect3() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_Condition ac = new Account_Condition();
+		ac.setEmailLike("mai");
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmailLike("mai");
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
+	}
+
+	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect4() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_Condition ac = new Account_Condition();
+		ac.setLimiter(new PageParam(1, 1));
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setLimiter(new PageParam(1, 1));
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
 	}
 }

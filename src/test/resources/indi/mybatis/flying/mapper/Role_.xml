@@ -23,6 +23,8 @@
 
 	<update id="enable" />
 
+	<update flushCache="false" id="updateDirect" >update role_ set name = #{name} where id = #{id}</update>
+
 	<resultMap id="result" type="Role_" autoMapping="true">
 		<id property="id" column="id" />
 	</resultMap>
