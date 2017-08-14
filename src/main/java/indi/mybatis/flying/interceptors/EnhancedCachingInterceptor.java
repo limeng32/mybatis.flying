@@ -48,10 +48,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 
-	private static final String LIMITER = "limiter";
-	private static final String LIST = "list";
-	private static final String DELEGATE = "delegate";
-
 	public Object intercept(Invocation invocation) throws Throwable {
 		String name = invocation.getMethod().getName();
 		Object result = null;
@@ -108,7 +104,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			queryCacheOnCommit.putElement(mappedStatement.getId(), cacheKey);
 
 			/* 处理分页 */
-			MappedStatement mappedStatement1 = (MappedStatement) args[0];
 			ResultHandler resultHandler = (ResultHandler) args[3];
 			Executor executorProxy = (Executor) invocation.getTarget();
 			MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
@@ -207,28 +202,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 		if (!cachingManager.isInitialized()) {
 			cachingManager.initialize(properties);
 		}
-	}
-
-	private boolean isSelectType(String statementId) {
-		boolean ret = false;
-		String id = statementId.substring(statementId.lastIndexOf(".") + 1);
-		ActionType actionType = ActionType.valueOf(id);
-		switch (actionType) {
-		case count:
-			ret = true;
-			break;
-		case select:
-			ret = true;
-			break;
-		case selectAll:
-			ret = true;
-			break;
-		case selectOne:
-			ret = true;
-			break;
-		default:
-		}
-		return ret;
 	}
 
 	private CacheKey createCacheKey(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
