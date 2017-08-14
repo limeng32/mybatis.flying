@@ -61,6 +61,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String MAPPEDSTATEMENT = "mappedStatement";
 	private static final String DIALECT = "dialect";
 	private static final String SQL = "sql";
+	private static final String FLYING = "_flying_";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
@@ -83,8 +84,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
-
-		if (null == originalSql || "".equals(originalSql) || QUESTION_MARK.equals(originalSql)) {
+		if (FLYING.equals(originalSql) || null == originalSql || "".equals(originalSql)
+				|| QUESTION_MARK.equals(originalSql)) {
 			String newSql = "";
 			MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 			String id = mappedStatement.getId();
