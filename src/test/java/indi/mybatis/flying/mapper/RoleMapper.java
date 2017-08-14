@@ -43,5 +43,6 @@ public interface RoleMapper extends MapperFace<Role_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Role_ t);
 
+	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int updateDirect(Map<String,Object> m);
 }
