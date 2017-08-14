@@ -1,6 +1,7 @@
 package indi.mybatis.flying.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,11 @@ public class RoleService extends ServiceSupport<Role_> implements RoleMapper {
 	@Override
 	public int count(Role_ t) {
 		return supportCount(mapper, t);
+	}
+
+	@Override
+	public int updateDirect(Map<String, Object> m) {
+		return mapper.updateDirect(m);
 	}
 
 }
