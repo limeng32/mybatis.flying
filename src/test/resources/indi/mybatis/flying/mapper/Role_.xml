@@ -3,7 +3,7 @@
 <mapper namespace="indi.mybatis.flying.mapper.RoleMapper">
 	<cache />
 
-	<select id="select" resultMap="result">#{id}</select>
+	<select id="select" resultMap="result">#{?}</select>
 
 	<select id="selectAll" resultMap="result">_flying_</select>
 
