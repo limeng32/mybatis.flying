@@ -3,21 +3,22 @@
 <mapper namespace="indi.mybatis.flying.mapper.RoleMapper">
 	<cache />
 
-	<select id="select" resultMap="result">#{?}</select>
+	<select id="select" resultMap="result">flying#{?}:select</select>
 
-	<select id="selectAll" resultMap="result">_flying_</select>
+	<select id="selectAll" resultMap="result">flying:selectAll</select>
 
-	<select id="selectOne" resultMap="result">_flying_</select>
+	<select id="selectOne" resultMap="result">flying:selectOne</select>
 
-	<select id="count" resultType="int">_flying_</select>
+	<select id="count" resultType="int">flying:count</select>
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id"></insert>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">flying:insert
+	</insert>
 
-	<update id="update" />
+	<update id="update">flying:update</update>
 
-	<update id="updatePersistent" />
+	<update id="updatePersistent">flying:updatePersistent</update>
 
-	<delete id="delete" />
+	<delete id="delete">flying:delete</delete>
 
 	<update id="disable" />
 
