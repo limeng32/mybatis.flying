@@ -41,7 +41,7 @@ import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
-import indi.mybatis.flying.statics.ActionType;
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.utils.CookOriginalSql;
 import indi.mybatis.flying.utils.ReflectHelper;
 
@@ -69,7 +69,6 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String DELEGATE_CONFIGURATION = "delegate.configuration";
 	private static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
 
-	private static final String DOT = ".";
 	private static final String _LIMIT_1 = " limit 1";
 
 	private static final String MYSQL = "mysql";
@@ -83,13 +82,11 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
-		if (CookOriginalSql.hasFlyingFeature(originalSql)) {
+		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
+		if (flyingModel.isHasFlyingFeature()) {
 			String newSql = "";
 			MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
-			String id = mappedStatement.getId();
-			id = id.substring(id.lastIndexOf(DOT) + 1);
-			ActionType actionType = ActionType.valueOf(id);
-			switch (actionType) {
+			switch (flyingModel.getActionType()) {
 			case count:
 				newSql = SqlBuilder.buildCountSql(parameterObject);
 				break;

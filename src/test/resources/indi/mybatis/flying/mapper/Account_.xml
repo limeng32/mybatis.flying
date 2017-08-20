@@ -3,7 +3,7 @@
 <mapper namespace="indi.mybatis.flying.mapper.AccountMapper">
 	<cache />
 
-	<select id="select" resultMap="result">flying#{?}:select</select>
+	<select id="select" resultMap="result">flying#{?}:select:ignorePassword</select>
 
 	<select id="selectAll" resultMap="result">flying:selectAll</select>
 
