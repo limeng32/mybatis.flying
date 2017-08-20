@@ -301,12 +301,12 @@ public class AccountTest {
 		Assert.assertNull(a4.getStatus());
 	}
 
-	/** 测试ignoredSelect功能 */
+	/** 测试ignoreTag功能 */
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
-	public void testIgnoredSelect() {
+	public void testIgnoreTag() {
 		Account_ account = accountService.select(1);
 		Assert.assertNull(account.getPassword());
 

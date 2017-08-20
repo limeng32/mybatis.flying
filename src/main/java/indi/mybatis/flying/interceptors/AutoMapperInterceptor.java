@@ -97,13 +97,14 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildInsertSql(parameterObject);
 				break;
 			case select:
-				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType());
+				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(),
+						flyingModel.getIgnoreTag());
 				break;
 			case selectAll:
-				newSql = SqlBuilder.buildSelectAllSql(parameterObject);
+				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel.getIgnoreTag());
 				break;
 			case selectOne:
-				newSql = SqlBuilder.buildSelectOneSql(parameterObject);
+				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel.getIgnoreTag());
 				break;
 			case update:
 				newSql = SqlBuilder.buildUpdateSql(parameterObject);

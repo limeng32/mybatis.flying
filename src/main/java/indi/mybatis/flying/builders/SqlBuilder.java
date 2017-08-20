@@ -140,10 +140,16 @@ public class SqlBuilder {
 					default:
 						break;
 					}
-					fieldMapper.setIgnoredSelect(fieldMapperAnnotation.ignoredSelect());
 					if (fieldMapperAnnotation.isUniqueKey()) {
 						uniqueKeyList.add(fieldMapper);
 					}
+
+					if (fieldMapperAnnotation.ignoreTag().length > 0) {
+						for (String t : fieldMapperAnnotation.ignoreTag()) {
+							fieldMapper.getIgnoreTagSet().add(t);
+						}
+					}
+
 					if ("".equals(fieldMapperAnnotation.dbAssociationUniqueKey())) {
 					} else {
 						fieldMapper.setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
@@ -735,7 +741,7 @@ public class SqlBuilder {
 	 *            pojo Class
 	 * @return sql
 	 */
-	public static String buildSelectSql(Class<?> clazz) {
+	public static String buildSelectSql(Class<?> clazz, String ignoreTag) {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
 		String tableName = tma.tableName();
@@ -743,7 +749,7 @@ public class SqlBuilder {
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if (!fieldMapper.isIgnoredSelect()) {
+			if (ignoreTag == null || (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				selectSql.append(fieldMapper.getDbFieldName()).append(COMMA);
 			}
 		}
@@ -773,7 +779,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectAllSql(Object object) throws Exception {
+	public static String buildSelectAllSql(Object object, String ignoreTag) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -781,7 +787,8 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai);
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -803,7 +810,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectOneSql(Object object) throws Exception {
+	public static String buildSelectOneSql(Object object, String ignoreTag) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -814,7 +821,8 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai);
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -898,7 +906,7 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index) throws Exception {
+			String fieldPerfix, AtomicInteger index, String ignoreTag) throws Exception {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
@@ -911,7 +919,7 @@ public class SqlBuilder {
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-				if (!fieldMapper.isIgnoredSelect()) {
+				if (ignoreTag == null || (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(COMMA);
 				}
 			}
@@ -942,7 +950,7 @@ public class SqlBuilder {
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if (hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass())) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index);
+						temp, index, null);
 			} else {
 				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
 			}

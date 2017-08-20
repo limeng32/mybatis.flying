@@ -3,11 +3,11 @@
 <mapper namespace="indi.mybatis.flying.mapper2.Account2Mapper">
 	<cache />
 
-	<select id="select" resultMap="result">flying#{?}:select</select>
+	<select id="select" resultMap="result">flying#{?}:select:noPassword</select>
 
-	<select id="selectAll" resultMap="result">flying:selectAll</select>
+	<select id="selectAll" resultMap="result">flying:selectAll:noPassword</select>
 
-	<select id="selectOne" resultMap="result">flying:selectOne</select>
+	<select id="selectOne" resultMap="result">flying:selectOne:noPassword</select>
 
 	<select id="count" resultType="int">flying:count</select>
 

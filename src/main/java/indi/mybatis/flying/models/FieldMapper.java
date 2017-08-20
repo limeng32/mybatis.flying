@@ -1,5 +1,7 @@
 package indi.mybatis.flying.models;
 
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import org.apache.ibatis.type.JdbcType;
 
 /**
@@ -47,9 +49,9 @@ public class FieldMapper implements Mapperable {
 	private boolean isOpVersionLock;
 
 	/**
-	 * 此变量在查询结果集中是否被忽略。默认为否。
+	 * 此变量的ignoreTag的set，默认为空。
 	 */
-	private boolean ignoredSelect;
+	private ConcurrentSkipListSet<String> ignoreTagSet;
 
 	@Override
 	public String getDbFieldName() {
@@ -122,11 +124,15 @@ public class FieldMapper implements Mapperable {
 	}
 
 	@Override
-	public boolean isIgnoredSelect() {
-		return ignoredSelect;
+	public ConcurrentSkipListSet<String> getIgnoreTagSet() {
+		if (ignoreTagSet == null) {
+			ignoreTagSet = new ConcurrentSkipListSet<>();
+		}
+		return ignoreTagSet;
 	}
 
-	public void setIgnoredSelect(boolean ignoredSelect) {
-		this.ignoredSelect = ignoredSelect;
+	public void setIgnoreTagSet(ConcurrentSkipListSet<String> ignoreTagSet) {
+		this.ignoreTagSet = ignoreTagSet;
 	}
+
 }
