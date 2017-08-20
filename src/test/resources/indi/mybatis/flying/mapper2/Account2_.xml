@@ -20,10 +20,6 @@
 
 	<delete id="delete">flying:delete</delete>
 
-	<update id="disable" />
-
-	<update id="enable" />
-
 	<resultMap id="result" type="Account2_" autoMapping="true">
 		<id property="id" column="id" />
 		<association property="role" javaType="Role2_"

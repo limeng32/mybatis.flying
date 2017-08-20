@@ -19,10 +19,6 @@
 	<update id="updatePersistent">flying:updatePersistent</update>
 
 	<delete id="delete">flying:delete</delete>
-
-	<update id="disable" />
-
-	<update id="enable" />
 	
 	<update flushCache="false" id="updateDirect" >update role_ set name = #{name} where id = #{id}</update>
 

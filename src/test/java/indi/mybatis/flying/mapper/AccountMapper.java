@@ -1,6 +1,7 @@
 package indi.mybatis.flying.mapper;
 
 import java.util.Collection;
+import java.util.Map;
 
 import indi.mybatis.flying.annotations.CacheAnnotation;
 import indi.mybatis.flying.annotations.CacheRoleAnnotation;
@@ -16,9 +17,15 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ select(Object id);
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Account_ selectEverything(Object id);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAll(Account_ t);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Collection<Account_> selectAllEverything(Account_ t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -46,4 +53,10 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public void loadRole(Role_ role, Account_ account);
 
 	public void loadRoleDeputy(Role_ roleDeputy, Account_ accountDeputy);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Account_ selectDirect(Object id);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Collection<Account_> selectAllDirect(Map<String, Object> map);
 }
