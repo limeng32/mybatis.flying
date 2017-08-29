@@ -710,4 +710,37 @@ public class CacheTest {
 		Role_ role3 = roleService.selectOther(1);
 		Assert.assertEquals("newRoot", role3.getName());
 	}
+
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testNearlySameInjection.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNearlySameInjection.result.xml")
+	public void testNearlySameInjection() {
+		Role_ r = new Role_(), r2 = new Role_();
+
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("deployer");
+		roleService.insert(r2);
+
+		Role_ role = roleService.select(1);
+		Assert.assertEquals("root", role.getName());
+
+		Role_ role2 = roleService.selectNoId(1);
+		Assert.assertEquals("root", role2.getName());
+		Assert.assertNull(role2.getId());
+
+		r.setName("newRoot");
+		roleService.update(r);
+
+		Role_ role3 = roleService.select(1);
+		Assert.assertEquals("newRoot", role3.getName());
+
+		Role_ role4 = roleService.selectNoId(1);
+		Assert.assertEquals("newRoot", role4.getName());
+		Assert.assertNull(role4.getId());
+	}
 }

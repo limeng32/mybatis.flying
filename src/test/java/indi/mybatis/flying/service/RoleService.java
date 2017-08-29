@@ -27,6 +27,11 @@ public class RoleService extends ServiceSupport<Role_> implements RoleMapper {
 	}
 
 	@Override
+	public Role_ selectNoId(Object id) {
+		return mapper.selectNoId(id);
+	}
+
+	@Override
 	public Role_ selectOne(Role_ t) {
 		return supportSelectOne(mapper, t);
 	}
