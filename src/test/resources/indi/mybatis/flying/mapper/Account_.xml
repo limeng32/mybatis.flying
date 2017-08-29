@@ -6,6 +6,8 @@
 	<select id="select" resultMap="result">flying#{?}:select:noPassword</select>
 	
 	<select id="selectEverything" resultMap="result">flying#{?}:select</select>
+	
+	<select id="selectWithoutRole" resultMap="result">flying#{?}:select:noRole</select>
 
 	<select id="selectAll" resultMap="result">flying:selectAll:noPassword</select>
 	

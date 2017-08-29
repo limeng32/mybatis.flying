@@ -137,7 +137,7 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 			this.accountDeputy.add(newAccountDeputy);
 			newAccountDeputy.setRoleDeputy(this);
 		} else {
-			for (Account_ temp : this.account) {
+			for (Account_ temp : this.accountDeputy) {
 				if (newAccountDeputy.equals(temp)) {
 					if (temp != newAccountDeputy) {
 						removeAccountDeputy(temp);

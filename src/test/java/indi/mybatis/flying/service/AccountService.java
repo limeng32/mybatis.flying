@@ -28,6 +28,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Account_ selectWithoutRole(Object id) {
+		return mapper.selectWithoutRole(id);
+	}
+
+	@Override
 	public Account_ selectOne(Account_ t) {
 		return supportSelectOne(mapper, t);
 	}

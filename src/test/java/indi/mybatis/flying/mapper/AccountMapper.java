@@ -20,6 +20,9 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ selectEverything(Object id);
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Account_ selectWithoutRole(Object id);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAll(Account_ t);

@@ -778,4 +778,41 @@ public class CacheTest {
 		Role_ role2 = roleService.selectEverything(1);
 		Assert.assertEquals("root", role2.getName());
 	}
+
+	/* 测试ignoreTag加到外键上后如期望一样不显示相关外键父对象，但有多重外键的情况下不影响另一外键 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSelectWithoutRole.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSelectWithoutRole.result.xml")
+	public void testSelectWithoutRole() {
+		Role_ r = new Role_(), r2 = new Role_();
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("user");
+		roleService.insert(r2);
+
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setRoleDeputy(r2);
+		a.setName("deployer");
+		accountService.insert(a);
+
+		Account_ account = accountService.selectWithoutRole(1);
+		Assert.assertNull(account.getRole());
+		Assert.assertEquals("2", account.getRoleDeputy().getId().toString());
+
+		roleService.update(r);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 2);
+		m.put("name", "newUser");
+		roleService.updateDirect(m);
+
+		Account_ account2 = accountService.selectWithoutRole(1);
+		Assert.assertEquals("newUser", account2.getRoleDeputy().getName());
+	}
 }
