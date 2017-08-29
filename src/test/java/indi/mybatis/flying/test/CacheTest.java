@@ -675,4 +675,39 @@ public class CacheTest {
 			Assert.assertEquals("ann", t.getRole().getName());
 		}
 	}
+
+	/*
+	 * 设计两个注入值完全相同的同一pojo的select，观察它们是否共享缓存。 方法：先证明缓存生成之前updateDirect可以影响缓存，
+	 * 再证明缓存生成之后updateDirect不能影响缓存，再看注入值相同的另一个select的结果是否受updateDirect影响。
+	 * 结论：不共享缓存。
+	 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSameInjection.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSameInjection.result.xml")
+	public void testSameInjection() {
+		Role_ r = new Role_(), r2 = new Role_();
+
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("deployer");
+		roleService.insert(r2);
+
+		Role_ role = roleService.select(1);
+		Assert.assertEquals("root", role.getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "newRoot");
+		roleService.updateDirect(m);
+
+		Role_ role2 = roleService.select(1);
+		Assert.assertEquals("root", role2.getName());
+
+		Role_ role3 = roleService.selectOther(1);
+		Assert.assertEquals("newRoot", role3.getName());
+	}
 }
