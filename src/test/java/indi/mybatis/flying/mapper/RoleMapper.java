@@ -17,7 +17,7 @@ public interface RoleMapper extends MapperFace<Role_> {
 	public Role_ select(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
-	public Role_ selectOther(Object id);
+	public Role_ selectEverything(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Role_ selectNoId(Object id);

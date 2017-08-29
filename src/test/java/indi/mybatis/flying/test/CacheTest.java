@@ -707,10 +707,11 @@ public class CacheTest {
 		Role_ role2 = roleService.select(1);
 		Assert.assertEquals("root", role2.getName());
 
-		Role_ role3 = roleService.selectOther(1);
+		Role_ role3 = roleService.selectEverything(1);
 		Assert.assertEquals("newRoot", role3.getName());
 	}
 
+	/* 设计两个注入值中只有ignoreTag不同的同一pojo的select，可以同时正常缓存失效 */
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testNearlySameInjection.result.xml")
@@ -742,5 +743,39 @@ public class CacheTest {
 		Role_ role4 = roleService.selectNoId(1);
 		Assert.assertEquals("newRoot", role4.getName());
 		Assert.assertNull(role4.getId());
+	}
+
+	/* 两个相同注入值的不同pojo的select，使其中一个缓存失效，不会影响到另一个。 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSameIdAndInjectionInDifferentPojos.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSameIdAndInjectionInDifferentPojos.result.xml")
+	public void testSameIdAndInjectionInDifferentPojos() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setName("deployer");
+		accountService.insert(a);
+
+		Role_ role = roleService.selectEverything(1);
+		Account_ account = accountService.selectEverything(1);
+
+		a.setName("newDeployer");
+		accountService.update(a);
+
+		Account_ account2 = accountService.selectEverything(1);
+		Assert.assertEquals("newDeployer", account2.getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "newRoot");
+		roleService.updateDirect(m);
+
+		Role_ role2 = roleService.selectEverything(1);
+		Assert.assertEquals("root", role2.getName());
 	}
 }

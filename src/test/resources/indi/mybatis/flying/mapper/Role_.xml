@@ -5,7 +5,7 @@
 
 	<select id="select" resultMap="result">flying#{?}:select</select>
 	
-	<select id="selectOther" resultMap="result">flying#{?}:select</select>
+	<select id="selectEverything" resultMap="result">flying#{?}:select</select>
 	
 	<select id="selectNoId" resultMap="result">flying#{?}:select:noId</select>
 

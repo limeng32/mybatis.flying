@@ -22,8 +22,8 @@ public class RoleService extends ServiceSupport<Role_> implements RoleMapper {
 	}
 
 	@Override
-	public Role_ selectOther(Object id) {
-		return mapper.selectOther(id);
+	public Role_ selectEverything(Object id) {
+		return mapper.selectEverything(id);
 	}
 
 	@Override
