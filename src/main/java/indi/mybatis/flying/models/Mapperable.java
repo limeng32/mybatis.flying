@@ -1,5 +1,7 @@
 package indi.mybatis.flying.models;
 
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import org.apache.ibatis.type.JdbcType;
 
 public interface Mapperable {
@@ -16,5 +18,5 @@ public interface Mapperable {
 
 	String getDbAssociationUniqueKey();
 
-	boolean isIgnoredSelect();
+	ConcurrentSkipListSet<String> getIgnoreTagSet();
 }

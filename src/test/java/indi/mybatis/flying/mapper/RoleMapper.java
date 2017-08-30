@@ -16,6 +16,12 @@ public interface RoleMapper extends MapperFace<Role_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Role_ select(Object id);
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Role_ selectEverything(Object id);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Role_ selectNoId(Object id);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Role_> selectAll(Role_ t);
@@ -42,7 +48,7 @@ public interface RoleMapper extends MapperFace<Role_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Role_ t);
-	
+
 	@CacheAnnotation(role = CacheRoleType.Trigger)
-  	public int updateDirect(Map<String,Object> m);
+	public int updateDirect(Map<String, Object> m);
 }
