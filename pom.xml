@@ -4,7 +4,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.9.0</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -39,6 +39,7 @@
 		<mybatis-342.version>3.4.2</mybatis-342.version>
 		<mybatis-343.version>3.4.3</mybatis-343.version>
 		<mybatis-344.version>3.4.4</mybatis-344.version>
+		<mybatis-345.version>3.4.5</mybatis-345.version>
 		<commons-beanutils.version>1.8.3</commons-beanutils.version>
 		<fastjson.version>1.2.7</fastjson.version>
 		<h2database.version>1.3.176</h2database.version>
@@ -371,6 +372,22 @@
 					<groupId>org.mybatis</groupId>
 					<artifactId>mybatis</artifactId>
 					<version>${mybatis-344.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-345</id>
+			<activation>
+				<property>
+					<name>MYBATIS-345</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-345.version}</version>
 				</dependency>
 			</dependencies>
 		</profile>
