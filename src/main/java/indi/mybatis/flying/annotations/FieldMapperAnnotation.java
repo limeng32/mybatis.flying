@@ -63,9 +63,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 是否在select时忽略。默认为false。
+	 * 是否拥有忽略标志。默认为无。当有忽略标志foo时，flying表达式最后加上“:foo”即可在查询语句中忽略此字段
 	 * 
-	 * @return boolean
+	 * @return String[]
 	 */
-	boolean ignoredSelect() default false;
+	String[] ignoreTag() default {};
 }

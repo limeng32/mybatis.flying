@@ -1,0 +1,5 @@
+<dataset>
+	<role_ ID="1" NAME="root" />
+	<role_ ID="2" NAME="newUser" />
+	<account_ ID="1" NAME="deployer" ROLE_ID="1" DEPUTY_ID="2" />
+</dataset>

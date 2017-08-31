@@ -1,6 +1,8 @@
 package indi.mybatis.flying.test;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -433,14 +435,14 @@ public class CacheTest {
 		for (Account_ temp : p.getPageItems()) {
 			Assert.assertEquals("root", temp.getRole().getName());
 		}
-		
+
 		Account_Condition ac1 = new Account_Condition();
 		ac1.setLimiter(new PageParam(2, 10));
 		ac1.setEmail("");
 		Role_ rc1 = new Role_();
 		rc1.setId(1);
 		ac1.setRole(rc1);
-		Collection<Account_> c1= accountService.selectAll(ac1);
+		Collection<Account_> c1 = accountService.selectAll(ac1);
 
 		role.setName("rootNew");
 		roleService.update(role);
@@ -545,5 +547,272 @@ public class CacheTest {
 
 		account2_ = account2Service.select(a2.getId());
 		Assert.assertEquals(newRoleName, account2_.getRole().getName());
+	}
+
+	/* 测试在select查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_ account = accountService.select(1);
+		Assert.assertEquals("ann", account.getRole().getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_ account2 = accountService.select(1);
+		Assert.assertEquals("ann", account2.getRole().getName());
+	}
+
+	/* 测试在selectAll查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect2() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_ ac = new Account_();
+		ac.setEmail("email");
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_ ac2 = new Account_();
+		ac2.setEmail("email");
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
+	}
+
+	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect3() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_Condition ac = new Account_Condition();
+		ac.setEmailLike("mai");
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmailLike("mai");
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
+	}
+
+	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
+	public void testUpdateDirect4() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("ann");
+		roleService.insert(r);
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setEmail("email");
+		accountService.insert(a);
+
+		Account_Condition ac = new Account_Condition();
+		ac.setLimiter(new PageParam(1, 1));
+		Collection<Account_> c = accountService.selectAll(ac);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "bob");
+		roleService.updateDirect(m);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setLimiter(new PageParam(1, 1));
+		Collection<Account_> c2 = accountService.selectAll(ac2);
+		for (Account_ t : c2) {
+			Assert.assertEquals("ann", t.getRole().getName());
+		}
+	}
+
+	/*
+	 * 设计两个注入值完全相同的同一pojo的select，观察它们是否共享缓存。 方法：先证明缓存生成之前updateDirect可以影响缓存，
+	 * 再证明缓存生成之后updateDirect不能影响缓存，再看注入值相同的另一个select的结果是否受updateDirect影响。
+	 * 结论：不共享缓存。
+	 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSameInjection.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSameInjection.result.xml")
+	public void testSameInjection() {
+		Role_ r = new Role_(), r2 = new Role_();
+
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("deployer");
+		roleService.insert(r2);
+
+		Role_ role = roleService.select(1);
+		Assert.assertEquals("root", role.getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "newRoot");
+		roleService.updateDirect(m);
+
+		Role_ role2 = roleService.select(1);
+		Assert.assertEquals("root", role2.getName());
+
+		Role_ role3 = roleService.selectEverything(1);
+		Assert.assertEquals("newRoot", role3.getName());
+	}
+
+	/* 设计两个注入值中只有ignoreTag不同的同一pojo的select，可以同时正常缓存失效 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testNearlySameInjection.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNearlySameInjection.result.xml")
+	public void testNearlySameInjection() {
+		Role_ r = new Role_(), r2 = new Role_();
+
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("deployer");
+		roleService.insert(r2);
+
+		Role_ role = roleService.select(1);
+		Assert.assertEquals("root", role.getName());
+
+		Role_ role2 = roleService.selectNoId(1);
+		Assert.assertEquals("root", role2.getName());
+		Assert.assertNull(role2.getId());
+
+		r.setName("newRoot");
+		roleService.update(r);
+
+		Role_ role3 = roleService.select(1);
+		Assert.assertEquals("newRoot", role3.getName());
+
+		Role_ role4 = roleService.selectNoId(1);
+		Assert.assertEquals("newRoot", role4.getName());
+		Assert.assertNull(role4.getId());
+	}
+
+	/* 两个相同注入值的不同pojo的select，使其中一个缓存失效，不会影响到另一个。 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSameIdAndInjectionInDifferentPojos.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSameIdAndInjectionInDifferentPojos.result.xml")
+	public void testSameIdAndInjectionInDifferentPojos() {
+		Role_ r = new Role_();
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setName("deployer");
+		accountService.insert(a);
+
+		Role_ role = roleService.selectEverything(1);
+		Account_ account = accountService.selectEverything(1);
+
+		a.setName("newDeployer");
+		accountService.update(a);
+
+		Account_ account2 = accountService.selectEverything(1);
+		Assert.assertEquals("newDeployer", account2.getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 1);
+		m.put("name", "newRoot");
+		roleService.updateDirect(m);
+
+		Role_ role2 = roleService.selectEverything(1);
+		Assert.assertEquals("root", role2.getName());
+	}
+
+	/* 测试ignoreTag加到外键上后如期望一样不显示相关外键父对象，但有多重外键的情况下不影响另一外键 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testSelectWithoutRole.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testSelectWithoutRole.result.xml")
+	public void testSelectWithoutRole() {
+		Role_ r = new Role_(), r2 = new Role_();
+		r.setId(1);
+		r.setName("root");
+		roleService.insert(r);
+
+		r2.setId(2);
+		r2.setName("user");
+		roleService.insert(r2);
+
+		Account_ a = new Account_();
+		a.setId(1);
+		a.setRole(r);
+		a.setRoleDeputy(r2);
+		a.setName("deployer");
+		accountService.insert(a);
+
+		Account_ account = accountService.selectWithoutRole(1);
+		Assert.assertNull(account.getRole());
+		Assert.assertEquals("2", account.getRoleDeputy().getId().toString());
+
+		roleService.update(r);
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 2);
+		m.put("name", "newUser");
+		roleService.updateDirect(m);
+
+		Account_ account2 = accountService.selectWithoutRole(1);
+		Assert.assertEquals("newUser", account2.getRoleDeputy().getName());
 	}
 }

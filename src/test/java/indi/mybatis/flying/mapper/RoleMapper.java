@@ -1,6 +1,7 @@
 package indi.mybatis.flying.mapper;
 
 import java.util.Collection;
+import java.util.Map;
 
 import indi.mybatis.flying.annotations.CacheAnnotation;
 import indi.mybatis.flying.annotations.CacheRoleAnnotation;
@@ -14,6 +15,12 @@ public interface RoleMapper extends MapperFace<Role_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Role_ select(Object id);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Role_ selectEverything(Object id);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Role_ selectNoId(Object id);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -42,4 +49,6 @@ public interface RoleMapper extends MapperFace<Role_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Role_ t);
 
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public int updateDirect(Map<String, Object> m);
 }

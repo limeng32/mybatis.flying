@@ -1,6 +1,7 @@
 package indi.mybatis.flying.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,16 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Account_ selectEverything(Object id) {
+		return mapper.selectEverything(id);
+	}
+
+	@Override
+	public Account_ selectWithoutRole(Object id) {
+		return mapper.selectWithoutRole(id);
+	}
+
+	@Override
 	public Account_ selectOne(Account_ t) {
 		return supportSelectOne(mapper, t);
 	}
@@ -39,6 +50,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	@Override
 	public Collection<Account_> selectAll(Account_ t) {
 		return supportSelectAll(mapper, t);
+	}
+
+	@Override
+	public Collection<Account_> selectAllEverything(Account_ t) {
+		return mapper.selectAllEverything(t);
 	}
 
 	@Override
@@ -69,4 +85,15 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		accountDeputy.setRoleDeputy(roleDeputy);
 		roleDeputy.setAccountDeputy(mapper.selectAll(accountDeputy));
 	}
+
+	@Override
+	public Account_ selectDirect(Object id) {
+		return mapper.selectDirect(id);
+	}
+
+	@Override
+	public Collection<Account_> selectAllDirect(Map<String, Object> map) {
+		return mapper.selectAllDirect(map);
+	}
+
 }
