@@ -13,7 +13,7 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true, ignoreTag = { "noId" })
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
@@ -137,7 +137,7 @@ public class Role_ extends PojoSupport<Role_> implements Serializable {
 			this.accountDeputy.add(newAccountDeputy);
 			newAccountDeputy.setRoleDeputy(this);
 		} else {
-			for (Account_ temp : this.account) {
+			for (Account_ temp : this.accountDeputy) {
 				if (newAccountDeputy.equals(temp)) {
 					if (temp != newAccountDeputy) {
 						removeAccountDeputy(temp);
