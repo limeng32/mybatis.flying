@@ -815,4 +815,45 @@ public class CacheTest {
 		Account_ account2 = accountService.selectWithoutRole(1);
 		Assert.assertEquals("newUser", account2.getRoleDeputy().getName());
 	}
+
+	/* 测试查询结果可以因缓存json而正常改变 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testCacheHit.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testCacheHit.result.xml")
+	public void testCacheHit() {
+		Role_ role1 = new Role_(), role2 = new Role_();
+		role1.setName("silver");
+		roleService.insert(role1);
+
+		role2.setName("gold");
+		roleService.insert(role2);
+
+		Account_ a1 = new Account_(), a2 = new Account_(), a3 = new Account_();
+		a1.setName("ann");
+		a1.setRole(role1);
+		accountService.insert(a1);
+
+		a2.setName("bob");
+		a2.setRole(role1);
+		accountService.insert(a2);
+
+		a3.setName("cal");
+		a3.setRole(role2);
+		accountService.insert(a3);
+
+		Account_ ac1 = new Account_();
+		Role_ rc1 = new Role_();
+		rc1.setId(role1.getId());
+		ac1.setRole(rc1);
+		Collection<Account_> accountC1 = accountService.selectAll(ac1);
+		Assert.assertEquals(2, accountC1.size());
+		
+		Account_ ac2 = new Account_();
+		Role_ rc2 = new Role_();
+		rc2.setId(role2.getId());
+		ac2.setRole(rc2);
+		Collection<Account_> accountC2 = accountService.selectAll(ac2);
+		Assert.assertEquals(2, accountC2.size());
+	}
 }
