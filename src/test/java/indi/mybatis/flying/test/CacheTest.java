@@ -848,12 +848,12 @@ public class CacheTest {
 		ac1.setRole(rc1);
 		Collection<Account_> accountC1 = accountService.selectAll(ac1);
 		Assert.assertEquals(2, accountC1.size());
-		
+
 		Account_ ac2 = new Account_();
 		Role_ rc2 = new Role_();
 		rc2.setId(role2.getId());
 		ac2.setRole(rc2);
 		Collection<Account_> accountC2 = accountService.selectAll(ac2);
-		Assert.assertEquals(2, accountC2.size());
+		Assert.assertEquals(1, accountC2.size());
 	}
 }
