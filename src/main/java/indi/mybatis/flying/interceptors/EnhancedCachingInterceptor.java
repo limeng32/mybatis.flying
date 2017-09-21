@@ -38,7 +38,6 @@ import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
-import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.CookOriginalSql;
 
 @Intercepts(value = {
@@ -110,20 +109,21 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			// 记录本次查询所产生的CacheKey
 			CacheKey cacheKey = createCacheKey(mappedStatement, parameter, rowBounds, boundSql, executor);
 
-			switch (flyingModel.getActionType()) {
-			case count:
-				cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
-				break;
-			case selectAll:
-				cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
-				break;
-			case selectOne:
-				cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
-				break;
-			default:
-				break;
+			if (flyingModel.isHasFlyingFeature()) {
+				switch (flyingModel.getActionType()) {
+				case count:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				case selectAll:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				case selectOne:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				default:
+					break;
+				}
 			}
-
 			queryCacheOnCommit.putElement(mappedStatement.getId(), cacheKey);
 
 			/* 处理分页 */

@@ -1,0 +1,7 @@
+<dataset>
+	<account_ NAME="ann" EMAIL="ann@live.cn" />
+	<account_ NAME="bob" EMAIL="bob@live.cn" />
+	<account_ NAME="cal" EMAIL="cal@live.cn" />
+	<role_ NAME="silver" />
+	<role_ NAME="gold" />
+</dataset>

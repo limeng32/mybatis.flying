@@ -856,4 +856,44 @@ public class CacheTest {
 		Collection<Account_> accountC2 = accountService.selectAll(ac2);
 		Assert.assertEquals(1, accountC2.size());
 	}
+
+	/* 测试非flying方式的查询结果可以因缓存json而正常改变 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testCacheHitByDirectSql.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testCacheHitByDirectSql.result.xml")
+	public void testCacheHitByDirectSql() {
+		Role_ role1 = new Role_(), role2 = new Role_();
+		role1.setName("silver");
+		roleService.insert(role1);
+
+		role2.setName("gold");
+		roleService.insert(role2);
+
+		Account_ a1 = new Account_(), a2 = new Account_(), a3 = new Account_();
+		a1.setName("ann");
+		a1.setEmail("ann@live.cn");
+		a1.setRole(role1);
+		accountService.insert(a1);
+
+		a2.setName("bob");
+		a2.setEmail("bob@live.cn");
+		a2.setRole(role1);
+		accountService.insert(a2);
+
+		a3.setName("cal");
+		a3.setEmail("cal@live.cn");
+		a3.setRole(role2);
+		accountService.insert(a3);
+
+		Map<String, Object> map1 = new HashMap<>();
+		map1.put("role_id", role1.getId());
+		Collection<Account_> c1 = accountService.selectAccountByRole(map1);
+		Assert.assertEquals(2, c1.size());
+
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("role_id", role2.getId());
+		Collection<Account_> c2 = accountService.selectAccountByRole(map2);
+		Assert.assertEquals(1, c2.size());
+	}
 }

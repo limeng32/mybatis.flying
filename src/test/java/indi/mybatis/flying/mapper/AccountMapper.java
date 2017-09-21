@@ -62,4 +62,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAllDirect(Map<String, Object> map);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
 }
