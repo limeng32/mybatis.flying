@@ -895,5 +895,20 @@ public class CacheTest {
 		map2.put("role_id", role2.getId());
 		Collection<Account_> c2 = accountService.selectAccountByRole(map2);
 		Assert.assertEquals(1, c2.size());
+
+		Map<String, Object> map3 = new HashMap<>();
+		map3.put("name", "ann");
+		map3.put("email", "ann@live.cn");
+		Collection<Account_> c3 = accountService.selectAllDirect(map3);
+		Assert.assertEquals(1, c3.size());
+
+		Account_ account1 = accountService.select(a1.getId());
+		Assert.assertEquals("ann", account1.getName());
+
+		Account_ account2 = accountService.select(a2.getId());
+		Assert.assertEquals("bob", account2.getName());
+
+		Account_ account3 = accountService.select(a1.getId());
+		Assert.assertEquals("ann", account3.getName());
 	}
 }
