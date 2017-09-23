@@ -97,10 +97,6 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		dealPackageInit(classes);
 		dealObserverClasses(observerClasses);
 		dealPackageInit2(classes);
-
-		for (Entry<String, Set<String>> e : observers.entrySet()) {
-			System.out.println(":::" + e.getKey() + ":::" + e.getValue());
-		}
 	}
 
 	/* 将observerClasses中的value进行扩展 */
