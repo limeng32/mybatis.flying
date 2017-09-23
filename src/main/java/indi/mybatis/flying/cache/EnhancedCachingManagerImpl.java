@@ -29,6 +29,8 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 	private Map<Class<?>, Set<Class<?>>> observerClasses = new ConcurrentHashMap<>();
 	private Map<Class<?>, Set<Class<?>>> triggerClasses = new ConcurrentHashMap<>();
 
+	private Map<Class<?>, Set<Class<?>>> observersClassesNew = new ConcurrentHashMap<>();
+
 	// 全局性的 statemntId与CacheKey集合
 	private CacheKeysPool sharedCacheKeysPool = new CacheKeysPool();
 	// 记录每一个statementId 对应的Cache 对象
@@ -84,61 +86,96 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		}
 		String annotationPackages = properties.getProperty("annotationPackage");
 		String[] annotationPackageNames = annotationPackages.split(",");
+		Set<Class<?>> classes = new HashSet<>();
 		for (String annotationPackageName : annotationPackageNames) {
-			dealPackageInit(annotationPackageName);
-			dealPackageInit2(annotationPackageName);
+			Package annotationPackage = Package.getPackage(annotationPackageName);
+			if (annotationPackage != null) {
+				classes.addAll(ReflectHelper.getClasses(annotationPackageName));
+			}
+		}
+
+		dealPackageInit(classes);
+		dealObserverClasses(observerClasses);
+		dealPackageInit2(classes);
+
+		for (Entry<String, Set<String>> e : observers.entrySet()) {
+			System.out.println(":::" + e.getKey() + ":::" + e.getValue());
 		}
 	}
 
-	private void dealPackageInit(String annotationPackageName) {
-		Package annotationPackage = Package.getPackage(annotationPackageName);
-		if (annotationPackage != null) {
-			Set<Class<?>> classes = ReflectHelper.getClasses(annotationPackageName);
-			for (Class<?> clazz : classes) {
-				// 将每个class中的cacheRole取出，放入一个集合
-				Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
-				for (Annotation an : classAnnotations) {
-					if (an instanceof CacheRoleAnnotation) {
-						if (!observerClasses.containsKey(clazz)) {
-							observerClasses.put(clazz, new HashSet<Class<?>>());
-						}
-						if (!triggerClasses.containsKey(clazz)) {
-							triggerClasses.put(clazz, new HashSet<Class<?>>());
-						}
-						CacheRoleAnnotation cacheRoleAnnotation = (CacheRoleAnnotation) an;
-						for (Class<?> clazz1 : cacheRoleAnnotation.ObserverClass()) {
-							observerClasses.get(clazz).add(clazz1);
-						}
-						for (Class<?> clazz1 : cacheRoleAnnotation.TriggerClass()) {
-							triggerClasses.get(clazz).add(clazz1);
-						}
+	/* 将observerClasses中的value进行扩展 */
+	private void dealObserverClasses(Map<Class<?>, Set<Class<?>>> m) {
+		for (Entry<Class<?>, Set<Class<?>>> e : observerClasses.entrySet()) {
+			Set<Class<?>> set = new HashSet<Class<?>>();
+			observerClassesFission(e.getKey(), set);
+			observersClassesNew.put(e.getKey(), set);
+		}
+	}
+
+	private void observerClassesFission(Class<?> clazz, Set<Class<?>> set) {
+		if (observerClasses.containsKey(clazz)) {
+			Set<Class<?>> _set = observerClasses.get(clazz);
+			for (Class<?> e : _set) {
+				Class<?> _e = getKeyFormValue(e);
+				set.add(e);
+				if (observerClasses.get(_e) != null && observerClasses.get(_e).size() > 0) {
+					observerClassesFission(_e, set);
+				}
+			}
+		}
+	}
+
+	/* 在triggerClasses中通过value获取key */
+	private Class<?> getKeyFormValue(Class<?> clazz) {
+		for (Entry<Class<?>, Set<Class<?>>> e : triggerClasses.entrySet()) {
+			if (e.getValue().contains(clazz)) {
+				return e.getKey();
+			}
+		}
+		return null;
+	}
+
+	private void dealPackageInit(Set<Class<?>> classes) {
+		for (Class<?> clazz : classes) {
+			// 将每个class中的cacheRole取出，放入一个集合
+			Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
+			for (Annotation an : classAnnotations) {
+				if (an instanceof CacheRoleAnnotation) {
+					if (!observerClasses.containsKey(clazz)) {
+						observerClasses.put(clazz, new HashSet<Class<?>>());
+					}
+					if (!triggerClasses.containsKey(clazz)) {
+						triggerClasses.put(clazz, new HashSet<Class<?>>());
+					}
+					CacheRoleAnnotation cacheRoleAnnotation = (CacheRoleAnnotation) an;
+					for (Class<?> clazz1 : cacheRoleAnnotation.ObserverClass()) {
+						observerClasses.get(clazz).add(clazz1);
+					}
+					for (Class<?> clazz1 : cacheRoleAnnotation.TriggerClass()) {
+						triggerClasses.get(clazz).add(clazz1);
 					}
 				}
 			}
 		}
 	}
 
-	private void dealPackageInit2(String annotationPackageName) {
-		Package annotationPackage = Package.getPackage(annotationPackageName);
-		if (annotationPackage != null) {
-			Set<Class<?>> classes = ReflectHelper.getClasses(annotationPackageName);
-			for (Class<?> clazz : classes) {
-				for (Method method : clazz.getDeclaredMethods()) {
-					CacheAnnotation cacheAnnotation = method.getAnnotation(CacheAnnotation.class);
-					if (cacheAnnotation != null) {
-						dealPackageInit21(clazz, method, cacheAnnotation);
-					}
+	private void dealPackageInit2(Set<Class<?>> classes) {
+		for (Class<?> clazz : classes) {
+			for (Method method : clazz.getDeclaredMethods()) {
+				CacheAnnotation cacheAnnotation = method.getAnnotation(CacheAnnotation.class);
+				if (cacheAnnotation != null) {
+					dealPackageInit21(clazz, method, cacheAnnotation);
 				}
 			}
-			observerMethodsFission(observerMethods, null, observerMethodsNew);
-			buildObservers(triggerMethods, observerMethodsNew);
 		}
+		observerMethodsFission(observerMethods, null, observerMethodsNew);
+		buildObservers(triggerMethods, observerMethodsNew);
 	}
 
 	private void dealPackageInit21(Class<?> clazz, Method method, CacheAnnotation cacheAnnotation) {
 		switch (cacheAnnotation.role()) {
 		case Observer:
-			for (Class<?> clazz1 : observerClasses.get(clazz)) {
+			for (Class<?> clazz1 : observersClassesNew.get(clazz)) {
 				if (!observerMethods.containsKey(clazz1)) {
 					observerMethods.put(clazz1, new HashSet<Method>());
 				}
