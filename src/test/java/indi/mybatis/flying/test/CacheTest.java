@@ -27,8 +27,11 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.models.Conditionable;
+import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
+import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
@@ -36,6 +39,7 @@ import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
+import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
@@ -910,5 +914,43 @@ public class CacheTest {
 
 		Account_ account3 = accountService.select(a1.getId());
 		Assert.assertEquals("ann", account3.getName());
+	}
+
+	/* 一个证明分页确实使用了缓存的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testPaginationUsingCacheIndeed.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testPaginationUsingCacheIndeed.result.xml")
+	public void testPaginationUsingCacheIndeed() {
+		Role_ role1 = new Role_(), role2 = new Role_(), role3 = new Role_();
+		role1.setName("normal");
+		roleService.insert(role1);
+
+		role2.setName("silver");
+		roleService.insert(role2);
+
+		role3.setName("gold");
+		roleService.insert(role3);
+
+		Role_Condition rc = new Role_Condition();
+		rc.setLimiter(new PageParam(1, 2));
+		rc.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		Collection<Role_> c1 = roleService.selectAll(rc);
+		Assert.assertEquals(2, c1.size());
+		Role_[] roles = c1.toArray(new Role_[c1.size()]);
+		Assert.assertEquals("gold", roles[0].getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("name", "gold1");
+		m.put("id", roles[0].getId());
+		roleService.updateDirect(m);
+
+		Role_Condition rc2 = new Role_Condition();
+		rc2.setLimiter(new PageParam(1, 2));
+		rc2.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		Collection<Role_> c2 = roleService.selectAll(rc2);
+		Assert.assertEquals(2, c2.size());
+		Role_[] roles2 = c2.toArray(new Role_[c2.size()]);
+		Assert.assertEquals("gold", roles2[0].getName());
 	}
 }
