@@ -51,6 +51,11 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private ConcurrentSkipListSet<String> ignoreTagSet;
 
+	/**
+	 * 此变量的指定typeHandler的访问路径，默认为null。
+	 */
+	private String typeHandlerPath;
+
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -125,4 +130,14 @@ public class ConditionMapper implements Mapperable {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
+	public String getTypeHandlerPath() {
+		return typeHandlerPath;
+	}
+
+	public void setTypeHandlerPath(Class<?> typeHandler) {
+		if (!Object.class.equals(typeHandler)) {
+			System.out.println(":::" + typeHandler.getName());
+			this.typeHandlerPath = typeHandler.getName();
+		}
+	}
 }

@@ -10,6 +10,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 import indi.mybatis.flying.statics.OpLockType;
+import indi.mybatis.flying.typeHandler.MyStringTypeHandler;
 
 @TableMapperAnnotation(tableName = "account_")
 public class Account_ extends PojoSupport<Account_> implements Serializable {
@@ -22,7 +23,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
 
-	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR, typeHandler = MyStringTypeHandler.class)
 	private java.lang.String email;
 
 	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noPassword" })

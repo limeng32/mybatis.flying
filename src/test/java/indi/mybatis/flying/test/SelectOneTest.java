@@ -60,6 +60,7 @@ public class SelectOneTest {
 
 		Account_ ac = new Account_();
 		ac.setName("bob");
+		ac.setEmail("bob@live.cn");
 		Account_ account = accountService.selectOne(ac);
 		Assert.assertEquals("bob@live.cn", account.getEmail());
 	}

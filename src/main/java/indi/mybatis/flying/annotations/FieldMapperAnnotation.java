@@ -68,4 +68,12 @@ public @interface FieldMapperAnnotation {
 	 * @return String[]
 	 */
 	String[] ignoreTag() default {};
+
+	/**
+	 * 
+	 * 是否使用指定typeHandler处理。默认为Objectclass，即不指定typeHandler，由jdbcType来确定。当有指定typeHandler时，指定typeHandler的优先级最高。
+	 * 
+	 * @return Class<?>
+	 */
+	Class<?> typeHandler() default Object.class;
 }

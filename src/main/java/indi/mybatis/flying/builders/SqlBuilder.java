@@ -132,6 +132,7 @@ public class SqlBuilder {
 					fieldMapper.setFieldName(field.getName());
 					fieldMapper.setDbFieldName(fieldMapperAnnotation.dbFieldName());
 					fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
+					fieldMapper.setTypeHandlerPath(fieldMapperAnnotation.typeHandler());
 					fieldMapper.setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 					switch (fieldMapperAnnotation.opLockType()) {
 					case Version:
@@ -447,6 +448,9 @@ public class SqlBuilder {
 		}
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
+		}
+		if (mapper.getTypeHandlerPath() != null) {
+			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
 		whereSql.append(CLOSEBRACE_AND_);
 	}
@@ -948,7 +952,7 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if (hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass())) {
+			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))&&fieldMapper.getTypeHandlerPath()==null) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, null);
 			} else {
