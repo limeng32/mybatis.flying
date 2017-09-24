@@ -60,6 +60,7 @@ public class SelectOneTest {
 		
 		accountService.update(a2);
 		accountService.updatePersistent(a2);
+		Account_ account_ = accountService.select(a2.getId());
 
 		Account_ ac = new Account_();
 		ac.setName("bob");

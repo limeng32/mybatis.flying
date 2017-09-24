@@ -962,7 +962,7 @@ public class SqlBuilder {
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
-					&& fieldMapper.getTypeHandlerPath() == null) {
+					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, null);
 			} else {
@@ -1065,7 +1065,8 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if (hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass())) {
+			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
+					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
 			} else {
 				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
