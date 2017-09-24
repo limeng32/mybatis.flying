@@ -57,6 +57,8 @@ public class SelectOneTest {
 		a2.setName("bob");
 		a2.setEmail("bob@live.cn");
 		accountService.insert(a2);
+		
+		accountService.update(a2);
 
 		Account_ ac = new Account_();
 		ac.setName("bob");

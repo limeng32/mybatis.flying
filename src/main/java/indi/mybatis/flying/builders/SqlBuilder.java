@@ -607,6 +607,9 @@ public class SqlBuilder {
 				tableSql.append(fieldMapper.getFieldName());
 			}
 			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
 			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(PLUS_1);
