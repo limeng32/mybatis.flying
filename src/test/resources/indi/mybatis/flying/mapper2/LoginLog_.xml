@@ -37,5 +37,7 @@
 
 	<resultMap id="result" type="LoginLogSource2" autoMapping="true">
 		<id property="id" column="id" />
+		<result property="account" column="accountId"
+			typeHandler="indi.mybatis.flying.typeHandler.AccountTypeHandler" />
 	</resultMap>
 </mapper>

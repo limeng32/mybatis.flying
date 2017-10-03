@@ -16,7 +16,7 @@ import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.service.AccountService;
 
 /**
- * 处理Person表跨库关联的TypeHandler
+ * 处理Account_表跨库关联的TypeHandler
  * 
  * @author limeng32
  * 

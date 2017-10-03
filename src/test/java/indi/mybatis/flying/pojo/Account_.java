@@ -58,6 +58,8 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 
 	private java.util.Collection<LoginLog_> loginLog;
 
+	private java.util.Collection<LoginLogSource2> loginLogSource2;
+
 	public Integer getId() {
 		return id;
 	}
@@ -116,6 +118,76 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 
 	public void setStatus(StoryStatus_ status) {
 		this.status = status;
+	}
+
+	public java.util.Collection<LoginLogSource2> getLoginLogSource2() {
+		if (loginLogSource2 == null)
+			loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		return loginLogSource2;
+	}
+
+	public java.util.Iterator<LoginLogSource2> getIteratorLoginLogSource2() {
+		if (loginLogSource2 == null)
+			loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		return loginLogSource2.iterator();
+	}
+
+	public void setLoginLogSource2(java.util.Collection<LoginLogSource2> newLoginLogSource2) {
+		removeAllLoginLogSource2();
+		for (java.util.Iterator<LoginLogSource2> iter = newLoginLogSource2.iterator(); iter.hasNext();)
+			addLoginLogSource2((LoginLogSource2) iter.next());
+	}
+
+	public void addLoginLogSource2(LoginLogSource2 newLoginLogSource2) {
+		if (newLoginLogSource2 == null)
+			return;
+		if (this.loginLogSource2 == null)
+			this.loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		if (!this.loginLogSource2.contains(newLoginLogSource2)) {
+			this.loginLogSource2.add(newLoginLogSource2);
+			newLoginLogSource2.setAccount(this);
+		} else {
+			for (LoginLogSource2 temp : this.loginLogSource2) {
+				if (newLoginLogSource2.equals(temp)) {
+					if (temp != newLoginLogSource2) {
+						removeLoginLogSource2(temp);
+						this.loginLogSource2.add(newLoginLogSource2);
+						newLoginLogSource2.setAccount(this);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public void removeLoginLogSource2(LoginLogSource2 oldLoginLogSource2) {
+		if (oldLoginLogSource2 == null)
+			return;
+		if (this.loginLogSource2 != null)
+			if (this.loginLogSource2.contains(oldLoginLogSource2)) {
+				for (LoginLogSource2 temp : this.loginLogSource2) {
+					if (oldLoginLogSource2.equals(temp)) {
+						if (temp != oldLoginLogSource2) {
+							temp.setAccount((Account_) null);
+						}
+						break;
+					}
+				}
+				this.loginLogSource2.remove(oldLoginLogSource2);
+				oldLoginLogSource2.setAccount((Account_) null);
+			}
+	}
+
+	public void removeAllLoginLogSource2() {
+		if (loginLogSource2 != null) {
+			LoginLogSource2 oldLoginLogSource2;
+			for (java.util.Iterator<LoginLogSource2> iter = getIteratorLoginLogSource2(); iter.hasNext();) {
+				oldLoginLogSource2 = (LoginLogSource2) iter.next();
+				iter.remove();
+				oldLoginLogSource2.setAccount((Account_) null);
+			}
+			loginLogSource2.clear();
+		}
 	}
 
 	public java.util.Collection<LoginLog_> getLoginLog() {

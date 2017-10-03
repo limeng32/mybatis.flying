@@ -51,24 +51,24 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 		this.loginIP = loginIP;
 	}
 
-	// public Account_ getAccount() {
-	// return account;
-	// }
-	//
-	// public void setAccount(Account_ newAccount) {
-	// if (this.account == null || !this.account.equals(newAccount)) {
-	// if (this.account != null) {
-	// Account_ oldAccount = this.account;
-	// this.account = null;
-	// oldAccount.removeLoginLog(this);
-	// }
-	// if (newAccount != null) {
-	// this.account = newAccount;
-	// this.account.addLoginLog(this);
-	// }
-	// }
-	// }
-	//
+	public Account_ getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account_ newAccount) {
+		if (this.account == null || !this.account.equals(newAccount)) {
+			if (this.account != null) {
+				Account_ oldAccount = this.account;
+				this.account = null;
+				oldAccount.removeLoginLogSource2(this);
+			}
+			if (newAccount != null) {
+				this.account = newAccount;
+				this.account.addLoginLogSource2(this);
+			}
+		}
+	}
+
 	// public java.util.Collection<Detail_> getDetail() {
 	// if (detail == null)
 	// detail = new java.util.LinkedHashSet<Detail_>();

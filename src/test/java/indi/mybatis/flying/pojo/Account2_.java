@@ -132,58 +132,6 @@ public class Account2_ extends PojoSupport<Account2_> implements Serializable {
 		this.nickname = nickname;
 	}
 
-	// public java.util.Collection<LoginLog_> getLoginLog() {
-	// if (loginLog == null)
-	// loginLog = new java.util.LinkedHashSet<LoginLog_>();
-	// return loginLog;
-	// }
-	//
-	// public java.util.Iterator<LoginLog_> getIteratorLoginLog() {
-	// if (loginLog == null)
-	// loginLog = new java.util.LinkedHashSet<LoginLog_>();
-	// return loginLog.iterator();
-	// }
-	//
-	// public void setLoginLog(java.util.Collection<LoginLog_> newLoginLog) {
-	// removeAllLoginLog();
-	// for (java.util.Iterator<LoginLog_> iter = newLoginLog.iterator();
-	// iter.hasNext();)
-	// addLoginLog((LoginLog_) iter.next());
-	// }
-	//
-	// public void addLoginLog(LoginLog_ newLoginLog) {
-	// if (newLoginLog == null)
-	// return;
-	// if (this.loginLog == null)
-	// this.loginLog = new java.util.LinkedHashSet<LoginLog_>();
-	// if (!this.loginLog.contains(newLoginLog)) {
-	// this.loginLog.add(newLoginLog);
-	// newLoginLog.setAccount(this);
-	// }
-	// }
-	//
-	// public void removeLoginLog(LoginLog_ oldLoginLog) {
-	// if (oldLoginLog == null)
-	// return;
-	// if (this.loginLog != null)
-	// if (this.loginLog.contains(oldLoginLog)) {
-	// this.loginLog.remove(oldLoginLog);
-	// oldLoginLog.setAccount((Account_) null);
-	// }
-	// }
-	//
-	// public void removeAllLoginLog() {
-	// if (loginLog != null) {
-	// LoginLog_ oldLoginLog;
-	// for (java.util.Iterator<LoginLog_> iter = getIteratorLoginLog();
-	// iter.hasNext();) {
-	// oldLoginLog = (LoginLog_) iter.next();
-	// iter.remove();
-	// oldLoginLog.setAccount((Account_) null);
-	// }
-	// }
-	// }
-	//
 	public Role2_ getRole() {
 		return role;
 	}
