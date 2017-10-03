@@ -22,7 +22,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
 
-	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "ID")
+	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, typeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class)
 	private Account_ account;
 
 	// private java.util.Collection<Detail_> detail;

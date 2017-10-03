@@ -22,7 +22,7 @@ import indi.mybatis.flying.service.AccountService;
  * 
  */
 @MappedTypes({ Account_.class })
-@MappedJdbcTypes({ JdbcType.VARCHAR })
+@MappedJdbcTypes({ JdbcType.INTEGER })
 
 public class AccountTypeHandler extends BaseTypeHandler<Account_> implements TypeHandler<Account_> {
 
