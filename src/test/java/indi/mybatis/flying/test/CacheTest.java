@@ -35,6 +35,7 @@ import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
@@ -45,6 +46,7 @@ import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service.RoleService;
 import indi.mybatis.flying.service2.Account2Service;
+import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -71,6 +73,9 @@ public class CacheTest {
 
 	@Autowired
 	private Role2Service role2Service;
+
+	@Autowired
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
@@ -952,5 +957,37 @@ public class CacheTest {
 		Assert.assertEquals(2, c2.size());
 		Role_[] roles2 = c2.toArray(new Role_[c2.size()]);
 		Assert.assertEquals("gold", roles2[0].getName());
+	}
+
+	/* 一个证明缓存对跨库关联也有效的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.result.xml") })
+	public void testAccountTypeHandlerUsingCache() {
+		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(21);
+		Assert.assertEquals("user", loginLogSource2.getAccount().getRole().getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 101);
+		m.put("name", "newUser");
+		roleService.updateDirect(m);
+
+		LoginLogSource2 loginLogSource3 = loginLogSource2Service.select(21);
+		Assert.assertEquals("user", loginLogSource3.getAccount().getRole().getName());
+
+		Role_ role = roleService.select(loginLogSource3.getAccount().getRole().getId());
+		role.setName("silver");
+		roleService.update(role);
+
+		LoginLogSource2 loginLogSource4 = loginLogSource2Service.select(21);
+		Assert.assertEquals("silver", loginLogSource4.getAccount().getRole().getName());
 	}
 }
