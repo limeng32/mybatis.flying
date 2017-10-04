@@ -1,5 +1,7 @@
 package indi.mybatis.flying.test;
 
+import java.util.Collection;
+
 import javax.sql.DataSource;
 
 import org.junit.Assert;
@@ -24,6 +26,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
@@ -73,5 +76,47 @@ public class AccountTypeHandlerTest {
 		Assert.assertNotNull(longinLogSource);
 		Assert.assertNotNull(longinLogSource.getAccount());
 		Assert.assertEquals("ann@live.cn", longinLogSource.getAccount().getEmail());
+
+		Account_ ac = new Account_();
+		ac.setId(1);
+		LoginLogSource2 l2c = new LoginLogSource2();
+		l2c.setAccount(ac);
+		Collection<LoginLogSource2> loginLogSource2C = loginLogSource2Service.selectAll(l2c);
+		Assert.assertEquals(2, loginLogSource2C.size());
+		for (LoginLogSource2 e : loginLogSource2C) {
+			Assert.assertEquals("ann@live.cn", e.getAccount().getEmail());
+		}
+
+		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(24);
+		Assert.assertNull(loginLogSource2.getAccount());
+
+		LoginLogSource2 loginLogSource3 = loginLogSource2Service.select(25);
+		Assert.assertNull(loginLogSource3.getAccount());
+
+		Account_ ac2 = new Account_();
+		ac2.setId(2);
+		LoginLogSource2 l2c2 = new LoginLogSource2();
+		l2c2.setAccount(ac2);
+		LoginLogSource2 loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
+		Assert.assertEquals("bob@live.cn", loginLogSource4.getAccount().getEmail());
+
+		Account_ ac3 = new Account_();
+		ac3.setId(1);
+		LoginLogSource2 l2c3 = new LoginLogSource2();
+		l2c3.setAccount(ac3);
+		l2c3.setLoginIP("ip1");
+		int i = loginLogSource2Service.count(l2c3);
+		Assert.assertEquals(1, i);
+
+		Account_ account2 = accountService.select(2);
+		loginLogSource2.setAccount(account2);
+		loginLogSource2Service.update(loginLogSource2);
+
+		loginLogSource4.setAccount(null);
+		loginLogSource2Service.updatePersistent(loginLogSource4);
+
+		Account_ account = accountService.select(1);
+		loginLogSource2Service.loadAccount(account, new LoginLogSource2());
+		Assert.assertEquals(2, account.getLoginLogSource2().size());
 	}
 }
