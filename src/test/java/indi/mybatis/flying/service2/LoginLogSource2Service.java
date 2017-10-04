@@ -65,4 +65,9 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 		loginLogSource2.setAccount(account);
 		account.setLoginLogSource2(mapper.selectAll(loginLogSource2));
 	}
+
+	@Override
+	public LoginLogSource2 selectWithoutAccount(Object id) {
+		return mapper.selectWithoutAccount(id);
+	}
 }

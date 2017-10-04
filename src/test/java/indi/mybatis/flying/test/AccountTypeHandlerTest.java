@@ -72,6 +72,9 @@ public class AccountTypeHandlerTest {
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTypeHandlerTest/testAccountTypeHandler.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTypeHandlerTest/testAccountTypeHandler.datasource2.result.xml") })
 	public void testAccountTypeHandler() {
+		LoginLogSource2 longinLogSource0 = loginLogSource2Service.selectWithoutAccount(22);
+		Assert.assertNull(longinLogSource0.getAccount());
+
 		LoginLogSource2 longinLogSource = loginLogSource2Service.select(22);
 		Assert.assertNotNull(longinLogSource);
 		Assert.assertNotNull(longinLogSource.getAccount());

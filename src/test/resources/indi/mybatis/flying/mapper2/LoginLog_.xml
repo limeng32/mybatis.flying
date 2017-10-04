@@ -6,6 +6,10 @@
 	<select id="select" resultMap="result">
 		flying#{?}:select
 	</select>
+	
+	<select id="selectWithoutAccount" resultMap="result">
+		flying#{?}:select:noAccount
+	</select>
 
 	<select id="selectAll" resultMap="result">
 		flying:selectAll

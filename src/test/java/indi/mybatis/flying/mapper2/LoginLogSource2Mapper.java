@@ -16,6 +16,9 @@ public interface LoginLogSource2Mapper extends MapperFace<LoginLogSource2> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public LoginLogSource2 select(Object id);
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public LoginLogSource2 selectWithoutAccount(Object id);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<LoginLogSource2> selectAll(LoginLogSource2 t);
