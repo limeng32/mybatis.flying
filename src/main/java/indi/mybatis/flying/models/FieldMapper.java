@@ -53,6 +53,11 @@ public class FieldMapper implements Mapperable {
 	 */
 	private ConcurrentSkipListSet<String> ignoreTagSet;
 
+	/**
+	 * 此变量的指定typeHandler的访问路径，默认为null。
+	 */
+	private String typeHandlerPath;
+
 	@Override
 	public String getDbFieldName() {
 		return dbFieldName;
@@ -133,6 +138,16 @@ public class FieldMapper implements Mapperable {
 
 	public void setIgnoreTagSet(ConcurrentSkipListSet<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
+	}
+
+	public String getTypeHandlerPath() {
+		return typeHandlerPath;
+	}
+
+	public void setTypeHandlerPath(Class<?> typeHandler) {
+		if (!Object.class.equals(typeHandler)) {
+			this.typeHandlerPath = typeHandler.getName();
+		}
 	}
 
 }

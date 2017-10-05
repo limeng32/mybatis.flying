@@ -4,7 +4,7 @@ package indi.mybatis.flying;
 public class AerialView {
 
 	/* flying当前版本 */
-	public static final String FLYING_VERSION = "0.9.0";
+	public static final String FLYING_VERSION = "0.9.1";
 
 	/* 此版本和其它版本主要区别代码如下 */
 }

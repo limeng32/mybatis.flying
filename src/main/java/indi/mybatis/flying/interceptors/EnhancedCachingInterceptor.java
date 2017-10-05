@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
@@ -28,13 +29,16 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import com.alibaba.fastjson.JSON;
+
 import indi.mybatis.flying.cache.CacheKeysPool;
 import indi.mybatis.flying.cache.EnhancedCachingManager;
 import indi.mybatis.flying.cache.EnhancedCachingManagerImpl;
 import indi.mybatis.flying.models.Conditionable;
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
-import indi.mybatis.flying.statics.ActionType;
+import indi.mybatis.flying.utils.CookOriginalSql;
 
 @Intercepts(value = {
 		@Signature(args = { MappedStatement.class, Object.class, RowBounds.class,
@@ -101,9 +105,25 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			RowBounds rowBounds = (RowBounds) args[2];
 			Executor executor = (Executor) invocation.getTarget();
 			BoundSql boundSql = mappedStatement.getBoundSql(parameter);
-
+			FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(boundSql.getSql());
 			// 记录本次查询所产生的CacheKey
 			CacheKey cacheKey = createCacheKey(mappedStatement, parameter, rowBounds, boundSql, executor);
+
+			if (flyingModel.isHasFlyingFeature()) {
+				switch (flyingModel.getActionType()) {
+				case count:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				case selectAll:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				case selectOne:
+					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
+					break;
+				default:
+					break;
+				}
+			}
 			queryCacheOnCommit.putElement(mappedStatement.getId(), cacheKey);
 
 			/* 处理分页 */
@@ -114,24 +134,23 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
 					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 			/* 当需要分页查询时，缓存里加入page信息 */
-			if (metaParameter.getOriginalObject() instanceof Conditionable) {
-				Cache cache = mappedStatement.getCache();
-				Object value = cache.getObject(cacheKey);
-				if (cache != null && metaExecutor.hasGetter("delegate")) {
-					TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
-					Executor delegate = (Executor) metaExecutor.getValue("delegate");
+			// if (metaParameter.getOriginalObject() instanceof Conditionable) {
+			Cache cache = mappedStatement.getCache();
+			Object value = cache.getObject(cacheKey);
+			if (cache != null && metaExecutor.hasGetter("delegate")) {
+				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
+				Executor delegate = (Executor) metaExecutor.getValue("delegate");
 
-					Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey,
-							boundSql);
+				Object list = delegate.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
 
-					if (value != null) {
-						return value;
-					} else {
-						tcm.putObject(cache, cacheKey, list);
-						return list;
-					}
+				if (value != null) {
+					return value;
+				} else {
+					tcm.putObject(cache, cacheKey, list);
+					return list;
 				}
 			}
+			// }
 		}
 
 		return result;

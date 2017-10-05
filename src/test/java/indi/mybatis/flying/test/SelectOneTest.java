@@ -57,9 +57,14 @@ public class SelectOneTest {
 		a2.setName("bob");
 		a2.setEmail("bob@live.cn");
 		accountService.insert(a2);
+		
+		accountService.update(a2);
+		accountService.updatePersistent(a2);
+		Account_ account_ = accountService.select(a2.getId());
 
 		Account_ ac = new Account_();
 		ac.setName("bob");
+		ac.setEmail("bob@live.cn");
 		Account_ account = accountService.selectOne(ac);
 		Assert.assertEquals("bob@live.cn", account.getEmail());
 	}
