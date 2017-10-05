@@ -23,10 +23,8 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	private java.lang.String loginIP;
 
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, ignoreTag = {
-			"noAccount" }, typeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class)
+			"noAccount" }, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class)
 	private Account_ account;
-
-	// private java.util.Collection<Detail_> detail;
 
 	public Integer getId() {
 		return id;
@@ -69,57 +67,5 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 			}
 		}
 	}
-
-	// public java.util.Collection<Detail_> getDetail() {
-	// if (detail == null)
-	// detail = new java.util.LinkedHashSet<Detail_>();
-	// return detail;
-	// }
-	//
-	// public java.util.Iterator<Detail_> getIteratorDetail() {
-	// if (detail == null)
-	// detail = new java.util.LinkedHashSet<Detail_>();
-	// return detail.iterator();
-	// }
-	//
-	// public void setDetail(java.util.Collection<Detail_> newDetail) {
-	// removeAllDetail();
-	// for (java.util.Iterator<Detail_> iter = newDetail.iterator();
-	// iter.hasNext();)
-	// addDetail((Detail_) iter.next());
-	// }
-	//
-	// public void addDetail(Detail_ newDetail) {
-	// if (newDetail == null)
-	// return;
-	// if (this.detail == null)
-	// this.detail = new java.util.LinkedHashSet<Detail_>();
-	// if (!this.detail.contains(newDetail)) {
-	// this.detail.add(newDetail);
-	// newDetail.setLoginLog(this);
-	// }
-	// }
-	//
-	// public void removeDetail(Detail_ oldDetail) {
-	// if (oldDetail == null)
-	// return;
-	// if (this.detail != null)
-	// if (this.detail.contains(oldDetail)) {
-	// this.detail.remove(oldDetail);
-	// oldDetail.setLoginLog((LoginLog_) null);
-	// }
-	// }
-	//
-	// public void removeAllDetail() {
-	// if (detail != null) {
-	// Detail_ oldDetail;
-	// for (java.util.Iterator<Detail_> iter = getIteratorDetail();
-	// iter.hasNext();) {
-	// oldDetail = (Detail_) iter.next();
-	// iter.remove();
-	// oldDetail.setLoginLog((LoginLog_) null);
-	// }
-	// }
-	// }
 
 }

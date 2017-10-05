@@ -132,7 +132,7 @@ public class SqlBuilder {
 					fieldMapper.setFieldName(field.getName());
 					fieldMapper.setDbFieldName(fieldMapperAnnotation.dbFieldName());
 					fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
-					fieldMapper.setTypeHandlerPath(fieldMapperAnnotation.typeHandler());
+					fieldMapper.setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
 					fieldMapper.setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 					switch (fieldMapperAnnotation.opLockType()) {
 					case Version:

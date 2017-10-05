@@ -30,7 +30,7 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 如果是外键，对应数据库其他表的主键字段的名称。默认为空，表示不是外键。
+	 * 如果是外键，对应数据库其他表的主键字段的名称。默认为空，表示不是外键。此属性用于解决同一数据库内表关联问题，因此不应和dbAssociationTypeHandler同时出现。
 	 * 
 	 * @return String
 	 */
@@ -71,9 +71,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 是否使用指定typeHandler处理。默认为Objectclass，即不指定typeHandler，由jdbcType来确定。当有指定typeHandler时，指定typeHandler的优先级最高。
+	 * 跨库相关表是否使用指定TypeHandler处理。默认为Objectclass，表示不指定TypeHandler。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
 	 * 
 	 * @return Class<?>
 	 */
-	Class<?> typeHandler() default Object.class;
+	Class<?> dbAssociationTypeHandler() default Object.class;
 }
