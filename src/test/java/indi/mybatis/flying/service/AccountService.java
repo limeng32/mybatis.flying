@@ -96,4 +96,9 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return mapper.selectAllDirect(map);
 	}
 
+	@Override
+	public Collection<Account_> selectAccountByRole(Map<String, Object> map) {
+		return mapper.selectAccountByRole(map);
+	}
+
 }

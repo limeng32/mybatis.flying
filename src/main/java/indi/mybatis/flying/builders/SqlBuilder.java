@@ -132,6 +132,7 @@ public class SqlBuilder {
 					fieldMapper.setFieldName(field.getName());
 					fieldMapper.setDbFieldName(fieldMapperAnnotation.dbFieldName());
 					fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
+					fieldMapper.setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
 					fieldMapper.setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 					switch (fieldMapperAnnotation.opLockType()) {
 					case Version:
@@ -140,7 +141,6 @@ public class SqlBuilder {
 					default:
 						break;
 					}
-
 					if (fieldMapperAnnotation.isUniqueKey()) {
 						uniqueKeyList.add(fieldMapper);
 					}
@@ -449,6 +449,9 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
+		if (mapper.getTypeHandlerPath() != null) {
+			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
+		}
 		whereSql.append(CLOSEBRACE_AND_);
 	}
 
@@ -549,8 +552,11 @@ public class SqlBuilder {
 			} else {
 				valueSql.append(fieldMapper.getFieldName());
 			}
-			valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
-					.append(CLOSEBRACE_COMMA);
+			valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
+			valueSql.append(CLOSEBRACE_COMMA);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
@@ -601,6 +607,9 @@ public class SqlBuilder {
 				tableSql.append(fieldMapper.getFieldName());
 			}
 			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
 			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(PLUS_1);
@@ -665,8 +674,11 @@ public class SqlBuilder {
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
 			}
-			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
-					.append(CLOSEBRACE);
+			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
+			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(PLUS_1);
 			}
@@ -949,7 +961,8 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if (hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass())) {
+			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
+					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, null);
 			} else {
@@ -1052,7 +1065,8 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if (hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass())) {
+			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
+					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
 			} else {
 				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);

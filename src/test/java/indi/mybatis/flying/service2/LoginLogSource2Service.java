@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import indi.mybatis.flying.mapper2.LoginLogSource2Mapper;
+import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
@@ -15,8 +16,8 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 	@Autowired
 	private LoginLogSource2Mapper mapper;
 
-//	@Autowired
-//	private DetailService detailService;
+	// @Autowired
+	// private DetailService detailService;
 
 	@Override
 	public LoginLogSource2 select(Object id) {
@@ -58,9 +59,15 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 		return supportCount(mapper, t);
 	}
 
-//	@Override
-//	public void loadDetail(LoginLog_ loginlog, Detail_ detail) {
-//		detail.setLoginLog(loginlog);
-//		loginlog.setDetail(detailService.selectAll(detail));
-//	}
+	@Override
+	public void loadAccount(Account_ account, LoginLogSource2 loginLogSource2) {
+		account.removeAllLoginLogSource2();
+		loginLogSource2.setAccount(account);
+		account.setLoginLogSource2(mapper.selectAll(loginLogSource2));
+	}
+
+	@Override
+	public LoginLogSource2 selectWithoutAccount(Object id) {
+		return mapper.selectWithoutAccount(id);
+	}
 }
