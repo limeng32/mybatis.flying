@@ -27,20 +27,26 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.models.Conditionable;
+import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
+import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
+import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service.RoleService;
 import indi.mybatis.flying.service2.Account2Service;
+import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,6 +73,9 @@ public class CacheTest {
 
 	@Autowired
 	private Role2Service role2Service;
+
+	@Autowired
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
@@ -814,5 +823,171 @@ public class CacheTest {
 
 		Account_ account2 = accountService.selectWithoutRole(1);
 		Assert.assertEquals("newUser", account2.getRoleDeputy().getName());
+	}
+
+	/* 测试查询结果可以因缓存json而正常改变 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testCacheHit.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testCacheHit.result.xml")
+	public void testCacheHit() {
+		Role_ role1 = new Role_(), role2 = new Role_();
+		role1.setName("silver");
+		roleService.insert(role1);
+
+		role2.setName("gold");
+		roleService.insert(role2);
+
+		Account_ a1 = new Account_(), a2 = new Account_(), a3 = new Account_();
+		a1.setName("ann");
+		a1.setRole(role1);
+		accountService.insert(a1);
+
+		a2.setName("bob");
+		a2.setRole(role1);
+		accountService.insert(a2);
+
+		a3.setName("cal");
+		a3.setRole(role2);
+		accountService.insert(a3);
+
+		Account_ ac1 = new Account_();
+		Role_ rc1 = new Role_();
+		rc1.setId(role1.getId());
+		ac1.setRole(rc1);
+		Collection<Account_> accountC1 = accountService.selectAll(ac1);
+		Assert.assertEquals(2, accountC1.size());
+
+		Account_ ac2 = new Account_();
+		Role_ rc2 = new Role_();
+		rc2.setId(role2.getId());
+		ac2.setRole(rc2);
+		Collection<Account_> accountC2 = accountService.selectAll(ac2);
+		Assert.assertEquals(1, accountC2.size());
+	}
+
+	/* 测试非flying方式的查询结果可以因缓存json而正常改变 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testCacheHitByDirectSql.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testCacheHitByDirectSql.result.xml")
+	public void testCacheHitByDirectSql() {
+		Role_ role1 = new Role_(), role2 = new Role_();
+		role1.setName("silver");
+		roleService.insert(role1);
+
+		role2.setName("gold");
+		roleService.insert(role2);
+
+		Account_ a1 = new Account_(), a2 = new Account_(), a3 = new Account_();
+		a1.setName("ann");
+		a1.setEmail("ann@live.cn");
+		a1.setRole(role1);
+		accountService.insert(a1);
+
+		a2.setName("bob");
+		a2.setEmail("bob@live.cn");
+		a2.setRole(role1);
+		accountService.insert(a2);
+
+		a3.setName("cal");
+		a3.setEmail("cal@live.cn");
+		a3.setRole(role2);
+		accountService.insert(a3);
+
+		Map<String, Object> map1 = new HashMap<>();
+		map1.put("role_id", role1.getId());
+		Collection<Account_> c1 = accountService.selectAccountByRole(map1);
+		Assert.assertEquals(2, c1.size());
+
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("role_id", role2.getId());
+		Collection<Account_> c2 = accountService.selectAccountByRole(map2);
+		Assert.assertEquals(1, c2.size());
+
+		Map<String, Object> map3 = new HashMap<>();
+		map3.put("name", "ann");
+		map3.put("email", "ann@live.cn");
+		Collection<Account_> c3 = accountService.selectAllDirect(map3);
+		Assert.assertEquals(1, c3.size());
+
+		Account_ account1 = accountService.select(a1.getId());
+		Assert.assertEquals("ann", account1.getName());
+
+		Account_ account2 = accountService.select(a2.getId());
+		Assert.assertEquals("bob", account2.getName());
+
+		Account_ account3 = accountService.select(a1.getId());
+		Assert.assertEquals("ann", account3.getName());
+	}
+
+	/* 一个证明分页确实使用了缓存的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testPaginationUsingCacheIndeed.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testPaginationUsingCacheIndeed.result.xml")
+	public void testPaginationUsingCacheIndeed() {
+		Role_ role1 = new Role_(), role2 = new Role_(), role3 = new Role_();
+		role1.setName("normal");
+		roleService.insert(role1);
+
+		role2.setName("silver");
+		roleService.insert(role2);
+
+		role3.setName("gold");
+		roleService.insert(role3);
+
+		Role_Condition rc = new Role_Condition();
+		rc.setLimiter(new PageParam(1, 2));
+		rc.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		Collection<Role_> c1 = roleService.selectAll(rc);
+		Assert.assertEquals(2, c1.size());
+		Role_[] roles = c1.toArray(new Role_[c1.size()]);
+		Assert.assertEquals("gold", roles[0].getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("name", "gold1");
+		m.put("id", roles[0].getId());
+		roleService.updateDirect(m);
+
+		Role_Condition rc2 = new Role_Condition();
+		rc2.setLimiter(new PageParam(1, 2));
+		rc2.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		Collection<Role_> c2 = roleService.selectAll(rc2);
+		Assert.assertEquals(2, c2.size());
+		Role_[] roles2 = c2.toArray(new Role_[c2.size()]);
+		Assert.assertEquals("gold", roles2[0].getName());
+	}
+
+	/* 一个证明缓存对跨库关联也有效的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.result.xml") })
+	public void testAccountTypeHandlerUsingCache() {
+		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(21);
+		Assert.assertEquals("user", loginLogSource2.getAccount().getRole().getName());
+
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", 101);
+		m.put("name", "newUser");
+		roleService.updateDirect(m);
+
+		LoginLogSource2 loginLogSource3 = loginLogSource2Service.select(21);
+		Assert.assertEquals("user", loginLogSource3.getAccount().getRole().getName());
+
+		Role_ role = roleService.select(loginLogSource3.getAccount().getRole().getId());
+		role.setName("silver");
+		roleService.update(role);
+
+		LoginLogSource2 loginLogSource4 = loginLogSource2Service.select(21);
+		Assert.assertEquals("silver", loginLogSource4.getAccount().getRole().getName());
 	}
 }

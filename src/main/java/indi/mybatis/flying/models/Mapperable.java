@@ -19,4 +19,6 @@ public interface Mapperable {
 	String getDbAssociationUniqueKey();
 
 	ConcurrentSkipListSet<String> getIgnoreTagSet();
+
+	public String getTypeHandlerPath();
 }
