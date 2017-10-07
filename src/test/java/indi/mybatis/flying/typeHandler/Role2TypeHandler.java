@@ -7,26 +7,25 @@ import java.sql.SQLException;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 import org.apache.ibatis.type.TypeHandler;
 
 import indi.mybatis.flying.ApplicationContextProvider;
-import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.pojo.Role2_;
+import indi.mybatis.flying.service2.Role2Service;
 
 /**
- * 处理Account_表跨库关联的TypeHandler
+ * 处理Role2_表跨库关联的TypeHandler
  * 
  * @author limeng32
  * 
  */
-@MappedTypes({ Account_.class })
+@MappedTypes({ Role2_.class })
 
-public class AccountTypeHandler extends BaseTypeHandler<Account_> implements TypeHandler<Account_> {
+public class Role2TypeHandler extends BaseTypeHandler<Role2_> implements TypeHandler<Role2_> {
 
 	@Override
-	public Account_ getNullableResult(ResultSet arg0, String arg1) throws SQLException {
+	public Role2_ getNullableResult(ResultSet arg0, String arg1) throws SQLException {
 		if (arg0.getString(arg1) == null) {
 			return null;
 		}
@@ -34,7 +33,7 @@ public class AccountTypeHandler extends BaseTypeHandler<Account_> implements Typ
 	}
 
 	@Override
-	public Account_ getNullableResult(ResultSet arg0, int arg1) throws SQLException {
+	public Role2_ getNullableResult(ResultSet arg0, int arg1) throws SQLException {
 		if (arg0.getString(arg1) == null) {
 			return null;
 		}
@@ -42,7 +41,7 @@ public class AccountTypeHandler extends BaseTypeHandler<Account_> implements Typ
 	}
 
 	@Override
-	public Account_ getNullableResult(CallableStatement arg0, int arg1) throws SQLException {
+	public Role2_ getNullableResult(CallableStatement arg0, int arg1) throws SQLException {
 		if (arg0.getString(arg1) == null) {
 			return null;
 		}
@@ -50,14 +49,13 @@ public class AccountTypeHandler extends BaseTypeHandler<Account_> implements Typ
 	}
 
 	@Override
-	public void setNonNullParameter(PreparedStatement arg0, int arg1, Account_ arg2, JdbcType arg3)
-			throws SQLException {
+	public void setNonNullParameter(PreparedStatement arg0, int arg1, Role2_ arg2, JdbcType arg3) throws SQLException {
 		if (arg2 != null) {
 			arg0.setString(arg1, arg2.getId().toString());
 		}
 	}
 
-	private AccountService getService() {
-		return (AccountService) ApplicationContextProvider.getApplicationContext().getBean(AccountService.class);
+	private Role2Service getService() {
+		return (Role2Service) ApplicationContextProvider.getApplicationContext().getBean(Role2Service.class);
 	}
 }
