@@ -111,7 +111,7 @@ mybatis 版本与 flying 最新版本的对应关系见下：
 #### flying 代码示例：
 我们还为您提供了两个快速上手的示例：
 
-1. 单数据源不使用缓存：[https://github.com/limeng32/flying-demo](https://github.com/limeng32/flying-demo)
-2. 多数据源且使用缓存：[https://github.com/limeng32/flying-demo2](https://github.com/limeng32/flying-demo2)
+1. 单数据源不使用缓存：[https://gitee.com/ro4074/flying-demo](https://gitee.com/ro4074/flying-demo)
+2. 多数据源且使用缓存：[https://gitee.com/ro4074/flying-demo2](https://gitee.com/ro4074/flying-demo2)
 
 更多内容请您参见软件文档。
