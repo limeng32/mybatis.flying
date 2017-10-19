@@ -12,7 +12,7 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
 
 众所周知，mybatis 虽然易于上手，但放到互联网环境下使用时，不可避免的要面对诸如‘’一级缓存存在脏数据‘’、‘’需要写大量明文 SQL 语句‘’等问题。对于这些问题 mybatis 的开发团队选择了一种谦逊的方式，他们开放 mybatis 接口，允许用户开发插件，按自己的方式来解决这些问题。于是，一切 ORM 领域相关的问题在 mybatis 上通过插件都有了解决方案。
 
-####flying 主要特点：
+#### flying 主要特点：
 
         以前我们在 mapper.xml 中要写很复杂的 sql 语句，但现在在 mapper.xml 中只需这样：
 ```
@@ -83,7 +83,7 @@ flying 特点总结如下：
 
 -加入了优化过的缓存插件，可以对多数据源环境下 flying 方法和传统 mybatis 方法同时进行缓存管理。
 
-####flying 获取方式：
+#### flying 获取方式：
 
   flying 的 maven 坐标为：
 
@@ -100,7 +100,7 @@ mybatis 版本与 flying 最新版本的对应关系见下：
 |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5|0.9.1|
 之所以采用分版本发布的方式是因为我们对 mybatis 每个版本的用户都认真负责，力求使您得到 flying 最大的好处。
 
-####flying 代码示例：
+#### flying 代码示例：
 我们还为您提供了两个快速上手的示例：
 
 1. 单数据源不使用缓存：[https://github.com/limeng32/flying-demo](https://github.com/limeng32/flying-demo)
