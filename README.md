@@ -38,6 +38,7 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
     </delete>
 ```
 再在您的实体类上加上这样一些标注：
+
 ```Java
 package myPackage;
 import org.apache.ibatis.type.JdbcType;
@@ -55,9 +56,11 @@ public class Account {
     /* 省略 getter 和 setter */
 }
 ```
+
  flying 就完全明白您的数据结构和您想做的事情了。 接下来您增删改查这个实体就会变得非常简单：
+ 
 ```Java
-/* 新增 */
+    /* 新增 */
     Account newAccount = new Account();
     newAccount.setName("ann");
     accountService.insert(newAccount);
@@ -72,6 +75,7 @@ public class Account {
     /* 按主键删除 */
     accountService.delete(newAccount);
 ```
+
 由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountByIDName、getAccountByName” 这样的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。其它的功能如多表联查、分页、乐观锁、跨数据源查询、二级缓存等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
 
 flying 特点总结如下：
@@ -93,6 +97,7 @@ flying 特点总结如下：
     <artifactId>mybatis.flying</artifactId>
     <version>0.9.1</version>
 ```
+
 mybatis 版本与 flying 最新版本的对应关系见下：
 
  |mybatis 版本|flying 版本 |
