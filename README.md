@@ -21,8 +21,8 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
         flying#{?}:select
     </select>
 
-    <select id="selectAll" resultMap="result">
-        flying:selectAll
+    <select id="selectOne" resultMap="result">
+        flying:selectOne
     </select>
 
     <insert id="insert">
@@ -52,6 +52,9 @@ public class Account {
 	    
     @FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
     private java.lang.String name;
+    
+    @FieldMapperAnnotation(dbFieldName = "age", jdbcType = JdbcType.INTEGER)
+    private Integer age;
 	    
     /* 省略 getter 和 setter */
 }
@@ -63,10 +66,30 @@ public class Account {
     /* 新增 */
     Account newAccount = new Account();
     newAccount.setName("ann");
+    newAccount.setAge(18);
     accountService.insert(newAccount);
 
     /* 按主键查询 */
     Account account = accountService.select(newAccount.getId());
+    
+    /* 按姓名查询，这里忽略了年龄 */
+    Account accountC1 = new Account();
+    accountC1.setName("ann");
+    Account account1 = accountService.selectOne(accountC1);
+    /* account1 和 account 代表相同的业务数据 */
+    
+    /* 按年龄查询，这里忽略了姓名 */
+    Account accountC2 = new Account();
+    accountC2.setAge(18);
+    Account account2 = accountService.selectOne(accountC2);
+    /* account2 和 account 代表相同的业务数据 */
+    
+    /* 按姓名和年龄查询 */
+    Account accountC3 = new Account();
+    accountC3.setName("ann");
+    accountC3.setAge(18);
+    Account account3 = accountService.selectOne(accountC3);
+    /* account3 和 account 代表相同的业务数据 */
     
     /* 修改 */
     account.setName("bob");
@@ -76,7 +99,7 @@ public class Account {
     accountService.delete(newAccount);
 ```
 
-由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountByIDName、getAccountByName” 这样的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。其它的功能如多表联查、分页、乐观锁、跨数据源查询、二级缓存等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
+由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountByIDName、getAccountByName” 这样的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。以上只是 flying 功能的冰山一角，其它的功能如多表联查、分页、乐观锁、跨数据源查询、二级缓存等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
 
 flying 特点总结如下：
 
@@ -114,4 +137,4 @@ mybatis 版本与 flying 最新版本的对应关系见下：
 1. 单数据源不使用缓存：[https://gitee.com/ro4074/flying-demo](https://gitee.com/ro4074/flying-demo)
 2. 多数据源且使用缓存：[https://gitee.com/ro4074/flying-demo2](https://gitee.com/ro4074/flying-demo2)
 
-更多内容请您参见软件文档。
+更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)。
