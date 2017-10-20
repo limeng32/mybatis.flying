@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/release/limeng32/mybatis.flying.svg)](https://github.com/limeng32/mybatis.flying/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-项目介绍请见 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) ，我们为开发最好的 mybatis 插件而努力。
+项目介绍请见 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) ，国内代码托管网站请见 [gitee.com/ro4074/mybatis.flying](http://gitee.com/ro4074/mybatis.flying)，我们为开发最好的 mybatis 插件而努力。
 
 flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供了一种全新的操作数据的方式，希望能对您有所帮助。
 
