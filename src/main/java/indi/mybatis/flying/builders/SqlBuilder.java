@@ -900,7 +900,7 @@ public class SqlBuilder {
 	private static boolean hasTableMapperAnnotation(Class<?> clazz) {
 		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
 		for (Annotation an : classAnnotations) {
-			if (an instanceof TableMapperAnnotation) {
+			if (an instanceof TableMapperAnnotation || an instanceof Table) {
 				return true;
 			}
 		}
