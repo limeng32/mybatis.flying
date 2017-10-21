@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.persistence.Table;
+
 import org.apache.commons.beanutils.PropertyUtils;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
@@ -109,12 +111,15 @@ public class SqlBuilder {
 			return tableMapper;
 		}
 		tableMapper = new TableMapper();
+		tableMapper.setClazz(dtoClass);
 		List<FieldMapper> uniqueKeyList = new ArrayList<FieldMapper>();
 		List<FieldMapper> opVersionLockList = new ArrayList<FieldMapper>();
 		Annotation[] classAnnotations = dtoClass.getDeclaredAnnotations();
 		for (Annotation an : classAnnotations) {
 			if (an instanceof TableMapperAnnotation) {
-				tableMapper.setTableMapperAnnotation(an);
+				tableMapper.setTableMapperAnnotation((TableMapperAnnotation) an);
+			} else if (an instanceof Table) {
+				tableMapper.setTable((Table) an);
 			}
 		}
 		fields = dtoClass.getDeclaredFields();
@@ -175,6 +180,7 @@ public class SqlBuilder {
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
+		tableMapper.buildTableName();
 		tableMapperCache.put(dtoClass, tableMapper);
 		return tableMapper;
 	}
@@ -260,7 +266,7 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 查找类clazz及其所有父类，直到找到一个拥有TableMapperAnnotation注解的类为止，
+	 * 查找类clazz及其所有父类，直到找到一个拥有TableMapperAnnotation注解或Table注解的类为止，
 	 * 然后返回这个拥有TableMapperAnnotation注解的类
 	 * 
 	 * @param object
@@ -288,7 +294,7 @@ public class SqlBuilder {
 		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
 		if (classAnnotations.length > 0) {
 			for (Annotation an : classAnnotations) {
-				if (an instanceof TableMapperAnnotation) {
+				if (an instanceof TableMapperAnnotation || an instanceof Table) {
 					return true;
 				}
 			}
@@ -526,9 +532,8 @@ public class SqlBuilder {
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
 
-		String tableName = tma.tableName();
+		String tableName = tableMapper.getTableName();
 		StringBuffer tableSql = new StringBuffer();
 		StringBuffer valueSql = new StringBuffer();
 
@@ -584,8 +589,7 @@ public class SqlBuilder {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
-		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
-		String tableName = tma.tableName();
+		String tableName = tableMapper.getTableName();
 
 		StringBuffer tableSql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer(WHERE_);
@@ -656,8 +660,7 @@ public class SqlBuilder {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
-		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
-		String tableName = tma.tableName();
+		String tableName = tableMapper.getTableName();
 
 		StringBuffer tableSql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer(WHERE_);
@@ -723,8 +726,7 @@ public class SqlBuilder {
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
-		String tableName = tma.tableName();
+		String tableName = tableMapper.getTableName();
 
 		StringBuffer sql = new StringBuffer();
 
@@ -756,8 +758,7 @@ public class SqlBuilder {
 	 */
 	public static String buildSelectSql(Class<?> clazz, String ignoreTag) {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
-		TableMapperAnnotation tma = (TableMapperAnnotation) tableMapper.getTableMapperAnnotation();
-		String tableName = tma.tableName();
+		String tableName = tableMapper.getTableName();
 
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 
@@ -864,8 +865,7 @@ public class SqlBuilder {
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		AtomicInteger ai = new AtomicInteger(0);
-		TableName tableName = new TableName(
-				((TableMapperAnnotation) tableMapper.getTableMapperAnnotation()).tableName(), 0);
+		TableName tableName = new TableName(tableMapper.getTableName(), 0);
 
 		StringBuffer selectSql = new StringBuffer();
 		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
@@ -923,8 +923,7 @@ public class SqlBuilder {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(
-				((TableMapperAnnotation) tableMapper.getTableMapperAnnotation()).tableName(), index.getAndIncrement());
+		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
 
 		/*
 		 * 在第一次遍历中，处理好selectSql和fromSql。 如果originFieldMapper为null则可认为是第一次遍历
@@ -1031,8 +1030,7 @@ public class SqlBuilder {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(
-				((TableMapperAnnotation) tableMapper.getTableMapperAnnotation()).tableName(), index.getAndIncrement());
+		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
 
 		/*
 		 * 在第一次遍历中，处理好fromSql。 如果originFieldMapper为null则可认为是第一次遍历

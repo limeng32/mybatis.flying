@@ -10,11 +10,9 @@ import javax.persistence.Table;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
-import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 
-@Table(name = "detail2_")
-@TableMapperAnnotation(tableName = "detail2_")
+@Table
 public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
