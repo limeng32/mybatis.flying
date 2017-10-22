@@ -2,7 +2,11 @@ package indi.mybatis.flying.models;
 
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import javax.persistence.Column;
+
 import org.apache.ibatis.type.JdbcType;
+
+import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
@@ -57,6 +61,14 @@ public class FieldMapper implements Mapperable {
 	 * 此变量的指定typeHandler的访问路径，默认为null。
 	 */
 	private String typeHandlerPath;
+
+	private String fmaDbFieldName;
+
+	private String columnFieldName;
+
+	private FieldMapperAnnotation fieldMapperAnnotation;
+
+	private Column column;
 
 	@Override
 	public String getDbFieldName() {
@@ -145,9 +157,41 @@ public class FieldMapper implements Mapperable {
 	}
 
 	public void setTypeHandlerPath(Class<?> typeHandler) {
-		if (!Object.class.equals(typeHandler)) {
+		if (!Void.class.equals(typeHandler)) {
 			this.typeHandlerPath = typeHandler.getName();
 		}
+	}
+
+	public String getFmaDbFieldName() {
+		return fmaDbFieldName;
+	}
+
+	public void setFmaDbFieldName(String fmaDbFieldName) {
+		this.fmaDbFieldName = fmaDbFieldName;
+	}
+
+	public String getColumnFieldName() {
+		return columnFieldName;
+	}
+
+	public void setColumnFieldName(String columnFieldName) {
+		this.columnFieldName = columnFieldName;
+	}
+
+	public FieldMapperAnnotation getFieldMapperAnnotation() {
+		return fieldMapperAnnotation;
+	}
+
+	public void setFieldMapperAnnotation(FieldMapperAnnotation fieldMapperAnnotation) {
+		this.fieldMapperAnnotation = fieldMapperAnnotation;
+	}
+
+	public Column getColumn() {
+		return column;
+	}
+
+	public void setColumn(Column column) {
+		this.column = column;
 	}
 
 }
