@@ -18,7 +18,7 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-//	@Column(name = "id")
+	@Column(name = "id")
 	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
 	private Integer id;
 
@@ -26,11 +26,10 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	@Column(name = "name")
 	private java.lang.String name;
 
-//	@Column(name = "detail")
-	@FieldMapperAnnotation(dbFieldName = "detail", jdbcType = JdbcType.VARCHAR)
+	@Column(name = "detail")
 	private java.lang.String detail;
 
-//	@Column(name = "create")
+	@Column(name = "create")
 	@FieldMapperAnnotation(dbFieldName = "createtime", jdbcType = JdbcType.TIMESTAMP)
 	private Date createtime;
 

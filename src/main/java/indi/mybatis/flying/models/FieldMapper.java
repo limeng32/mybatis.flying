@@ -1,5 +1,6 @@
 package indi.mybatis.flying.models;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.persistence.Column;
@@ -7,12 +8,17 @@ import javax.persistence.Column;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.exception.BuildSqlException;
+import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
  */
 public class FieldMapper implements Mapperable {
+
+	private Field field;
+
 	/**
 	 * Java对象字段名
 	 */
@@ -76,9 +82,10 @@ public class FieldMapper implements Mapperable {
 	private Column column;
 
 	public void buildMapper() {
-		if (column != null) {
-			setDbFieldName(column.name());
+		if (fieldMapperAnnotation == null && column == null) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
 		}
+		setFieldName(field.getName());
 		if (fieldMapperAnnotation != null) {
 			setDbFieldName(fieldMapperAnnotation.dbFieldName());
 			setJdbcType(fieldMapperAnnotation.jdbcType());
@@ -88,6 +95,11 @@ public class FieldMapper implements Mapperable {
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+		} else if (column != null) {
+			setDbFieldName(column.name());
+			if (String.class.equals(field.getType())) {
+				setJdbcType(JdbcType.VARCHAR);
+			}
 		}
 	}
 
@@ -229,6 +241,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setIgnoreTag(String[] ignoreTag) {
 		this.ignoreTag = ignoreTag;
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public void setField(Field field) {
+		this.field = field;
 	}
 
 }

@@ -134,13 +134,13 @@ public class SqlBuilder {
 			fieldMapper = new FieldMapper();
 			for (Annotation an1 : fieldAnnotations) {
 				if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
-					fieldMapper.setFieldName(field.getName());
+					fieldMapper.setField(field);
 					if (an1 instanceof FieldMapperAnnotation) {
 						fieldMapper.setFieldMapperAnnotation((FieldMapperAnnotation) an1);
 					} else if (an1 instanceof Column) {
 						fieldMapper.setColumn((Column) an1);
 					}
-				}
+				} 
 			}
 			try {
 				fieldMapper.buildMapper();
