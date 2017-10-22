@@ -91,7 +91,6 @@ public class FieldMapper implements Mapperable {
 			setDbFieldName(fieldMapperAnnotation.dbFieldName());
 			setJdbcType(fieldMapperAnnotation.jdbcType());
 			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
-			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setOpLockType(fieldMapperAnnotation.opLockType());
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());

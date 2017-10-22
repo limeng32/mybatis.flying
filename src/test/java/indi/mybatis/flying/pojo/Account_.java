@@ -2,6 +2,8 @@ package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+
 import org.apache.ibatis.type.JdbcType;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -23,6 +25,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private java.lang.String name;
 
 	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR)
+//	@Column
 	private java.lang.String email;
 
 	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noPassword" })
