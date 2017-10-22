@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -103,7 +104,7 @@ public class SqlBuilder {
 		Map<String, FieldMapper> fieldMapperCache = null;
 		Field[] fields = null;
 
-		FieldMapperAnnotation fieldMapperAnnotation = null;
+		// FieldMapperAnnotation fieldMapperAnnotation = null;
 		FieldMapper fieldMapper = null;
 		TableMapper tableMapper = null;
 		tableMapper = tableMapperCache.get(dtoClass);
@@ -130,52 +131,57 @@ public class SqlBuilder {
 			if (fieldAnnotations.length == 0) {
 				continue;
 			}
-			for (Annotation an : fieldAnnotations) {
-				if (an instanceof FieldMapperAnnotation) {
-					fieldMapperAnnotation = (FieldMapperAnnotation) an;
-					fieldMapper = new FieldMapper();
+			fieldMapper = new FieldMapper();
+			for (Annotation an1 : fieldAnnotations) {
+				if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
 					fieldMapper.setFieldName(field.getName());
-					fieldMapper.setDbFieldName(fieldMapperAnnotation.dbFieldName());
-					fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
-					fieldMapper.setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
-					fieldMapper.setUniqueKey(fieldMapperAnnotation.isUniqueKey());
-					switch (fieldMapperAnnotation.opLockType()) {
-					case Version:
-						fieldMapper.setOpVersionLock(true);
-						break;
-					default:
-						break;
+					if (an1 instanceof FieldMapperAnnotation) {
+						fieldMapper.setFieldMapperAnnotation((FieldMapperAnnotation) an1);
+					} else if (an1 instanceof Column) {
+						fieldMapper.setColumn((Column) an1);
 					}
-					if (fieldMapperAnnotation.isUniqueKey()) {
-						uniqueKeyList.add(fieldMapper);
-					}
-
-					if (fieldMapperAnnotation.ignoreTag().length > 0) {
-						for (String t : fieldMapperAnnotation.ignoreTag()) {
-							fieldMapper.getIgnoreTagSet().add(t);
-						}
-					}
-
-					if ("".equals(fieldMapperAnnotation.dbAssociationUniqueKey())) {
-					} else {
-						fieldMapper.setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
-						fieldMapper.setForeignKey(true);
-					}
-					if (fieldMapper.isForeignKey()) {
-						if (!tableMapperCache.containsKey(field.getType())) {
-							buildTableMapper(field.getType());
-						}
-						TableMapper tm = tableMapperCache.get(field.getType());
-						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
-								fieldMapperAnnotation.dbAssociationUniqueKey()).getFieldName();
-						fieldMapper.setForeignFieldName(foreignFieldName);
-					}
-					if (fieldMapper.isOpVersionLock()) {
-						opVersionLockList.add(fieldMapper);
-					}
-					fieldMapperCache.put(field.getName(), fieldMapper);
 				}
 			}
+			try {
+				fieldMapper.buildMapper();
+			} catch (Exception e) {
+				System.out.println("::::::" + field.getName() + " ");
+			}
+			switch (fieldMapper.getOpLockType()) {
+			case Version:
+				fieldMapper.setOpVersionLock(true);
+				break;
+			default:
+				break;
+			}
+			if (fieldMapper.isUniqueKey()) {
+				uniqueKeyList.add(fieldMapper);
+			}
+
+			if (fieldMapper.getIgnoreTag().length > 0) {
+				for (String t : fieldMapper.getIgnoreTag()) {
+					fieldMapper.getIgnoreTagSet().add(t);
+				}
+			}
+
+			if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
+			} else {
+				fieldMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+				fieldMapper.setForeignKey(true);
+			}
+			if (fieldMapper.isForeignKey()) {
+				if (!tableMapperCache.containsKey(field.getType())) {
+					buildTableMapper(field.getType());
+				}
+				TableMapper tm = tableMapperCache.get(field.getType());
+				String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+						fieldMapper.getDbAssociationUniqueKey()).getFieldName();
+				fieldMapper.setForeignFieldName(foreignFieldName);
+			}
+			if (fieldMapper.isOpVersionLock()) {
+				opVersionLockList.add(fieldMapper);
+			}
+			fieldMapperCache.put(field.getName(), fieldMapper);
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));

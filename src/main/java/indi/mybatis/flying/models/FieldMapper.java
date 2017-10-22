@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.statics.OpLockType;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
@@ -30,7 +31,7 @@ public class FieldMapper implements Mapperable {
 	/**
 	 * 如果是外键，对应数据库其他表的主键字段的名称。不是外键时为null。
 	 */
-	private String dbAssociationUniqueKey;
+	private String dbAssociationUniqueKey = "";
 
 	/**
 	 * 此变量是否对应数据库表的主键。默认为否。
@@ -66,9 +67,29 @@ public class FieldMapper implements Mapperable {
 
 	private String columnFieldName;
 
+	private OpLockType opLockType = OpLockType.Null;
+
+	private String[] ignoreTag = {};
+
 	private FieldMapperAnnotation fieldMapperAnnotation;
 
 	private Column column;
+
+	public void buildMapper() {
+		if (column != null) {
+			setDbFieldName(column.name());
+		}
+		if (fieldMapperAnnotation != null) {
+			setDbFieldName(fieldMapperAnnotation.dbFieldName());
+			setJdbcType(fieldMapperAnnotation.jdbcType());
+			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
+			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
+			setOpLockType(fieldMapperAnnotation.opLockType());
+			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
+			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
+			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+		}
+	}
 
 	@Override
 	public String getDbFieldName() {
@@ -192,6 +213,22 @@ public class FieldMapper implements Mapperable {
 
 	public void setColumn(Column column) {
 		this.column = column;
+	}
+
+	public OpLockType getOpLockType() {
+		return opLockType;
+	}
+
+	public void setOpLockType(OpLockType opLockType) {
+		this.opLockType = opLockType;
+	}
+
+	public String[] getIgnoreTag() {
+		return ignoreTag;
+	}
+
+	public void setIgnoreTag(String[] ignoreTag) {
+		this.ignoreTag = ignoreTag;
 	}
 
 }
