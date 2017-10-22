@@ -37,6 +37,7 @@
 
 	<resultMap id="result" type="Detail2_" autoMapping="true">
 		<id property="id" column="id" />
+		<result property="number" column="number_" />
 		<association property="loginLogSource2" javaType="LoginLogSource2"
 			select="indi.mybatis.flying.mapper2.LoginLogSource2Mapper.select"
 			column="loginlog_id" />

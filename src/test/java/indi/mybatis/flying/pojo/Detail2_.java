@@ -26,12 +26,14 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	@Column(name = "name")
 	private java.lang.String name;
 
-	@Column(name = "detail")
+	@Column
 	private java.lang.String detail;
 
-	@Column(name = "create")
-	@FieldMapperAnnotation(dbFieldName = "createtime", jdbcType = JdbcType.TIMESTAMP)
+	@Column
 	private Date createtime;
+
+	@Column(name = "number_")
+	private Integer number;
 
 	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD")
 	private LoginLogSource2 loginLogSource2;
@@ -67,6 +69,14 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 
 	public LoginLogSource2 getLoginLogSource2() {

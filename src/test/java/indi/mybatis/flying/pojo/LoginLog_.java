@@ -2,6 +2,8 @@ package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
@@ -17,6 +19,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "loginTime", jdbcType = JdbcType.TIMESTAMP)
+	@Column
 	private java.util.Date loginTime;
 
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)

@@ -1,5 +1,5 @@
 <dataset>
-	<detail2_ NAME="n" DETAIL="d" LOGINLOG_ID="11" />
-	<detail2_ NAME="name" DETAIL="detail" />
+	<detail2_ NAME="n" NUMBER_="123" DETAIL="d" LOGINLOG_ID="11" />
+	<detail2_ NAME="name" NUMBER_="321" DETAIL="detail" />
 	<LoginLog_ ID="11" LOGINIP="l" />
 </dataset>

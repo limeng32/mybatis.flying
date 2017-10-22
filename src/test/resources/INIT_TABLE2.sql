@@ -21,6 +21,7 @@ CREATE TABLE detail2_ (
   name varchar(32) DEFAULT NULL,
   detail varchar(32) DEFAULT NULL,
   createtime datetime DEFAULT NULL,
+  number_ int(11) DEFAULT NULL,
   loginlog_id int(11) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

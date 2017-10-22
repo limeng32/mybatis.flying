@@ -50,11 +50,13 @@ public class JpaTest {
 	public void testDetail2() {
 		Detail2_ detail2 = detail2Service.select(1);
 		Assert.assertEquals("n", detail2.getName());
+		Assert.assertEquals(123, detail2.getNumber().intValue());
 		Assert.assertEquals("l", detail2.getLoginLogSource2().getLoginIP());
 
 		Detail2_ detail2_2 = new Detail2_();
 		detail2_2.setName("name");
 		detail2_2.setDetail("detail");
+		detail2_2.setNumber(321);
 		detail2Service.insert(detail2_2);
 
 		Detail2_ detail2_c = new Detail2_();

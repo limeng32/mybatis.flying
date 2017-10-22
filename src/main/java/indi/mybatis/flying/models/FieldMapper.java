@@ -11,6 +11,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
+import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
@@ -96,10 +97,12 @@ public class FieldMapper implements Mapperable {
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 		} else if (column != null) {
-			setDbFieldName(column.name());
-			if (String.class.equals(field.getType())) {
-				setJdbcType(JdbcType.VARCHAR);
+			if ("".equals(column.name())) {
+				setDbFieldName(field.getName());
+			} else {
+				setDbFieldName(column.name());
 			}
+			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
 		}
 	}
 
