@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.Column;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -125,27 +124,11 @@ public class SqlBuilder {
 		}
 		fields = dtoClass.getDeclaredFields();
 		fieldMapperCache = new HashMap<String, FieldMapper>();
-		Annotation[] fieldAnnotations = null;
 		for (Field field : fields) {
-			fieldAnnotations = field.getDeclaredAnnotations();
-			if (fieldAnnotations.length == 0) {
-				continue;
-			}
 			fieldMapper = new FieldMapper();
-			for (Annotation an1 : fieldAnnotations) {
-				if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
-					fieldMapper.setField(field);
-					if (an1 instanceof FieldMapperAnnotation) {
-						fieldMapper.setFieldMapperAnnotation((FieldMapperAnnotation) an1);
-					} else if (an1 instanceof Column) {
-						fieldMapper.setColumn((Column) an1);
-					}
-				} 
-			}
-			try {
-				fieldMapper.buildMapper();
-			} catch (Exception e) {
-				System.out.println("::::::" + field.getName() + " ");
+			boolean b = fieldMapper.buildMapper(field);
+			if (!b) {
+				continue;
 			}
 			switch (fieldMapper.getOpLockType()) {
 			case Version:

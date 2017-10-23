@@ -1,5 +1,6 @@
 package indi.mybatis.flying.models;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -103,6 +104,26 @@ public class FieldMapper implements Mapperable {
 			}
 			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
 		}
+	}
+
+	public boolean buildMapper(Field field) {
+		Annotation[] fieldAnnotations = null;
+		fieldAnnotations = field.getDeclaredAnnotations();
+		if (fieldAnnotations.length == 0) {
+			return false;
+		}
+		for (Annotation an1 : fieldAnnotations) {
+			if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
+				setField(field);
+				if (an1 instanceof FieldMapperAnnotation) {
+					setFieldMapperAnnotation((FieldMapperAnnotation) an1);
+				} else if (an1 instanceof Column) {
+					setColumn((Column) an1);
+				}
+			}
+		}
+		buildMapper();
+		return true;
 	}
 
 	@Override
