@@ -107,8 +107,7 @@ public class FieldMapper implements Mapperable {
 	}
 
 	public boolean buildMapper(Field field) {
-		Annotation[] fieldAnnotations = null;
-		fieldAnnotations = field.getDeclaredAnnotations();
+		Annotation[] fieldAnnotations = field.getDeclaredAnnotations();
 		if (fieldAnnotations.length == 0) {
 			return false;
 		}

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -222,14 +223,17 @@ public class SqlBuilder {
 					conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
 					for (Field pojoField : pojoClass.getDeclaredFields()) {
 						for (Annotation oan : pojoField.getDeclaredAnnotations()) {
-							if (oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
-									.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName())) {
-								FieldMapperAnnotation fieldMapperAnnotation = (FieldMapperAnnotation) oan;
-								conditionMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
-								if ("".equals(fieldMapperAnnotation.dbAssociationUniqueKey())) {
+							boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan)
+									.dbFieldName().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+							boolean b2 = oan instanceof Column
+									&& ((Column) oan).name().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+							if (b1 || b2) {
+								FieldMapper fieldMapper = new FieldMapper();
+								fieldMapper.buildMapper(pojoField);
+								conditionMapper.setJdbcType(fieldMapper.getJdbcType());
+								if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
 								} else {
-									conditionMapper
-											.setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+									conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 									conditionMapper.setForeignKey(true);
 								}
 								if (conditionMapper.isForeignKey()
@@ -239,7 +243,7 @@ public class SqlBuilder {
 									}
 									TableMapper tm = tableMapperCache.get(pojoField.getType());
 									String foreignFieldName = tm.getFieldMapperCache()
-											.get(fieldMapperAnnotation.dbAssociationUniqueKey()).getFieldName();
+											.get(fieldMapper.getDbAssociationUniqueKey()).getFieldName();
 									conditionMapper.setForeignFieldName(foreignFieldName);
 								}
 							}
