@@ -225,8 +225,8 @@ public class SqlBuilder {
 						for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 							boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan)
 									.dbFieldName().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-							boolean b2 = oan instanceof Column
-									&& ((Column) oan).name().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+							boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
+									.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
 							if (b1 || b2) {
 								FieldMapper fieldMapper = new FieldMapper();
 								fieldMapper.buildMapper(pojoField);

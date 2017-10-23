@@ -97,11 +97,7 @@ public class FieldMapper implements Mapperable {
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 		} else if (column != null) {
-			if ("".equals(column.name())) {
-				setDbFieldName(field.getName());
-			} else {
-				setDbFieldName(column.name());
-			}
+			setDbFieldName(getColumnName(column, field));
 			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
 		}
 	}
@@ -123,6 +119,14 @@ public class FieldMapper implements Mapperable {
 		}
 		buildMapper();
 		return true;
+	}
+
+	public static String getColumnName(Column column, Field field) {
+		if (!"".equals(column.name())) {
+			return column.name();
+		} else {
+			return field.getName();
+		}
 	}
 
 	@Override
