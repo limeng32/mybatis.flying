@@ -39,7 +39,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	/**
 	 * 是否已激活
 	 */
-	@FieldMapperAnnotation(dbFieldName = "activated", jdbcType = JdbcType.BOOLEAN)
+	@Column
 	private Boolean activated;
 
 	/**
