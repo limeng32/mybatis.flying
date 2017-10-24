@@ -32,6 +32,7 @@ CREATE TABLE loginlog_ (
   accountId int(11) DEFAULT NULL,
   loginTime datetime DEFAULT NULL,
   madetime datetime DEFAULT NULL,
+  confirmtime datetime DEFAULT NULL,
   PRIMARY KEY (id),
   KEY account1 (accountId)
 ) ENGINE=InnoDB AUTO_INCREMENT=333 DEFAULT CHARSET=utf8;

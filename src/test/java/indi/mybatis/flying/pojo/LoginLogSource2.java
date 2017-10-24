@@ -25,6 +25,9 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	@Column(columnDefinition = "date foo bar")
 	private Date madetime;
 
+	@Column(columnDefinition = "  ")
+	private Date confirmtime;
+
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
 
@@ -64,6 +67,14 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 
 	public void setMadetime(Date madetime) {
 		this.madetime = madetime;
+	}
+
+	public Date getConfirmtime() {
+		return confirmtime;
+	}
+
+	public void setConfirmtime(Date confirmtime) {
+		this.confirmtime = confirmtime;
 	}
 
 	public Account_ getAccount() {
