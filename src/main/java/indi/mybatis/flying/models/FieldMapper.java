@@ -131,9 +131,16 @@ public class FieldMapper implements Mapperable {
 	}
 
 	public static JdbcType getColumnType(Column column, Field field) {
-		if (!"".equals(column) && JdbcTypeEnum.forName(column.columnDefinition()) != null) {
-			return JdbcTypeEnum.forName(column.columnDefinition());
-		} else if (TypeJdbcTypeConverter.map.get(field.getType()) != null) {
+		if (!"".equals(column.columnDefinition().trim())) {
+			String columnDefinition_ = column.columnDefinition().indexOf(" ") > -1
+					? column.columnDefinition().substring(0, column.columnDefinition().indexOf(" "))
+					: column.columnDefinition();
+			JdbcType jdbcType = JdbcTypeEnum.forName(columnDefinition_);
+			if (jdbcType != null) {
+				return jdbcType;
+			}
+		}
+		if (TypeJdbcTypeConverter.map.get(field.getType()) != null) {
 			return TypeJdbcTypeConverter.map.get(field.getType());
 		} else {
 			return JdbcType.OTHER;
