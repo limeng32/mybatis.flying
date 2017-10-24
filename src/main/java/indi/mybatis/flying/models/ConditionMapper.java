@@ -1,7 +1,7 @@
 package indi.mybatis.flying.models;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 
@@ -58,7 +58,7 @@ public class ConditionMapper implements Mapperable {
 	/**
 	 * 此变量的ignoreTag的set，默认为空。
 	 */
-	private ConcurrentSkipListSet<String> ignoreTagSet;
+	private HashSet<String> ignoreTagSet;
 
 	/**
 	 * 此变量的指定typeHandler的访问路径，默认为null。
@@ -152,14 +152,14 @@ public class ConditionMapper implements Mapperable {
 	}
 
 	@Override
-	public ConcurrentSkipListSet<String> getIgnoreTagSet() {
+	public HashSet<String> getIgnoreTagSet() {
 		if (ignoreTagSet == null) {
-			ignoreTagSet = new ConcurrentSkipListSet<>();
+			ignoreTagSet = new HashSet<>();
 		}
 		return ignoreTagSet;
 	}
 
-	public void setIgnoreTagSet(ConcurrentSkipListSet<String> ignoreTagSet) {
+	public void setIgnoreTagSet(HashSet<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
@@ -173,27 +173,4 @@ public class ConditionMapper implements Mapperable {
 		}
 	}
 
-	public FieldMapperAnnotation getFieldMapperAnnotation() {
-		return fieldMapperAnnotation;
-	}
-
-	public void setFieldMapperAnnotation(FieldMapperAnnotation fieldMapperAnnotation) {
-		this.fieldMapperAnnotation = fieldMapperAnnotation;
-	}
-
-	public Column getColumn() {
-		return column;
-	}
-
-	public void setColumn(Column column) {
-		this.column = column;
-	}
-
-	public Field getField() {
-		return field;
-	}
-
-	public void setField(Field field) {
-		this.field = field;
-	}
 }

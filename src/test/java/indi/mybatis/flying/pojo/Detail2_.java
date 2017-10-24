@@ -21,8 +21,8 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	@Column(name = "id")
 	private Integer id;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
-	@Column(name = "name")
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" })
+	@Column(name = "name__")
 	private java.lang.String name;
 
 	@Column

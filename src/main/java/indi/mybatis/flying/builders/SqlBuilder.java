@@ -519,7 +519,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object) throws Exception {
+	public static String buildInsertSql(Object object, String ignoreTag) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -536,7 +536,8 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if ((value == null && !fieldMapper.isOpVersionLock())) {
+			if ((value == null && !fieldMapper.isOpVersionLock())
+					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			} else if (((FieldMapper) fieldMapper).isOpVersionLock()) {
 				value = 0;

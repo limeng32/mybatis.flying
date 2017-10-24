@@ -2,7 +2,7 @@ package indi.mybatis.flying.models;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -66,7 +66,7 @@ public class FieldMapper implements Mapperable {
 	/**
 	 * 此变量的ignoreTag的set，默认为空。
 	 */
-	private ConcurrentSkipListSet<String> ignoreTagSet;
+	private HashSet<String> ignoreTagSet;
 
 	/**
 	 * 此变量的指定typeHandler的访问路径，默认为null。
@@ -228,14 +228,14 @@ public class FieldMapper implements Mapperable {
 	}
 
 	@Override
-	public ConcurrentSkipListSet<String> getIgnoreTagSet() {
+	public HashSet<String> getIgnoreTagSet() {
 		if (ignoreTagSet == null) {
-			ignoreTagSet = new ConcurrentSkipListSet<>();
+			ignoreTagSet = new HashSet<>();
 		}
 		return ignoreTagSet;
 	}
 
-	public void setIgnoreTagSet(ConcurrentSkipListSet<String> ignoreTagSet) {
+	public void setIgnoreTagSet(HashSet<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 

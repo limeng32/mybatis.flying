@@ -22,6 +22,14 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		flying:insert
 	</insert>
+	
+	<insert id="insertWithoutName" useGeneratedKeys="true" keyProperty="id">
+		flying:insert:noName
+	</insert>
+	
+	<insert id="insertWithoutFoo" useGeneratedKeys="true" keyProperty="id">
+		flying:insert:noFoo
+	</insert>
 
 	<update id="update">
 		flying:update

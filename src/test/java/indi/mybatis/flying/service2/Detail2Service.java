@@ -62,4 +62,14 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 		detail2.setLoginLogSource2(loginLogSource2);
 		loginLogSource2.setDetail2(mapper.selectAll(detail2));
 	}
+
+	@Override
+	public void insertWithoutName(Detail2_ t) {
+		mapper.insertWithoutName(t);
+	}
+
+	@Override
+	public void insertWithoutFoo(Detail2_ t) {
+		mapper.insertWithoutFoo(t);
+	}
 }

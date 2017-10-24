@@ -27,6 +27,10 @@ public interface Detail2Mapper extends MapperFace<Detail2_> {
 	@Override
 	public void insert(Detail2_ t);
 
+	public void insertWithoutName(Detail2_ t);
+
+	public void insertWithoutFoo(Detail2_ t);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int update(Detail2_ t);
