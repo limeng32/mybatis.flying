@@ -1,6 +1,9 @@
 package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
 
 import org.apache.ibatis.type.JdbcType;
 
@@ -16,8 +19,11 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	@FieldMapperAnnotation(dbFieldName = "iD", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
 	private Integer id;
 
-	@FieldMapperAnnotation(dbFieldName = "loginTime", jdbcType = JdbcType.TIMESTAMP)
+	@Column
 	private java.util.Date loginTime;
+
+	@Column(columnDefinition = "DATE")
+	private Date madetime;
 
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
@@ -50,6 +56,14 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 
 	public void setLoginIP(java.lang.String loginIP) {
 		this.loginIP = loginIP;
+	}
+
+	public Date getMadetime() {
+		return madetime;
+	}
+
+	public void setMadetime(Date madetime) {
+		this.madetime = madetime;
 	}
 
 	public Account_ getAccount() {

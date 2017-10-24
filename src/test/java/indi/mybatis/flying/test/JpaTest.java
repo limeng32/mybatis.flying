@@ -24,6 +24,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.Detail2_;
 import indi.mybatis.flying.service2.Detail2Service;
+import indi.mybatis.flying.service2.LoginLogSource2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -34,6 +35,9 @@ public class JpaTest {
 
 	@Autowired
 	private Detail2Service detail2Service;
+	
+	@Autowired
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Test
 	public void test1() {
@@ -52,6 +56,7 @@ public class JpaTest {
 		Assert.assertEquals("n", detail2.getName());
 		Assert.assertEquals(123, detail2.getNumber().intValue());
 		Assert.assertEquals("l", detail2.getLoginLogSource2().getLoginIP());
+		loginLogSource2Service.update(detail2.getLoginLogSource2());
 
 		Detail2_ detail2_2 = new Detail2_();
 		detail2_2.setName("name");
