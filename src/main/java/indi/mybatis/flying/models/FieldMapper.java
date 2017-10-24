@@ -12,6 +12,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
+import indi.mybatis.flying.utils.JdbcTypeEnum;
 import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
@@ -130,7 +131,9 @@ public class FieldMapper implements Mapperable {
 	}
 
 	public static JdbcType getColumnType(Column column, Field field) {
-		if (TypeJdbcTypeConverter.map.get(field.getType()) != null) {
+		if (!"".equals(column) && JdbcTypeEnum.forName(column.columnDefinition()) != null) {
+			return JdbcTypeEnum.forName(column.columnDefinition());
+		} else if (TypeJdbcTypeConverter.map.get(field.getType()) != null) {
 			return TypeJdbcTypeConverter.map.get(field.getType());
 		} else {
 			return JdbcType.OTHER;

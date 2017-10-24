@@ -22,7 +22,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	@Column
 	private java.util.Date loginTime;
 
-	@Column(columnDefinition = "DATE")
+	@Column(columnDefinition = "date")
 	private Date madetime;
 
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
