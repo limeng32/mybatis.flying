@@ -1,5 +1,6 @@
 package indi.mybatis.flying.test;
 
+import org.apache.ibatis.type.JdbcType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 import indi.mybatis.flying.pojo.Detail2_;
 import indi.mybatis.flying.service2.Detail2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
+import indi.mybatis.flying.utils.JdbcTypeEnum;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -35,7 +37,7 @@ public class JpaTest {
 
 	@Autowired
 	private Detail2Service detail2Service;
-	
+
 	@Autowired
 	private LoginLogSource2Service loginLogSource2Service;
 
@@ -69,5 +71,14 @@ public class JpaTest {
 		detail2_c.setDetail("detail");
 		Detail2_ detail2_3 = detail2Service.selectOne(detail2_c);
 		Assert.assertEquals(detail2_2.getId(), detail2_3.getId());
+	}
+
+	@Test
+	public void testJdbcTypeEnum() {
+		Assert.assertTrue(true);
+		Assert.assertEquals(JdbcType.VARCHAR, JdbcTypeEnum.forName("varchar"));
+		Assert.assertEquals(JdbcType.BIGINT, JdbcTypeEnum.forName("BIGINT"));
+		Assert.assertNull(JdbcTypeEnum.forName("asd"));
+		Assert.assertNull(JdbcTypeEnum.forName(null));
 	}
 }

@@ -98,7 +98,7 @@ public class FieldMapper implements Mapperable {
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 		} else if (column != null) {
 			setDbFieldName(getColumnName(column, field));
-			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
+			setJdbcType(getColumnType(column, field));
 		}
 	}
 
@@ -126,6 +126,14 @@ public class FieldMapper implements Mapperable {
 			return column.name();
 		} else {
 			return field.getName();
+		}
+	}
+
+	public static JdbcType getColumnType(Column column, Field field) {
+		if (TypeJdbcTypeConverter.map.get(field.getType()) != null) {
+			return TypeJdbcTypeConverter.map.get(field.getType());
+		} else {
+			return JdbcType.OTHER;
 		}
 	}
 
