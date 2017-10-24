@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 
 import org.apache.ibatis.type.JdbcType;
 
@@ -84,6 +85,8 @@ public class FieldMapper implements Mapperable {
 
 	private Column column;
 
+	private Id id;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
@@ -101,6 +104,10 @@ public class FieldMapper implements Mapperable {
 			setDbFieldName(getColumnName(column, field));
 			setJdbcType(getColumnType(column, field));
 		}
+		/* Id标注的优先级最高，所以写在最后 */
+		if (id != null) {
+			setUniqueKey(true);
+		}
 	}
 
 	public boolean buildMapper(Field field) {
@@ -109,6 +116,9 @@ public class FieldMapper implements Mapperable {
 			return false;
 		}
 		for (Annotation an1 : fieldAnnotations) {
+			if (an1 instanceof Id) {
+				setId((Id) an1);
+			}
 			if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
 				setField(field);
 				if (an1 instanceof FieldMapperAnnotation) {
@@ -269,6 +279,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setColumn(Column column) {
 		this.column = column;
+	}
+
+	public Id getId() {
+		return id;
+	}
+
+	public void setId(Id id) {
+		this.id = id;
 	}
 
 	public OpLockType getOpLockType() {

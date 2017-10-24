@@ -3,6 +3,7 @@ package indi.mybatis.flying.pojo;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 
 import org.apache.ibatis.type.JdbcType;
 
@@ -18,7 +19,8 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@Id
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER)
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)

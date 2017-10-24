@@ -19,7 +19,6 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
