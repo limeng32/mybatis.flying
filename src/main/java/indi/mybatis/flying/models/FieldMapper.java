@@ -87,11 +87,22 @@ public class FieldMapper implements Mapperable {
 
 	private Id id;
 
+	private boolean insertAble = true;
+
+	private boolean updateAble = true;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
 		}
 		setFieldName(field.getName());
+		/* Column标注的优先级最低，所以写在最前 */
+		if (column != null) {
+			setDbFieldName(getColumnName(column, field));
+			setJdbcType(getColumnType(column, field));
+			setInsertAble(column.insertable());
+			setUpdateAble(column.updatable());
+		}
 		if (fieldMapperAnnotation != null) {
 			setDbFieldName(fieldMapperAnnotation.dbFieldName());
 			setJdbcType(fieldMapperAnnotation.jdbcType());
@@ -100,9 +111,6 @@ public class FieldMapper implements Mapperable {
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
-		} else if (column != null) {
-			setDbFieldName(getColumnName(column, field));
-			setJdbcType(getColumnType(column, field));
 		}
 		/* Id标注的优先级最高，所以写在最后 */
 		if (id != null) {
@@ -311,6 +319,22 @@ public class FieldMapper implements Mapperable {
 
 	public void setField(Field field) {
 		this.field = field;
+	}
+
+	public boolean isInsertAble() {
+		return insertAble;
+	}
+
+	public void setInsertAble(boolean insertAble) {
+		this.insertAble = insertAble;
+	}
+
+	public boolean isUpdateAble() {
+		return updateAble;
+	}
+
+	public void setUpdateAble(boolean updateAble) {
+		this.updateAble = updateAble;
 	}
 
 }

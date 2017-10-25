@@ -1,5 +1,7 @@
 package indi.mybatis.flying.test;
 
+import java.util.Calendar;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,11 +58,13 @@ public class IgnoreInsertAndUpdateTest {
 		d.setName("n");
 		d.setNumber(123);
 		d.setDetail("d");
+		d.setCreatetime(Calendar.getInstance().getTime());
 		detail2Service.insertWithoutName(d);
 
 		d2.setName("n2");
 		d2.setNumber(234);
 		d2.setDetail("d2");
+		d2.setCreatetime(Calendar.getInstance().getTime());
 		detail2Service.insertWithoutFoo(d2);
 	}
 

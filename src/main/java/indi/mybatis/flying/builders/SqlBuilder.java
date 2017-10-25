@@ -536,8 +536,8 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if ((value == null && !fieldMapper.isOpVersionLock())
-					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
+					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			} else if (((FieldMapper) fieldMapper).isOpVersionLock()) {
 				value = 0;
@@ -594,7 +594,8 @@ public class SqlBuilder {
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (value == null || (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+			if (!fieldMapper.isUpdateAble()
+					|| (value == null || (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			}
 			allFieldNull = false;
@@ -664,7 +665,8 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)) {
+			if (!fieldMapper.isUpdateAble()
+					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			}
 			allFieldNull = false;
