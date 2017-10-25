@@ -42,6 +42,10 @@
 	<update id="updatePersistent">
 		flying:updatePersistent
 	</update>
+	
+	<update id="updatePersistentWithoutName">
+		flying:updatePersistent:noName
+	</update>
 
 	<delete id="delete">
 		flying:delete

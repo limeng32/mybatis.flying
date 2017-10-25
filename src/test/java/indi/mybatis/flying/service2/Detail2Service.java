@@ -77,4 +77,9 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 	public int updateWithoutName(Detail2_ t) {
 		return mapper.updateWithoutName(t);
 	}
+
+	@Override
+	public int updatePersistentWithoutName(Detail2_ t) {
+		return mapper.updatePersistentWithoutName(t);
+	}
 }

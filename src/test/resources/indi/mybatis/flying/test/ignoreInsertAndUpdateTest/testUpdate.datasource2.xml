@@ -1,7 +1,8 @@
 <dataset>
 	<detail2_ ID="1" NAME="n1" NUMBER_="123" DETAIL="d"
 		LOGINLOG_ID="11" />
-	<detail2_ ID="2" NAME="n2" NUMBER_="234" DETAIL="d2" />
+	<detail2_ ID="2" NAME="n2" NUMBER_="234" DETAIL="d2"
+		LOGINLOG_ID="12" />
 	<LoginLog_ ID="11" LOGINIP="l1" />
 	<LoginLog_ ID="12" LOGINIP="l2" />
 </dataset>

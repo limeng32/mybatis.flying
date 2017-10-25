@@ -42,6 +42,9 @@ public interface Detail2Mapper extends MapperFace<Detail2_> {
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int updatePersistent(Detail2_ t);
 
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public int updatePersistentWithoutName(Detail2_ t);
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int delete(Detail2_ t);

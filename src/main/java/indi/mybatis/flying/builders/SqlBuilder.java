@@ -646,7 +646,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdatePersistentSql(Object object) throws Exception {
+	public static String buildUpdatePersistentSql(Object object, String ignoreTag) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -664,6 +664,9 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			if (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)) {
+				continue;
+			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 			if (fieldMapper.isForeignKey()) {

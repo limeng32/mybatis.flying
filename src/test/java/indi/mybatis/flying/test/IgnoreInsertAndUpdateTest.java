@@ -78,5 +78,11 @@ public class IgnoreInsertAndUpdateTest {
 		LoginLogSource2 log = loginLogSource2Service.select(12);
 		detail.setLoginLogSource2(log);
 		detail2Service.updateWithoutName(detail);
+
+		Detail2_ detail2 = detail2Service.select(2);
+		detail2.setName(null);
+		detail2.setNumber(null);
+		detail2.setLoginLogSource2(null);
+		detail2Service.updatePersistentWithoutName(detail2);
 	}
 }
