@@ -537,7 +537,7 @@ public class SqlBuilder {
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
-					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
+					|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			} else if (((FieldMapper) fieldMapper).isOpVersionLock()) {
 				value = 0;
@@ -595,7 +595,7 @@ public class SqlBuilder {
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (!fieldMapper.isUpdateAble()
-					|| (value == null || (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
+					|| (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			}
 			allFieldNull = false;
@@ -666,7 +666,7 @@ public class SqlBuilder {
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if (!fieldMapper.isUpdateAble()
-					|| (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+					|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			}
 			allFieldNull = false;
@@ -762,7 +762,7 @@ public class SqlBuilder {
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if (ignoreTag == null || (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+			if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				selectSql.append(fieldMapper.getDbFieldName()).append(COMMA);
 			}
 		}
@@ -930,7 +930,7 @@ public class SqlBuilder {
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-				if (ignoreTag == null || (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(COMMA);
 				}
 			}
