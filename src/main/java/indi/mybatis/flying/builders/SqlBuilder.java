@@ -575,7 +575,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdateSql(Object object) throws Exception {
+	public static String buildUpdateSql(Object object, String ignoreTag) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -594,7 +594,7 @@ public class SqlBuilder {
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (value == null) {
+			if (value == null || (ignoreTag != null && fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			}
 			allFieldNull = false;

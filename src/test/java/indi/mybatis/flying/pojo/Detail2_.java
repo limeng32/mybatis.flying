@@ -34,7 +34,8 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	@Column(name = "number_")
 	private Integer number;
 
-	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD")
+	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD", ignoreTag = {
+			"noName" })
 	private LoginLogSource2 loginLogSource2;
 
 	@Override

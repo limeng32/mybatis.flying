@@ -1,0 +1,7 @@
+<dataset>
+	<detail2_ ID="1" NAME="n1" NUMBER_="123" DETAIL="dNew"
+		LOGINLOG_ID="11" />
+	<detail2_ ID="2" NAME="n2" NUMBER_="234" DETAIL="d2" />
+	<LoginLog_ ID="11" LOGINIP="l1" />
+	<LoginLog_ ID="12" LOGINIP="l2" />
+</dataset>

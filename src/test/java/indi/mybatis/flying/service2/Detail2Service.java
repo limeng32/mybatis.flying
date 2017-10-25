@@ -72,4 +72,9 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 	public void insertWithoutFoo(Detail2_ t) {
 		mapper.insertWithoutFoo(t);
 	}
+
+	@Override
+	public int updateWithoutName(Detail2_ t) {
+		return mapper.updateWithoutName(t);
+	}
 }

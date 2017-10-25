@@ -23,6 +23,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.pojo.Detail2_;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.service2.Detail2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 
@@ -61,5 +62,21 @@ public class IgnoreInsertAndUpdateTest {
 		d2.setNumber(234);
 		d2.setDetail("d2");
 		detail2Service.insertWithoutFoo(d2);
+	}
+
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/ignoreInsertAndUpdateTest/testUpdate.datasource2.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/ignoreInsertAndUpdateTest/testUpdate.datasource2.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/ignoreInsertAndUpdateTest/testUpdate.datasource2.result.xml") })
+	public void testUpdate() {
+		Detail2_ detail = detail2Service.select(1);
+		detail.setName("n1New");
+		detail.setDetail("dNew");
+		LoginLogSource2 log = loginLogSource2Service.select(12);
+		detail.setLoginLogSource2(log);
+		detail2Service.updateWithoutName(detail);
 	}
 }

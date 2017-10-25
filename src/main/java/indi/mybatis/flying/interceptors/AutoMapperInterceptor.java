@@ -108,7 +108,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel.getIgnoreTag());
 				break;
 			case update:
-				newSql = SqlBuilder.buildUpdateSql(parameterObject);
+				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel.getIgnoreTag());
 				break;
 			case updatePersistent:
 				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject);
