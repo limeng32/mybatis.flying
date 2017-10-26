@@ -55,7 +55,7 @@
 		<mysql-connector-java.version>5.1.31</mysql-connector-java.version>
 		<atomikos.version>3.9.3</atomikos.version>
 		<jta.version>1.1</jta.version>
-		<hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
+		<javax.persistence.version>1.0</javax.persistence.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -193,9 +193,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>${hibernate.jpa.version}</version>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>${javax.persistence.version}</version>
 		</dependency>
 	</dependencies>
 	<repositories>
