@@ -323,7 +323,7 @@
 			</activation>
 			<properties>
 				<gpg.executable>gpg</gpg.executable>
-				<gpg.passphrase>Aptx4869</gpg.passphrase>
+				<gpg.passphrase>${flying.gpg.passphrase}</gpg.passphrase>
 			</properties>
 		</profile>
 		<profile>

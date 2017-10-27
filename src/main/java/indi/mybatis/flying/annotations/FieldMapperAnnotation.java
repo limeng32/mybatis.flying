@@ -63,7 +63,7 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 是否拥有忽略标志。默认为无。当有忽略标志foo时，flying表达式最后加上“:foo”即可在查询语句中忽略此字段
+	 * 是否拥有忽略标志。默认为无。当有忽略标志foo时，flying表达式最后加上“:foo”即可在新增、查询、修改语句中忽略此字段
 	 * 
 	 * @return String[]
 	 */
@@ -73,7 +73,7 @@ public @interface FieldMapperAnnotation {
 	 * 
 	 * 跨库相关表是否使用指定TypeHandler处理。默认为Void.class，表示不指定TypeHandler。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
 	 * 
-	 * @return Class<?>
+	 * @return Class
 	 */
 	Class<?> dbAssociationTypeHandler() default Void.class;
 }
