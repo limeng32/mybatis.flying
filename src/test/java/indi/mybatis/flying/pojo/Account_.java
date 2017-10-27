@@ -2,6 +2,9 @@ package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+
 import org.apache.ibatis.type.JdbcType;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -16,13 +19,14 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@Id
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER)
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
 
-	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR)
+	@Column
 	private java.lang.String email;
 
 	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noPassword" })
@@ -37,7 +41,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	/**
 	 * 是否已激活
 	 */
-	@FieldMapperAnnotation(dbFieldName = "activated", jdbcType = JdbcType.BOOLEAN)
+	@Column
 	private Boolean activated;
 
 	/**
