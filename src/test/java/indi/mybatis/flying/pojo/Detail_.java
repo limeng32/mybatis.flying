@@ -2,13 +2,14 @@ package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
 
+import javax.persistence.Table;
+
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
-import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 
-@TableMapperAnnotation(tableName = "detail_")
+@Table(name = "detail_")
 public class Detail_ extends PojoSupport<Detail_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;

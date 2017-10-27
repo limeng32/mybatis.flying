@@ -61,13 +61,9 @@
 
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
-		<!-- <association property="role" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.select" column="role_id" /> -->
-		<!-- <association property="roleDeputy" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.select" column="deputy_id" /> -->
-		<result property="role" column="role_id"
-			typeHandler="indi.mybatis.flying.typeHandler.RoleTypeHandler" />
-		<result property="roleDeputy" column="deputy_id"
-			typeHandler="indi.mybatis.flying.typeHandler.RoleTypeHandler" />
+		<association property="role" javaType="Role_"
+			select="indi.mybatis.flying.mapper.RoleMapper.select" column="role_id" />
+		<association property="roleDeputy" javaType="Role_"
+			select="indi.mybatis.flying.mapper.RoleMapper.select" column="deputy_id" />
 	</resultMap>
 </mapper>

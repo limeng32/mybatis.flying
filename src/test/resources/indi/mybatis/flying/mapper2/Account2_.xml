@@ -37,9 +37,7 @@
 
 	<resultMap id="result" type="Account2_" autoMapping="true">
 		<id property="id" column="id" />
-		<!-- <association property="role" javaType="Role2_" select="indi.mybatis.flying.mapper2.Role2Mapper.select" 
-			column="role_id" /> -->
-		<result property="role" column="role_id"
-			typeHandler="indi.mybatis.flying.typeHandler.Role2TypeHandler" />
+		<association property="role" javaType="Role2_"
+			select="indi.mybatis.flying.mapper2.Role2Mapper.select" column="role_id" />
 	</resultMap>
 </mapper>

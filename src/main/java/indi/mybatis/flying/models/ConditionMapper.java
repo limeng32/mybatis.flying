@@ -1,15 +1,24 @@
 package indi.mybatis.flying.models;
 
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+
+import javax.persistence.Column;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.exception.BuildSqlException;
+import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.ConditionType;
+import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
  * 条件映射类，用于描述被ConditionMapperAnnotation标注过的对象字段和sql之间的对应关系
  */
 public class ConditionMapper implements Mapperable {
+
+	private Field field;
 
 	/**
 	 * Java对象字段名
@@ -49,12 +58,36 @@ public class ConditionMapper implements Mapperable {
 	/**
 	 * 此变量的ignoreTag的set，默认为空。
 	 */
-	private ConcurrentSkipListSet<String> ignoreTagSet;
+	private HashSet<String> ignoreTagSet;
 
 	/**
 	 * 此变量的指定typeHandler的访问路径，默认为null。
 	 */
 	private String typeHandlerPath;
+
+	private FieldMapperAnnotation fieldMapperAnnotation;
+
+	private Column column;
+
+	public void buildMapper() {
+		if (fieldMapperAnnotation == null && column == null) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
+		}
+		setFieldName(field.getName());
+		if (fieldMapperAnnotation != null) {
+			setDbFieldName(fieldMapperAnnotation.dbFieldName());
+			setJdbcType(fieldMapperAnnotation.jdbcType());
+			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
+			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+		} else if (column != null) {
+			if ("".equals(column.name())) {
+				setDbFieldName(field.getName());
+			} else {
+				setDbFieldName(column.name());
+			}
+			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
+		}
+	}
 
 	@Override
 	public String getFieldName() {
@@ -119,14 +152,14 @@ public class ConditionMapper implements Mapperable {
 	}
 
 	@Override
-	public ConcurrentSkipListSet<String> getIgnoreTagSet() {
+	public HashSet<String> getIgnoreTagSet() {
 		if (ignoreTagSet == null) {
-			ignoreTagSet = new ConcurrentSkipListSet<>();
+			ignoreTagSet = new HashSet<>();
 		}
 		return ignoreTagSet;
 	}
 
-	public void setIgnoreTagSet(ConcurrentSkipListSet<String> ignoreTagSet) {
+	public void setIgnoreTagSet(HashSet<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
@@ -139,4 +172,5 @@ public class ConditionMapper implements Mapperable {
 			this.typeHandlerPath = typeHandler.getName();
 		}
 	}
+
 }
