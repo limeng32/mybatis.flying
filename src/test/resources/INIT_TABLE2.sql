@@ -19,9 +19,11 @@ DROP TABLE IF EXISTS detail2_;
 CREATE TABLE detail2_ (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(32) DEFAULT NULL,
+  detail varchar(32) DEFAULT NULL,
+  createtime datetime DEFAULT NULL,
+  number_ int(11) DEFAULT NULL,
   loginlog_id int(11) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY loginlog1 (loginlog_id) USING BTREE
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 DROP TABLE IF EXISTS loginlog_;
 CREATE TABLE loginlog_ (
@@ -29,6 +31,8 @@ CREATE TABLE loginlog_ (
   loginIP varchar(50) DEFAULT NULL,
   accountId int(11) DEFAULT NULL,
   loginTime datetime DEFAULT NULL,
+  madetime datetime DEFAULT NULL,
+  confirmtime datetime DEFAULT NULL,
   PRIMARY KEY (id),
   KEY account1 (accountId)
 ) ENGINE=InnoDB AUTO_INCREMENT=333 DEFAULT CHARSET=utf8;

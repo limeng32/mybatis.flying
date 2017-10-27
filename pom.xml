@@ -4,7 +4,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.8.1</version>
+	<version>0.8.2</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -52,6 +52,7 @@
 		<mysql-connector-java.version>5.1.31</mysql-connector-java.version>
 		<atomikos.version>3.9.3</atomikos.version>
 		<jta.version>1.1</jta.version>
+		<javax.persistence.version>1.0</javax.persistence.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -187,6 +188,11 @@
 			<artifactId>transactions-jdbc</artifactId>
 			<version>3.9.3</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>${javax.persistence.version}</version>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -331,7 +337,7 @@
 			</activation>
 			<properties>
 				<gpg.executable>gpg</gpg.executable>
-				<gpg.passphrase>Aptx4869</gpg.passphrase>
+				<gpg.passphrase>${flying.gpg.passphrase}</gpg.passphrase>
 			</properties>
 		</profile>
 		<profile>

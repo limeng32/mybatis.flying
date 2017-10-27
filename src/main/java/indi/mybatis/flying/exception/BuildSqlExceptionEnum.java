@@ -9,7 +9,8 @@ public enum BuildSqlExceptionEnum {
 									"Sorry, I cannot to build sql for a class which all fields are null"), updateUniqueKeyIsNull(
 											"Unique key can't be null, build update sql failed:"), updatePersistentUniqueKeyIsNull(
 													"Unique key can't be null, build updatePersistent sql failed:"), deleteUniqueKeyIsNull(
-															"Unique key can't be null, build delete sql failed:");
+															"Unique key can't be null, build delete sql failed:"), noFieldMapperAnnotationOrColumnAnnotation(
+																	"The Field have no fieldMapperAnnotation or columnAnnotation");
 
 	private final String description;
 
