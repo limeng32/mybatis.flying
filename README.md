@@ -118,23 +118,23 @@ flying 特点总结如下：
 ```xml
     <groupId>com.github.limeng32</groupId>
     <artifactId>mybatis.flying</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
 ```
 
 mybatis 版本与 flying 最新版本的对应关系见下：
 
  |mybatis 版本|flying 版本 |
  |---|---|
- |3.2.6、3.2.7、3.2.8|0.7.3|
- |3.3.0、3.3.1|0.8.1|
- |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5|0.9.1|
+ |3.2.6、3.2.7、3.2.8|0.7.4|
+ |3.3.0、3.3.1|0.8.2|
+ |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5|0.9.2|
  
 之所以采用分版本发布的方式是因为我们对 mybatis 每个版本的用户都认真负责，力求使您得到 flying 最大的好处。
 
 #### flying 代码示例：
 我们还为您提供了两个快速上手的示例：
 
-1. 单数据源不使用缓存：[https://gitee.com/ro4074/flying-demo](https://gitee.com/ro4074/flying-demo)
-2. 多数据源且使用缓存：[https://gitee.com/ro4074/flying-demo2](https://gitee.com/ro4074/flying-demo2)
+1. 最新版本下单数据源不使用缓存：[https://gitee.com/ro4074/flying-demo/tree/use-flying-0.9.2/](https://gitee.com/ro4074/flying-demo/tree/use-flying-0.9.2/)
+2. 最新版本下多数据源且使用缓存：[https://gitee.com/ro4074/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/ro4074/flying-demo2/tree/use-flying-0.9.2/)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)。
