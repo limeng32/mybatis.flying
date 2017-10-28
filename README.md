@@ -41,19 +41,20 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
 
 ```Java
 package myPackage;
-import org.apache.ibatis.type.JdbcType;
-import indi.mybatis.flying.annotations.FieldMapperAnnotation;
-import indi.mybatis.flying.annotations.TableMapperAnnotation;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
     
-@TableMapperAnnotation(tableName = "account")
+@Table(name = "account")
 public class Account {
-    @FieldMapperAnnotation(dbFieldName = "account_id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+    @Id
+    @Column
     private Integer id;
 	    
-    @FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
+    @Column
     private java.lang.String name;
-    
-    @FieldMapperAnnotation(dbFieldName = "age", jdbcType = JdbcType.INTEGER)
+
+    @Column
     private Integer age;
 	    
     /* 省略 getter 和 setter */
