@@ -4,7 +4,7 @@ CREATE TABLE account_ (
   name varchar(100) DEFAULT NULL,
   email varchar(320) DEFAULT NULL,
   password varchar(64) DEFAULT NULL,
-  activated tinyint(1) DEFAULT NULL,
+  activated tinyint(1) DEFAULT NULL ,
   activateValue varchar(8) DEFAULT NULL,
   opLock int(11) DEFAULT NULL,
   status char(1) DEFAULT NULL,
