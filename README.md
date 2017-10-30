@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/release/limeng32/mybatis.flying.svg)](https://github.com/limeng32/mybatis.flying/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-项目介绍请见 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) ，国内代码托管网站请见 [gitee.com/ro4074/mybatis.flying](http://gitee.com/ro4074/mybatis.flying)，我们为开发最好的 mybatis 插件而努力。
+项目介绍请见 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) ，国内代码托管网站请见 [gitee.com/limeng32/mybatis.flying](http://gitee.com/limeng32/mybatis.flying)，我们为开发最好的 mybatis 插件而努力。
 
 flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供了一种全新的操作数据的方式，希望能对您有所帮助。
 
@@ -135,7 +135,7 @@ mybatis 版本与 flying 最新版本的对应关系见下：
 #### flying 代码示例：
 我们还为您提供了两个快速上手的示例：
 
-1. 最新版本下单数据源不使用缓存：[https://gitee.com/ro4074/flying-demo/tree/use-flying-0.9.2/](https://gitee.com/ro4074/flying-demo/tree/use-flying-0.9.2/)
-2. 最新版本下多数据源且使用缓存：[https://gitee.com/ro4074/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/ro4074/flying-demo2/tree/use-flying-0.9.2/)
+1. 最新版本下单数据源不使用缓存：[https://gitee.com/limeng32/flying-demo/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo/tree/use-flying-0.9.2/)
+2. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)。
