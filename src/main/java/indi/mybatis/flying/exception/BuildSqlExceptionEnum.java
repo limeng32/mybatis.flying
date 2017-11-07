@@ -22,6 +22,7 @@ public enum BuildSqlExceptionEnum {
 		return description;
 	}
 
+	@Override
 	public String toString() {
 		return description;
 	}

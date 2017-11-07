@@ -55,6 +55,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
+	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		String name = invocation.getMethod().getName();
 		Object result = null;
@@ -72,6 +73,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 		return result;
 	}
 
+	@Override
 	public Object plugin(Object target) {
 		return Plugin.wrap(target, this);
 	}
@@ -219,6 +221,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	 * Executor插件配置信息加载点 properties中有 "dependency" 属性来指示
 	 * 配置的缓存依赖配置信息，读取文件，初始化EnhancedCacheManager
 	 */
+	@Override
 	public void setProperties(Properties properties) {
 
 		if (!cachingManager.isInitialized()) {

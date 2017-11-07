@@ -49,6 +49,7 @@ public class ThreadTest extends TestCase {
 			this.name = name;
 		}
 
+		@Override
 		public void runTest() throws Throwable {
 			long l = Math.round(1 + Math.random() * 1);
 			// 线程等待1到2秒

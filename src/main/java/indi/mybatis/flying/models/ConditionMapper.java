@@ -163,6 +163,7 @@ public class ConditionMapper implements Mapperable {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
+	@Override
 	public String getTypeHandlerPath() {
 		return typeHandlerPath;
 	}

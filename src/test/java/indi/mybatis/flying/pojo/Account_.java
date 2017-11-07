@@ -63,6 +63,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 
 	private java.util.Collection<LoginLogSource2> loginLogSource2;
 
+	@Override
 	public Integer getId() {
 		return id;
 	}
@@ -124,28 +125,33 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public java.util.Collection<LoginLogSource2> getLoginLogSource2() {
-		if (loginLogSource2 == null)
+		if (loginLogSource2 == null) {
 			loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		}
 		return loginLogSource2;
 	}
 
 	public java.util.Iterator<LoginLogSource2> getIteratorLoginLogSource2() {
-		if (loginLogSource2 == null)
+		if (loginLogSource2 == null) {
 			loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		}
 		return loginLogSource2.iterator();
 	}
 
 	public void setLoginLogSource2(java.util.Collection<LoginLogSource2> newLoginLogSource2) {
 		removeAllLoginLogSource2();
-		for (java.util.Iterator<LoginLogSource2> iter = newLoginLogSource2.iterator(); iter.hasNext();)
+		for (java.util.Iterator<LoginLogSource2> iter = newLoginLogSource2.iterator(); iter.hasNext();) {
 			addLoginLogSource2((LoginLogSource2) iter.next());
+		}
 	}
 
 	public void addLoginLogSource2(LoginLogSource2 newLoginLogSource2) {
-		if (newLoginLogSource2 == null)
+		if (newLoginLogSource2 == null) {
 			return;
-		if (this.loginLogSource2 == null)
+		}
+		if (this.loginLogSource2 == null) {
 			this.loginLogSource2 = new java.util.LinkedHashSet<LoginLogSource2>();
+		}
 		if (!this.loginLogSource2.contains(newLoginLogSource2)) {
 			this.loginLogSource2.add(newLoginLogSource2);
 			newLoginLogSource2.setAccount(this);
@@ -164,9 +170,10 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public void removeLoginLogSource2(LoginLogSource2 oldLoginLogSource2) {
-		if (oldLoginLogSource2 == null)
+		if (oldLoginLogSource2 == null) {
 			return;
-		if (this.loginLogSource2 != null)
+		}
+		if (this.loginLogSource2 != null) {
 			if (this.loginLogSource2.contains(oldLoginLogSource2)) {
 				for (LoginLogSource2 temp : this.loginLogSource2) {
 					if (oldLoginLogSource2.equals(temp)) {
@@ -179,6 +186,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 				this.loginLogSource2.remove(oldLoginLogSource2);
 				oldLoginLogSource2.setAccount((Account_) null);
 			}
+		}
 	}
 
 	public void removeAllLoginLogSource2() {
@@ -194,28 +202,33 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public java.util.Collection<LoginLog_> getLoginLog() {
-		if (loginLog == null)
+		if (loginLog == null) {
 			loginLog = new java.util.LinkedHashSet<LoginLog_>();
+		}
 		return loginLog;
 	}
 
 	public java.util.Iterator<LoginLog_> getIteratorLoginLog() {
-		if (loginLog == null)
+		if (loginLog == null) {
 			loginLog = new java.util.LinkedHashSet<LoginLog_>();
+		}
 		return loginLog.iterator();
 	}
 
 	public void setLoginLog(java.util.Collection<LoginLog_> newLoginLog) {
 		removeAllLoginLog();
-		for (java.util.Iterator<LoginLog_> iter = newLoginLog.iterator(); iter.hasNext();)
+		for (java.util.Iterator<LoginLog_> iter = newLoginLog.iterator(); iter.hasNext();) {
 			addLoginLog((LoginLog_) iter.next());
+		}
 	}
 
 	public void addLoginLog(LoginLog_ newLoginLog) {
-		if (newLoginLog == null)
+		if (newLoginLog == null) {
 			return;
-		if (this.loginLog == null)
+		}
+		if (this.loginLog == null) {
 			this.loginLog = new java.util.LinkedHashSet<LoginLog_>();
+		}
 		if (!this.loginLog.contains(newLoginLog)) {
 			this.loginLog.add(newLoginLog);
 			newLoginLog.setAccount(this);
@@ -234,9 +247,10 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public void removeLoginLog(LoginLog_ oldLoginLog) {
-		if (oldLoginLog == null)
+		if (oldLoginLog == null) {
 			return;
-		if (this.loginLog != null)
+		}
+		if (this.loginLog != null) {
 			if (this.loginLog.contains(oldLoginLog)) {
 				for (LoginLog_ temp : this.loginLog) {
 					if (oldLoginLog.equals(temp)) {
@@ -249,6 +263,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 				this.loginLog.remove(oldLoginLog);
 				oldLoginLog.setAccount((Account_) null);
 			}
+		}
 	}
 
 	public void removeAllLoginLog() {

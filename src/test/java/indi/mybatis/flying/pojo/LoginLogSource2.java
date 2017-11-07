@@ -37,6 +37,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 
 	private java.util.Collection<Detail2_> detail2;
 
+	@Override
 	public Integer getId() {
 		return id;
 	}
@@ -96,28 +97,33 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	}
 
 	public java.util.Collection<Detail2_> getDetail2() {
-		if (detail2 == null)
+		if (detail2 == null) {
 			detail2 = new java.util.LinkedHashSet<Detail2_>();
+		}
 		return detail2;
 	}
 
 	public java.util.Iterator<Detail2_> getIteratorDetail2() {
-		if (detail2 == null)
+		if (detail2 == null) {
 			detail2 = new java.util.LinkedHashSet<Detail2_>();
+		}
 		return detail2.iterator();
 	}
 
 	public void setDetail2(java.util.Collection<Detail2_> newDetail2) {
 		removeAllDetail2();
-		for (java.util.Iterator<Detail2_> iter = newDetail2.iterator(); iter.hasNext();)
+		for (java.util.Iterator<Detail2_> iter = newDetail2.iterator(); iter.hasNext();) {
 			addDetail2((Detail2_) iter.next());
+		}
 	}
 
 	public void addDetail2(Detail2_ newDetail2) {
-		if (newDetail2 == null)
+		if (newDetail2 == null) {
 			return;
-		if (this.detail2 == null)
+		}
+		if (this.detail2 == null) {
 			this.detail2 = new java.util.LinkedHashSet<Detail2_>();
+		}
 		if (!this.detail2.contains(newDetail2)) {
 			this.detail2.add(newDetail2);
 			newDetail2.setLoginLogSource2(this);
@@ -136,9 +142,10 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	}
 
 	public void removeDetail2(Detail2_ oldDetail2) {
-		if (oldDetail2 == null)
+		if (oldDetail2 == null) {
 			return;
-		if (this.detail2 != null)
+		}
+		if (this.detail2 != null) {
 			if (this.detail2.contains(oldDetail2)) {
 				for (Detail2_ temp : this.detail2) {
 					if (oldDetail2.equals(temp)) {
@@ -151,6 +158,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 				this.detail2.remove(oldDetail2);
 				oldDetail2.setLoginLogSource2((LoginLogSource2) null);
 			}
+		}
 	}
 
 	public void removeAllDetail2() {

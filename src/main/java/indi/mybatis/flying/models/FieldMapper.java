@@ -247,6 +247,7 @@ public class FieldMapper implements Mapperable {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
+	@Override
 	public String getTypeHandlerPath() {
 		return typeHandlerPath;
 	}

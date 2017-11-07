@@ -15,6 +15,7 @@ public enum AutoMapperExceptionEnum {
 		return description;
 	}
 
+	@Override
 	public String toString() {
 		return description;
 	}
