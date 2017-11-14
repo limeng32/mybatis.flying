@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
+import indi.mybatis.flying.statics.KeyGenerationType;
 import indi.mybatis.flying.utils.CookOriginalSql;
 
 public class CookOriginalSqlTest {
@@ -20,11 +21,43 @@ public class CookOriginalSqlTest {
 
 	@Test
 	public void testCook2() {
-		String sql = "flying?:selectAll:noPassword";
+		String sql = "flying:selectAll(uuid):noPassword";
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(sql);
 		Assert.assertTrue(flyingModel.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.selectAll, flyingModel.getActionType());
 		Assert.assertEquals("noPassword", flyingModel.getIgnoreTag());
+		Assert.assertNull(flyingModel.getKeyGenerationType());
+	}
+
+	@Test
+	public void testCook3() {
+		String sql = "flying:insert(uuid):noPassword";
+		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(sql);
+		Assert.assertTrue(flyingModel.isHasFlyingFeature());
+		Assert.assertEquals(ActionType.insert, flyingModel.getActionType());
+		Assert.assertEquals("noPassword", flyingModel.getIgnoreTag());
+		Assert.assertEquals(KeyGenerationType.uuid, flyingModel.getKeyGenerationType());
+
+		String sql2 = "flying:insert():";
+		FlyingModel flyingModel2 = CookOriginalSql.fetchFlyingFeature(sql2);
+		Assert.assertTrue(flyingModel2.isHasFlyingFeature());
+		Assert.assertEquals(ActionType.insert, flyingModel2.getActionType());
+		Assert.assertEquals("", flyingModel2.getIgnoreTag());
+		Assert.assertNull(flyingModel2.getKeyGenerationType());
+
+		String sql3 = "flying:insert(millisecond)";
+		FlyingModel flyingModel3 = CookOriginalSql.fetchFlyingFeature(sql3);
+		Assert.assertTrue(flyingModel3.isHasFlyingFeature());
+		Assert.assertEquals(ActionType.insert, flyingModel3.getActionType());
+		Assert.assertNull(flyingModel3.getIgnoreTag());
+		Assert.assertEquals(KeyGenerationType.millisecond, flyingModel3.getKeyGenerationType());
+
+		String sql4 = "flying:insert(microsecond)";
+		FlyingModel flyingModel4 = CookOriginalSql.fetchFlyingFeature(sql4);
+		Assert.assertTrue(flyingModel4.isHasFlyingFeature());
+		Assert.assertEquals(ActionType.insert, flyingModel4.getActionType());
+		Assert.assertNull(flyingModel4.getIgnoreTag());
+		Assert.assertEquals(KeyGenerationType.microsecond, flyingModel4.getKeyGenerationType());
 	}
 
 }
