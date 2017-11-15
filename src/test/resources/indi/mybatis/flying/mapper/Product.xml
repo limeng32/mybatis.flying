@@ -7,8 +7,12 @@
 		flying#{?}:select:noPassword
 	</select>
 
+	<select id="selectOne" resultMap="result">
+		flying:selectOne
+	</select>
+
 	<insert id="insert" keyProperty="id">
-		flying:insert
+		flying:insert(uuid)
 	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">

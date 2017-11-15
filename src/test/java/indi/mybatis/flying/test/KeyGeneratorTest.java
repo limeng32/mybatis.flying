@@ -39,6 +39,18 @@ public class KeyGeneratorTest {
 	public void test1() {
 		Product product = productService.select("a");
 		Assert.assertEquals("n", product.getName());
+
+		Product product2 = new Product();
+//		product2.setId("b");
+		product2.setName("n2");
+		product2.setName2("asd");
+		productService.insert(product2);
+		Assert.assertEquals("c", product2.getId());
+
+		Product p = new Product();
+		p.setName("n2");
+		Product product3 = productService.selectOne(p);
+		Assert.assertEquals("c", product3.getId());
 	}
 
 }

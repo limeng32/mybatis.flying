@@ -1,3 +1,4 @@
 <dataset>
-	<product ID="a" NAME="n" />
+	<product NAME="n" />
+	<product NAME="n2" />
 </dataset>

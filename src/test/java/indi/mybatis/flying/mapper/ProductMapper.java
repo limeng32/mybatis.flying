@@ -11,6 +11,9 @@ public interface ProductMapper {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Product select(Object id);
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Product selectOne(Product t);
+
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insert(Product t);
 

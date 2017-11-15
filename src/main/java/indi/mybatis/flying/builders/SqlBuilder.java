@@ -29,6 +29,7 @@ import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
 import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
+import indi.mybatis.flying.statics.KeyGenerationType;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -519,7 +520,8 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object, String ignoreTag) throws Exception {
+	public static String buildInsertSql(Object object, String ignoreTag, KeyGenerationType keyGenerationType)
+			throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -534,6 +536,7 @@ public class SqlBuilder {
 		valueSql.append(VALUES_OPENPAREN);
 
 		boolean allFieldNull = true;
+		boolean uniqueKeyHandled = false;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
@@ -555,7 +558,34 @@ public class SqlBuilder {
 			if (fieldMapper.getTypeHandlerPath() != null) {
 				valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 			}
+			if (fieldMapper.isUniqueKey()) {
+				uniqueKeyHandled = true;
+				if (keyGenerationType != null) {
+					switch (keyGenerationType) {
+					case uuid:
+						valueSql.append(COMMA_TYPEHANDLER_EQUAL).append("indi.mybatis.flying.handlers.UuidTypeHandler");
+						break;
+					default:
+						break;
+					}
+				}
+			}
 			valueSql.append(CLOSEBRACE_COMMA);
+		}
+		if (keyGenerationType != null && !uniqueKeyHandled) {
+			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
+			tableSql.append(temp.getDbFieldName()).append(COMMA);
+			switch (keyGenerationType) {
+			case uuid:
+				valueSql.append(POUND_OPENBRACE).append(temp.getFieldName())
+						// .append(COMMA).append(JDBCTYPE_EQUAL).append(temp.getJdbcType().toString())
+						.append(COMMA_TYPEHANDLER_EQUAL).append("indi.mybatis.flying.handlers.UuidTypeHandler")
+						.append(CLOSEBRACE_COMMA);
+				break;
+			default:
+				break;
+			}
+			ReflectHelper.setValueByFieldName(object, temp.getFieldName(), "c");
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
@@ -594,8 +624,7 @@ public class SqlBuilder {
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (!fieldMapper.isUpdateAble()
-					|| (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
+			if (!fieldMapper.isUpdateAble() || (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			}
 			allFieldNull = false;
@@ -665,8 +694,7 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if (!fieldMapper.isUpdateAble()
-					|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+			if (!fieldMapper.isUpdateAble() || (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			}
 			allFieldNull = false;

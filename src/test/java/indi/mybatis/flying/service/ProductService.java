@@ -20,4 +20,9 @@ public class ProductService implements ProductMapper {
 		mapper.insert(t);
 	}
 
+	@Override
+	public Product selectOne(Product t) {
+		return mapper.selectOne(t);
+	}
+
 }

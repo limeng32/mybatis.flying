@@ -21,6 +21,8 @@ public class Product extends PojoSupport<Product> implements Serializable {
 	@Column
 	private java.lang.String name;
 
+	private java.lang.String name2;
+
 	@Override
 	public String getId() {
 		return id;
@@ -36,6 +38,14 @@ public class Product extends PojoSupport<Product> implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public java.lang.String getName2() {
+		return name2;
+	}
+
+	public void setName2(java.lang.String name2) {
+		this.name2 = name2;
 	}
 
 }
