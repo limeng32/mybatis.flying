@@ -20,6 +20,8 @@ import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.handlers.UuidKeyHandler;
+import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
 import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
@@ -29,7 +31,8 @@ import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
 import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
-import indi.mybatis.flying.statics.KeyGenerationType;
+import indi.mybatis.flying.statics.KeyGeneratorType;
+import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -520,7 +523,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object, String ignoreTag, KeyGenerationType keyGenerationType)
+	public static String buildInsertSql(Object object, String ignoreTag, KeyGeneratorType keyGenerationType)
 			throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
@@ -561,12 +564,20 @@ public class SqlBuilder {
 			if (fieldMapper.isUniqueKey()) {
 				uniqueKeyHandled = true;
 				if (keyGenerationType != null) {
+					KeyHandler keyHandler;
 					switch (keyGenerationType) {
 					case uuid:
-						valueSql.append(COMMA_TYPEHANDLER_EQUAL).append("indi.mybatis.flying.handlers.UuidTypeHandler");
+						keyHandler = new UuidKeyHandler();
+						break;
+					case uuid_no_line:
+						keyHandler = new UuidWithoutLineKeyHandler();
 						break;
 					default:
+						keyHandler = null;
 						break;
+					}
+					if (keyHandler != null) {
+						ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
 					}
 				}
 			}
@@ -575,17 +586,23 @@ public class SqlBuilder {
 		if (keyGenerationType != null && !uniqueKeyHandled) {
 			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
 			tableSql.append(temp.getDbFieldName()).append(COMMA);
+			KeyHandler keyHandler;
 			switch (keyGenerationType) {
 			case uuid:
-				valueSql.append(POUND_OPENBRACE).append(temp.getFieldName())
-						// .append(COMMA).append(JDBCTYPE_EQUAL).append(temp.getJdbcType().toString())
-						.append(COMMA_TYPEHANDLER_EQUAL).append("indi.mybatis.flying.handlers.UuidTypeHandler")
-						.append(CLOSEBRACE_COMMA);
+				keyHandler = new UuidKeyHandler();
+				break;
+			case uuid_no_line:
+				keyHandler = new UuidWithoutLineKeyHandler();
 				break;
 			default:
+				keyHandler = null;
 				break;
 			}
-			ReflectHelper.setValueByFieldName(object, temp.getFieldName(), "c");
+			if (keyHandler != null) {
+				valueSql.append(POUND_OPENBRACE).append(temp.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(temp.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
+				ReflectHelper.setValueByFieldName(object, temp.getFieldName(), keyHandler.getKey());
+			}
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);

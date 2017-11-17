@@ -1,13 +1,13 @@
 package indi.mybatis.flying.models;
 
 import indi.mybatis.flying.statics.ActionType;
-import indi.mybatis.flying.statics.KeyGenerationType;
+import indi.mybatis.flying.statics.KeyGeneratorType;
 
 public class FlyingModel {
 	private boolean hasFlyingFeature;
 	private ActionType actionType;
 	private String ignoreTag;
-	private KeyGenerationType keyGenerationType;
+	private KeyGeneratorType keyGeneratorType;
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -33,11 +33,12 @@ public class FlyingModel {
 		this.ignoreTag = ignoreTag;
 	}
 
-	public KeyGenerationType getKeyGenerationType() {
-		return keyGenerationType;
+	public KeyGeneratorType getKeyGeneratorType() {
+		return keyGeneratorType;
 	}
 
-	public void setKeyGenerationType(KeyGenerationType keyGenerationType) {
-		this.keyGenerationType = keyGenerationType;
+	public void setKeyGeneratorType(KeyGeneratorType keyGeneratorType) {
+		this.keyGeneratorType = keyGeneratorType;
 	}
+
 }

@@ -12,7 +12,7 @@
 	</select>
 
 	<insert id="insert" keyProperty="id">
-		flying:insert(uuid)
+		flying:insert(uuid_no_line)
 	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">

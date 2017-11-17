@@ -9,7 +9,7 @@ import org.apache.ibatis.logging.LogFactory;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
-import indi.mybatis.flying.statics.KeyGenerationType;
+import indi.mybatis.flying.statics.KeyGeneratorType;
 
 public class CookOriginalSql {
 
@@ -56,14 +56,14 @@ public class CookOriginalSql {
 						ret.setIgnoreTag(ignoreTag);
 					}
 					if (ActionType.insert.equals(actionType) && extension != null) {
-						KeyGenerationType keyGenerationType = null;
+						KeyGeneratorType keyGenerationType = null;
 						try {
-							keyGenerationType = KeyGenerationType.valueOf(extension);
+							keyGenerationType = KeyGeneratorType.valueOf(extension);
 						} catch (IllegalArgumentException e) {
 							logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
 									.append(originalSql).toString());
 						}
-						ret.setKeyGenerationType(keyGenerationType);
+						ret.setKeyGeneratorType(keyGenerationType);
 					}
 					flyingModelCache.put(originalSql, ret);
 					return ret;

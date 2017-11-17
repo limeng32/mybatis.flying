@@ -34,23 +34,23 @@ public class KeyGeneratorTest {
 
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/keyGeneratorTest/test1.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/keyGeneratorTest/test1.result.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/keyGeneratorTest/test1.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/keyGeneratorTest/test1.xml")
 	public void test1() {
 		Product product = productService.select("a");
 		Assert.assertEquals("n", product.getName());
 
 		Product product2 = new Product();
-//		product2.setId("b");
+		// product2.setId("b");
 		product2.setName("n2");
 		product2.setName2("asd");
 		productService.insert(product2);
-		Assert.assertEquals("c", product2.getId());
+		Assert.assertEquals(32, product2.getId().length());
 
 		Product p = new Product();
 		p.setName("n2");
 		Product product3 = productService.selectOne(p);
-		Assert.assertEquals("c", product3.getId());
+		Assert.assertEquals(32, product3.getId().length());
 	}
 
 }
