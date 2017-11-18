@@ -33,6 +33,11 @@ public class ProductService implements ProductMapper {
 	}
 
 	@Override
+	public void insertMilliSecond(Product t) {
+		mapper.insertMilliSecond(t);
+	}
+
+	@Override
 	public Product selectOne(Product t) {
 		return mapper.selectOne(t);
 	}

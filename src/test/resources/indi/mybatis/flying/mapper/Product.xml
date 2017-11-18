@@ -23,6 +23,14 @@
 		flying:insert(ERROR)
 	</insert>
 
+	<insert id="insertMilliSecond">
+		flying:insert(millisecond)
+	</insert>
+
+	<insert id="insertMicroSecond">
+		flying:insert(microsecond)
+	</insert>
+
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />
 	</resultMap>

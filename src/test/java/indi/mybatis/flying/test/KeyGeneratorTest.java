@@ -73,6 +73,15 @@ public class KeyGeneratorTest {
 		p3.setName("n4");
 		Product product3_ = productService.selectOne(p3);
 		Assert.assertEquals("dd", product3_.getId());
+
+		Product product5 = new Product();
+		product5.setName("n5");
+		productService.insertMilliSecond(product5);
+
+		Product p5 = new Product();
+		p5.setName("n5");
+		Product product5_ = productService.selectOne(p5);
+		Assert.assertEquals(product5.getId(), product5_.getId());
 	}
 
 }

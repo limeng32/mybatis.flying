@@ -20,6 +20,7 @@ import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
 import indi.mybatis.flying.handlers.UuidKeyHandler;
 import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
 import indi.mybatis.flying.models.ConditionMapper;
@@ -593,6 +594,9 @@ public class SqlBuilder {
 			break;
 		case uuid_no_line:
 			keyHandler = new UuidWithoutLineKeyHandler();
+			break;
+		case millisecond:
+			keyHandler = new MilliSecondKeyHandler();
 			break;
 		default:
 			keyHandler = null;

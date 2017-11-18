@@ -7,6 +7,4 @@ public enum KeyGeneratorType {
 	uuid_no_line,
 	/** 精确到毫秒的时间戳 */
 	millisecond,
-	/** 精确到微秒的时间戳 */
-	microsecond
 }

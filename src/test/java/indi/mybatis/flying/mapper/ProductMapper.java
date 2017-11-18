@@ -22,4 +22,7 @@ public interface ProductMapper {
 
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insert3(Product t);
+
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public void insertMilliSecond(Product t);
 }

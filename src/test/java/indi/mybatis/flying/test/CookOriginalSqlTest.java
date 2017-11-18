@@ -51,13 +51,6 @@ public class CookOriginalSqlTest {
 		Assert.assertEquals(ActionType.insert, flyingModel3.getActionType());
 		Assert.assertNull(flyingModel3.getIgnoreTag());
 		Assert.assertEquals(KeyGeneratorType.millisecond, flyingModel3.getKeyGeneratorType());
-
-		String sql4 = "flying:insert(microsecond)";
-		FlyingModel flyingModel4 = CookOriginalSql.fetchFlyingFeature(sql4);
-		Assert.assertTrue(flyingModel4.isHasFlyingFeature());
-		Assert.assertEquals(ActionType.insert, flyingModel4.getActionType());
-		Assert.assertNull(flyingModel4.getIgnoreTag());
-		Assert.assertEquals(KeyGeneratorType.microsecond, flyingModel4.getKeyGeneratorType());
 	}
 
 }
