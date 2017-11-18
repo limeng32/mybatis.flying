@@ -523,7 +523,7 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object, String ignoreTag, KeyGeneratorType keyGenerationType)
+	public static String buildInsertSql(Object object, String ignoreTag, KeyGeneratorType keyGeneratorType)
 			throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
@@ -563,46 +563,16 @@ public class SqlBuilder {
 			}
 			if (fieldMapper.isUniqueKey()) {
 				uniqueKeyHandled = true;
-				if (keyGenerationType != null) {
-					KeyHandler keyHandler;
-					switch (keyGenerationType) {
-					case uuid:
-						keyHandler = new UuidKeyHandler();
-						break;
-					case uuid_no_line:
-						keyHandler = new UuidWithoutLineKeyHandler();
-						break;
-					default:
-						keyHandler = null;
-						break;
-					}
-					if (keyHandler != null) {
-						ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
-					}
+				if (keyGeneratorType != null) {
+					handleInsertSql(keyGeneratorType, valueSql, fieldMapper, object, uniqueKeyHandled);
 				}
 			}
 			valueSql.append(CLOSEBRACE_COMMA);
 		}
-		if (keyGenerationType != null && !uniqueKeyHandled) {
+		if (keyGeneratorType != null && !uniqueKeyHandled) {
 			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
 			tableSql.append(temp.getDbFieldName()).append(COMMA);
-			KeyHandler keyHandler;
-			switch (keyGenerationType) {
-			case uuid:
-				keyHandler = new UuidKeyHandler();
-				break;
-			case uuid_no_line:
-				keyHandler = new UuidWithoutLineKeyHandler();
-				break;
-			default:
-				keyHandler = null;
-				break;
-			}
-			if (keyHandler != null) {
-				valueSql.append(POUND_OPENBRACE).append(temp.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-						.append(temp.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
-				ReflectHelper.setValueByFieldName(object, temp.getFieldName(), keyHandler.getKey());
-			}
+			handleInsertSql(keyGeneratorType, valueSql, temp, object, uniqueKeyHandled);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
@@ -611,6 +581,30 @@ public class SqlBuilder {
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
 		return tableSql.append(CLOSEPAREN_).append(valueSql).append(CLOSEPAREN).toString();
+	}
+
+	private static void handleInsertSql(KeyGeneratorType keyGeneratorType, StringBuffer valueSql,
+			FieldMapper fieldMapper, Object object, boolean uniqueKeyHandled)
+			throws IllegalAccessException, NoSuchFieldException {
+		KeyHandler keyHandler;
+		switch (keyGeneratorType) {
+		case uuid:
+			keyHandler = new UuidKeyHandler();
+			break;
+		case uuid_no_line:
+			keyHandler = new UuidWithoutLineKeyHandler();
+			break;
+		default:
+			keyHandler = null;
+			break;
+		}
+		if (keyHandler != null) {
+			if (!uniqueKeyHandled) {
+				valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
+			}
+			ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
+		}
 	}
 
 	/**
