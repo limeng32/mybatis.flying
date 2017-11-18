@@ -17,4 +17,9 @@ public interface ProductMapper {
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insert(Product t);
 
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public void insert2(Product t);
+
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public void insert3(Product t);
 }

@@ -12,12 +12,24 @@ public class ProductService implements ProductMapper {
 	@Autowired
 	private ProductMapper mapper;
 
+	@Override
 	public Product select(Object id) {
 		return mapper.select(id);
 	}
 
+	@Override
 	public void insert(Product t) {
 		mapper.insert(t);
+	}
+
+	@Override
+	public void insert2(Product t) {
+		mapper.insert2(t);
+	}
+
+	@Override
+	public void insert3(Product t) {
+		mapper.insert3(t);
 	}
 
 	@Override

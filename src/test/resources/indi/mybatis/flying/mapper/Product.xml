@@ -15,6 +15,14 @@
 		flying:insert(uuid_no_line)
 	</insert>
 
+	<insert id="insert2" keyProperty="id">
+		flying:insert
+	</insert>
+
+	<insert id="insert3">
+		flying:insert(ERROR)
+	</insert>
+
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />
 	</resultMap>
