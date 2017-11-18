@@ -31,6 +31,10 @@
 		flying:insert(microsecond)
 	</insert>
 
+	<insert id="insertSnowFlake">
+		flying:insert(snowflake)
+	</insert>
+
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />
 	</resultMap>

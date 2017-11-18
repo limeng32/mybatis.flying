@@ -7,4 +7,6 @@ public enum KeyGeneratorType {
 	uuid_no_line,
 	/** 精确到毫秒的时间戳 */
 	millisecond,
+	/** 雪花算法的简单原型，仅供参考 */
+	snowflake,
 }

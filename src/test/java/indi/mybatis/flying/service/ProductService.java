@@ -38,6 +38,11 @@ public class ProductService implements ProductMapper {
 	}
 
 	@Override
+	public void insertSnowFlake(Product t) {
+		mapper.insertSnowFlake(t);
+	}
+
+	@Override
 	public Product selectOne(Product t) {
 		return mapper.selectOne(t);
 	}
