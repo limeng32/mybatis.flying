@@ -91,6 +91,10 @@ public class KeyGeneratorTest {
 		product9.setName("n9");
 		productService.insertSnowFlake(product9);
 
+		Product product10 = new Product();
+		product10.setName("n10");
+		productService.insertSnowFlake(product10);
+
 		Product p6 = new Product();
 		p6.setName("n6");
 		Product product6_ = productService.selectOne(p6);
