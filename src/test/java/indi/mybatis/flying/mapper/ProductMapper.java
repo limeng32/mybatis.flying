@@ -27,5 +27,8 @@ public interface ProductMapper {
 	public void insertMilliSecond(Product t);
 
 	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public void insertMilliSecond2(Product t);
+
+	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertSnowFlake(Product t);
 }

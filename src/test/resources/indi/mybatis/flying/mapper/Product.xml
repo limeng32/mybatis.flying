@@ -27,8 +27,8 @@
 		flying:insert(millisecond)
 	</insert>
 
-	<insert id="insertMicroSecond">
-		flying:insert(microsecond)
+	<insert id="insertMilliSecond2">
+		flying:insert(millisecond)
 	</insert>
 
 	<insert id="insertSnowFlake">

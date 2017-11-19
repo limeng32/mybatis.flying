@@ -64,13 +64,13 @@ public class CookOriginalSql {
 						KeyGeneratorType keyGeneratorType = null;
 						try {
 							keyGeneratorType = KeyGeneratorType.valueOf(extension);
-							
+
 						} catch (IllegalArgumentException e) {
 							logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
 									.append(originalSql).toString());
 						}
 						ret.setKeyGeneratorType(keyGeneratorType);
-						if (keyGeneratorType != null){
+						if (keyGeneratorType != null) {
 							KeyHandler keyHandler;
 							switch (keyGeneratorType) {
 							case uuid:
@@ -80,7 +80,7 @@ public class CookOriginalSql {
 								keyHandler = new UuidWithoutLineKeyHandler();
 								break;
 							case millisecond:
-								keyHandler = new MilliSecondKeyHandler();
+								keyHandler = MilliSecondKeyHandler.getInstance();
 								break;
 							case snowflake:
 								keyHandler = new SnowFlakeKeyHandler();

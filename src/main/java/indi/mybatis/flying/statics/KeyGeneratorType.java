@@ -9,4 +9,6 @@ public enum KeyGeneratorType {
 	millisecond,
 	/** 雪花算法的简单原型，仅供参考 */
 	snowflake,
+	/** 用户个性化处理器 */
+	custom,
 }

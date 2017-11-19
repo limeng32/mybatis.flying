@@ -47,4 +47,9 @@ public class ProductService implements ProductMapper {
 		return mapper.selectOne(t);
 	}
 
+	@Override
+	public void insertMilliSecond2(Product t) {
+		mapper.insertMilliSecond2(t);
+	}
+
 }
