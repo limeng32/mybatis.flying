@@ -87,6 +87,10 @@ public class KeyGeneratorTest {
 		product6.setName("n6");
 		productService.insertSnowFlake(product6);
 
+		Product product9 = new Product();
+		product9.setName("n9");
+		productService.insertSnowFlake(product9);
+
 		Product p6 = new Product();
 		p6.setName("n6");
 		Product product6_ = productService.selectOne(p6);
@@ -109,10 +113,6 @@ public class KeyGeneratorTest {
 		p8.setName("n8");
 		Product product8_ = productService.selectOne(p8);
 		Assert.assertEquals(product8.getId(), product8_.getId());
-
-		Product product9 = new Product();
-		product9.setName("n9");
-		productService.insertSnowFlake(product9);
 	}
 
 }
