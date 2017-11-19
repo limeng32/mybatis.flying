@@ -34,6 +34,10 @@
 	<insert id="insertSnowFlake">
 		flying:insert(snowflake)
 	</insert>
+	
+	<insert id="insertMySnowFlake">
+		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler)
+	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />

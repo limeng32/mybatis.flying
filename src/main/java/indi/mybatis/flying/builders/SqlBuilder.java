@@ -20,20 +20,16 @@ import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
-import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
-import indi.mybatis.flying.handlers.SnowFlakeKeyHandler;
-import indi.mybatis.flying.handlers.UuidKeyHandler;
-import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
 import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.Mapperable;
 import indi.mybatis.flying.models.QueryMapper;
 import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
 import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
-import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.ReflectHelper;
 
@@ -525,11 +521,12 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object, String ignoreTag, KeyGeneratorType keyGeneratorType)
-			throws Exception {
+	public static String buildInsertSql(Object object, FlyingModel flyingModel) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
+		String ignoreTag = flyingModel.getIgnoreTag();
+		KeyHandler keyHandler = flyingModel.getKeyHandler();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -565,16 +562,16 @@ public class SqlBuilder {
 			}
 			if (fieldMapper.isUniqueKey()) {
 				uniqueKeyHandled = true;
-				if (keyGeneratorType != null) {
-					handleInsertSql(keyGeneratorType, valueSql, fieldMapper, object, uniqueKeyHandled);
+				if (keyHandler != null) {
+					handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
 				}
 			}
 			valueSql.append(CLOSEBRACE_COMMA);
 		}
-		if (keyGeneratorType != null && !uniqueKeyHandled) {
+		if (keyHandler != null && !uniqueKeyHandled) {
 			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
 			tableSql.append(temp.getDbFieldName()).append(COMMA);
-			handleInsertSql(keyGeneratorType, valueSql, temp, object, uniqueKeyHandled);
+			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
@@ -585,34 +582,13 @@ public class SqlBuilder {
 		return tableSql.append(CLOSEPAREN_).append(valueSql).append(CLOSEPAREN).toString();
 	}
 
-	private static void handleInsertSql(KeyGeneratorType keyGeneratorType, StringBuffer valueSql,
-			FieldMapper fieldMapper, Object object, boolean uniqueKeyHandled)
-			throws IllegalAccessException, NoSuchFieldException {
-		KeyHandler keyHandler;
-		switch (keyGeneratorType) {
-		case uuid:
-			keyHandler = new UuidKeyHandler();
-			break;
-		case uuid_no_line:
-			keyHandler = new UuidWithoutLineKeyHandler();
-			break;
-		case millisecond:
-			keyHandler = new MilliSecondKeyHandler();
-			break;
-		case snowflake:
-			keyHandler = new SnowFlakeKeyHandler();
-			break;
-		default:
-			keyHandler = null;
-			break;
+	private static void handleInsertSql(KeyHandler keyHandler, StringBuffer valueSql, FieldMapper fieldMapper,
+			Object object, boolean uniqueKeyHandled) throws IllegalAccessException, NoSuchFieldException {
+		if (!uniqueKeyHandled) {
+			valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
 		}
-		if (keyHandler != null) {
-			if (!uniqueKeyHandled) {
-				valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-						.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
-			}
-			ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
-		}
+		ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
 	}
 
 	/**
@@ -624,11 +600,11 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdateSql(Object object, String ignoreTag) throws Exception {
+	public static String buildUpdateSql(Object object, FlyingModel flyingModel) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-
+		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -695,11 +671,11 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdatePersistentSql(Object object, String ignoreTag) throws Exception {
+	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-
+		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -802,7 +778,8 @@ public class SqlBuilder {
 	 *            pojo Class
 	 * @return sql
 	 */
-	public static String buildSelectSql(Class<?> clazz, String ignoreTag) {
+	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel) {
+		String ignoreTag = flyingModel.getIgnoreTag();
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		String tableName = tableMapper.getTableName();
 
@@ -839,10 +816,11 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectAllSql(Object object, String ignoreTag) throws Exception {
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
+		String ignoreTag = flyingModel.getIgnoreTag();
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
@@ -870,10 +848,11 @@ public class SqlBuilder {
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectOneSql(Object object, String ignoreTag) throws Exception {
+	public static String buildSelectOneSql(Object object, FlyingModel flyingModel) throws Exception {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
+		String ignoreTag = flyingModel.getIgnoreTag();
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}

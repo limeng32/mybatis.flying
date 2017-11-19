@@ -7,9 +7,14 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
+import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
+import indi.mybatis.flying.handlers.SnowFlakeKeyHandler;
+import indi.mybatis.flying.handlers.UuidKeyHandler;
+import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
+import indi.mybatis.flying.type.KeyHandler;
 
 public class CookOriginalSql {
 
@@ -56,14 +61,36 @@ public class CookOriginalSql {
 						ret.setIgnoreTag(ignoreTag);
 					}
 					if (ActionType.insert.equals(actionType) && extension != null) {
-						KeyGeneratorType keyGenerationType = null;
+						KeyGeneratorType keyGeneratorType = null;
 						try {
-							keyGenerationType = KeyGeneratorType.valueOf(extension);
+							keyGeneratorType = KeyGeneratorType.valueOf(extension);
+							
 						} catch (IllegalArgumentException e) {
 							logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
 									.append(originalSql).toString());
 						}
-						ret.setKeyGeneratorType(keyGenerationType);
+						ret.setKeyGeneratorType(keyGeneratorType);
+						if (keyGeneratorType != null){
+							KeyHandler keyHandler;
+							switch (keyGeneratorType) {
+							case uuid:
+								keyHandler = new UuidKeyHandler();
+								break;
+							case uuid_no_line:
+								keyHandler = new UuidWithoutLineKeyHandler();
+								break;
+							case millisecond:
+								keyHandler = new MilliSecondKeyHandler();
+								break;
+							case snowflake:
+								keyHandler = new SnowFlakeKeyHandler();
+								break;
+							default:
+								keyHandler = null;
+								break;
+							}
+							ret.setKeyHandler(keyHandler);
+						}
 					}
 					flyingModelCache.put(originalSql, ret);
 					return ret;

@@ -2,12 +2,14 @@ package indi.mybatis.flying.models;
 
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
+import indi.mybatis.flying.type.KeyHandler;
 
 public class FlyingModel {
 	private boolean hasFlyingFeature;
 	private ActionType actionType;
 	private String ignoreTag;
 	private KeyGeneratorType keyGeneratorType;
+	private KeyHandler keyHandler;
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -39,6 +41,14 @@ public class FlyingModel {
 
 	public void setKeyGeneratorType(KeyGeneratorType keyGeneratorType) {
 		this.keyGeneratorType = keyGeneratorType;
+	}
+
+	public KeyHandler getKeyHandler() {
+		return keyHandler;
+	}
+
+	public void setKeyHandler(KeyHandler keyHandler) {
+		this.keyHandler = keyHandler;
 	}
 
 }
