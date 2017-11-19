@@ -1,6 +1,18 @@
 package indi.mybatis.flying.utils;
 
 public class SnowflakeIdWorker {
+
+	private SnowflakeIdWorker() {
+	}
+
+	private static class InnerInstance {
+		private static final SnowflakeIdWorker instance = new SnowflakeIdWorker(0, 0);
+	}
+
+	public static SnowflakeIdWorker getInstance() {
+		return InnerInstance.instance;
+	}
+
 	private final long twepoch = 1420041600000L;
 
 	/** 机器id所占的位数 */
@@ -51,7 +63,7 @@ public class SnowflakeIdWorker {
 	 * @param datacenterId
 	 *            数据中心ID (0~31)
 	 */
-	public SnowflakeIdWorker(long workerId, long datacenterId) {
+	private SnowflakeIdWorker(long workerId, long datacenterId) {
 		if (workerId > maxWorkerId || workerId < 0) {
 			throw new IllegalArgumentException(
 					String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));

@@ -109,6 +109,10 @@ public class KeyGeneratorTest {
 		p8.setName("n8");
 		Product product8_ = productService.selectOne(p8);
 		Assert.assertEquals(product8.getId(), product8_.getId());
+
+		Product product9 = new Product();
+		product9.setName("n9");
+		productService.insertSnowFlake(product9);
 	}
 
 }

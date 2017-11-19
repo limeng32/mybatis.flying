@@ -74,16 +74,16 @@ public class CookOriginalSql {
 							KeyHandler keyHandler;
 							switch (keyGeneratorType) {
 							case uuid:
-								keyHandler = new UuidKeyHandler();
+								keyHandler = UuidKeyHandler.getInstance();
 								break;
 							case uuid_no_line:
-								keyHandler = new UuidWithoutLineKeyHandler();
+								keyHandler = UuidWithoutLineKeyHandler.getInstance();
 								break;
 							case millisecond:
 								keyHandler = MilliSecondKeyHandler.getInstance();
 								break;
 							case snowflake:
-								keyHandler = new SnowFlakeKeyHandler();
+								keyHandler = SnowFlakeKeyHandler.getInstance();
 								break;
 							default:
 								keyHandler = null;

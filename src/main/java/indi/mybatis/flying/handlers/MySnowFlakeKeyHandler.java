@@ -7,7 +7,7 @@ public class MySnowFlakeKeyHandler implements KeyHandler {
 
 	@Override
 	public String getKey() {
-		return new Long(new SnowflakeIdWorker(0, 0).nextId()).toString();
+		return new Long(SnowflakeIdWorker.getInstance().nextId()).toString();
 	}
 
 }
