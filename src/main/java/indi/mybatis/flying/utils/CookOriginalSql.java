@@ -68,7 +68,7 @@ public class CookOriginalSql {
 
 							} catch (IllegalArgumentException e) {
 								logger.error(
-										new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
+										new StringBuffer(AutoMapperExceptionEnum.wrongKeyGeneratorType.description())
 												.append(originalSql).toString());
 							}
 							ret.setKeyGeneratorType(keyGeneratorType);
@@ -98,10 +98,12 @@ public class CookOriginalSql {
 								@SuppressWarnings("unchecked")
 								Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class
 										.forName(extension);
-//								ret.setKeyHandler(clazz.newInstance());
-							} catch (ClassNotFoundException  e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								ret.setKeyGeneratorType(KeyGeneratorType.custom);
+								ret.setKeyHandler(clazz.newInstance());
+							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+								logger.error(
+										new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
+												.append(originalSql).toString());
 							}
 						}
 					}

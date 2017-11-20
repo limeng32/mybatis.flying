@@ -57,4 +57,9 @@ public class ProductService implements ProductMapper {
 		mapper.insertMySnowFlake(t);
 	}
 
+	@Override
+	public void insertMySnowFlake2(Product t) {
+		mapper.insertMySnowFlake2(t);
+	}
+
 }
