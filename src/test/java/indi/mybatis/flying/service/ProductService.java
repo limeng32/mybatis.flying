@@ -52,4 +52,9 @@ public class ProductService implements ProductMapper {
 		mapper.insertMilliSecond2(t);
 	}
 
+	@Override
+	public void insertMySnowFlake(Product t) {
+		mapper.insertMySnowFlake(t);
+	}
+
 }

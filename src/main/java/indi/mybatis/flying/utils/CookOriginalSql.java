@@ -62,34 +62,47 @@ public class CookOriginalSql {
 					}
 					if (ActionType.insert.equals(actionType) && extension != null) {
 						KeyGeneratorType keyGeneratorType = null;
-						try {
-							keyGeneratorType = KeyGeneratorType.valueOf(extension);
+						if (extension.indexOf(".") == -1) {
+							try {
+								keyGeneratorType = KeyGeneratorType.valueOf(extension);
 
-						} catch (IllegalArgumentException e) {
-							logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
-									.append(originalSql).toString());
-						}
-						ret.setKeyGeneratorType(keyGeneratorType);
-						if (keyGeneratorType != null) {
-							KeyHandler keyHandler;
-							switch (keyGeneratorType) {
-							case uuid:
-								keyHandler = UuidKeyHandler.getInstance();
-								break;
-							case uuid_no_line:
-								keyHandler = UuidWithoutLineKeyHandler.getInstance();
-								break;
-							case millisecond:
-								keyHandler = MilliSecondKeyHandler.getInstance();
-								break;
-							case snowflake:
-								keyHandler = SnowFlakeKeyHandler.getInstance();
-								break;
-							default:
-								keyHandler = null;
-								break;
+							} catch (IllegalArgumentException e) {
+								logger.error(
+										new StringBuffer(AutoMapperExceptionEnum.wrongKeyGenerationType.description())
+												.append(originalSql).toString());
 							}
-							ret.setKeyHandler(keyHandler);
+							ret.setKeyGeneratorType(keyGeneratorType);
+							if (keyGeneratorType != null) {
+								KeyHandler keyHandler;
+								switch (keyGeneratorType) {
+								case uuid:
+									keyHandler = UuidKeyHandler.getInstance();
+									break;
+								case uuid_no_line:
+									keyHandler = UuidWithoutLineKeyHandler.getInstance();
+									break;
+								case millisecond:
+									keyHandler = MilliSecondKeyHandler.getInstance();
+									break;
+								case snowflake:
+									keyHandler = SnowFlakeKeyHandler.getInstance();
+									break;
+								default:
+									keyHandler = null;
+									break;
+								}
+								ret.setKeyHandler(keyHandler);
+							}
+						} else {
+							try {
+								@SuppressWarnings("unchecked")
+								Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class
+										.forName(extension);
+//								ret.setKeyHandler(clazz.newInstance());
+							} catch (ClassNotFoundException  e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 					flyingModelCache.put(originalSql, ret);

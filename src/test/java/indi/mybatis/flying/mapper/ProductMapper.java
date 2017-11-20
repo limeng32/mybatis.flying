@@ -31,4 +31,7 @@ public interface ProductMapper {
 
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertSnowFlake(Product t);
+
+	@CacheAnnotation(role = CacheRoleType.Trigger)
+	public void insertMySnowFlake(Product t);
 }
