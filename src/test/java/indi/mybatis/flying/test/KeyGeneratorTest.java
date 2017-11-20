@@ -130,6 +130,11 @@ public class KeyGeneratorTest {
 		product13.setName("n13");
 		productService.insertMySnowFlake2(product13);
 		Assert.assertNull(product13.getId());
+
+		Product product14 = new Product();
+		product14.setName("n14");
+		productService.insertAsd(product14);
+		Assert.assertEquals("asd", product14.getId());
 	}
 
 }

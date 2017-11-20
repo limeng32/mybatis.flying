@@ -43,6 +43,10 @@
 		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2)
 	</insert>
 
+	<insert id="insertAsd">
+		flying:insert(indi.mybatis.flying.keyHandler.AsdKeyGenerator)
+	</insert>
+
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />
 	</resultMap>
