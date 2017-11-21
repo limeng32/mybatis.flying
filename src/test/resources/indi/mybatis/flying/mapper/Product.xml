@@ -46,6 +46,10 @@
 	<insert id="insertAsd">
 		flying:insert(indi.mybatis.flying.keyHandler.AsdKeyGenerator)
 	</insert>
+	
+	<insert id="insertDistributedSnowflake">
+		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator)
+	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">
 		<id property="id" column="id" />

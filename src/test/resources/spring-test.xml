@@ -105,6 +105,13 @@
 		<property name="allowCustomIsolationLevels" value="true" />
 	</bean>
 	<tx:annotation-driven transaction-manager="springTransactionManager" />
+	<bean id="distributedSnowflakeKeyGenerator"
+		class="indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator">
+		<property name="workerId" value="5" />
+		<property name="datacenterId" value="5" />
+	</bean>
 
 	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
+	
+	<bean id="applicationContextUtil" class="indi.mybatis.flying.utils.ApplicationContextUtil" />
 </beans>

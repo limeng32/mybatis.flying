@@ -19,8 +19,10 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator;
 import indi.mybatis.flying.pojo.Product;
 import indi.mybatis.flying.service.ProductService;
+import indi.mybatis.flying.utils.ApplicationContextUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -31,6 +33,9 @@ public class KeyGeneratorTest {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private DistributedSnowflakeKeyGenerator distributedSnowflakeKeyGenerator;
 
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/keyGeneratorTest/test1.xml")
@@ -118,23 +123,29 @@ public class KeyGeneratorTest {
 		Product product8_ = productService.selectOne(p8);
 		Assert.assertEquals(product8.getId(), product8_.getId());
 
-		Product product11 = new Product();
-		product11.setName("n11");
-		productService.insertMySnowFlake(product11);
-
-		Product product12 = new Product();
-		product12.setName("n12");
-		productService.insertMySnowFlake(product12);
-
-		Product product13 = new Product();
-		product13.setName("n13");
-		productService.insertMySnowFlake2(product13);
-		Assert.assertNull(product13.getId());
-
-		Product product14 = new Product();
-		product14.setName("n14");
-		productService.insertAsd(product14);
-		Assert.assertEquals("asd", product14.getId());
+//		Product product11 = new Product();
+//		product11.setName("n11");
+//		productService.insertMySnowFlake(product11);
+//
+//		Product product12 = new Product();
+//		product12.setName("n12");
+//		productService.insertMySnowFlake(product12);
+//
+//		Product product13 = new Product();
+//		product13.setName("n13");
+//		productService.insertMySnowFlake2(product13);
+//		Assert.assertNull(product13.getId());
+//
+//		Product product14 = new Product();
+//		product14.setName("n14");
+//		productService.insertAsd(product14);
+//		Assert.assertEquals("asd", product14.getId());
+		
+		Product product15 = new Product();
+		product15.setName("n15");
+		productService.insertDistributedSnowflake(product15);
+		
+		System.out.println("::"+distributedSnowflakeKeyGenerator.nextId());
 	}
 
 }

@@ -99,8 +99,9 @@ public class CookOriginalSql {
 								Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class
 										.forName(extension);
 								ret.setKeyGeneratorType(KeyGeneratorType.custom);
-								ret.setKeyHandler(clazz.newInstance());
-							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+								// ret.setKeyHandler(clazz.newInstance());
+								ret.setKeyHandler(ApplicationContextUtil.getApplicationContext().getBean(clazz));
+							} catch (ClassNotFoundException e) {
 								logger.error(
 										new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
 												.append(originalSql).toString());

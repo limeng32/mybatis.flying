@@ -67,4 +67,9 @@ public class ProductService implements ProductMapper {
 		mapper.insertAsd(t);
 	}
 
+	@Override
+	public void insertDistributedSnowflake(Product t) {
+		mapper.insertDistributedSnowflake(t);
+	}
+
 }
