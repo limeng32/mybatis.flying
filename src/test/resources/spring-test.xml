@@ -113,5 +113,4 @@
 
 	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
 	
-	<bean id="applicationContextUtil" class="indi.mybatis.flying.utils.ApplicationContextUtil" />
 </beans>

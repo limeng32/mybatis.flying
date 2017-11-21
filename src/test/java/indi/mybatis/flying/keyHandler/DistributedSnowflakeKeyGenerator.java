@@ -1,5 +1,7 @@
 package indi.mybatis.flying.keyHandler;
 
+import javax.annotation.PostConstruct;
+
 import indi.mybatis.flying.type.KeyHandler;
 
 public class DistributedSnowflakeKeyGenerator implements KeyHandler {
@@ -34,16 +36,20 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 	private final long sequenceMask = -1L ^ (-1L << sequenceBits);
 
 	/** 工作机器ID(0~31) */
-	private long workerId;
+	private static long _workerId;
 
 	/** 数据中心ID(0~31) */
-	private long datacenterId;
+	private static long _datacenterId;
 
 	/** 毫秒内序列(0~4095) */
 	private long sequence = 0L;
 
 	/** 上次生成ID的时间截 */
 	private long lastTimestamp = -1L;
+
+	private long workerId;
+
+	private long datacenterId;
 
 	// ==============================Constructors=====================================
 	/**
@@ -55,11 +61,11 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 	 *            数据中心ID (0~31)
 	 */
 	public DistributedSnowflakeKeyGenerator() {
-		if (workerId > maxWorkerId || workerId < 0) {
+		if (_workerId > maxWorkerId || _workerId < 0) {
 			throw new IllegalArgumentException(
 					String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
 		}
-		if (datacenterId > maxDatacenterId || datacenterId < 0) {
+		if (_datacenterId > maxDatacenterId || _datacenterId < 0) {
 			throw new IllegalArgumentException(
 					String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
 		}
@@ -72,7 +78,6 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 	 * @return SnowflakeId
 	 */
 	public synchronized long nextId() {
-		System.out.println("::" + workerId + " " + datacenterId);
 		long timestamp = timeGen();
 
 		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
@@ -100,8 +105,8 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 
 		// 移位并通过或运算拼到一起组成64位的ID
 		return ((timestamp - twepoch) << timestampLeftShift) //
-				| (datacenterId << datacenterIdShift) //
-				| (workerId << workerIdShift) //
+				| (_datacenterId << datacenterIdShift) //
+				| (_workerId << workerIdShift) //
 				| sequence;
 	}
 
@@ -134,13 +139,18 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 		return new Long(nextId()).toString();
 	}
 
+	@PostConstruct
+	public void init() {
+		_workerId = workerId;
+		_datacenterId = datacenterId;
+	}
+
 	public long getWorkerId() {
 		return workerId;
 	}
 
 	public void setWorkerId(long workerId) {
 		this.workerId = workerId;
-		System.out.println("1::" + this.workerId);
 	}
 
 	public long getDatacenterId() {
@@ -149,7 +159,6 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 
 	public void setDatacenterId(long datacenterId) {
 		this.datacenterId = datacenterId;
-		System.out.println("2::" + this.datacenterId);
 	}
 
 }
