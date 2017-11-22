@@ -30,7 +30,7 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
     </insert>
 
     <update id="update">
-        flying:insert
+        flying:update
     </update>
 
     <delete id="delete">
