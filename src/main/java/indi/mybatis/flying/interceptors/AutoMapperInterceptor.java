@@ -113,6 +113,8 @@ public class AutoMapperInterceptor implements Interceptor {
 			case updatePersistent:
 				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
 				break;
+			default:
+				break;
 			}
 			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
@@ -231,8 +233,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	private String generatePageSql(String sql, Conditionable condition) {
-		if (condition != null && (dialect != null || !dialect.equals(""))) {
+	private static String generatePageSql(String sql, Conditionable condition) {
+		if ((condition != null) && (dialect != null) && (!dialect.equals(""))) {
 			StringBuffer pageSql = new StringBuffer();
 			switch (dialect) {
 			case MYSQL:
@@ -252,6 +254,9 @@ public class AutoMapperInterceptor implements Interceptor {
 					pageSql.append(" limit " + condition.getLimiter().getLimitFrom() + ","
 							+ condition.getLimiter().getPageSize());
 				}
+				break;
+			default:
+				break;
 			}
 			return pageSql.toString();
 		} else {
