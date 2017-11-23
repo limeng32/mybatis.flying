@@ -139,7 +139,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			// if (metaParameter.getOriginalObject() instanceof Conditionable) {
 			Cache cache = mappedStatement.getCache();
 			Object value = cache.getObject(cacheKey);
-			if ((cache != null)) {
+			if (metaExecutor.hasGetter("delegate")) {
 				TransactionalCacheManager tcm = (TransactionalCacheManager) metaExecutor.getValue("tcm");
 				Executor delegate = (Executor) metaExecutor.getValue("delegate");
 
