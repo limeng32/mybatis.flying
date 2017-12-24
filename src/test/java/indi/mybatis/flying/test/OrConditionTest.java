@@ -25,12 +25,7 @@ public class OrConditionTest {
 	/* 测试Or对象 */
 	@Test
 	public void test1() {
-		Or<String> or = new Or<>("a", 1, 2);
-		Assert.assertEquals("a", or.getValue());
-		Assert.assertEquals(2, or.getAppear().length);
-
-		Or<Integer> or2 = new Or<>(6, 2, 3, 4);
-		Assert.assertEquals(6, or2.getValue().intValue());
-		Assert.assertEquals(3, or2.getAppear().length);
+		Or or = new Or("a", 1, 2);
+		Assert.assertEquals(3, or.getValue().length);
 	}
 }

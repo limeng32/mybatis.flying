@@ -3,6 +3,7 @@ package indi.mybatis.flying.pojo.condition;
 import java.util.Collection;
 import java.util.Date;
 
+import indi.mybatis.flying.annotations.CMOrAnnotations;
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
@@ -11,7 +12,6 @@ import indi.mybatis.flying.models.Or;
 import indi.mybatis.flying.models.Sortable;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.statics.ConditionType;
-import indi.mybatis.flying.statics.LogicType;
 
 @QueryMapperAnnotation(tableName = "LOGINLOG_")
 public class LoginLog_Condition extends LoginLog_ implements Conditionable {
@@ -58,8 +58,9 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotIn)
 	private Collection<Date> loginTimeNotIn;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal, logic = LogicType.OR)
-	private Or<String> loginIPOr;
+	@CMOrAnnotations({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	private Or loginIPOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -177,11 +178,11 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 		this.loginTimeNotIn = loginTimeNotIn;
 	}
 
-	public Or<String> getLoginIPOr() {
+	public Or getLoginIPOr() {
 		return loginIPOr;
 	}
 
-	public void setLoginIPOr(Or<String> loginIPOr) {
+	public void setLoginIPOr(Or loginIPOr) {
 		this.loginIPOr = loginIPOr;
 	}
 
