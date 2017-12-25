@@ -1,8 +1,8 @@
 package indi.mybatis.flying.models;
 
-public class Or {
+public class Values {
 
-	public Or(Object... value) {
+	public Values(Object... value) {
 		this.value = value;
 	}
 
