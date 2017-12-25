@@ -13,7 +13,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
-import indi.mybatis.flying.models.Values;
+import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -25,7 +25,8 @@ public class OrConditionTest {
 	/* 测试Or对象 */
 	@Test
 	public void test1() {
-		Values or = new Values("a", 1, 2);
-		Assert.assertEquals(3, or.getValue().length);
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setLoginIPOr("a", "b");
+		Assert.assertEquals(2, lc.getLoginIPOr().length);
 	}
 }

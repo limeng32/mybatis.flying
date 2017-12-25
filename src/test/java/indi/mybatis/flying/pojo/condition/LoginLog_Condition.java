@@ -9,7 +9,6 @@ import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
-import indi.mybatis.flying.models.Values;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.statics.ConditionType;
 
@@ -61,7 +60,7 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	@ConditionMapperOrAnnotation({
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
-	private Values loginIPOr;
+	private Object[] loginIPOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -179,11 +178,11 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 		this.loginTimeNotIn = loginTimeNotIn;
 	}
 
-	public Values getLoginIPOr() {
+	public Object[] getLoginIPOr() {
 		return loginIPOr;
 	}
 
-	public void setLoginIPOr(Values loginIPOr) {
+	public void setLoginIPOr(Object... loginIPOr) {
 		this.loginIPOr = loginIPOr;
 	}
 
