@@ -187,7 +187,6 @@
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>${jta.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.atomikos</groupId>
