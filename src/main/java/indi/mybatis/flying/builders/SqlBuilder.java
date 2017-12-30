@@ -1030,52 +1030,7 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			switch (conditionMapper.getConditionType()) {
-			case Equal:
-				dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			case Like:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
-				break;
-			case HeadLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
-				break;
-			case TailLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
-				break;
-			case GreaterThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
-				break;
-			case GreaterOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
-				break;
-			case LessThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
-				break;
-			case LessOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
-				break;
-			case NotEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
-				break;
-			case MultiLikeAND:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
-				break;
-			case MultiLikeOR:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
-				break;
-			case In:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
-				break;
-			case NotIn:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
-				break;
-			case NullOrNot:
-				dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			default:
-				break;
-			}
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp);
 		}
 
 		/* 处理queryMapper中的“或”条件 */
@@ -1084,10 +1039,65 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
+
+			ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
+			for (ConditionMapper cm : conditionMappers) {
+
+			}
 			Object[] os = (Object[]) value;
 			for (Object o : os) {
 				System.out.println(":::" + o);
 			}
+		}
+	}
+
+	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
+			TableName tableName, String temp) {
+		switch (conditionMapper.getConditionType()) {
+		case Equal:
+			dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
+			break;
+		case Like:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
+			break;
+		case HeadLike:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
+			break;
+		case TailLike:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
+			break;
+		case GreaterThan:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
+			break;
+		case GreaterOrEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
+			break;
+		case LessThan:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
+			break;
+		case LessOrEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
+			break;
+		case NotEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
+			break;
+		case MultiLikeAND:
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
+			break;
+		case MultiLikeOR:
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
+			break;
+		case In:
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
+			break;
+		case NotIn:
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
+			break;
+		case NullOrNot:
+			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -1144,52 +1154,8 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			switch (conditionMapper.getConditionType()) {
-			case Equal:
-				dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			case Like:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
-				break;
-			case HeadLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
-				break;
-			case TailLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
-				break;
-			case GreaterThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
-				break;
-			case GreaterOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
-				break;
-			case LessThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
-				break;
-			case LessOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
-				break;
-			case NotEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
-				break;
-			case MultiLikeAND:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
-				break;
-			case MultiLikeOR:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
-				break;
-			case In:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
-				break;
-			case NotIn:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
-				break;
-			case NullOrNot:
-				dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			default:
-				break;
-			}
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp);
 		}
 	}
+
 }
