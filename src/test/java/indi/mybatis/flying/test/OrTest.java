@@ -47,6 +47,7 @@ public class OrTest {
 	public void testOr1() {
 		LoginLog_Condition lc1 = new LoginLog_Condition();
 		lc1.setLoginIPOr("a", "b");
+		lc1.setIpLikeFilter("1");
 		Collection<LoginLog_> LoginLogC = loginLogService.selectAll(lc1);
 		Assert.assertEquals(3, LoginLogC.size());
 	}
