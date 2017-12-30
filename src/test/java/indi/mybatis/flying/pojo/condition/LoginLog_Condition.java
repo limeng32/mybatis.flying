@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
-import indi.mybatis.flying.annotations.ConditionMapperOrAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
@@ -57,13 +57,12 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotIn)
 	private Collection<Date> loginTimeNotIn;
 
-	@ConditionMapperOrAnnotation({
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
 	private Object[] loginIPOr;
 
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike)
-	private String IPTailLike;
+	private String ipLikeFilter;
 
 	@Override
 	public Limitable getLimiter() {
@@ -189,12 +188,12 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 		this.loginIPOr = loginIPOr;
 	}
 
-	public String getIPTailLike() {
-		return IPTailLike;
+	public String getIpLikeFilter() {
+		return ipLikeFilter;
 	}
 
-	public void setIPTailLike(String iPTailLike) {
-		IPTailLike = iPTailLike;
+	public void setIpLikeFilter(String ipLikeFilter) {
+		this.ipLikeFilter = ipLikeFilter;
 	}
 
 }

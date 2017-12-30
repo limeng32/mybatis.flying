@@ -18,7 +18,7 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 	private Sortable sorter;
 
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
-	private String IPHeadLike;
+	private String ipLikeFilter;
 
 	@Override
 	public Limitable getLimiter() {
@@ -40,12 +40,12 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 		this.sorter = sorter;
 	}
 
-	public String getIPHeadLike() {
-		return IPHeadLike;
+	public String getIpLikeFilter() {
+		return ipLikeFilter;
 	}
 
-	public void setIPHeadLike(String iPHeadLike) {
-		IPHeadLike = iPHeadLike;
+	public void setIpLikeFilter(String ipLikeFilter) {
+		this.ipLikeFilter = ipLikeFilter;
 	}
 
 }

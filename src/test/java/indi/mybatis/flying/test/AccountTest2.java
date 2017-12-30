@@ -63,12 +63,12 @@ public class AccountTest2 {
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
 	public void testCondition() {
 		LoginLog_Condition lc1 = new LoginLog_Condition();
-		lc1.setIPTailLike("5");
+		lc1.setIpLikeFilter("5");
 		int i1 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i1);
 
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
-		lc2.setIPHeadLike("2");
+		lc2.setIpLikeFilter("2");
 		int i2 = loginLogSource2Service.count(lc2);
 		Assert.assertEquals(1, i2);
 	}
