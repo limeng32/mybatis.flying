@@ -328,7 +328,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix, boolean isOr) {
+			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
 		whereSql.append(_LIKE__POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -338,6 +338,9 @@ public class SqlBuilder {
 			whereSql.append(conditionMapper.getFieldName()).append(DOT).append(conditionMapper.getForeignFieldName());
 		} else {
 			whereSql.append(conditionMapper.getFieldName());
+		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
 		}
 		whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
 				.append(COMMA_TYPEHANDLER_EQUAL);
@@ -1057,7 +1060,7 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false);
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
 		}
 
 		/* 处理queryMapper中的“或”条件 */
@@ -1070,10 +1073,13 @@ public class SqlBuilder {
 			ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
 			Object[] os = (Object[]) value;
 			int i = 0;
+			whereSql.append("(");
 			for (ConditionMapper cm : conditionMappers) {
-				dealConditionMapper(cm, os[i], whereSql, tableName, temp, true);
+				dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
 				i++;
 			}
+			whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4);
+			whereSql.append(") and ");
 			for (Object o : os) {
 				System.out.println(":::" + o);
 			}
@@ -1081,19 +1087,19 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
-			TableName tableName, String temp, boolean isOr) {
+			TableName tableName, String temp, boolean isOr, int i) {
 		switch (conditionMapper.getConditionType()) {
 		case Equal:
 			dealConditionEqual(value, whereSql, conditionMapper, tableName, temp, isOr);
 			break;
 		case Like:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp, isOr);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp, isOr, i);
 			break;
 		case HeadLike:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp, isOr);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp, isOr, i);
 			break;
 		case TailLike:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp, isOr);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp, isOr, i);
 			break;
 		case GreaterThan:
 			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp, isOr);
@@ -1183,7 +1189,7 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false);
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
 		}
 	}
 

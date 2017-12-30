@@ -40,7 +40,7 @@ public class OrTest {
 		Assert.assertNotNull(loginLogService);
 	}
 
-//	@Test
+	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr1.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr1.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr1.result.xml")
@@ -49,6 +49,6 @@ public class OrTest {
 		lc1.setLoginIPOr("a", "b");
 		lc1.setIpLikeFilter("1");
 		Collection<LoginLog_> LoginLogC = loginLogService.selectAll(lc1);
-		Assert.assertEquals(3, LoginLogC.size());
+		Assert.assertEquals(2, LoginLogC.size());
 	}
 }
