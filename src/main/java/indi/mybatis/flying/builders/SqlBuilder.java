@@ -328,7 +328,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr) {
 		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
 		whereSql.append(_LIKE__POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -354,11 +354,15 @@ public class SqlBuilder {
 		default:
 			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
-			ConditionType type, TableName tableName, String fieldNamePrefix) {
+			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		List<?> multiConditionC = (List<?>) value;
 		if (multiConditionC.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
@@ -399,6 +403,11 @@ public class SqlBuilder {
 			}
 			if (!allNull) {
 				tempWhereSql.delete(tempWhereSql.lastIndexOf(COMMA), tempWhereSql.lastIndexOf(COMMA) + 1);
+				// if (isOr) {
+				// tempWhereSql.append(CLOSEBRACE_AND_);
+				// } else {
+				// tempWhereSql.append(CLOSEBRACE_AND_);
+				// }
 				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
@@ -407,7 +416,7 @@ public class SqlBuilder {
 
 	@SuppressWarnings("unchecked")
 	private static void dealConditionMultiLike(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
-			ConditionType type, TableName tableName, String fieldNamePrefix) {
+			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
@@ -459,6 +468,11 @@ public class SqlBuilder {
 					break;
 				default:
 				}
+				// if (isOr) {
+				// tempWhereSql.append(CLOSEBRACE_AND_);
+				// } else {
+				// tempWhereSql.append(CLOSEBRACE_AND_);
+				// }
 				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
@@ -466,7 +480,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionEqual(Object object, StringBuffer whereSql, Mapperable mapper, TableName tableName,
-			String fieldNamePrefix) {
+			String fieldNamePrefix, boolean isOr) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -483,11 +497,15 @@ public class SqlBuilder {
 		if (mapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		switch (type) {
 		case GreaterThan:
@@ -520,18 +538,27 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(_IS);
 		if (!isNull) {
 			whereSql.append(_NOT);
 		}
-		whereSql.append(_NULL).append(_AND_);
+		whereSql.append(_NULL);
+		if (isOr) {
+			whereSql.append(_OR_);
+		} else {
+			whereSql.append(_AND_);
+		}
 	}
 
 	private static void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName,
@@ -1020,7 +1047,7 @@ public class SqlBuilder {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, null);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
+				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp, false);
 			}
 		}
 
@@ -1030,7 +1057,7 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp);
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false);
 		}
 
 		/* 处理queryMapper中的“或”条件 */
@@ -1041,10 +1068,12 @@ public class SqlBuilder {
 			}
 
 			ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
-			for (ConditionMapper cm : conditionMappers) {
-
-			}
 			Object[] os = (Object[]) value;
+			int i = 0;
+			for (ConditionMapper cm : conditionMappers) {
+				dealConditionMapper(cm, os[i], whereSql, tableName, temp, true);
+				i++;
+			}
 			for (Object o : os) {
 				System.out.println(":::" + o);
 			}
@@ -1052,49 +1081,49 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
-			TableName tableName, String temp) {
+			TableName tableName, String temp, boolean isOr) {
 		switch (conditionMapper.getConditionType()) {
 		case Equal:
-			dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
+			dealConditionEqual(value, whereSql, conditionMapper, tableName, temp, isOr);
 			break;
 		case Like:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp, isOr);
 			break;
 		case HeadLike:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp, isOr);
 			break;
 		case TailLike:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
+			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp, isOr);
 			break;
 		case GreaterThan:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp, isOr);
 			break;
 		case GreaterOrEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp, isOr);
 			break;
 		case LessThan:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp, isOr);
 			break;
 		case LessOrEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp, isOr);
 			break;
 		case NotEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp, isOr);
 			break;
 		case MultiLikeAND:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp, isOr);
 			break;
 		case MultiLikeOR:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp, isOr);
 			break;
 		case In:
-			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp, isOr);
 			break;
 		case NotIn:
-			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp, isOr);
 			break;
 		case NullOrNot:
-			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
+			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr);
 			break;
 		default:
 			break;
@@ -1144,7 +1173,7 @@ public class SqlBuilder {
 					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
+				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp, false);
 			}
 		}
 
@@ -1154,7 +1183,7 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
-			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp);
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false);
 		}
 	}
 
