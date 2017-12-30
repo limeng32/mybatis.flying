@@ -241,7 +241,7 @@ public class SqlBuilder {
 						buildConditionMapper(conditionMappers[i], cma, pojoClass, field);
 						i++;
 					}
-					for(ConditionMapper cm:conditionMappers){
+					for (ConditionMapper cm : conditionMappers) {
 						System.out.println("::" + cm.getConditionType());
 					}
 					orMapper.setConditionMappers(conditionMappers);
@@ -1024,7 +1024,7 @@ public class SqlBuilder {
 			}
 		}
 
-		/* 处理queryMapper中的条件 */
+		/* 处理queryMapper中的“且”条件 */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
@@ -1075,6 +1075,18 @@ public class SqlBuilder {
 				break;
 			default:
 				break;
+			}
+		}
+
+		/* 处理queryMapper中的“或”条件 */
+		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
+			Object value = dtoFieldMap.get(orMapper.getFieldName());
+			if (value == null) {
+				continue;
+			}
+			Object[] os = (Object[]) value;
+			for (Object o : os) {
+				System.out.println(":::" + o);
 			}
 		}
 	}
