@@ -34,4 +34,6 @@ public @interface ConditionMapperAnnotation {
 	 * @return LogicType
 	 */
 	ConditionType conditionType() default ConditionType.Equal;
+
+	Class<?> target() default Void.class;
 }

@@ -62,6 +62,9 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
 	private Object[] loginIPOr;
 
+	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike)
+	private String IPTailLike;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -184,6 +187,14 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setLoginIPOr(Object... loginIPOr) {
 		this.loginIPOr = loginIPOr;
+	}
+
+	public String getIPTailLike() {
+		return IPTailLike;
+	}
+
+	public void setIPTailLike(String iPTailLike) {
+		IPTailLike = iPTailLike;
 	}
 
 }

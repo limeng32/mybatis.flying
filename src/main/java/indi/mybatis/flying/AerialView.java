@@ -6,5 +6,6 @@ public class AerialView {
 	/* flying当前版本 */
 	public static final String FLYING_VERSION = "0.9.3";
 
-	/* 此版本和其它版本主要区别代码如下 */
+	/* 当前版本别名 */
+	public static final String FLYING_NAME = "FIRST_SNOW";
 }
