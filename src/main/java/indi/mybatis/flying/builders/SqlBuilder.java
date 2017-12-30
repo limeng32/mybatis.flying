@@ -16,6 +16,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
@@ -25,6 +26,7 @@ import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.Mapperable;
+import indi.mybatis.flying.models.OrMapper;
 import indi.mybatis.flying.models.QueryMapper;
 import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
@@ -196,19 +198,22 @@ public class SqlBuilder {
 	 * @return QueryMapper
 	 */
 	private static QueryMapper buildQueryMapper(Class<?> dtoClass, Class<?> pojoClass) {
-		Map<String, ConditionMapper> conditionMapperCache = null;
-		Field[] fields = null;
-
-		ConditionMapperAnnotation conditionMapperAnnotation = null;
-		ConditionMapper conditionMapper = null;
 		QueryMapper queryMapper = null;
 		queryMapper = queryMapperCache.get(dtoClass);
 		if (queryMapper != null) {
 			return queryMapper;
 		}
+		Map<String, ConditionMapper> conditionMapperCache = new HashMap<>();
+		Map<String, OrMapper> orMapperCache = new HashMap<>();
+		Field[] fields = null;
+
+		ConditionMapperAnnotation conditionMapperAnnotation = null;
+		ConditionMapper conditionMapper = null;
+		Or or = null;
+		OrMapper orMapper = null;
 		queryMapper = new QueryMapper();
 		fields = dtoClass.getDeclaredFields();
-		conditionMapperCache = new HashMap<>();
+
 		Annotation[] conditionAnnotations = null;
 
 		for (Field field : fields) {
@@ -220,44 +225,69 @@ public class SqlBuilder {
 				if (an instanceof ConditionMapperAnnotation) {
 					conditionMapperAnnotation = (ConditionMapperAnnotation) an;
 					conditionMapper = new ConditionMapper();
-					conditionMapper.setFieldName(field.getName());
-					conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
-					conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
-					for (Field pojoField : pojoClass.getDeclaredFields()) {
-						for (Annotation oan : pojoField.getDeclaredAnnotations()) {
-							boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan)
-									.dbFieldName().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-							boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
-									.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-							if (b1 || b2) {
-								FieldMapper fieldMapper = new FieldMapper();
-								fieldMapper.buildMapper(pojoField);
-								conditionMapper.setJdbcType(fieldMapper.getJdbcType());
-								if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-								} else {
-									conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
-									conditionMapper.setForeignKey(true);
-								}
-								if (conditionMapper.isForeignKey()
-										&& (!ConditionType.NullOrNot.equals(conditionMapper.getConditionType()))) {
-									if (!tableMapperCache.containsKey(pojoField.getType())) {
-										buildTableMapper(pojoField.getType());
-									}
-									TableMapper tm = tableMapperCache.get(pojoField.getType());
-									String foreignFieldName = tm.getFieldMapperCache()
-											.get(fieldMapper.getDbAssociationUniqueKey()).getFieldName();
-									conditionMapper.setForeignFieldName(foreignFieldName);
-								}
-							}
-						}
-					}
+					buildConditionMapper(conditionMapper, conditionMapperAnnotation, pojoClass, field);
+
 					conditionMapperCache.put(field.getName(), conditionMapper);
+				} else if (an instanceof Or) {
+					System.out.println("::" + pojoClass.getName());
+					or = (Or) an;
+					orMapper = new OrMapper();
+					orMapper.setFieldName(field.getName());
+					System.out.println("::" + orMapper.getFieldName());
+					ConditionMapper[] conditionMappers = new ConditionMapper[or.value().length];
+					int i = 0;
+					for (ConditionMapperAnnotation cma : or.value()) {
+						conditionMappers[i] = new ConditionMapper();
+						buildConditionMapper(conditionMappers[i], cma, pojoClass, field);
+						i++;
+					}
+					for(ConditionMapper cm:conditionMappers){
+						System.out.println("::" + cm.getConditionType());
+					}
+					orMapper.setConditionMappers(conditionMappers);
+					orMapperCache.put(field.getName(), orMapper);
 				}
 			}
 		}
 		queryMapper.setConditionMapperCache(conditionMapperCache);
+		queryMapper.setOrMapperCache(orMapperCache);
 		queryMapperCache.put(dtoClass, queryMapper);
 		return queryMapper;
+	}
+
+	private static void buildConditionMapper(ConditionMapper conditionMapper,
+			ConditionMapperAnnotation conditionMapperAnnotation, Class<?> pojoClass, Field field) {
+		conditionMapper.setFieldName(field.getName());
+		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
+		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
+		for (Field pojoField : pojoClass.getDeclaredFields()) {
+			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
+				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
+						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+				boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
+						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+				if (b1 || b2) {
+					FieldMapper fieldMapper = new FieldMapper();
+					fieldMapper.buildMapper(pojoField);
+					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
+					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
+					} else {
+						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+						conditionMapper.setForeignKey(true);
+					}
+					if (conditionMapper.isForeignKey()
+							&& (!ConditionType.NullOrNot.equals(conditionMapper.getConditionType()))) {
+						if (!tableMapperCache.containsKey(pojoField.getType())) {
+							buildTableMapper(pojoField.getType());
+						}
+						TableMapper tm = tableMapperCache.get(pojoField.getType());
+						String foreignFieldName = tm.getFieldMapperCache().get(fieldMapper.getDbAssociationUniqueKey())
+								.getFieldName();
+						conditionMapper.setForeignFieldName(foreignFieldName);
+					}
+				}
+			}
+		}
 	}
 
 	/**
