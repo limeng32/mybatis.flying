@@ -72,6 +72,10 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike) })
 	private Object[] loginIPHeadLikeOrTailLike;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	private Object[] loginIPEqualsOr;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -218,6 +222,14 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setLoginIPHeadLikeOrTailLike(Object... loginIPHeadLikeOrTailLike) {
 		this.loginIPHeadLikeOrTailLike = loginIPHeadLikeOrTailLike;
+	}
+
+	public Object[] getLoginIPEqualsOr() {
+		return loginIPEqualsOr;
+	}
+
+	public void setLoginIPEqualsOr(Object... loginIPEqualsOr) {
+		this.loginIPEqualsOr = loginIPEqualsOr;
 	}
 
 }

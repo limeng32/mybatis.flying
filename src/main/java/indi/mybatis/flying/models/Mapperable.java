@@ -21,4 +21,6 @@ public interface Mapperable {
 	Set<String> getIgnoreTagSet();
 
 	public String getTypeHandlerPath();
+	
+	Class<?> getFieldType();
 }

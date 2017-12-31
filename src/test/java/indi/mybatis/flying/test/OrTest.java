@@ -61,7 +61,18 @@ public class OrTest {
 
 		LoginLog_Condition lc3 = new LoginLog_Condition();
 		lc3.setLoginIPHeadLikeOrTailLike("a", "2");
-		int c3 = loginLogService.count(lc2);
+		int c3 = loginLogService.count(lc3);
 		Assert.assertEquals(2, c3);
+
+		LoginLog_Condition lc4 = new LoginLog_Condition();
+		lc4.setLoginIPEqualsOr("a1", "z3");
+		int c4 = loginLogService.count(lc4);
+		Assert.assertEquals(2, c4);
+
+		LoginLog_Condition lc5 = new LoginLog_Condition();
+		lc5.setLoginIPLikeOr("a1", "b1");
+		lc5.setLoginIPEqualsOr("b1", "c1");
+		int c5 = loginLogService.count(lc5);
+		Assert.assertEquals(1, c5);
 	}
 }

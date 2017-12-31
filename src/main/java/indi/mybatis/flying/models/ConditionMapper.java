@@ -11,7 +11,7 @@ import indi.mybatis.flying.statics.ConditionType;
  */
 public class ConditionMapper implements Mapperable {
 
-//	private Field field;
+	// private Field field;
 
 	/**
 	 * Java对象字段名
@@ -58,29 +58,35 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private String typeHandlerPath;
 
-//	private FieldMapperAnnotation fieldMapperAnnotation;
-//
-//	private Column column;
+	/**
+	 * 此变量的类型
+	 */
+	private Class<?> fieldType;
 
-//	public void buildMapper() {
-//		if (fieldMapperAnnotation == null && column == null) {
-//			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
-//		}
-//		setFieldName(field.getName());
-//		if (fieldMapperAnnotation != null) {
-//			setDbFieldName(fieldMapperAnnotation.dbFieldName());
-//			setJdbcType(fieldMapperAnnotation.jdbcType());
-//			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
-//			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
-//		} else if (column != null) {
-//			if ("".equals(column.name())) {
-//				setDbFieldName(field.getName());
-//			} else {
-//				setDbFieldName(column.name());
-//			}
-//			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
-//		}
-//	}
+	// private FieldMapperAnnotation fieldMapperAnnotation;
+	//
+	// private Column column;
+
+	// public void buildMapper() {
+	// if (fieldMapperAnnotation == null && column == null) {
+	// throw new
+	// BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
+	// }
+	// setFieldName(field.getName());
+	// if (fieldMapperAnnotation != null) {
+	// setDbFieldName(fieldMapperAnnotation.dbFieldName());
+	// setJdbcType(fieldMapperAnnotation.jdbcType());
+	// setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
+	// setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+	// } else if (column != null) {
+	// if ("".equals(column.name())) {
+	// setDbFieldName(field.getName());
+	// } else {
+	// setDbFieldName(column.name());
+	// }
+	// setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
+	// }
+	// }
 
 	@Override
 	public String getFieldName() {
@@ -165,6 +171,14 @@ public class ConditionMapper implements Mapperable {
 		if (!Object.class.equals(typeHandler)) {
 			this.typeHandlerPath = typeHandler.getName();
 		}
+	}
+
+	public Class<?> getFieldType() {
+		return fieldType;
+	}
+
+	public void setFieldType(Class<?> fieldType) {
+		this.fieldType = fieldType;
 	}
 
 }

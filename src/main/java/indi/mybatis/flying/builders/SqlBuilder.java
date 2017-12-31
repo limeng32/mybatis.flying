@@ -71,6 +71,7 @@ public class SqlBuilder {
 	private static final String SELECT_COUNT_OPENPAREN = "select count(";
 	private static final String EQUAL_POUND_OPENBRACE = "=#{";
 	private static final String DELETE_FROM_ = "delete from ";
+	private static final String COMMA_JAVATYPE_EQUAL = ",javaType=";
 	private static final String COMMA_JDBCTYPE_EQUAL = ",jdbcType=";
 	private static final String PLUS_1 = "+1";
 	private static final String CLOSEBRACE = "}";
@@ -269,6 +270,7 @@ public class SqlBuilder {
 				if (b1 || b2) {
 					FieldMapper fieldMapper = new FieldMapper();
 					fieldMapper.buildMapper(pojoField);
+					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
 					} else {
@@ -482,8 +484,8 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionEqual(Object object, StringBuffer whereSql, Mapperable mapper, TableName tableName,
-			String fieldNamePrefix, boolean isOr) {
+	private static void dealConditionEqual(StringBuffer whereSql, Mapperable mapper, TableName tableName,
+			String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -494,11 +496,17 @@ public class SqlBuilder {
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
+		}
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
 		if (mapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
+		}
+		if (isOr) {
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
 		}
 		if (isOr) {
 			whereSql.append(CLOSEBRACE_OR_);
@@ -1050,7 +1058,7 @@ public class SqlBuilder {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, null);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp, false);
+				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
 		}
 
@@ -1094,7 +1102,7 @@ public class SqlBuilder {
 			TableName tableName, String temp, boolean isOr, int i) {
 		switch (conditionMapper.getConditionType()) {
 		case Equal:
-			dealConditionEqual(value, whereSql, conditionMapper, tableName, temp, isOr);
+			dealConditionEqual(whereSql, conditionMapper, tableName, temp, isOr, i);
 			break;
 		case Like:
 			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp, isOr, i);
@@ -1183,7 +1191,7 @@ public class SqlBuilder {
 					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp, false);
+				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
 		}
 
