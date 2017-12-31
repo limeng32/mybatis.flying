@@ -74,5 +74,10 @@ public class OrTest {
 		lc5.setLoginIPEqualsOr("b1", "c1");
 		int c5 = loginLogService.count(lc5);
 		Assert.assertEquals(1, c5);
+
+		LoginLog_Condition lc6 = new LoginLog_Condition();
+		lc6.setNumEqualsOr(1, 2);
+		int c6 = loginLogService.count(lc6);
+		Assert.assertEquals(2, c6);
 	}
 }

@@ -24,6 +24,12 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
 
+	@FieldMapperAnnotation(dbFieldName = "num", jdbcType = JdbcType.INTEGER)
+	private Integer num;
+
+	@FieldMapperAnnotation(dbFieldName = "logiNIP2", jdbcType = JdbcType.VARCHAR)
+	private java.lang.String loginIP2;
+
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "ID")
 	private Account_ account;
 
@@ -52,6 +58,22 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 
 	public void setLoginIP(java.lang.String loginIP) {
 		this.loginIP = loginIP;
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+	public java.lang.String getLoginIP2() {
+		return loginIP2;
+	}
+
+	public void setLoginIP2(java.lang.String loginIP2) {
+		this.loginIP2 = loginIP2;
 	}
 
 	public Account_ getAccount() {
