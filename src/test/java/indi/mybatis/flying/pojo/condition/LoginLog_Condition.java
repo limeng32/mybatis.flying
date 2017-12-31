@@ -59,10 +59,18 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike) })
-	private Object[] loginIPOr;
+	private Object[] loginIPHeadLikeOr;
 
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike)
 	private String ipLikeFilter;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	private Object[] loginIPLikeOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike) })
+	private Object[] loginIPHeadLikeOrTailLike;
 
 	@Override
 	public Limitable getLimiter() {
@@ -180,12 +188,12 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 		this.loginTimeNotIn = loginTimeNotIn;
 	}
 
-	public Object[] getLoginIPOr() {
-		return loginIPOr;
+	public Object[] getLoginIPHeadLikeOr() {
+		return loginIPHeadLikeOr;
 	}
 
-	public void setLoginIPOr(Object... loginIPOr) {
-		this.loginIPOr = loginIPOr;
+	public void setLoginIPHeadLikeOr(Object... loginIPHeadLikeOr) {
+		this.loginIPHeadLikeOr = loginIPHeadLikeOr;
 	}
 
 	public String getIpLikeFilter() {
@@ -194,6 +202,22 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setIpLikeFilter(String ipLikeFilter) {
 		this.ipLikeFilter = ipLikeFilter;
+	}
+
+	public Object[] getLoginIPLikeOr() {
+		return loginIPLikeOr;
+	}
+
+	public void setLoginIPLikeOr(Object... loginIPLikeOr) {
+		this.loginIPLikeOr = loginIPLikeOr;
+	}
+
+	public Object[] getLoginIPHeadLikeOrTailLike() {
+		return loginIPHeadLikeOrTailLike;
+	}
+
+	public void setLoginIPHeadLikeOrTailLike(Object... loginIPHeadLikeOrTailLike) {
+		this.loginIPHeadLikeOrTailLike = loginIPHeadLikeOrTailLike;
 	}
 
 }

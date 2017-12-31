@@ -46,9 +46,22 @@ public class OrTest {
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr1.result.xml")
 	public void testOr1() {
 		LoginLog_Condition lc1 = new LoginLog_Condition();
-		lc1.setLoginIPOr("a", "b");
+		lc1.setLoginIPHeadLikeOr("a", "b");
 		lc1.setIpLikeFilter("1");
 		Collection<LoginLog_> LoginLogC = loginLogService.selectAll(lc1);
 		Assert.assertEquals(2, LoginLogC.size());
+
+		LoginLog_Condition lc2 = new LoginLog_Condition();
+		lc2.setLoginIPLikeOr("b1", "c1");
+		Collection<LoginLog_> LoginLogC2 = loginLogService.selectAll(lc2);
+		Assert.assertEquals(2, LoginLogC2.size());
+
+		int c2 = loginLogService.count(lc2);
+		Assert.assertEquals(2, c2);
+
+		LoginLog_Condition lc3 = new LoginLog_Condition();
+		lc3.setLoginIPHeadLikeOrTailLike("a", "2");
+		int c3 = loginLogService.count(lc2);
+		Assert.assertEquals(2, c3);
 	}
 }

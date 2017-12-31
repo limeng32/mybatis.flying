@@ -26,7 +26,7 @@ public class OrConditionTest {
 	@Test
 	public void test1() {
 		LoginLog_Condition lc = new LoginLog_Condition();
-		lc.setLoginIPOr("a", "b");
-		Assert.assertEquals(2, lc.getLoginIPOr().length);
+		lc.setLoginIPHeadLikeOr("a", "b");
+		Assert.assertEquals(2, lc.getLoginIPHeadLikeOr().length);
 	}
 }

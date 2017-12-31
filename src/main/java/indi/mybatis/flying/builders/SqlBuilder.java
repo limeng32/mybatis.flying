@@ -1069,20 +1069,24 @@ public class SqlBuilder {
 			if (value == null) {
 				continue;
 			}
+			dealConditionOrMapper(orMapper, value, whereSql, tableName, temp);
+		}
+	}
 
-			ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
-			Object[] os = (Object[]) value;
-			int i = 0;
-			whereSql.append("(");
-			for (ConditionMapper cm : conditionMappers) {
-				dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
-				i++;
-			}
-			whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4);
-			whereSql.append(") and ");
-			for (Object o : os) {
-				System.out.println(":::" + o);
-			}
+	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuffer whereSql,
+			TableName tableName, String temp) {
+		ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
+		Object[] os = (Object[]) value;
+		int i = 0;
+		whereSql.append("(");
+		for (ConditionMapper cm : conditionMappers) {
+			dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
+			i++;
+		}
+		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4);
+		whereSql.append(") and ");
+		for (Object o : os) {
+			System.out.println(":::" + o);
 		}
 	}
 
@@ -1183,13 +1187,21 @@ public class SqlBuilder {
 			}
 		}
 
-		/* 处理queryMapper中的条件 */
+		/* 处理queryMapper中的“且”条件 */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
 				continue;
 			}
 			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
+		}
+		/* 处理queryMapper中的“或”条件 */
+		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
+			Object value = dtoFieldMap.get(orMapper.getFieldName());
+			if (value == null) {
+				continue;
+			}
+			dealConditionOrMapper(orMapper, value, whereSql, tableName, temp);
 		}
 	}
 
