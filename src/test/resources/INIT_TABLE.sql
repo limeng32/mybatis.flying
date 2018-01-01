@@ -30,6 +30,7 @@ CREATE TABLE loginlog_ (
   loginTime datetime DEFAULT NULL,
   num int DEFAULT NULL,
   loginIP2 varchar(50) DEFAULT NULL,
+  status char(1) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY account1 (accountId)
 ) ENGINE=InnoDB AUTO_INCREMENT=333 DEFAULT CHARSET=utf8;

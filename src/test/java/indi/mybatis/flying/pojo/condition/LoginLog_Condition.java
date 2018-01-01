@@ -30,6 +30,9 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotEqual)
 	private Date loginTimeNotEqual;
 
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.LessThan)
+	private Date loginTimeLessThan;
+
 	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.GreaterThan)
 	private Integer idGreaterThan;
 
@@ -79,6 +82,18 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal) })
 	private Object[] numEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	private Object[] numEqualsOrLoginIPLike;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal) })
+	private Object[] loginTimeEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal) })
+	private Object[] statusEqualsOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -242,6 +257,38 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setNumEqualsOr(Object... numEqualsOr) {
 		this.numEqualsOr = numEqualsOr;
+	}
+
+	public Object[] getNumEqualsOrLoginIPLike() {
+		return numEqualsOrLoginIPLike;
+	}
+
+	public void setNumEqualsOrLoginIPLike(Object... numEqualsOrLoginIPLike) {
+		this.numEqualsOrLoginIPLike = numEqualsOrLoginIPLike;
+	}
+
+	public Date getLoginTimeLessThan() {
+		return loginTimeLessThan;
+	}
+
+	public void setLoginTimeLessThan(Date loginTimeLessThan) {
+		this.loginTimeLessThan = loginTimeLessThan;
+	}
+
+	public Object[] getLoginTimeEqualsOr() {
+		return loginTimeEqualsOr;
+	}
+
+	public void setLoginTimeEqualsOr(Object... loginTimeEqualsOr) {
+		this.loginTimeEqualsOr = loginTimeEqualsOr;
+	}
+
+	public Object[] getStatusEqualsOr() {
+		return statusEqualsOr;
+	}
+
+	public void setStatusEqualsOr(Object... statusEqualsOr) {
+		this.statusEqualsOr = statusEqualsOr;
 	}
 
 }

@@ -21,9 +21,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service2.LoginLogSource2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -34,6 +37,9 @@ public class OrTest {
 
 	@Autowired
 	private LoginLogService loginLogService;
+
+	@Autowired
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Test
 	public void test1() {
@@ -79,5 +85,39 @@ public class OrTest {
 		lc6.setNumEqualsOr(1, 2);
 		int c6 = loginLogService.count(lc6);
 		Assert.assertEquals(2, c6);
+
+		LoginLog_Condition lc7 = new LoginLog_Condition();
+		lc7.setNumEqualsOrLoginIPLike(1, "b1");
+		Collection<LoginLog_> LoginLogC7 = loginLogService.selectAll(lc7);
+		Assert.assertEquals(2, LoginLogC7.size());
+
+		LoginLog_ l1 = new LoginLog_();
+		l1.setLoginIP("a1");
+		LoginLog_ loginLog_1 = loginLogService.selectOne(l1);
+
+		LoginLog_ l2 = new LoginLog_();
+		l2.setLoginIP("b1");
+		LoginLog_ loginLog_2 = loginLogService.selectOne(l2);
+
+		LoginLog_Condition lc8 = new LoginLog_Condition();
+		lc8.setLoginTimeEqualsOr(loginLog_1.getLoginTime(), loginLog_2.getLoginTime());
+		int c8 = loginLogService.count(lc8);
+		Assert.assertEquals(2, c8);
+
+		LoginLog_Condition lc9 = new LoginLog_Condition();
+		lc9.setStatusEqualsOr(LogStatus.b, LogStatus.t);
+		int c9 = loginLogService.count(lc9);
+		Assert.assertEquals(2, c9);
+	}
+
+//	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr2.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
+	public void testOr2() {
+		LoginLogSource2Condition lc1 = new LoginLogSource2Condition();
+		lc1.setAccountIdEqualsOr(1, 2);
+		int c1 = loginLogSource2Service.count(lc1);
+		Assert.assertEquals(2, c1);
 	}
 }

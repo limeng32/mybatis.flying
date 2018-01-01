@@ -1,6 +1,7 @@
 package indi.mybatis.flying.pojo.condition;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
@@ -19,6 +20,10 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
 	private String ipLikeFilter;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal) })
+	private Object[] accountIdEqualsOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -46,6 +51,14 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 
 	public void setIpLikeFilter(String ipLikeFilter) {
 		this.ipLikeFilter = ipLikeFilter;
+	}
+
+	public Object[] getAccountIdEqualsOr() {
+		return accountIdEqualsOr;
+	}
+
+	public void setAccountIdEqualsOr(Object... accountIdEqualsOr) {
+		this.accountIdEqualsOr = accountIdEqualsOr;
 	}
 
 }

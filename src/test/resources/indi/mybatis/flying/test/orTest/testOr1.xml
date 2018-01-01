@@ -1,8 +1,12 @@
 <dataset>
-	<loginlog_ LOGINIP="a1" NUM="1" LOGINIP2="a1" />
-	<loginlog_ LOGINIP="b1" NUM="2" LOGINIP2="b1" />
-	<loginlog_ LOGINIP="c1" NUM="3" LOGINIP2="c1" />
-	<loginlog_ LOGINIP="z2" NUM="4" LOGINIP2="z2" />
-	<loginlog_ LOGINIP="z3" NUM="5" LOGINIP2="z3" />
-	<loginlog_ LOGINIP="z4" NUM="6" LOGINIP2="z4" />
+	<account_ ID="1" NAME="ann" />
+	<account_ ID="2" NAME="bob" />
+	<loginlog_ LOGINIP="a1" NUM="1" LOGINIP2="a1"
+		LOGINTIME="9999-10-25 12:03:45" />
+	<loginlog_ LOGINIP="b1" NUM="2" LOGINIP2="b1"
+		LOGINTIME="1001-10-25 12:03:45" />
+	<loginlog_ LOGINIP="c1" NUM="3" LOGINIP2="c1" STATUS="b" />
+	<loginlog_ LOGINIP="z2" NUM="4" LOGINIP2="z2" STATUS="t" />
+	<loginlog_ LOGINIP="z3" NUM="5" LOGINIP2="z3" ACCOUNTID="1" />
+	<loginlog_ LOGINIP="z4" NUM="6" LOGINIP2="z4" ACCOUNTID="2" />
 </dataset>
