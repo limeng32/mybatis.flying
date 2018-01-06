@@ -108,9 +108,14 @@ public class OrTest {
 		lc9.setStatusEqualsOr(LogStatus.b, LogStatus.t);
 		int c9 = loginLogService.count(lc9);
 		Assert.assertEquals(2, c9);
+
+		LoginLog_Condition lc10 = new LoginLog_Condition();
+		lc10.setLoginIPNotEqualsOr("z2", "z3");
+		int c10 = loginLogService.count(lc10);
+		Assert.assertEquals(6, c10);
 	}
 
-//	@Test
+	// @Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr2.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")

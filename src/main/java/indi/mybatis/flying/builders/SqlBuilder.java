@@ -516,7 +516,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix, boolean isOr) {
+			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		switch (type) {
 		case GreaterThan:
@@ -546,8 +546,14 @@ public class SqlBuilder {
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
+		}
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
+		}
+		if (isOr) {
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
 		}
 		if (isOr) {
 			whereSql.append(CLOSEBRACE_OR_);
@@ -1114,19 +1120,19 @@ public class SqlBuilder {
 			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp, isOr, i);
 			break;
 		case GreaterThan:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp, isOr);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp, isOr, i);
 			break;
 		case GreaterOrEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp, isOr);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp, isOr, i);
 			break;
 		case LessThan:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp, isOr);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp, isOr, i);
 			break;
 		case LessOrEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp, isOr);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp, isOr, i);
 			break;
 		case NotEqual:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp, isOr);
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp, isOr, i);
 			break;
 		case MultiLikeAND:
 			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp, isOr);

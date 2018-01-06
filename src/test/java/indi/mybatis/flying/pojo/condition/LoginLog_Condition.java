@@ -95,6 +95,10 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal) })
 	private Object[] statusEqualsOr;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual) })
+	private Object[] loginIPNotEqualsOr;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -289,6 +293,14 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setStatusEqualsOr(Object... statusEqualsOr) {
 		this.statusEqualsOr = statusEqualsOr;
+	}
+
+	public Object[] getLoginIPNotEqualsOr() {
+		return loginIPNotEqualsOr;
+	}
+
+	public void setLoginIPNotEqualsOr(Object... loginIPNotEqualsOr) {
+		this.loginIPNotEqualsOr = loginIPNotEqualsOr;
 	}
 
 }
