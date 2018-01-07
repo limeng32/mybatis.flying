@@ -99,6 +99,22 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual) })
 	private Object[] loginIPNotEqualsOr;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	private Object[] numGtOrLt;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	private Object[] numGeOrLe;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	private Object[] numGtOrLe;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	private Object[] numGeOrLt;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -301,6 +317,38 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setLoginIPNotEqualsOr(Object... loginIPNotEqualsOr) {
 		this.loginIPNotEqualsOr = loginIPNotEqualsOr;
+	}
+
+	public Object[] getNumGtOrLt() {
+		return numGtOrLt;
+	}
+
+	public void setNumGtOrLt(Object... numGtOrLt) {
+		this.numGtOrLt = numGtOrLt;
+	}
+
+	public Object[] getNumGeOrLe() {
+		return numGeOrLe;
+	}
+
+	public void setNumGeOrLe(Object... numGeOrLe) {
+		this.numGeOrLe = numGeOrLe;
+	}
+
+	public Object[] getNumGtOrLe() {
+		return numGtOrLe;
+	}
+
+	public void setNumGtOrLe(Object... numGtOrLe) {
+		this.numGtOrLe = numGtOrLe;
+	}
+
+	public Object[] getNumGeOrLt() {
+		return numGeOrLt;
+	}
+
+	public void setNumGeOrLt(Object... numGeOrLt) {
+		this.numGeOrLt = numGeOrLt;
 	}
 
 }

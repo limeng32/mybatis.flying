@@ -113,6 +113,26 @@ public class OrTest {
 		lc10.setLoginIPNotEqualsOr("z2", "z3");
 		int c10 = loginLogService.count(lc10);
 		Assert.assertEquals(6, c10);
+
+		LoginLog_Condition lc11 = new LoginLog_Condition();
+		lc11.setNumGtOrLt(5, 2);
+		int c11 = loginLogService.count(lc11);
+		Assert.assertEquals(2, c11);
+
+		LoginLog_Condition lc12 = new LoginLog_Condition();
+		lc12.setNumGeOrLe(5, 2);
+		int c12 = loginLogService.count(lc12);
+		Assert.assertEquals(4, c12);
+
+		LoginLog_Condition lc13 = new LoginLog_Condition();
+		lc13.setNumGtOrLe(5, 2);
+		int c13 = loginLogService.count(lc13);
+		Assert.assertEquals(3, c13);
+
+		LoginLog_Condition lc14 = new LoginLog_Condition();
+		lc14.setNumGeOrLt(5, 2);
+		int c14 = loginLogService.count(lc14);
+		Assert.assertEquals(3, c14);
 	}
 
 	// @Test
