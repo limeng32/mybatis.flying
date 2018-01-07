@@ -133,6 +133,16 @@ public class OrTest {
 		lc14.setNumGeOrLt(5, 2);
 		int c14 = loginLogService.count(lc14);
 		Assert.assertEquals(3, c14);
+
+		LoginLog_Condition lc15 = new LoginLog_Condition();
+		lc15.setStatusIsNullOr(true, false);
+		int c15 = loginLogService.count(lc15);
+		Assert.assertEquals(6, c15);
+
+		LoginLog_Condition lc16 = new LoginLog_Condition();
+		lc16.setStatusIsNullOrLoginIPEquals(false, "a1", "b1");
+		int c16 = loginLogService.count(lc16);
+		Assert.assertEquals(4, c16);
 	}
 
 	// @Test

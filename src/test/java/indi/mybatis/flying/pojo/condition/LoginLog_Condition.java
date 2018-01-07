@@ -115,6 +115,15 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
 	private Object[] numGeOrLt;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot) })
+	private Object[] statusIsNullOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	private Object[] statusIsNullOrLoginIPEquals;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -349,6 +358,22 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setNumGeOrLt(Object... numGeOrLt) {
 		this.numGeOrLt = numGeOrLt;
+	}
+
+	public Object[] getStatusIsNullOr() {
+		return statusIsNullOr;
+	}
+
+	public void setStatusIsNullOr(Object... statusIsNullOr) {
+		this.statusIsNullOr = statusIsNullOr;
+	}
+
+	public Object[] getStatusIsNullOrLoginIPEquals() {
+		return statusIsNullOrLoginIPEquals;
+	}
+
+	public void setStatusIsNullOrLoginIPEquals(Object... statusIsNullOrLoginIPEquals) {
+		this.statusIsNullOrLoginIPEquals = statusIsNullOrLoginIPEquals;
 	}
 
 }

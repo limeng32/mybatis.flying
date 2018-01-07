@@ -563,7 +563,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
-			TableName tableName, String fieldNamePrefix, boolean isOr) {
+			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(_IS);
@@ -1147,7 +1147,7 @@ public class SqlBuilder {
 			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp, isOr);
 			break;
 		case NullOrNot:
-			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr);
+			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr, i);
 			break;
 		default:
 			break;
