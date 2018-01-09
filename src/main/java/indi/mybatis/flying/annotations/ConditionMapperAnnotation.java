@@ -31,9 +31,15 @@ public @interface ConditionMapperAnnotation {
 	 * 
 	 * 标识此条件的类型，默认为“相等”
 	 * 
-	 * @return LogicType
+	 * @return ConditionType
 	 */
 	ConditionType conditionType() default ConditionType.Equal;
 
-	Class<?> target() default Void.class;
+	/**
+	 * 
+	 * 标识此项条件是针对哪个（业务上）子对象的，默认为Void，即是针对自身的；此属性只在或逻辑（Or标签）中起作用
+	 * 
+	 * @return Class
+	 */
+	Class<?> subTarget() default Void.class;
 }

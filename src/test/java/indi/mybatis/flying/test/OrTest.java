@@ -23,6 +23,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Account_Condition2;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
@@ -171,6 +172,19 @@ public class OrTest {
 		lc4.setIpLikeFilter("1");
 		int i4 = loginLogService.count(lc4);
 		Assert.assertEquals(2, i4);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr4.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr4.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr4.result.xml")
+	public void testOr4() {
+		LoginLog_Condition lc = new LoginLog_Condition();
+		Account_Condition ac = new Account_Condition();
+		ac.setNameEqualsOrLoginlogIpEquals("ann", "bob", "c1");
+		lc.setAccount(ac);
+		int i1 = loginLogService.count(lc);
+		Assert.assertEquals(5, i1);
 	}
 
 	// @Test

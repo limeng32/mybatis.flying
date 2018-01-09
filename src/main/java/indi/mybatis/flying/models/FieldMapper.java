@@ -90,8 +90,10 @@ public class FieldMapper implements Mapperable {
 	private boolean insertAble = true;
 
 	private boolean updateAble = true;
-	
+
 	private Class<?> fieldType;
+
+	private Class<?> subTarget;
 
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
@@ -347,6 +349,11 @@ public class FieldMapper implements Mapperable {
 
 	public void setFieldType(Class<?> fieldType) {
 		this.fieldType = fieldType;
+	}
+
+	@Override
+	public Class<?> getSubTarget() {
+		return subTarget;
 	}
 
 }

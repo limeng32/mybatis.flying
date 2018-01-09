@@ -11,8 +11,6 @@ import indi.mybatis.flying.statics.ConditionType;
  */
 public class ConditionMapper implements Mapperable {
 
-	// private Field field;
-
 	/**
 	 * Java对象字段名
 	 */
@@ -63,30 +61,10 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private Class<?> fieldType;
 
-	// private FieldMapperAnnotation fieldMapperAnnotation;
-	//
-	// private Column column;
-
-	// public void buildMapper() {
-	// if (fieldMapperAnnotation == null && column == null) {
-	// throw new
-	// BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
-	// }
-	// setFieldName(field.getName());
-	// if (fieldMapperAnnotation != null) {
-	// setDbFieldName(fieldMapperAnnotation.dbFieldName());
-	// setJdbcType(fieldMapperAnnotation.jdbcType());
-	// setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
-	// setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
-	// } else if (column != null) {
-	// if ("".equals(column.name())) {
-	// setDbFieldName(field.getName());
-	// } else {
-	// setDbFieldName(column.name());
-	// }
-	// setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
-	// }
-	// }
+	/**
+	 * 标识此项条件是针对哪个（业务上）子对象的，默认为Void，即是针对自身的；此属性只在或逻辑（Or标签）中起作用
+	 */
+	private Class<?> subTarget;
 
 	@Override
 	public String getFieldName() {
@@ -179,6 +157,15 @@ public class ConditionMapper implements Mapperable {
 
 	public void setFieldType(Class<?> fieldType) {
 		this.fieldType = fieldType;
+	}
+
+	@Override
+	public Class<?> getSubTarget() {
+		return subTarget;
+	}
+
+	public void setSubTarget(Class<?> subTarget) {
+		this.subTarget = subTarget;
 	}
 
 }

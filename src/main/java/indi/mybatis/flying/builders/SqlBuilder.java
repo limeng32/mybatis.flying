@@ -230,11 +230,11 @@ public class SqlBuilder {
 
 					conditionMapperCache.put(field.getName(), conditionMapper);
 				} else if (an instanceof Or) {
-					System.out.println("::" + pojoClass.getName());
+					// System.out.println("::" + pojoClass.getName());
 					or = (Or) an;
 					orMapper = new OrMapper();
 					orMapper.setFieldName(field.getName());
-					System.out.println("::" + orMapper.getFieldName());
+					// System.out.println("::" + orMapper.getFieldName());
 					ConditionMapper[] conditionMappers = new ConditionMapper[or.value().length];
 					int i = 0;
 					for (ConditionMapperAnnotation cma : or.value()) {
@@ -242,9 +242,9 @@ public class SqlBuilder {
 						buildConditionMapper(conditionMappers[i], cma, pojoClass, field);
 						i++;
 					}
-					for (ConditionMapper cm : conditionMappers) {
-						System.out.println("::" + cm.getConditionType());
-					}
+					// for (ConditionMapper cm : conditionMappers) {
+					// System.out.println("::" + cm.getConditionType());
+					// }
 					orMapper.setConditionMappers(conditionMappers);
 					orMapperCache.put(field.getName(), orMapper);
 				}
@@ -261,15 +261,33 @@ public class SqlBuilder {
 		conditionMapper.setFieldName(field.getName());
 		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
 		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
+		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
 		for (Field pojoField : pojoClass.getDeclaredFields()) {
 			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
 						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
 				boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
 						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-				if (b1 || b2) {
-					FieldMapper fieldMapper = new FieldMapper();
-					fieldMapper.buildMapper(pojoField);
+				boolean b3 = (conditionMapper.getSubTarget() != null)
+						&& (!Void.class.equals(conditionMapper.getSubTarget()));
+				if (b1 || b2 || b3) {
+					FieldMapper fieldMapper = null;
+					if (b3) {
+						if (!tableMapperCache.containsKey(conditionMapper.getSubTarget())) {
+							buildTableMapper(conditionMapper.getSubTarget());
+						}
+						TableMapper tableMapper = tableMapperCache.get(conditionMapper.getSubTarget());
+						Map<String, FieldMapper> fieldMapperCache = tableMapper.getFieldMapperCache();
+						for (Map.Entry<String, FieldMapper> e : fieldMapperCache.entrySet()) {
+							if (conditionMapper.getDbFieldName().equalsIgnoreCase(e.getValue().getDbFieldName())) {
+								fieldMapper = e.getValue();
+								break;
+							}
+						}
+					} else {
+						fieldMapper = new FieldMapper();
+						fieldMapper.buildMapper(pojoField);
+					}
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
@@ -489,6 +507,7 @@ public class SqlBuilder {
 			String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
+		System.out.println(":::" + mapper.getSubTarget() + " " + mapper.getFieldType());
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
@@ -582,7 +601,13 @@ public class SqlBuilder {
 	private static void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName,
 			String fieldNamePrefix) {
 		if (tableName != null) {
-			whereSql.append(tableName.sqlWhere());
+			if (mapper.getSubTarget() == null || Void.class.equals(mapper.getSubTarget())) {
+				whereSql.append(tableName.sqlWhere());
+			} else {
+				TableName temp = tableName.getMap().get(mapper.getSubTarget());
+				whereSql.append(new StringBuffer(temp.getTableMapper().getTableName()).append("_")
+						.append(temp.getIndex()).append("."));
+			}
 		}
 		whereSql.append(mapper.getDbFieldName());
 	}
@@ -900,7 +925,7 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
@@ -935,7 +960,7 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
@@ -965,7 +990,7 @@ public class SqlBuilder {
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		AtomicInteger ai = new AtomicInteger(0);
-		TableName tableName = new TableName(tableMapper.getTableName(), 0);
+		TableName tableName = new TableName(tableMapper, 0, null);
 
 		StringBuffer selectSql = new StringBuffer();
 		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
@@ -983,7 +1008,7 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 
-		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai);
+		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai, tableName);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1019,12 +1044,16 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, String ignoreTag) throws Exception {
+			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag) throws Exception {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
-
+		TableName tableName = null;
+		if (lastTableName == null) {
+			tableName = new TableName(tableMapper, index.getAndIncrement(), null);
+		} else {
+			tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
+		}
 		/*
 		 * 在第一次遍历中，处理好selectSql和fromSql。 如果originFieldMapper为null则可认为是第一次遍历
 		 */
@@ -1063,7 +1092,7 @@ public class SqlBuilder {
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
 					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index, null);
+						temp, index, tableName, null);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
@@ -1095,13 +1124,15 @@ public class SqlBuilder {
 		int i = 0;
 		whereSql.append("(");
 		for (ConditionMapper cm : conditionMappers) {
+			// if (!Void.class.equals(cm.getSubTarget())) {
 			dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
+			// }
 			i++;
 		}
 		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4).append(") and ");
-		for (Object o : os) {
-			System.out.println(":::" + o);
-		}
+		// for (Object o : os) {
+		// System.out.println("0::" + o);
+		// }
 	}
 
 	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
@@ -1156,11 +1187,11 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForCount(Object object, StringBuffer fromSql,
 			StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper, String fieldPerfix,
-			AtomicInteger index) throws Exception {
+			AtomicInteger index, TableName lastTableName) throws Exception {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
+		TableName tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
 
 		/*
 		 * 在第一次遍历中，处理好fromSql。 如果originFieldMapper为null则可认为是第一次遍历
@@ -1195,7 +1226,8 @@ public class SqlBuilder {
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
 					&& fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
+				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
+						tableName);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
