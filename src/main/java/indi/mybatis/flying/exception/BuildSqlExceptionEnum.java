@@ -10,7 +10,8 @@ public enum BuildSqlExceptionEnum {
 											"Unique key can't be null, build update sql failed:"), updatePersistentUniqueKeyIsNull(
 													"Unique key can't be null, build updatePersistent sql failed:"), deleteUniqueKeyIsNull(
 															"Unique key can't be null, build delete sql failed:"), noFieldMapperAnnotationOrColumnAnnotation(
-																	"The Field have no fieldMapperAnnotation or columnAnnotation");
+																	"The Field have no fieldMapperAnnotation or columnAnnotation"), ThisConditionNotSupportOr(
+																			"The condition you use is not support OR");
 
 	private final String description;
 

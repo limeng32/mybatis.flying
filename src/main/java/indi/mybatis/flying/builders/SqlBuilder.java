@@ -368,6 +368,9 @@ public class SqlBuilder {
 
 	private static void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
+		if (isOr) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+		}
 		List<?> multiConditionC = (List<?>) value;
 		if (multiConditionC.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
@@ -408,11 +411,6 @@ public class SqlBuilder {
 			}
 			if (!allNull) {
 				tempWhereSql.delete(tempWhereSql.lastIndexOf(COMMA), tempWhereSql.lastIndexOf(COMMA) + 1);
-				// if (isOr) {
-				// tempWhereSql.append(CLOSEBRACE_AND_);
-				// } else {
-				// tempWhereSql.append(CLOSEBRACE_AND_);
-				// }
 				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
@@ -563,7 +561,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
-			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
+			TableName tableName, String fieldNamePrefix, boolean isOr) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(_IS);
@@ -1147,7 +1145,7 @@ public class SqlBuilder {
 			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp, isOr);
 			break;
 		case NullOrNot:
-			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr, i);
+			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr);
 			break;
 		default:
 			break;
