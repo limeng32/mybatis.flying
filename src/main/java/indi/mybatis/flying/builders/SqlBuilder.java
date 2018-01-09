@@ -1098,8 +1098,7 @@ public class SqlBuilder {
 			dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
 			i++;
 		}
-		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4);
-		whereSql.append(") and ");
+		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4).append(") and ");
 		for (Object o : os) {
 			System.out.println(":::" + o);
 		}
