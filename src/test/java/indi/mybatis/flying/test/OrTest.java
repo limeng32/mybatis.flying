@@ -23,7 +23,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
-import indi.mybatis.flying.pojo.condition.Account_Condition;
+import indi.mybatis.flying.pojo.condition.Account_Condition2;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -165,7 +165,7 @@ public class OrTest {
 		 */
 
 		LoginLog_Condition lc4 = new LoginLog_Condition();
-		Account_Condition ac = new Account_Condition();
+		Account_Condition2 ac = new Account_Condition2();
 		ac.setNameEqualsOr("ann", "bob");
 		lc4.setAccount(ac);
 		lc4.setIpLikeFilter("1");
