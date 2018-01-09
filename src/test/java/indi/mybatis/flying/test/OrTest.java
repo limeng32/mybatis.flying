@@ -23,6 +23,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -142,27 +143,34 @@ public class OrTest {
 		Assert.assertEquals(6, c15);
 
 		LoginLog_Condition lc16 = new LoginLog_Condition();
-		lc16.setStatusIsNullOrLoginIPEquals(false, "a1", "b1");
+		lc16.setStatusIsNullOrLoginIPEquals(false, "a1", "b1", "c1");// 最后一个参数无意义
 		int c16 = loginLogService.count(lc16);
 		Assert.assertEquals(4, c16);
 
 	}
 
-	// @Test
+	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr3.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	public void testOr3() {
-		// LoginLog_Condition lc17 = new LoginLog_Condition();
-		// Collection<LogStatus> logStatusC = new ArrayList<>();
-		// logStatusC.add(LogStatus.b);
-		// logStatusC.add(LogStatus.t);
-		// Collection<String> loginLogC = new ArrayList<>();
-		// loginLogC.add("a1");
-		// loginLogC.add("c1");
-		// lc17.setStatusInOrLoginIPIn(logStatusC, loginLogC);
-		// Collection<LoginLog_> c17 = loginLogService.selectAll(lc17);
-		// Assert.assertEquals(3, c17.size());
+		/*
+		 * LoginLog_Condition lc1 = new LoginLog_Condition();
+		 * lc1.setLoginIP("a1"); lc1.setLoginIP2("a1"); int i =
+		 * loginLogService.count(lc1); Assert.assertEquals(1, i);
+		 * 
+		 * LoginLog_Condition lc2 = new LoginLog_Condition();
+		 * lc2.setLoginIP2("a1"); lc2.setLoginIP("a1"); int i2 =
+		 * loginLogService.count(lc2); Assert.assertEquals(1, i2);
+		 */
+
+		LoginLog_Condition lc4 = new LoginLog_Condition();
+		Account_Condition ac = new Account_Condition();
+		ac.setNameEqualsOr("ann", "bob");
+		lc4.setAccount(ac);
+		lc4.setIpLikeFilter("1");
+		int i4 = loginLogService.count(lc4);
+		Assert.assertEquals(2, i4);
 	}
 
 	// @Test

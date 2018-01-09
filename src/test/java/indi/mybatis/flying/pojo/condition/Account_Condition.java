@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
@@ -90,6 +91,10 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NullOrNot)
 	private Boolean roleIsNull;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal) })
+	private Object[] nameEqualsOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -197,5 +202,13 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setRoleIsNull(Boolean roleIsNull) {
 		this.roleIsNull = roleIsNull;
+	}
+
+	public Object[] getNameEqualsOr() {
+		return nameEqualsOr;
+	}
+
+	public void setNameEqualsOr(Object... nameEqualsOr) {
+		this.nameEqualsOr = nameEqualsOr;
 	}
 }

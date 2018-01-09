@@ -9,9 +9,9 @@ public enum ConditionType {
 	HeadLike,
 	/** 结尾like匹配 */
 	TailLike,
-	/** 多like条件匹配 ，与关系 */
+	/** 多like条件匹配 ，与关系，此操作无法在Or标签下使用 */
 	MultiLikeAND,
-	/** 多like条件匹配 ，或关系 */
+	/** 多like条件匹配 ，或关系，此操作无法在Or标签下使用 */
 	MultiLikeOR,
 	/** 大于 */
 	GreaterThan,
@@ -23,9 +23,9 @@ public enum ConditionType {
 	LessOrEqual,
 	/** 不等于 */
 	NotEqual,
-	/** 属于 */
+	/** 属于，此操作无法在Or标签下使用 */
 	In,
-	/** 不属于 */
+	/** 不属于，此操作无法在Or标签下使用 */
 	NotIn,
 	/** 为null或不为null */
 	NullOrNot
