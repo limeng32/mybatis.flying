@@ -420,6 +420,9 @@ public class SqlBuilder {
 	@SuppressWarnings("unchecked")
 	private static void dealConditionMultiLike(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
+		if (isOr) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+		}
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
