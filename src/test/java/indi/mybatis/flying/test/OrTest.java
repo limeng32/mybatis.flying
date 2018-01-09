@@ -1,6 +1,5 @@
 package indi.mybatis.flying.test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Assert;
@@ -126,7 +125,8 @@ public class OrTest {
 		Assert.assertEquals(4, c12);
 
 		LoginLog_Condition lc13 = new LoginLog_Condition();
-		lc13.setNumGtOrLe(5, 2);
+		Object[] o13 = { 5, 2 };
+		lc13.setNumGtOrLe(o13);
 		int c13 = loginLogService.count(lc13);
 		Assert.assertEquals(3, c13);
 
@@ -136,7 +136,8 @@ public class OrTest {
 		Assert.assertEquals(3, c14);
 
 		LoginLog_Condition lc15 = new LoginLog_Condition();
-		lc15.setStatusIsNullOr(true, false);
+		Object[] o15 = { true, false };
+		lc15.setStatusIsNullOr(o15);
 		int c15 = loginLogService.count(lc15);
 		Assert.assertEquals(6, c15);
 
@@ -146,22 +147,22 @@ public class OrTest {
 		Assert.assertEquals(4, c16);
 
 	}
-	
-//	@Test
+
+	// @Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr3.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	public void testOr3() {
-//		LoginLog_Condition lc17 = new LoginLog_Condition();
-//		Collection<LogStatus> logStatusC = new ArrayList<>();
-//		logStatusC.add(LogStatus.b);
-//		logStatusC.add(LogStatus.t);
-//		Collection<String> loginLogC = new ArrayList<>();
-//		loginLogC.add("a1");
-//		loginLogC.add("c1");
-//		lc17.setStatusInOrLoginIPIn(logStatusC, loginLogC);
-//		Collection<LoginLog_> c17 = loginLogService.selectAll(lc17);
-//		Assert.assertEquals(3, c17.size());
+		// LoginLog_Condition lc17 = new LoginLog_Condition();
+		// Collection<LogStatus> logStatusC = new ArrayList<>();
+		// logStatusC.add(LogStatus.b);
+		// logStatusC.add(LogStatus.t);
+		// Collection<String> loginLogC = new ArrayList<>();
+		// loginLogC.add("a1");
+		// loginLogC.add("c1");
+		// lc17.setStatusInOrLoginIPIn(logStatusC, loginLogC);
+		// Collection<LoginLog_> c17 = loginLogService.selectAll(lc17);
+		// Assert.assertEquals(3, c17.size());
 	}
 
 	// @Test
