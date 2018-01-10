@@ -21,10 +21,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Account_Condition2;
+import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -243,14 +245,21 @@ public class OrTest {
 		Assert.assertEquals(4, i);
 	}
 
-//	@Test
-//	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr2.xml")
-//	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
-//	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
-//	public void testOr2() {
-//		LoginLogSource2Condition lc1 = new LoginLogSource2Condition();
-//		lc1.setAccountIdEqualsOr(1, 2);
-//		int c1 = loginLogSource2Service.count(lc1);
-//		Assert.assertEquals(2, c1);
-//	}
+	/* 一个dbAssociationTypeHandler型外键的或逻辑测试用例 */
+	@Test
+	@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.xml")
+	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.result.xml")
+	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.result.xml")
+	public void testOr7() {
+		LoginLogSource2Condition loginLogSource2 = new LoginLogSource2Condition();
+		// loginLogSource2.setAccount(new Account_Condition());
+		// ((Account_Condition)loginLogSource2.getAccount()).setIdEqualsOr(1,2);
+		Account_ ac1 = new Account_();
+		ac1.setId(1);
+		Account_ ac2 = new Account_();
+		ac2.setId(2);
+		loginLogSource2.setAccountIdEqualsOr(ac1, ac2);
+		int i = loginLogSource2Service.count(loginLogSource2);
+		Assert.assertEquals(4, i);
+	}
 }

@@ -262,6 +262,7 @@ public class SqlBuilder {
 		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
 		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
 		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
+		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.dbAssociationTypeHandler());
 		for (Field pojoField : pojoClass.getDeclaredFields()) {
 			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
@@ -522,6 +523,8 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
+		System.out.println(
+				"1:::" + mapper.getTypeHandlerPath() + " " + mapper.getDbFieldName() + " " + mapper.getFieldName());
 		if (mapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
@@ -1225,9 +1228,15 @@ public class SqlBuilder {
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
-					&& fieldMapper.isForeignKey()) {
+					&& (fieldMapper.isForeignKey())) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
 						tableName);
+				// } else if ((hasTableMapperAnnotation(value.getClass()) ||
+				// hasQueryMapperAnnotation(value.getClass()))
+				// && (fieldMapper.getTypeHandlerPath() != null)) {
+				// System.out.println("3:::");
+				// dealConditionEqual(whereSql, fieldMapper, tableName, temp,
+				// true, 0);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}

@@ -21,8 +21,8 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
 	private String ipLikeFilter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class) })
 	private Object[] accountIdEqualsOr;
 
 	@Override

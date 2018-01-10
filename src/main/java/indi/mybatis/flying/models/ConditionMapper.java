@@ -146,7 +146,7 @@ public class ConditionMapper implements Mapperable {
 	}
 
 	public void setTypeHandlerPath(Class<?> typeHandler) {
-		if (!Object.class.equals(typeHandler)) {
+		if (!Void.class.equals(typeHandler)) {
 			this.typeHandlerPath = typeHandler.getName();
 		}
 	}

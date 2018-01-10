@@ -42,4 +42,6 @@ public @interface ConditionMapperAnnotation {
 	 * @return Class
 	 */
 	Class<?> subTarget() default Void.class;
+	
+	Class<?> dbAssociationTypeHandler() default Void.class;
 }
