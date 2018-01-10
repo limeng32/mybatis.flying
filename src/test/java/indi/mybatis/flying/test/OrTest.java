@@ -25,7 +25,6 @@ import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Account_Condition2;
-import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -231,14 +230,27 @@ public class OrTest {
 		Assert.assertEquals(4, i2);
 	}
 
-	// @Test
+	/* 一个dbAssociationUniqueKey型外键的或逻辑测试用例 */
+	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr2.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
 	public void testOr2() {
-		LoginLogSource2Condition lc1 = new LoginLogSource2Condition();
-		lc1.setAccountIdEqualsOr(1, 2);
-		int c1 = loginLogSource2Service.count(lc1);
-		Assert.assertEquals(2, c1);
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setAccount(new Account_Condition());
+		((Account_Condition) lc.getAccount()).setIdEqualsOr(1, 2);
+		int i = loginLogService.count(lc);
+		Assert.assertEquals(4, i);
 	}
+
+//	@Test
+//	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr2.xml")
+//	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
+//	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr2.result.xml")
+//	public void testOr2() {
+//		LoginLogSource2Condition lc1 = new LoginLogSource2Condition();
+//		lc1.setAccountIdEqualsOr(1, 2);
+//		int c1 = loginLogSource2Service.count(lc1);
+//		Assert.assertEquals(2, c1);
+//	}
 }

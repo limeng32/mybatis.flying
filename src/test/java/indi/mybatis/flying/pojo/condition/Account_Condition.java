@@ -97,6 +97,10 @@ public class Account_Condition extends Account_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.LoginLog_.class) })
 	private Object[] nameEqualsOrLoginlogIpEquals;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.Equal) })
+	private Object[] idEqualsOr;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -211,6 +215,14 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setNameEqualsOrLoginlogIpEquals(Object... nameEqualsOrLoginlogIpEquals) {
 		this.nameEqualsOrLoginlogIpEquals = nameEqualsOrLoginlogIpEquals;
+	}
+
+	public Object[] getIdEqualsOr() {
+		return idEqualsOr;
+	}
+
+	public void setIdEqualsOr(Object... idEqualsOr) {
+		this.idEqualsOr = idEqualsOr;
 	}
 
 }
