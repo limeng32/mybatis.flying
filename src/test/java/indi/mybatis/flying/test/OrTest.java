@@ -27,6 +27,7 @@ import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Account_Condition2;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
+import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 
@@ -185,6 +186,49 @@ public class OrTest {
 		lc.setAccount(ac);
 		int i1 = loginLogService.count(lc);
 		Assert.assertEquals(5, i1);
+
+		LoginLog_Condition lc2 = new LoginLog_Condition();
+		lc2.setAccount(new Account_Condition());
+		lc2.getAccount().setRole(new Role_Condition());
+		((Role_Condition) (lc2.getAccount().getRole())).setNameEqualsOrAccountNameEquals("admin", "cal");
+		int i2 = loginLogService.count(lc2);
+		Assert.assertEquals(6, i2);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr5.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr5.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr5.result.xml")
+	public void testOr5() {
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setAccount(new Account_Condition());
+		lc.getAccount().setRole(new Role_Condition());
+		lc.getAccount().setRoleDeputy(new Role_Condition());
+		((Role_Condition) lc.getAccount().getRole()).setNameEqualsOrAccountNameEquals("user", "bob");
+		((Role_Condition) lc.getAccount().getRoleDeputy()).setNameEqualsOrAccountNameEquals("silver", "bob");
+		Collection<LoginLog_> loginLogC = loginLogService.selectAll(lc);
+		Assert.assertEquals(2, loginLogC.size());
+	}
+
+	/* 一个只有单独入参的或逻辑测试用例 */
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr6.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr6.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr6.result.xml")
+	public void testOr6() {
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setAccount(new Account_Condition());
+		lc.getAccount().setRole(new Role_Condition());
+		((Role_Condition) lc.getAccount().getRole()).setAccountNameEquals("ann");
+		int i = loginLogService.count(lc);
+		Assert.assertEquals(2, i);
+
+		LoginLog_Condition lc2 = new LoginLog_Condition();
+		lc2.setAccount(new Account_Condition());
+		lc2.getAccount().setRole(new Role_Condition());
+		((Role_Condition) lc2.getAccount().getRole()).setNameEquals("admin");
+		int i2 = loginLogService.count(lc2);
+		Assert.assertEquals(4, i2);
 	}
 
 	// @Test

@@ -1,7 +1,11 @@
 <dataset>
-	<account_ ID="1" NAME="ann" />
-	<account_ ID="2" NAME="bob" />
-	<account_ ID="3" NAME="cal" />
+	<role_ ID="1" NAME="admin" />
+	<role_ ID="2" NAME="user" />
+	<role_ ID="3" NAME="silver" />
+	<role_ ID="4" NAME="gold" />
+	<account_ ID="1" NAME="ann" ROLE_ID="1" DEPUTY_ID="3" />
+	<account_ ID="2" NAME="bob" ROLE_ID="1" DEPUTY_ID="4" />
+	<account_ ID="3" NAME="cal" ROLE_ID="2" DEPUTY_ID="4" />
 	<loginlog_ LOGINIP="a1" NUM="1" LOGINIP2="a1"
 		LOGINTIME="9999-10-25 12:03:45" accountId="1" />
 	<loginlog_ LOGINIP="b1" NUM="2" LOGINIP2="b1"
