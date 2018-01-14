@@ -230,11 +230,9 @@ public class SqlBuilder {
 
 					conditionMapperCache.put(field.getName(), conditionMapper);
 				} else if (an instanceof Or) {
-					// System.out.println("::" + pojoClass.getName());
 					or = (Or) an;
 					orMapper = new OrMapper();
 					orMapper.setFieldName(field.getName());
-					// System.out.println("::" + orMapper.getFieldName());
 					ConditionMapper[] conditionMappers = new ConditionMapper[or.value().length];
 					int i = 0;
 					for (ConditionMapperAnnotation cma : or.value()) {
@@ -242,9 +240,6 @@ public class SqlBuilder {
 						buildConditionMapper(conditionMappers[i], cma, pojoClass, field);
 						i++;
 					}
-					// for (ConditionMapper cm : conditionMappers) {
-					// System.out.println("::" + cm.getConditionType());
-					// }
 					orMapper.setConditionMappers(conditionMappers);
 					orMapperCache.put(field.getName(), orMapper);
 				}
@@ -508,7 +503,6 @@ public class SqlBuilder {
 			String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
-		System.out.println(":::" + mapper.getSubTarget() + " " + mapper.getFieldType());
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
@@ -523,8 +517,6 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		System.out.println(
-				"1:::" + mapper.getTypeHandlerPath() + " " + mapper.getDbFieldName() + " " + mapper.getFieldName());
 		if (mapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
@@ -1127,15 +1119,10 @@ public class SqlBuilder {
 		int i = 0;
 		whereSql.append("(");
 		for (ConditionMapper cm : conditionMappers) {
-			// if (!Void.class.equals(cm.getSubTarget())) {
 			dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
-			// }
 			i++;
 		}
 		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4).append(") and ");
-		// for (Object o : os) {
-		// System.out.println("0::" + o);
-		// }
 	}
 
 	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
@@ -1231,12 +1218,6 @@ public class SqlBuilder {
 					&& (fieldMapper.isForeignKey())) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
 						tableName);
-				// } else if ((hasTableMapperAnnotation(value.getClass()) ||
-				// hasQueryMapperAnnotation(value.getClass()))
-				// && (fieldMapper.getTypeHandlerPath() != null)) {
-				// System.out.println("3:::");
-				// dealConditionEqual(whereSql, fieldMapper, tableName, temp,
-				// true, 0);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
