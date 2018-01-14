@@ -2,6 +2,7 @@ package indi.mybatis.flying.builders;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +108,7 @@ public class SqlBuilder {
 	private static TableMapper buildTableMapper(Class<?> dtoClass) {
 
 		Map<String, FieldMapper> fieldMapperCache = null;
-		Field[] fields = null;
+		Field[] fields = dtoClass.getDeclaredFields();
 
 		// FieldMapperAnnotation fieldMapperAnnotation = null;
 		FieldMapper fieldMapper = null;
@@ -128,7 +129,6 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fields = dtoClass.getDeclaredFields();
 		fieldMapperCache = new HashMap<String, FieldMapper>();
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
@@ -267,7 +267,7 @@ public class SqlBuilder {
 				boolean b3 = (conditionMapper.getSubTarget() != null)
 						&& (!Void.class.equals(conditionMapper.getSubTarget()));
 				if (b1 || b2 || b3) {
-					FieldMapper fieldMapper = null;
+					FieldMapper fieldMapper = new FieldMapper();
 					if (b3) {
 						if (!tableMapperCache.containsKey(conditionMapper.getSubTarget())) {
 							buildTableMapper(conditionMapper.getSubTarget());
@@ -613,10 +613,18 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return String
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildInsertSql(Object object, FlyingModel flyingModel) throws Exception {
+	public static String buildInsertSql(Object object, FlyingModel flyingModel)
+			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -692,10 +700,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdateSql(Object object, FlyingModel flyingModel) throws Exception {
+	public static String buildUpdateSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -763,10 +775,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel) throws Exception {
+	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -834,10 +850,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildDeleteSql(Object object) throws Exception {
+	public static String buildDeleteSql(Object object)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -908,10 +928,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectAllSql(Object object, FlyingModel flyingModel) throws Exception {
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -940,10 +964,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildSelectOneSql(Object object, FlyingModel flyingModel) throws Exception {
+	public static String buildSelectOneSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -975,10 +1003,14 @@ public class SqlBuilder {
 	 * @param object
 	 *            pojo
 	 * @return sql
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 * @throws Exception
 	 *             RuntimeException
 	 */
-	public static String buildCountSql(Object object) throws Exception {
+	public static String buildCountSql(Object object)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -1039,7 +1071,8 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag) throws Exception {
+			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
@@ -1177,7 +1210,8 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForCount(Object object, StringBuffer fromSql,
 			StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper, String fieldPerfix,
-			AtomicInteger index, TableName lastTableName) throws Exception {
+			AtomicInteger index, TableName lastTableName)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
