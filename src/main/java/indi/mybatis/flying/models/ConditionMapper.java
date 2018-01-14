@@ -151,6 +151,7 @@ public class ConditionMapper implements Mapperable {
 		}
 	}
 
+	@Override
 	public Class<?> getFieldType() {
 		return fieldType;
 	}

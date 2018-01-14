@@ -137,6 +137,8 @@ public class ReflectHelper {
 						logger.error("在扫描用户定义视图时从jar包获取文件出错");
 					}
 					break;
+				default:
+					break;
 				}
 			}
 		} catch (IOException e) {

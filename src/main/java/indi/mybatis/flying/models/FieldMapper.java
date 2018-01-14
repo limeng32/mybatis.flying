@@ -343,6 +343,7 @@ public class FieldMapper implements Mapperable {
 		this.updateAble = updateAble;
 	}
 
+	@Override
 	public Class<?> getFieldType() {
 		return fieldType;
 	}
