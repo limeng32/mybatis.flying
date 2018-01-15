@@ -10,12 +10,6 @@ public abstract class PojoSupport<T extends PojoSupport<T>> implements PojoFace<
 	@Override
 	abstract public Object getId();
 
-	/*@Override
-	@JSONField(serialize = false)
-	public String getCacheKey() {
-		return DigestUtils.md5Hex(JSON.toJSONString(this));
-	}*/
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -26,19 +20,19 @@ public abstract class PojoSupport<T extends PojoSupport<T>> implements PojoFace<
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj){
+		if (this == obj) {
 			return true;
 		}
-		if (obj == null){
+		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()){
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		PojoSupport<?> other = (PojoSupport<?>) obj;
 		if (getId() == null) {
 			return false;
-		} else if (!getId().equals(other.getId())){
+		} else if (!getId().equals(other.getId())) {
 			return false;
 		}
 		return true;

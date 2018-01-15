@@ -577,7 +577,7 @@ public class CacheTest {
 		Account_ account = accountService.select(1);
 		Assert.assertEquals("ann", account.getRole().getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -606,7 +606,7 @@ public class CacheTest {
 		ac.setEmail("email");
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -639,7 +639,7 @@ public class CacheTest {
 		ac.setEmailLike("mai");
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -672,7 +672,7 @@ public class CacheTest {
 		ac.setLimiter(new PageParam(1, 1));
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -708,7 +708,7 @@ public class CacheTest {
 		Role_ role = roleService.select(1);
 		Assert.assertEquals("root", role.getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "newRoot");
 		roleService.updateDirect(m);
@@ -779,7 +779,7 @@ public class CacheTest {
 		Account_ account2 = accountService.selectEverything(1);
 		Assert.assertEquals("newDeployer", account2.getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "newRoot");
 		roleService.updateDirect(m);
@@ -816,7 +816,7 @@ public class CacheTest {
 
 		roleService.update(r);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 2);
 		m.put("name", "newUser");
 		roleService.updateDirect(m);
@@ -895,17 +895,17 @@ public class CacheTest {
 		a3.setRole(role2);
 		accountService.insert(a3);
 
-		Map<String, Object> map1 = new HashMap<>();
+		Map<String, Object> map1 = new HashMap<>(4);
 		map1.put("role_id", role1.getId());
 		Collection<Account_> c1 = accountService.selectAccountByRole(map1);
 		Assert.assertEquals(2, c1.size());
 
-		Map<String, Object> map2 = new HashMap<>();
+		Map<String, Object> map2 = new HashMap<>(4);
 		map2.put("role_id", role2.getId());
 		Collection<Account_> c2 = accountService.selectAccountByRole(map2);
 		Assert.assertEquals(1, c2.size());
 
-		Map<String, Object> map3 = new HashMap<>();
+		Map<String, Object> map3 = new HashMap<>(4);
 		map3.put("name", "ann");
 		map3.put("email", "ann@live.cn");
 		Collection<Account_> c3 = accountService.selectAllDirect(map3);
@@ -945,7 +945,7 @@ public class CacheTest {
 		Role_[] roles = c1.toArray(new Role_[c1.size()]);
 		Assert.assertEquals("gold", roles[0].getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("name", "gold1");
 		m.put("id", roles[0].getId());
 		roleService.updateDirect(m);
@@ -975,7 +975,7 @@ public class CacheTest {
 		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(21);
 		Assert.assertEquals("user", loginLogSource2.getAccount().getRole().getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 101);
 		m.put("name", "newUser");
 		roleService.updateDirect(m);

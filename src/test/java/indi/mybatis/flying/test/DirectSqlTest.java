@@ -58,7 +58,7 @@ public class DirectSqlTest {
 		Account_ account3 = accountService.selectEverything(1);
 		Assert.assertEquals("5a690d842935c51f26f473e025c1b97a", account3.getPassword());
 
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(4);
 		map.put("name", "bob");
 		map.put("email", "bob@live.cn");
 		Collection<Account_> c1 = accountService.selectAllDirect(map);

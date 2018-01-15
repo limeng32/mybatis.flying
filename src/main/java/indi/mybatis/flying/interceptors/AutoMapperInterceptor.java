@@ -51,7 +51,7 @@ import indi.mybatis.flying.utils.ReflectHelper;
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
-	private static String dialect = "";
+	private String dialect = "";
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -228,7 +228,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	private static String generatePageSql(String sql, Conditionable condition) {
+	private String generatePageSql(String sql, Conditionable condition) {
 		if ((condition != null) && (dialect != null) && (!dialect.equals(""))) {
 			StringBuffer pageSql = new StringBuffer();
 			switch (dialect) {

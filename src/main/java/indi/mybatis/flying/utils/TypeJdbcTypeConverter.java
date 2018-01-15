@@ -8,7 +8,7 @@ import org.apache.ibatis.type.JdbcType;
 
 public class TypeJdbcTypeConverter {
 
-	public static Map<Class<?>, JdbcType> map = new HashMap<>(128);
+	public final static Map<Class<?>, JdbcType> map = new HashMap<>(128);
 
 	static {
 		map.put(String.class, JdbcType.VARCHAR);

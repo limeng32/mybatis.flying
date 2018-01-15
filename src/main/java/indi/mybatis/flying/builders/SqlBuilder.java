@@ -129,7 +129,7 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fieldMapperCache = new HashMap<String, FieldMapper>();
+		fieldMapperCache = new HashMap<String, FieldMapper>(16);
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
 			boolean b = fieldMapper.buildMapper(field);
@@ -204,8 +204,8 @@ public class SqlBuilder {
 		if (queryMapper != null) {
 			return queryMapper;
 		}
-		Map<String, ConditionMapper> conditionMapperCache = new HashMap<>();
-		Map<String, OrMapper> orMapperCache = new HashMap<>();
+		Map<String, ConditionMapper> conditionMapperCache = new HashMap<>(16);
+		Map<String, OrMapper> orMapperCache = new HashMap<>(4);
 		Field[] fields = null;
 
 		ConditionMapperAnnotation conditionMapperAnnotation = null;

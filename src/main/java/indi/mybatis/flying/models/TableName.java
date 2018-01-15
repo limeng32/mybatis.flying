@@ -21,10 +21,6 @@ public class TableName {
 
 	private TableMapper tableMapper;
 
-	// private AtomicInteger ai;
-
-	// private String tableName;
-	//
 	private int index = 0;
 
 	private HashMap<Class<?>, TableName> map;
