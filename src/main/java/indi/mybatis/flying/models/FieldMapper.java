@@ -14,7 +14,6 @@ import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
-import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
