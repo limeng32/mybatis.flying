@@ -175,11 +175,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	public void setProperties(Properties properties) {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
-			try {
-				throw new AutoMapperException(AutoMapperExceptionEnum.dialectPropertyCannotFound);
-			} catch (AutoMapperException e) {
-				logger.error(e.getMessage());
-			}
+			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
 		}
 	}
 

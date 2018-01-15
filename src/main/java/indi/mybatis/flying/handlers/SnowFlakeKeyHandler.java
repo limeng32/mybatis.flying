@@ -1,5 +1,6 @@
 package indi.mybatis.flying.handlers;
 
+import indi.mybatis.flying.exception.SnowFlakeException;
 import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.SnowflakeIdWorker;
 
@@ -90,7 +91,7 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 
 		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
 		if (timestamp < lastTimestamp) {
-			throw new RuntimeException(String.format(
+			throw new SnowFlakeException(String.format(
 					"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
 		}
 
