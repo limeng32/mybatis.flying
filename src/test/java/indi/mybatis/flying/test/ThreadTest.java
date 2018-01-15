@@ -40,11 +40,11 @@ public class ThreadTest extends TestCase {
 
 	private class accountInsert extends TestRunnable {
 
-		private Integer id;
+		private Long id;
 
 		private String name;
 
-		private accountInsert(Integer id, String name) {
+		private accountInsert(Long id, String name) {
 			this.id = id;
 			this.name = name;
 		}
@@ -73,8 +73,8 @@ public class ThreadTest extends TestCase {
 
 		// 实例化 TestRunnable 类
 		TestRunnable tr1, tr2;
-		tr1 = new accountInsert(2, "ann");
-		tr2 = new accountInsert(3, "ann");
+		tr1 = new accountInsert(2l, "ann");
+		tr2 = new accountInsert(3l, "ann");
 		// 把实例传递给 MTTR
 		TestRunnable[] trs = { tr1, tr2 };
 		MultiThreadedTestRunner mttr = new MultiThreadedTestRunner(trs);

@@ -20,8 +20,8 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER)
-	private Integer id;
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.BIGINT)
+	private Long id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
@@ -64,11 +64,11 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private java.util.Collection<LoginLogSource2> loginLogSource2;
 
 	@Override
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

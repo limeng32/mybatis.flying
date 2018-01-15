@@ -210,22 +210,22 @@ public class CacheTest {
 		String name1 = "ann", name2 = "bob", name3 = "carl", name4 = "duke";
 
 		Account_ a1 = new Account_();
-		a1.setId(1);
+		a1.setId(1l);
 		a1.setName(name1);
 		accountService.insert(a1);
 
 		Account_ a2 = new Account_();
-		a2.setId(2);
+		a2.setId(2l);
 		a2.setName(name2);
 		accountService.insert(a2);
 
 		Account_ a3 = new Account_();
-		a3.setId(3);
+		a3.setId(3l);
 		a3.setName(name3);
 		accountService.insert(a3);
 
 		Account_ a4 = new Account_();
-		a4.setId(4);
+		a4.setId(4l);
 		a4.setName(name4);
 		accountService.insert(a4);
 
@@ -569,7 +569,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -597,7 +597,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -630,7 +630,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -663,7 +663,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -766,7 +766,7 @@ public class CacheTest {
 		roleService.insert(r);
 
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setName("deployer");
 		accountService.insert(a);
 
@@ -804,7 +804,7 @@ public class CacheTest {
 		roleService.insert(r2);
 
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setRoleDeputy(r2);
 		a.setName("deployer");
@@ -989,5 +989,27 @@ public class CacheTest {
 
 		LoginLogSource2 loginLogSource4 = loginLogSource2Service.select(21);
 		Assert.assertEquals("silver", loginLogSource4.getAccount().getRole().getName());
+	}
+
+	/* 一个在缓存状态下使用自定义主键生成器insert的测试用例 */
+	/* 使用普通方式增加一个Account，查询数量为1，再使用自定义主键方式增加一个Account，查询数量为2 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testInsertSnowFlakeCache.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testInsertSnowFlakeCache.result.xml")
+	public void testInsertSnowFlakeCache() {
+		Account_ account = new Account_();
+		account.setName("ann");
+		accountService.insert(account);
+
+		int i = accountService.count(new Account_());
+		Assert.assertEquals(1, i);
+
+		Account_ account2 = new Account_();
+		account2.setName("bob");
+		accountService.insertSnowFlake(account2);
+
+		int i2 = accountService.count(new Account_());
+		Assert.assertEquals(2, i2);
 	}
 }

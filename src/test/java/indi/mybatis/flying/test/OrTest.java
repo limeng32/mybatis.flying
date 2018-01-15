@@ -240,7 +240,7 @@ public class OrTest {
 	public void testOr2() {
 		LoginLog_Condition lc = new LoginLog_Condition();
 		lc.setAccount(new Account_Condition());
-		((Account_Condition) lc.getAccount()).setIdEqualsOr(1, 2);
+		((Account_Condition) lc.getAccount()).setIdEqualsOr(1l, 2l);
 		int i = loginLogService.count(lc);
 		Assert.assertEquals(4, i);
 	}
@@ -255,9 +255,9 @@ public class OrTest {
 		// loginLogSource2.setAccount(new Account_Condition());
 		// ((Account_Condition)loginLogSource2.getAccount()).setIdEqualsOr(1,2);
 		Account_ ac1 = new Account_();
-		ac1.setId(1);
+		ac1.setId(1l);
 		Account_ ac2 = new Account_();
-		ac2.setId(2);
+		ac2.setId(2l);
 		loginLogSource2.setAccountIdEqualsOr(ac1, ac2);
 		int i = loginLogSource2Service.count(loginLogSource2);
 		Assert.assertEquals(4, i);

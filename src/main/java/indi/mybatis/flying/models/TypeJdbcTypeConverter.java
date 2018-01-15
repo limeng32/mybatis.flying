@@ -17,6 +17,7 @@ public class TypeJdbcTypeConverter {
 		map.put(Double.class, JdbcType.DOUBLE);
 		map.put(Float.class, JdbcType.FLOAT);
 		map.put(Boolean.class, JdbcType.BOOLEAN);
+		map.put(Long.class, JdbcType.BIGINT);
 	}
 
 }

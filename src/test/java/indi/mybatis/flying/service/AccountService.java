@@ -43,6 +43,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public void insertSnowFlake(Account_ t) {
+		mapper.insertSnowFlake(t);
+	}
+
+	@Override
 	public int update(Account_ t) {
 		return supportUpdate(mapper, t);
 	}

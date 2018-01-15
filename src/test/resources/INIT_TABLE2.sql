@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS loginlog_;
 CREATE TABLE loginlog_ (
   id int(11) NOT NULL AUTO_INCREMENT,
   loginIP varchar(50) DEFAULT NULL,
-  accountId int(11) DEFAULT NULL,
+  accountId bigint DEFAULT NULL,
   loginTime datetime DEFAULT NULL,
   madetime datetime DEFAULT NULL,
   confirmtime datetime DEFAULT NULL,

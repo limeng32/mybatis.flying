@@ -4,8 +4,8 @@ import javax.annotation.PostConstruct;
 
 import indi.mybatis.flying.type.KeyHandler;
 
-/*本handler返回Long型的主键*/
-public class DistributedSnowflakeKeyGenerator implements KeyHandler {
+/*本handler返回String型的主键*/
+public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 
 	private final long twepoch = 1420041600000L;
 
@@ -61,7 +61,7 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 	 * @param datacenterId
 	 *            数据中心ID (0~31)
 	 */
-	public DistributedSnowflakeKeyGenerator() {
+	public DistributedSnowflakeKeyGenerator2() {
 		if (_workerId > maxWorkerId || _workerId < 0) {
 			throw new IllegalArgumentException(
 					String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
@@ -136,8 +136,8 @@ public class DistributedSnowflakeKeyGenerator implements KeyHandler {
 	}
 
 	@Override
-	public Long getKey() {
-		return new Long(nextId());
+	public String getKey() {
+		return new Long(nextId()).toString();
 	}
 
 	@PostConstruct

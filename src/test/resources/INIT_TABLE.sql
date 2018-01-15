@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS account_;
 CREATE TABLE account_ (
-  id int(11) NOT NULL AUTO_INCREMENT,
+  id bigint NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   email varchar(320) DEFAULT NULL,
   password varchar(64) DEFAULT NULL,
@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS loginlog_;
 CREATE TABLE loginlog_ (
   id int(11) NOT NULL AUTO_INCREMENT,
   loginIP varchar(50) DEFAULT NULL,
-  accountId int(11) DEFAULT NULL,
+  accountId bigint DEFAULT NULL,
   loginTime datetime DEFAULT NULL,
   num int DEFAULT NULL,
   loginIP2 varchar(50) DEFAULT NULL,
