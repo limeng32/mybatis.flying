@@ -63,7 +63,14 @@ public class CookOriginalSql {
 					if (ActionType.insert.equals(actionType) && extension != null) {
 						KeyGeneratorType keyGeneratorType = null;
 						if (extension.indexOf(".") == -1) {
-							keyGeneratorType = KeyGeneratorType.valueOf(extension);
+							try {
+								keyGeneratorType = KeyGeneratorType.valueOf(extension);
+
+							} catch (IllegalArgumentException e) {
+								logger.error(
+										new StringBuffer(AutoMapperExceptionEnum.wrongKeyGeneratorType.description())
+												.append(originalSql).append(" because of ").append(e).toString());
+							}
 							ret.setKeyGeneratorType(keyGeneratorType);
 							if (keyGeneratorType != null) {
 								KeyHandler keyHandler;
