@@ -103,7 +103,7 @@ public class CookOriginalSql {
 							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 								logger.error(
 										new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
-												.append(originalSql).toString());
+												.append(originalSql).append(" because of ").append(e).toString());
 							}
 						}
 					}

@@ -25,6 +25,7 @@ public class ReflectHelper {
 			try {
 				return superClass.getDeclaredField(fieldName);
 			} catch (NoSuchFieldException e) {
+				logger.trace(new StringBuffer().append(e).toString());
 			}
 		}
 		return null;
@@ -127,14 +128,15 @@ public class ReflectHelper {
 											/* 添加到classes */
 											classes.add(Class.forName(packageName + '.' + className));
 										} catch (ClassNotFoundException e) {
-											logger.error("添加用户自定义视图类错误 找不到此类的.class文件");
+											logger.error(new StringBuffer("添加用户自定义视图类错误 找不到此类的.class文件").append(e)
+													.toString());
 										}
 									}
 								}
 							}
 						}
 					} catch (IOException e) {
-						logger.error("在扫描用户定义视图时从jar包获取文件出错");
+						logger.error(new StringBuffer("在扫描用户定义视图时从jar包获取文件出错，原因：").append(e).toString());
 					}
 					break;
 				default:
@@ -142,7 +144,7 @@ public class ReflectHelper {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(new StringBuffer().append(e).toString());
 		}
 
 		return classes;
@@ -185,7 +187,7 @@ public class ReflectHelper {
 					classes.add(
 							Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
 				} catch (ClassNotFoundException e) {
-					logger.error("添加用户自定义视图类错误 找不到此类的.class文件");
+					logger.error(new StringBuffer("添加用户自定义视图类错误 找不到此类的.class文件，原因：").append(e).toString());
 				}
 			}
 		}
