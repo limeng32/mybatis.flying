@@ -15,13 +15,17 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DatabaseTearDowns;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.Detail2_;
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
@@ -30,6 +34,7 @@ import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.service2.Detail2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,6 +49,9 @@ public class OrTest {
 
 	@Autowired
 	private LoginLogSource2Service loginLogSource2Service;
+
+	@Autowired
+	private Detail2Service detail2Service;
 
 	@Test
 	public void test1() {
@@ -258,8 +266,38 @@ public class OrTest {
 		ac1.setId(1l);
 		Account_ ac2 = new Account_();
 		ac2.setId(2l);
-		loginLogSource2.setAccountIdEqualsOr(ac1, ac2);
+		loginLogSource2.setAccountEqualsOr(ac1, ac2);
 		int i = loginLogSource2Service.count(loginLogSource2);
 		Assert.assertEquals(4, i);
+	}
+
+	/* 一个在缓存状态下或逻辑查询的测试用例 */
+	/* 需要同时涉及同库外键和跨库外键 */
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource1.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource2.xml"), })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource1.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource2.result.xml"), })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource1.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource2.result.xml"), })
+	public void testOrMashup() {
+		LoginLogSource2Condition l2c = new LoginLogSource2Condition();
+		Account_ a1 = new Account_();
+		a1.setId(1l);
+		Account_ a2 = new Account_();
+		a2.setId(2l);
+		l2c.setAccountEqualsOr2(a1, a2, "23453");
+		int i1 = loginLogSource2Service.count(l2c);
+		Assert.assertEquals(3, i1);
+
+		LoginLogSource2Condition l2c2 = new LoginLogSource2Condition();
+		l2c2.setAccountEqualsOr3(a1, a2, "23453", "d4");
+		Detail2_ d2c = new Detail2_();
+		d2c.setLoginLogSource2(l2c2);
+		int i2 = detail2Service.count(d2c);
+		Assert.assertEquals(4, i2);
 	}
 }

@@ -23,7 +23,18 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
 			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class) })
-	private Object[] accountIdEqualsOr;
+	private Object[] accountEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal), })
+	private Object[] accountEqualsOr2;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.Detail2_.class), })
+	private Object[] accountEqualsOr3;
 
 	@Override
 	public Limitable getLimiter() {
@@ -53,12 +64,28 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 		this.ipLikeFilter = ipLikeFilter;
 	}
 
-	public Object[] getAccountIdEqualsOr() {
-		return accountIdEqualsOr;
+	public Object[] getAccountEqualsOr() {
+		return accountEqualsOr;
 	}
 
-	public void setAccountIdEqualsOr(Object... accountIdEqualsOr) {
-		this.accountIdEqualsOr = accountIdEqualsOr;
+	public void setAccountEqualsOr(Object... accountEqualsOr) {
+		this.accountEqualsOr = accountEqualsOr;
+	}
+
+	public Object[] getAccountEqualsOr2() {
+		return accountEqualsOr2;
+	}
+
+	public void setAccountEqualsOr2(Object... accountEqualsOr2) {
+		this.accountEqualsOr2 = accountEqualsOr2;
+	}
+
+	public Object[] getAccountEqualsOr3() {
+		return accountEqualsOr3;
+	}
+
+	public void setAccountEqualsOr3(Object... accountEqualsOr3) {
+		this.accountEqualsOr3 = accountEqualsOr3;
 	}
 
 }
