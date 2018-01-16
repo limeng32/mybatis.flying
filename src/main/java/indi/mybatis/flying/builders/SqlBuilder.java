@@ -110,7 +110,6 @@ public class SqlBuilder {
 		Map<String, FieldMapper> fieldMapperCache = null;
 		Field[] fields = dtoClass.getDeclaredFields();
 
-		// FieldMapperAnnotation fieldMapperAnnotation = null;
 		FieldMapper fieldMapper = null;
 		TableMapper tableMapper = null;
 		tableMapper = tableMapperCache.get(dtoClass);
@@ -488,11 +487,6 @@ public class SqlBuilder {
 					break;
 				default:
 				}
-				// if (isOr) {
-				// tempWhereSql.append(CLOSEBRACE_AND_);
-				// } else {
-				// tempWhereSql.append(CLOSEBRACE_AND_);
-				// }
 				tempWhereSql.append(CLOSEPAREN__AND_);
 				whereSql.append(tempWhereSql);
 			}
@@ -611,23 +605,15 @@ public class SqlBuilder {
 	 * 由传入的对象生成insert sql语句
 	 * 
 	 * @param object
-	 *            pojo
-	 * @return String
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws Exception
-	 *             RuntimeException
+	 *            pojo @return String @throws IllegalAccessException @throws
+	 *            IllegalArgumentException @throws NoSuchFieldException @throws
+	 *            SecurityException @throws NoSuchMethodException @throws
+	 *            InvocationTargetException @throws Exception
+	 *            RuntimeException @throws
 	 */
 	public static String buildInsertSql(Object object, FlyingModel flyingModel)
 			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
-		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
-		}
 		String ignoreTag = flyingModel.getIgnoreTag();
 		KeyHandler keyHandler = flyingModel.getKeyHandler();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
@@ -703,8 +689,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildUpdateSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -778,8 +763,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -853,8 +837,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildDeleteSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -931,8 +914,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildSelectAllSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -967,8 +949,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildSelectOneSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -1006,8 +987,7 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
-	 * @throws Exception
-	 *             RuntimeException
+	 * @throws RuntimeException
 	 */
 	public static String buildCountSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
