@@ -14,7 +14,6 @@ import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
-import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
@@ -91,11 +90,16 @@ public class FieldMapper implements Mapperable {
 
 	private boolean updateAble = true;
 
+	private Class<?> fieldType;
+
+	private Class<?> subTarget;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
 		}
 		setFieldName(field.getName());
+		setFieldType(field.getType());
 		/* Column标注的优先级最低，所以写在最前 */
 		if (column != null) {
 			setDbFieldName(getColumnName(column, field));
@@ -247,6 +251,7 @@ public class FieldMapper implements Mapperable {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
+	@Override
 	public String getTypeHandlerPath() {
 		return typeHandlerPath;
 	}
@@ -335,6 +340,20 @@ public class FieldMapper implements Mapperable {
 
 	public void setUpdateAble(boolean updateAble) {
 		this.updateAble = updateAble;
+	}
+
+	@Override
+	public Class<?> getFieldType() {
+		return fieldType;
+	}
+
+	public void setFieldType(Class<?> fieldType) {
+		this.fieldType = fieldType;
+	}
+
+	@Override
+	public Class<?> getSubTarget() {
+		return subTarget;
 	}
 
 }

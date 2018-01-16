@@ -41,6 +41,7 @@ public class InternalCacheTest extends TestCase {
 
 	private class acctionSelect extends TestRunnable {
 
+		@Override
 		public void runTest() throws Throwable {
 			Account_ account = accountService.select(1);
 			Assert.assertEquals("ann", account.getName());
@@ -53,6 +54,7 @@ public class InternalCacheTest extends TestCase {
 
 	private class acctionUpdate extends TestRunnable {
 
+		@Override
 		public void runTest() throws Throwable {
 			long l = 3;
 			Thread.sleep(l * 1000);

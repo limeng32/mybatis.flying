@@ -6,11 +6,11 @@
 	<select id="select" resultMap="result">
 		flying#{?}:select:noPassword
 	</select>
-	
+
 	<select id="selectEverything" resultMap="result">
 		flying#{?}:select
 	</select>
-	
+
 	<select id="selectWithoutRole" resultMap="result">
 		flying#{?}:select:noRole
 	</select>
@@ -18,7 +18,7 @@
 	<select id="selectAll" resultMap="result">
 		flying:selectAll:noPassword
 	</select>
-	
+
 	<select id="selectAllEverything" resultMap="result">
 		flying:selectAll
 	</select>
@@ -32,7 +32,11 @@
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-	    flying:insert
+		flying:insert
+	</insert>
+
+	<insert id="insertSnowFlake">
+		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator)
 	</insert>
 
 	<update id="update">
@@ -46,17 +50,21 @@
 	<delete id="delete">
 		flying:delete
 	</delete>
-	
+
 	<select id="selectDirect" resultMap="result">
-		select * from account_ where id = #{id}
+		select * from account_ where
+		id = #{id}
 	</select>
-	
+
 	<select id="selectAllDirect" resultMap="result">
-		select * from account_ where name = #{name} and email = #{email}
+		select * from account_
+		where name = #{name} and email = #{email}
 	</select>
-	
+
 	<select id="selectAccountByRole" resultMap="result">
-		select account_0.* from account_ as account_0 left join role_ as role_1 on account_0.role_id = role_1.id where role_1.id = #{role_id}
+		select account_0.*
+		from account_ as account_0 left join role_ as role_1 on
+		account_0.role_id = role_1.id where role_1.id = #{role_id}
 	</select>
 
 	<resultMap id="result" type="Account_" autoMapping="true">

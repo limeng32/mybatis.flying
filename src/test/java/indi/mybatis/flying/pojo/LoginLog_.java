@@ -24,11 +24,21 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
 
+	@FieldMapperAnnotation(dbFieldName = "num", jdbcType = JdbcType.INTEGER)
+	private Integer num;
+
+	@FieldMapperAnnotation(dbFieldName = "logiNIP2", jdbcType = JdbcType.VARCHAR)
+	private java.lang.String loginIP2;
+
+	@FieldMapperAnnotation(dbFieldName = "status", jdbcType = JdbcType.VARCHAR)
+	private LogStatus status;
+
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "ID")
 	private Account_ account;
 
 	private java.util.Collection<Detail_> detail;
 
+	@Override
 	public Integer getId() {
 		return id;
 	}
@@ -53,6 +63,30 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 		this.loginIP = loginIP;
 	}
 
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+	public java.lang.String getLoginIP2() {
+		return loginIP2;
+	}
+
+	public void setLoginIP2(java.lang.String loginIP2) {
+		this.loginIP2 = loginIP2;
+	}
+
+	public LogStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(LogStatus status) {
+		this.status = status;
+	}
+
 	public Account_ getAccount() {
 		return account;
 	}
@@ -72,28 +106,33 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	}
 
 	public java.util.Collection<Detail_> getDetail() {
-		if (detail == null)
+		if (detail == null) {
 			detail = new java.util.LinkedHashSet<Detail_>();
+		}
 		return detail;
 	}
 
 	public java.util.Iterator<Detail_> getIteratorDetail() {
-		if (detail == null)
+		if (detail == null) {
 			detail = new java.util.LinkedHashSet<Detail_>();
+		}
 		return detail.iterator();
 	}
 
 	public void setDetail(java.util.Collection<Detail_> newDetail) {
 		removeAllDetail();
-		for (java.util.Iterator<Detail_> iter = newDetail.iterator(); iter.hasNext();)
+		for (java.util.Iterator<Detail_> iter = newDetail.iterator(); iter.hasNext();) {
 			addDetail((Detail_) iter.next());
+		}
 	}
 
 	public void addDetail(Detail_ newDetail) {
-		if (newDetail == null)
+		if (newDetail == null) {
 			return;
-		if (this.detail == null)
+		}
+		if (this.detail == null) {
 			this.detail = new java.util.LinkedHashSet<Detail_>();
+		}
 		if (!this.detail.contains(newDetail)) {
 			this.detail.add(newDetail);
 			newDetail.setLoginLog(this);
@@ -112,9 +151,10 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	}
 
 	public void removeDetail(Detail_ oldDetail) {
-		if (oldDetail == null)
+		if (oldDetail == null) {
 			return;
-		if (this.detail != null)
+		}
+		if (this.detail != null) {
 			if (this.detail.contains(oldDetail)) {
 				for (Detail_ temp : this.detail) {
 					if (oldDetail.equals(temp)) {
@@ -127,6 +167,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 				this.detail.remove(oldDetail);
 				oldDetail.setLoginLog((LoginLog_) null);
 			}
+		}
 	}
 
 	public void removeAllDetail() {

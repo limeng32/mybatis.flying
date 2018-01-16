@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
@@ -28,6 +29,9 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotEqual)
 	private Date loginTimeNotEqual;
+
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.LessThan)
+	private Date loginTimeLessThan;
 
 	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.GreaterThan)
 	private Integer idGreaterThan;
@@ -55,6 +59,70 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotIn)
 	private Collection<Date> loginTimeNotIn;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike) })
+	private Object[] loginIPHeadLikeOr;
+
+	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike)
+	private String ipLikeFilter;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	private Object[] loginIPLikeOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike) })
+	private Object[] loginIPHeadLikeOrTailLike;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	private Object[] loginIPEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal) })
+	private Object[] numEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	private Object[] numEqualsOrLoginIPLike;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal) })
+	private Object[] loginTimeEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal) })
+	private Object[] statusEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual) })
+	private Object[] loginIPNotEqualsOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	private Object[] numGtOrLt;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	private Object[] numGeOrLe;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	private Object[] numGtOrLe;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	private Object[] numGeOrLt;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot) })
+	private Object[] statusIsNullOr;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	private Object[] statusIsNullOrLoginIPEquals;
 
 	@Override
 	public Limitable getLimiter() {
@@ -171,4 +239,141 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 	public void setLoginTimeNotIn(Collection<Date> loginTimeNotIn) {
 		this.loginTimeNotIn = loginTimeNotIn;
 	}
+
+	public Object[] getLoginIPHeadLikeOr() {
+		return loginIPHeadLikeOr;
+	}
+
+	public void setLoginIPHeadLikeOr(Object... loginIPHeadLikeOr) {
+		this.loginIPHeadLikeOr = loginIPHeadLikeOr;
+	}
+
+	public String getIpLikeFilter() {
+		return ipLikeFilter;
+	}
+
+	public void setIpLikeFilter(String ipLikeFilter) {
+		this.ipLikeFilter = ipLikeFilter;
+	}
+
+	public Object[] getLoginIPLikeOr() {
+		return loginIPLikeOr;
+	}
+
+	public void setLoginIPLikeOr(Object... loginIPLikeOr) {
+		this.loginIPLikeOr = loginIPLikeOr;
+	}
+
+	public Object[] getLoginIPHeadLikeOrTailLike() {
+		return loginIPHeadLikeOrTailLike;
+	}
+
+	public void setLoginIPHeadLikeOrTailLike(Object... loginIPHeadLikeOrTailLike) {
+		this.loginIPHeadLikeOrTailLike = loginIPHeadLikeOrTailLike;
+	}
+
+	public Object[] getLoginIPEqualsOr() {
+		return loginIPEqualsOr;
+	}
+
+	public void setLoginIPEqualsOr(Object... loginIPEqualsOr) {
+		this.loginIPEqualsOr = loginIPEqualsOr;
+	}
+
+	public Object[] getNumEqualsOr() {
+		return numEqualsOr;
+	}
+
+	public void setNumEqualsOr(Object... numEqualsOr) {
+		this.numEqualsOr = numEqualsOr;
+	}
+
+	public Object[] getNumEqualsOrLoginIPLike() {
+		return numEqualsOrLoginIPLike;
+	}
+
+	public void setNumEqualsOrLoginIPLike(Object... numEqualsOrLoginIPLike) {
+		this.numEqualsOrLoginIPLike = numEqualsOrLoginIPLike;
+	}
+
+	public Date getLoginTimeLessThan() {
+		return loginTimeLessThan;
+	}
+
+	public void setLoginTimeLessThan(Date loginTimeLessThan) {
+		this.loginTimeLessThan = loginTimeLessThan;
+	}
+
+	public Object[] getLoginTimeEqualsOr() {
+		return loginTimeEqualsOr;
+	}
+
+	public void setLoginTimeEqualsOr(Object... loginTimeEqualsOr) {
+		this.loginTimeEqualsOr = loginTimeEqualsOr;
+	}
+
+	public Object[] getStatusEqualsOr() {
+		return statusEqualsOr;
+	}
+
+	public void setStatusEqualsOr(Object... statusEqualsOr) {
+		this.statusEqualsOr = statusEqualsOr;
+	}
+
+	public Object[] getLoginIPNotEqualsOr() {
+		return loginIPNotEqualsOr;
+	}
+
+	public void setLoginIPNotEqualsOr(Object... loginIPNotEqualsOr) {
+		this.loginIPNotEqualsOr = loginIPNotEqualsOr;
+	}
+
+	public Object[] getNumGtOrLt() {
+		return numGtOrLt;
+	}
+
+	public void setNumGtOrLt(Object... numGtOrLt) {
+		this.numGtOrLt = numGtOrLt;
+	}
+
+	public Object[] getNumGeOrLe() {
+		return numGeOrLe;
+	}
+
+	public void setNumGeOrLe(Object... numGeOrLe) {
+		this.numGeOrLe = numGeOrLe;
+	}
+
+	public Object[] getNumGtOrLe() {
+		return numGtOrLe;
+	}
+
+	public void setNumGtOrLe(Object... numGtOrLe) {
+		this.numGtOrLe = numGtOrLe;
+	}
+
+	public Object[] getNumGeOrLt() {
+		return numGeOrLt;
+	}
+
+	public void setNumGeOrLt(Object... numGeOrLt) {
+		this.numGeOrLt = numGeOrLt;
+	}
+
+	public Object[] getStatusIsNullOr() {
+		return statusIsNullOr;
+	}
+
+	public void setStatusIsNullOr(Object... statusIsNullOr) {
+		this.statusIsNullOr = statusIsNullOr;
+	}
+
+	public Object[] getStatusIsNullOrLoginIPEquals() {
+		return statusIsNullOrLoginIPEquals;
+	}
+
+	public void setStatusIsNullOrLoginIPEquals(Object... statusIsNullOrLoginIPEquals) {
+		this.statusIsNullOrLoginIPEquals = statusIsNullOrLoginIPEquals;
+	}
+
 }

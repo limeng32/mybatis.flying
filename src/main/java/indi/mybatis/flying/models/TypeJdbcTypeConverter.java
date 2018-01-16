@@ -1,4 +1,4 @@
-package indi.mybatis.flying.utils;
+package indi.mybatis.flying.models;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import org.apache.ibatis.type.JdbcType;
 
 public class TypeJdbcTypeConverter {
 
-	public static Map<Class<?>, JdbcType> map = new HashMap<>(128);
+	protected final static Map<Class<?>, JdbcType> map = new HashMap<>(128);
 
 	static {
 		map.put(String.class, JdbcType.VARCHAR);
@@ -17,6 +17,7 @@ public class TypeJdbcTypeConverter {
 		map.put(Double.class, JdbcType.DOUBLE);
 		map.put(Float.class, JdbcType.FLOAT);
 		map.put(Boolean.class, JdbcType.BOOLEAN);
+		map.put(Long.class, JdbcType.BIGINT);
 	}
 
 }

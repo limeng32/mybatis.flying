@@ -50,7 +50,7 @@ import indi.mybatis.flying.utils.ReflectHelper;
  */
 @Intercepts({ @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class }) })
 public class AutoMapperInterceptor implements Interceptor {
-	private static String dialect = "";
+	private String dialect = "";
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -94,23 +94,24 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildDeleteSql(parameterObject);
 				break;
 			case insert:
-				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
 				break;
 			case select:
-				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(),
-						flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;
 			case selectAll:
-				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
 				break;
 			case selectOne:
-				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
 				break;
 			case update:
-				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
 				break;
 			case updatePersistent:
-				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel.getIgnoreTag());
+				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
+				break;
+			default:
 				break;
 			}
 			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
@@ -174,11 +175,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	public void setProperties(Properties properties) {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
-			try {
-				throw new AutoMapperException(AutoMapperExceptionEnum.dialectPropertyCannotFound);
-			} catch (AutoMapperException e) {
-				logger.error(e.getMessage());
-			}
+			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
 		}
 	}
 
@@ -232,7 +229,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	}
 
 	private String generatePageSql(String sql, Conditionable condition) {
-		if (condition != null && (dialect != null || !dialect.equals(""))) {
+		if ((condition != null) && (dialect != null) && (!dialect.equals(""))) {
 			StringBuffer pageSql = new StringBuffer();
 			switch (dialect) {
 			case MYSQL:
@@ -252,6 +249,9 @@ public class AutoMapperInterceptor implements Interceptor {
 					pageSql.append(" limit " + condition.getLimiter().getLimitFrom() + ","
 							+ condition.getLimiter().getPageSize());
 				}
+				break;
+			default:
+				break;
 			}
 			return pageSql.toString();
 		} else {

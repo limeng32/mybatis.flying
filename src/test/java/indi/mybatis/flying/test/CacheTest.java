@@ -210,22 +210,22 @@ public class CacheTest {
 		String name1 = "ann", name2 = "bob", name3 = "carl", name4 = "duke";
 
 		Account_ a1 = new Account_();
-		a1.setId(1);
+		a1.setId(1l);
 		a1.setName(name1);
 		accountService.insert(a1);
 
 		Account_ a2 = new Account_();
-		a2.setId(2);
+		a2.setId(2l);
 		a2.setName(name2);
 		accountService.insert(a2);
 
 		Account_ a3 = new Account_();
-		a3.setId(3);
+		a3.setId(3l);
 		a3.setName(name3);
 		accountService.insert(a3);
 
 		Account_ a4 = new Account_();
-		a4.setId(4);
+		a4.setId(4l);
 		a4.setName(name4);
 		accountService.insert(a4);
 
@@ -569,7 +569,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -577,7 +577,7 @@ public class CacheTest {
 		Account_ account = accountService.select(1);
 		Assert.assertEquals("ann", account.getRole().getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -597,7 +597,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -606,7 +606,7 @@ public class CacheTest {
 		ac.setEmail("email");
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -630,7 +630,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -639,7 +639,7 @@ public class CacheTest {
 		ac.setEmailLike("mai");
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -663,7 +663,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -672,7 +672,7 @@ public class CacheTest {
 		ac.setLimiter(new PageParam(1, 1));
 		Collection<Account_> c = accountService.selectAll(ac);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "bob");
 		roleService.updateDirect(m);
@@ -708,7 +708,7 @@ public class CacheTest {
 		Role_ role = roleService.select(1);
 		Assert.assertEquals("root", role.getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "newRoot");
 		roleService.updateDirect(m);
@@ -766,7 +766,7 @@ public class CacheTest {
 		roleService.insert(r);
 
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setName("deployer");
 		accountService.insert(a);
 
@@ -779,7 +779,7 @@ public class CacheTest {
 		Account_ account2 = accountService.selectEverything(1);
 		Assert.assertEquals("newDeployer", account2.getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 1);
 		m.put("name", "newRoot");
 		roleService.updateDirect(m);
@@ -804,7 +804,7 @@ public class CacheTest {
 		roleService.insert(r2);
 
 		Account_ a = new Account_();
-		a.setId(1);
+		a.setId(1l);
 		a.setRole(r);
 		a.setRoleDeputy(r2);
 		a.setName("deployer");
@@ -816,7 +816,7 @@ public class CacheTest {
 
 		roleService.update(r);
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 2);
 		m.put("name", "newUser");
 		roleService.updateDirect(m);
@@ -895,17 +895,17 @@ public class CacheTest {
 		a3.setRole(role2);
 		accountService.insert(a3);
 
-		Map<String, Object> map1 = new HashMap<>();
+		Map<String, Object> map1 = new HashMap<>(4);
 		map1.put("role_id", role1.getId());
 		Collection<Account_> c1 = accountService.selectAccountByRole(map1);
 		Assert.assertEquals(2, c1.size());
 
-		Map<String, Object> map2 = new HashMap<>();
+		Map<String, Object> map2 = new HashMap<>(4);
 		map2.put("role_id", role2.getId());
 		Collection<Account_> c2 = accountService.selectAccountByRole(map2);
 		Assert.assertEquals(1, c2.size());
 
-		Map<String, Object> map3 = new HashMap<>();
+		Map<String, Object> map3 = new HashMap<>(4);
 		map3.put("name", "ann");
 		map3.put("email", "ann@live.cn");
 		Collection<Account_> c3 = accountService.selectAllDirect(map3);
@@ -945,7 +945,7 @@ public class CacheTest {
 		Role_[] roles = c1.toArray(new Role_[c1.size()]);
 		Assert.assertEquals("gold", roles[0].getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("name", "gold1");
 		m.put("id", roles[0].getId());
 		roleService.updateDirect(m);
@@ -975,7 +975,7 @@ public class CacheTest {
 		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(21);
 		Assert.assertEquals("user", loginLogSource2.getAccount().getRole().getName());
 
-		Map<String, Object> m = new HashMap<>();
+		Map<String, Object> m = new HashMap<>(4);
 		m.put("id", 101);
 		m.put("name", "newUser");
 		roleService.updateDirect(m);
@@ -989,5 +989,27 @@ public class CacheTest {
 
 		LoginLogSource2 loginLogSource4 = loginLogSource2Service.select(21);
 		Assert.assertEquals("silver", loginLogSource4.getAccount().getRole().getName());
+	}
+
+	/* 一个在缓存状态下使用自定义主键生成器insert的测试用例 */
+	/* 使用普通方式增加一个Account，查询数量为1，再使用自定义主键方式增加一个Account，查询数量为2 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testInsertSnowFlakeCache.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testInsertSnowFlakeCache.result.xml")
+	public void testInsertSnowFlakeCache() {
+		Account_ account = new Account_();
+		account.setName("ann");
+		accountService.insert(account);
+
+		int i = accountService.count(new Account_());
+		Assert.assertEquals(1, i);
+
+		Account_ account2 = new Account_();
+		account2.setName("bob");
+		accountService.insertSnowFlake(account2);
+
+		int i2 = accountService.count(new Account_());
+		Assert.assertEquals(2, i2);
 	}
 }

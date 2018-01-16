@@ -23,18 +23,22 @@ public class PageParam implements Limitable, Serializable {
 
 	private int totalCount;
 
+	@Override
 	public int getPageNo() {
 		return pageNo;
 	}
 
+	@Override
 	public void setPageNo(int pageNo) {
 		this.pageNo = pageNo;
 	}
 
+	@Override
 	public int getPageSize() {
 		return pageSize;
 	}
 
+	@Override
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
