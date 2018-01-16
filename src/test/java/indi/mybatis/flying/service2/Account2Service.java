@@ -16,9 +16,6 @@ public class Account2Service extends ServiceSupport<Account2_> implements Accoun
 	@Autowired
 	private Account2Mapper mapper;
 
-//	@Autowired
-//	private LoginLogService loginLogService;
-
 	@Override
 	public Account2_ select(Object id) {
 		return supportSelect(mapper, id);

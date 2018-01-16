@@ -16,9 +16,6 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 	@Autowired
 	private LoginLogSource2Mapper mapper;
 
-	// @Autowired
-	// private DetailService detailService;
-
 	@Override
 	public LoginLogSource2 select(Object id) {
 		return supportSelect(mapper, id);

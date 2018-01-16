@@ -81,7 +81,7 @@ public class AccountTypeHandlerTest {
 		Assert.assertEquals("ann@live.cn", longinLogSource.getAccount().getEmail());
 
 		Account_ ac = new Account_();
-		ac.setId(1);
+		ac.setId(1l);
 		LoginLogSource2 l2c = new LoginLogSource2();
 		l2c.setAccount(ac);
 		Collection<LoginLogSource2> loginLogSource2C = loginLogSource2Service.selectAll(l2c);
@@ -97,14 +97,14 @@ public class AccountTypeHandlerTest {
 		Assert.assertNull(loginLogSource3.getAccount());
 
 		Account_ ac2 = new Account_();
-		ac2.setId(2);
+		ac2.setId(2l);
 		LoginLogSource2 l2c2 = new LoginLogSource2();
 		l2c2.setAccount(ac2);
 		LoginLogSource2 loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
 		Assert.assertEquals("bob@live.cn", loginLogSource4.getAccount().getEmail());
 
 		Account_ ac3 = new Account_();
-		ac3.setId(1);
+		ac3.setId(1l);
 		LoginLogSource2 l2c3 = new LoginLogSource2();
 		l2c3.setAccount(ac3);
 		l2c3.setLoginIP("ip1");

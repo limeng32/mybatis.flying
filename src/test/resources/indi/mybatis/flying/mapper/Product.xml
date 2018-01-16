@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="indi.mybatis.flying.mapper.ProductMapper">
+	<cache />
+
+	<select id="select" resultMap="result">
+		flying#{?}:select:noPassword
+	</select>
+
+	<select id="selectOne" resultMap="result">
+		flying:selectOne
+	</select>
+
+	<insert id="insert" keyProperty="id">
+		flying:insert(uuid_no_line)
+	</insert>
+
+	<insert id="insert2" keyProperty="id">
+		flying:insert
+	</insert>
+
+	<insert id="insert3">
+		flying:insert(ERROR)
+	</insert>
+
+	<insert id="insertMilliSecond">
+		flying:insert(millisecond)
+	</insert>
+
+	<insert id="insertMilliSecond2">
+		flying:insert(millisecond)
+	</insert>
+
+	<insert id="insertSnowFlake">
+		flying:insert(snowflake)
+	</insert>
+
+	<insert id="insertMySnowFlake">
+		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler)
+	</insert>
+
+	<insert id="insertMySnowFlake2">
+		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2)
+	</insert>
+
+	<insert id="insertAsd">
+		flying:insert(indi.mybatis.flying.keyHandler.AsdKeyGenerator)
+	</insert>
+
+	<insert id="insertDistributedSnowflake">
+		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2)
+	</insert>
+
+	<resultMap id="result" type="Product" autoMapping="true">
+		<id property="id" column="id" />
+	</resultMap>
+</mapper>

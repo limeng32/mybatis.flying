@@ -1,14 +1,11 @@
 package indi.mybatis.flying.test;
 
-import java.util.Collection;
-
 import javax.sql.DataSource;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,26 +24,10 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
-import indi.mybatis.flying.exceptions.Configurer2Exception;
-import indi.mybatis.flying.exceptions.ConfigurerException;
-import indi.mybatis.flying.models.Conditionable;
-import indi.mybatis.flying.pagination.Order;
-import indi.mybatis.flying.pagination.PageParam;
-import indi.mybatis.flying.pagination.SortParam;
-import indi.mybatis.flying.pojo.Account_;
-import indi.mybatis.flying.pojo.LoginLog_;
-import indi.mybatis.flying.pojo.Role_;
-import indi.mybatis.flying.pojo.StoryStatus_;
-import indi.mybatis.flying.pojo.condition.Account_Condition;
-import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
+import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
-import indi.mybatis.flying.service.TransactiveService;
-import indi.mybatis.flying.service.TransactiveService4;
-import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
-import indi.mybatis.flying.service2.Role2Service;
-import indi.mybatis.flying.service2.TransactiveService2;
-import indi.mybatis.flying.service2.TransactiveService3;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -59,31 +40,10 @@ public class AccountTest2 {
 	private DataSource dataSource1;
 
 	@Autowired
-	private AccountService accountService;
-
-	@Autowired
-	private Account2Service account2Service;
-
-	@Autowired
 	private LoginLogService loginLogService;
 
 	@Autowired
 	private LoginLogSource2Service loginLogSource2Service;
-
-	@Autowired
-	private Role2Service role2Service;
-
-	@Autowired
-	private TransactiveService transactiveService;
-
-	@Autowired
-	private TransactiveService2 transactiveService2;
-
-	@Autowired
-	private TransactiveService3 transactiveService3;
-
-	@Autowired
-	private TransactiveService4 transactiveService4;
 
 	@Test
 	public void testDataSource() {
@@ -93,15 +53,24 @@ public class AccountTest2 {
 	/** 测试insert功能（有乐观锁） */
 	@Test
 	@DatabaseSetups({
-			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.xml"),
-			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.xml") })
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.xml") })
 	@ExpectedDatabases({
-			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.result.xml"),
-			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.result.xml") })
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
 	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource.result.xml"),
-			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testInsert.datasource2.result.xml") })
-	public void testInsert() {
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
+	public void testCondition() {
+		LoginLog_Condition lc1 = new LoginLog_Condition();
+		lc1.setIpLikeFilter("5");
+		int i1 = loginLogService.count(lc1);
+		Assert.assertEquals(1, i1);
+
+		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
+		lc2.setIpLikeFilter("2");
+		int i2 = loginLogSource2Service.count(lc2);
+		Assert.assertEquals(1, i2);
 	}
 
 }

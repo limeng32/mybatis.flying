@@ -2,6 +2,7 @@ package indi.mybatis.flying.builders;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
@@ -23,23 +25,21 @@ import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.Mapperable;
+import indi.mybatis.flying.models.OrMapper;
 import indi.mybatis.flying.models.QueryMapper;
 import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
 import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
+import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
- * 
  * 通过注解生成sql
  * 
- * 
- * 
  * @author david, limeng32
- * 
- * 
  * 
  */
 public class SqlBuilder {
@@ -72,6 +72,7 @@ public class SqlBuilder {
 	private static final String SELECT_COUNT_OPENPAREN = "select count(";
 	private static final String EQUAL_POUND_OPENBRACE = "=#{";
 	private static final String DELETE_FROM_ = "delete from ";
+	private static final String COMMA_JAVATYPE_EQUAL = ",javaType=";
 	private static final String COMMA_JDBCTYPE_EQUAL = ",jdbcType=";
 	private static final String PLUS_1 = "+1";
 	private static final String CLOSEBRACE = "}";
@@ -99,22 +100,15 @@ public class SqlBuilder {
 	private static final String _SET_ = " set ";
 
 	/**
-	 * 
 	 * 由传入的dto对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
 	 * 
-	 * 
-	 * 
 	 * @param dtoClass
-	 * 
 	 * @return TableMapper
-	 * 
 	 */
 	private static TableMapper buildTableMapper(Class<?> dtoClass) {
 
 		Map<String, FieldMapper> fieldMapperCache = null;
-		Field[] fields = null;
-
-		// FieldMapperAnnotation fieldMapperAnnotation = null;
+		Field[] fields = dtoClass.getDeclaredFields();
 
 		FieldMapper fieldMapper = null;
 		TableMapper tableMapper = null;
@@ -134,8 +128,7 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fields = dtoClass.getDeclaredFields();
-		fieldMapperCache = new HashMap<String, FieldMapper>();
+		fieldMapperCache = new HashMap<String, FieldMapper>(16);
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
 			boolean b = fieldMapper.buildMapper(field);
@@ -198,32 +191,29 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的dto对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
 	 * 
-	 * 
-	 * 
 	 * @param dtoClass
-	 * 
 	 * @param pojoClass
-	 * 
 	 * @return QueryMapper
-	 * 
 	 */
 	private static QueryMapper buildQueryMapper(Class<?> dtoClass, Class<?> pojoClass) {
-		Map<String, ConditionMapper> conditionMapperCache = null;
-		Field[] fields = null;
-
-		ConditionMapperAnnotation conditionMapperAnnotation = null;
-		ConditionMapper conditionMapper = null;
 		QueryMapper queryMapper = null;
 		queryMapper = queryMapperCache.get(dtoClass);
 		if (queryMapper != null) {
 			return queryMapper;
 		}
+		Map<String, ConditionMapper> conditionMapperCache = new HashMap<>(16);
+		Map<String, OrMapper> orMapperCache = new HashMap<>(4);
+		Field[] fields = null;
+
+		ConditionMapperAnnotation conditionMapperAnnotation = null;
+		ConditionMapper conditionMapper = null;
+		Or or = null;
+		OrMapper orMapper = null;
 		queryMapper = new QueryMapper();
 		fields = dtoClass.getDeclaredFields();
-		conditionMapperCache = new HashMap<>();
+
 		Annotation[] conditionAnnotations = null;
 
 		for (Field field : fields) {
@@ -235,58 +225,92 @@ public class SqlBuilder {
 				if (an instanceof ConditionMapperAnnotation) {
 					conditionMapperAnnotation = (ConditionMapperAnnotation) an;
 					conditionMapper = new ConditionMapper();
-					conditionMapper.setFieldName(field.getName());
-					conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
-					conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
-					for (Field pojoField : pojoClass.getDeclaredFields()) {
-						for (Annotation oan : pojoField.getDeclaredAnnotations()) {
-							boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan)
-									.dbFieldName().equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-							boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
-									.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
-							if (b1 || b2) {
-								FieldMapper fieldMapper = new FieldMapper();
-								fieldMapper.buildMapper(pojoField);
-								conditionMapper.setJdbcType(fieldMapper.getJdbcType());
-								if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-								} else {
-									conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
-									conditionMapper.setForeignKey(true);
-								}
-								if (conditionMapper.isForeignKey()
-										&& (!ConditionType.NullOrNot.equals(conditionMapper.getConditionType()))) {
-									if (!tableMapperCache.containsKey(pojoField.getType())) {
-										buildTableMapper(pojoField.getType());
-									}
-									TableMapper tm = tableMapperCache.get(pojoField.getType());
-									String foreignFieldName = tm.getFieldMapperCache()
-											.get(fieldMapper.getDbAssociationUniqueKey()).getFieldName();
-									conditionMapper.setForeignFieldName(foreignFieldName);
-								}
-							}
-						}
-					}
+					buildConditionMapper(conditionMapper, conditionMapperAnnotation, pojoClass, field);
+
 					conditionMapperCache.put(field.getName(), conditionMapper);
+				} else if (an instanceof Or) {
+					or = (Or) an;
+					orMapper = new OrMapper();
+					orMapper.setFieldName(field.getName());
+					ConditionMapper[] conditionMappers = new ConditionMapper[or.value().length];
+					int i = 0;
+					for (ConditionMapperAnnotation cma : or.value()) {
+						conditionMappers[i] = new ConditionMapper();
+						buildConditionMapper(conditionMappers[i], cma, pojoClass, field);
+						i++;
+					}
+					orMapper.setConditionMappers(conditionMappers);
+					orMapperCache.put(field.getName(), orMapper);
 				}
 			}
 		}
 		queryMapper.setConditionMapperCache(conditionMapperCache);
+		queryMapper.setOrMapperCache(orMapperCache);
 		queryMapperCache.put(dtoClass, queryMapper);
 		return queryMapper;
 	}
 
+	private static void buildConditionMapper(ConditionMapper conditionMapper,
+			ConditionMapperAnnotation conditionMapperAnnotation, Class<?> pojoClass, Field field) {
+		conditionMapper.setFieldName(field.getName());
+		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
+		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
+		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
+		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.dbAssociationTypeHandler());
+		for (Field pojoField : pojoClass.getDeclaredFields()) {
+			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
+				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
+						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+				boolean b2 = oan instanceof Column && (FieldMapper.getColumnName((Column) oan, pojoField))
+						.equalsIgnoreCase(conditionMapperAnnotation.dbFieldName());
+				boolean b3 = (conditionMapper.getSubTarget() != null)
+						&& (!Void.class.equals(conditionMapper.getSubTarget()));
+				if (b1 || b2 || b3) {
+					FieldMapper fieldMapper = new FieldMapper();
+					if (b3) {
+						if (!tableMapperCache.containsKey(conditionMapper.getSubTarget())) {
+							buildTableMapper(conditionMapper.getSubTarget());
+						}
+						TableMapper tableMapper = tableMapperCache.get(conditionMapper.getSubTarget());
+						Map<String, FieldMapper> fieldMapperCache = tableMapper.getFieldMapperCache();
+						for (Map.Entry<String, FieldMapper> e : fieldMapperCache.entrySet()) {
+							if (conditionMapper.getDbFieldName().equalsIgnoreCase(e.getValue().getDbFieldName())) {
+								fieldMapper = e.getValue();
+								break;
+							}
+						}
+					} else {
+						fieldMapper = new FieldMapper();
+						fieldMapper.buildMapper(pojoField);
+					}
+					conditionMapper.setFieldType(fieldMapper.getFieldType());
+					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
+					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
+					} else {
+						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+						conditionMapper.setForeignKey(true);
+					}
+					if (conditionMapper.isForeignKey()
+							&& (!ConditionType.NullOrNot.equals(conditionMapper.getConditionType()))) {
+						if (!tableMapperCache.containsKey(pojoField.getType())) {
+							buildTableMapper(pojoField.getType());
+						}
+						TableMapper tm = tableMapperCache.get(pojoField.getType());
+						String foreignFieldName = tm.getFieldMapperCache().get(fieldMapper.getDbAssociationUniqueKey())
+								.getFieldName();
+						conditionMapper.setForeignFieldName(foreignFieldName);
+					}
+				}
+			}
+		}
+	}
+
 	/**
-	 * 
 	 * 查找类clazz及其所有父类，直到找到一个拥有TableMapperAnnotation注解或Table注解的类为止，
-	 * 
 	 * 然后返回这个拥有TableMapperAnnotation注解的类
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 * @return
-	 * 
 	 */
 	private static Class<?> getTableMappedClass(Class<?> clazz) {
 		Class<?> c = clazz;
@@ -301,15 +325,10 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 判断clazz是否符合条件，即是否存在TableMapperAnnotation类型的标注。如存在返回true，否则返回false。
 	 * 
-	 * 
-	 * 
 	 * @param clazz
-	 * 
 	 * @return
-	 * 
 	 */
 	private static boolean interview(Class<?> clazz) {
 		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
@@ -324,7 +343,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
 		whereSql.append(_LIKE__POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -334,6 +353,9 @@ public class SqlBuilder {
 			whereSql.append(conditionMapper.getFieldName()).append(DOT).append(conditionMapper.getForeignFieldName());
 		} else {
 			whereSql.append(conditionMapper.getFieldName());
+		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
 		}
 		whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
 				.append(COMMA_TYPEHANDLER_EQUAL);
@@ -350,11 +372,18 @@ public class SqlBuilder {
 		default:
 			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
-			ConditionType type, TableName tableName, String fieldNamePrefix) {
+			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
+		if (isOr) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+		}
 		List<?> multiConditionC = (List<?>) value;
 		if (multiConditionC.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
@@ -403,7 +432,10 @@ public class SqlBuilder {
 
 	@SuppressWarnings("unchecked")
 	private static void dealConditionMultiLike(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
-			ConditionType type, TableName tableName, String fieldNamePrefix) {
+			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
+		if (isOr) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+		}
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
 			StringBuffer tempWhereSql = new StringBuffer();
@@ -461,8 +493,8 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionEqual(Object object, StringBuffer whereSql, Mapperable mapper, TableName tableName,
-			String fieldNamePrefix) {
+	private static void dealConditionEqual(StringBuffer whereSql, Mapperable mapper, TableName tableName,
+			String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -473,17 +505,27 @@ public class SqlBuilder {
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
+		}
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
 		if (mapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
+		}
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		switch (type) {
 		case GreaterThan:
@@ -513,52 +555,67 @@ public class SqlBuilder {
 		} else {
 			whereSql.append(mapper.getFieldName());
 		}
+		if (isOr) {
+			whereSql.append(OPENBRACKET).append(i).append(CLOSEBRACKET);
+		}
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		whereSql.append(CLOSEBRACE_AND_);
+		if (isOr) {
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
+		}
+		if (isOr) {
+			whereSql.append(CLOSEBRACE_OR_);
+		} else {
+			whereSql.append(CLOSEBRACE_AND_);
+		}
 	}
 
 	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
-			TableName tableName, String fieldNamePrefix) {
+			TableName tableName, String fieldNamePrefix, boolean isOr) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(_IS);
 		if (!isNull) {
 			whereSql.append(_NOT);
 		}
-		whereSql.append(_NULL).append(_AND_);
+		whereSql.append(_NULL);
+		if (isOr) {
+			whereSql.append(_OR_);
+		} else {
+			whereSql.append(_AND_);
+		}
 	}
 
 	private static void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName,
 			String fieldNamePrefix) {
 		if (tableName != null) {
-			whereSql.append(tableName.sqlWhere());
+			if (mapper.getSubTarget() == null || Void.class.equals(mapper.getSubTarget())) {
+				whereSql.append(tableName.sqlWhere());
+			} else {
+				TableName temp = tableName.getMap().get(mapper.getSubTarget());
+				whereSql.append(new StringBuffer(temp.getTableMapper().getTableName()).append("_")
+						.append(temp.getIndex()).append("."));
+			}
 		}
 		whereSql.append(mapper.getDbFieldName());
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成insert sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
-	 *            pojo
-	 * 
-	 * @return String
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 *            pojo @return String @throws IllegalAccessException @throws
+	 *            IllegalArgumentException @throws NoSuchFieldException @throws
+	 *            SecurityException @throws NoSuchMethodException @throws
+	 *            InvocationTargetException @throws Exception
+	 *            RuntimeException @throws
 	 */
-	public static String buildInsertSql(Object object, String ignoreTag) throws Exception {
-		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
-		}
+	public static String buildInsertSql(Object object, FlyingModel flyingModel)
+			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		String ignoreTag = flyingModel.getIgnoreTag();
+		KeyHandler keyHandler = flyingModel.getKeyHandler();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -570,6 +627,7 @@ public class SqlBuilder {
 		valueSql.append(VALUES_OPENPAREN);
 
 		boolean allFieldNull = true;
+		boolean uniqueKeyHandled = false;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
@@ -591,7 +649,18 @@ public class SqlBuilder {
 			if (fieldMapper.getTypeHandlerPath() != null) {
 				valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 			}
+			if (fieldMapper.isUniqueKey()) {
+				uniqueKeyHandled = true;
+				if (keyHandler != null) {
+					handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
+				}
+			}
 			valueSql.append(CLOSEBRACE_COMMA);
+		}
+		if (keyHandler != null && !uniqueKeyHandled) {
+			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
+			tableSql.append(temp.getDbFieldName()).append(COMMA);
+			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
@@ -602,28 +671,32 @@ public class SqlBuilder {
 		return tableSql.append(CLOSEPAREN_).append(valueSql).append(CLOSEPAREN).toString();
 	}
 
+	private static void handleInsertSql(KeyHandler keyHandler, StringBuffer valueSql, FieldMapper fieldMapper,
+			Object object, boolean uniqueKeyHandled) throws IllegalAccessException, NoSuchFieldException {
+		if (!uniqueKeyHandled) {
+			valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
+		}
+		ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
+	}
+
 	/**
-	 * 
 	 * 由传入的对象生成update sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildUpdateSql(Object object, String ignoreTag) throws Exception {
+	public static String buildUpdateSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-
+		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -682,27 +755,22 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成update持久态对象的 sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildUpdatePersistentSql(Object object, String ignoreTag) throws Exception {
+	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-
+		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
@@ -761,23 +829,18 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成delete sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildDeleteSql(Object object) throws Exception {
+	public static String buildDeleteSql(Object object)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
@@ -807,19 +870,14 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成query sql语句
 	 * 
-	 * 
-	 * 
 	 * @param clazz
-	 * 
 	 *            pojo Class
-	 * 
 	 * @return sql
-	 * 
 	 */
-	public static String buildSelectSql(Class<?> clazz, String ignoreTag) {
+	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel) {
+		String ignoreTag = flyingModel.getIgnoreTag();
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		String tableName = tableMapper.getTableName();
 
@@ -848,31 +906,27 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成query sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildSelectAllSql(Object object, String ignoreTag) throws Exception {
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
+		String ignoreTag = flyingModel.getIgnoreTag();
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
@@ -887,26 +941,22 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成query sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildSelectOneSql(Object object, String ignoreTag) throws Exception {
+	public static String buildSelectOneSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
+		String ignoreTag = flyingModel.getIgnoreTag();
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}
@@ -914,7 +964,7 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai,
+		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
 		if (selectSql.indexOf(COMMA) > -1) {
@@ -929,39 +979,31 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
 	 * 由传入的对象生成count sql语句
 	 * 
-	 * 
-	 * 
 	 * @param object
-	 * 
 	 *            pojo
-	 * 
 	 * @return sql
-	 * 
-	 * @throws Exception
-	 * 
-	 *             RuntimeException
-	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws RuntimeException
 	 */
-	public static String buildCountSql(Object object) throws Exception {
+	public static String buildCountSql(Object object)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		AtomicInteger ai = new AtomicInteger(0);
-		TableName tableName = new TableName(tableMapper.getTableName(), 0);
+		TableName tableName = new TableName(tableMapper, 0, null);
 
 		StringBuffer selectSql = new StringBuffer();
 		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
 		/*
-		 * 
 		 * 如果有且只有一个主键，采用select count("主键")的方式；如果无主键或有多个主键（联合主键），采用select
-		 * 
 		 * count(*)的方式。
-		 * 
 		 */
 		if (tableMapper.getUniqueKeyNames().length == 1) {
 			selectSql.append(tableMapper.getUniqueKeyNames()[0].getDbFieldName());
@@ -973,7 +1015,7 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 
-		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai);
+		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai, tableName);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1009,16 +1051,19 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, String ignoreTag) throws Exception {
+			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
-
+		TableName tableName = null;
+		if (lastTableName == null) {
+			tableName = new TableName(tableMapper, index.getAndIncrement(), null);
+		} else {
+			tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
+		}
 		/*
-		 * 
 		 * 在第一次遍历中，处理好selectSql和fromSql。 如果originFieldMapper为null则可认为是第一次遍历
-		 * 
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
@@ -1029,11 +1074,8 @@ public class SqlBuilder {
 			}
 		}
 		/*
-		 * 
 		 * 在非第一次遍历中，处理fieldPerfix和fromSql。
-		 * 
 		 * 如果originFieldMapper和originTableName均不为null则可认为是非第一次遍历
-		 * 
 		 */
 		String temp = null;
 		if (originFieldMapper != null && originTableName != null) {
@@ -1058,90 +1100,113 @@ public class SqlBuilder {
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
 					&& fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index, null);
+						temp, index, tableName, null);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
+				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
 		}
 
-		/* 处理queryMapper中的条件 */
+		/* 处理queryMapper中的“且”条件 */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
 				continue;
 			}
-			switch (conditionMapper.getConditionType()) {
-			case Equal:
-				dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			case Like:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
-				break;
-			case HeadLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
-				break;
-			case TailLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
-				break;
-			case GreaterThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
-				break;
-			case GreaterOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
-				break;
-			case LessThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
-				break;
-			case LessOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
-				break;
-			case NotEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
-				break;
-			case MultiLikeAND:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
-				break;
-			case MultiLikeOR:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
-				break;
-			case In:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
-				break;
-			case NotIn:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
-				break;
-			case NullOrNot:
-				dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			default:
-				break;
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
+		}
+
+		/* 处理queryMapper中的“或”条件 */
+		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
+			Object value = dtoFieldMap.get(orMapper.getFieldName());
+			if (value == null) {
+				continue;
 			}
+			dealConditionOrMapper(orMapper, value, whereSql, tableName, temp);
+		}
+	}
+
+	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuffer whereSql,
+			TableName tableName, String temp) {
+		ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
+		Object[] os = (Object[]) value;
+		int i = 0;
+		whereSql.append("(");
+		for (ConditionMapper cm : conditionMappers) {
+			dealConditionMapper(cm, os[i], whereSql, tableName, temp, true, i);
+			i++;
+		}
+		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4).append(") and ");
+	}
+
+	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
+			TableName tableName, String temp, boolean isOr, int i) {
+		switch (conditionMapper.getConditionType()) {
+		case Equal:
+			dealConditionEqual(whereSql, conditionMapper, tableName, temp, isOr, i);
+			break;
+		case Like:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp, isOr, i);
+			break;
+		case HeadLike:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp, isOr, i);
+			break;
+		case TailLike:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp, isOr, i);
+			break;
+		case GreaterThan:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp, isOr, i);
+			break;
+		case GreaterOrEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp, isOr, i);
+			break;
+		case LessThan:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp, isOr, i);
+			break;
+		case LessOrEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp, isOr, i);
+			break;
+		case NotEqual:
+			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp, isOr, i);
+			break;
+		case MultiLikeAND:
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp, isOr);
+			break;
+		case MultiLikeOR:
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp, isOr);
+			break;
+		case In:
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp, isOr);
+			break;
+		case NotIn:
+			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp, isOr);
+			break;
+		case NullOrNot:
+			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp, isOr);
+			break;
+		default:
+			break;
 		}
 	}
 
 	private static void dealMapperAnnotationIterationForCount(Object object, StringBuffer fromSql,
 			StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper, String fieldPerfix,
-			AtomicInteger index) throws Exception {
+			AtomicInteger index, TableName lastTableName)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
-		TableName tableName = new TableName(tableMapper.getTableName(), index.getAndIncrement());
+		TableName tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
 
 		/*
-		 * 
 		 * 在第一次遍历中，处理好fromSql。 如果originFieldMapper为null则可认为是第一次遍历
-		 * 
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 		}
 
 		/*
-		 * 
 		 * 在非第一次遍历中，处理fieldPerfix和fromSql。
-		 * 
 		 * 如果originFieldMapper和originTableName均不为null则可认为是非第一次遍历
-		 * 
 		 */
 		String temp = null;
 		if (originFieldMapper != null && originTableName != null) {
@@ -1164,65 +1229,30 @@ public class SqlBuilder {
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
-					&& fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index);
+					&& (fieldMapper.isForeignKey())) {
+				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
+						tableName);
 			} else {
-				dealConditionEqual(value, whereSql, fieldMapper, tableName, temp);
+				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
 		}
 
-		/* 处理queryMapper中的条件 */
+		/* 处理queryMapper中的“且”条件 */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
 				continue;
 			}
-			switch (conditionMapper.getConditionType()) {
-			case Equal:
-				dealConditionEqual(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			case Like:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.Like, tableName, temp);
-				break;
-			case HeadLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.HeadLike, tableName, temp);
-				break;
-			case TailLike:
-				dealConditionLike(whereSql, conditionMapper, ConditionType.TailLike, tableName, temp);
-				break;
-			case GreaterThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterThan, tableName, temp);
-				break;
-			case GreaterOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GreaterOrEqual, tableName, temp);
-				break;
-			case LessThan:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessThan, tableName, temp);
-				break;
-			case LessOrEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LessOrEqual, tableName, temp);
-				break;
-			case NotEqual:
-				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NotEqual, tableName, temp);
-				break;
-			case MultiLikeAND:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeAND, tableName, temp);
-				break;
-			case MultiLikeOR:
-				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MultiLikeOR, tableName, temp);
-				break;
-			case In:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.In, tableName, temp);
-				break;
-			case NotIn:
-				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NotIn, tableName, temp);
-				break;
-			case NullOrNot:
-				dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, temp);
-				break;
-			default:
-				break;
+			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
+		}
+		/* 处理queryMapper中的“或”条件 */
+		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
+			Object value = dtoFieldMap.get(orMapper.getFieldName());
+			if (value == null) {
+				continue;
 			}
+			dealConditionOrMapper(orMapper, value, whereSql, tableName, temp);
 		}
 	}
+
 }

@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS account_;
 CREATE TABLE account_ (
-  id int(11) NOT NULL AUTO_INCREMENT,
+  id bigint NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   email varchar(320) DEFAULT NULL,
   password varchar(64) DEFAULT NULL,
-  activated tinyint(1) DEFAULT NULL ,
+  activated tinyint(1) DEFAULT NULL,
   activateValue varchar(8) DEFAULT NULL,
   opLock int(11) DEFAULT NULL,
   status char(1) DEFAULT NULL,
@@ -26,8 +26,11 @@ DROP TABLE IF EXISTS loginlog_;
 CREATE TABLE loginlog_ (
   id int(11) NOT NULL AUTO_INCREMENT,
   loginIP varchar(50) DEFAULT NULL,
-  accountId int(11) DEFAULT NULL,
+  accountId bigint DEFAULT NULL,
   loginTime datetime DEFAULT NULL,
+  num int DEFAULT NULL,
+  loginIP2 varchar(50) DEFAULT NULL,
+  status char(1) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY account1 (accountId)
 ) ENGINE=InnoDB AUTO_INCREMENT=333 DEFAULT CHARSET=utf8;
@@ -37,3 +40,9 @@ CREATE TABLE role_ (
   name varchar(50) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS product;
+CREATE TABLE product (
+  id varchar(100) NOT NULL,
+  name varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

@@ -39,28 +39,33 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 	}
 
 	public java.util.Collection<Account2_> getAccount() {
-		if (account == null)
+		if (account == null) {
 			account = new java.util.LinkedHashSet<Account2_>();
+		}
 		return account;
 	}
 
 	public java.util.Iterator<Account2_> getIteratorAccount() {
-		if (account == null)
+		if (account == null) {
 			account = new java.util.LinkedHashSet<Account2_>();
+		}
 		return account.iterator();
 	}
 
 	public void setAccount(java.util.Collection<Account2_> newAccount) {
 		removeAllAccount();
-		for (java.util.Iterator<Account2_> iter = newAccount.iterator(); iter.hasNext();)
+		for (java.util.Iterator<Account2_> iter = newAccount.iterator(); iter.hasNext();) {
 			addAccount((Account2_) iter.next());
+		}
 	}
 
 	public void addAccount(Account2_ newAccount) {
-		if (newAccount == null)
+		if (newAccount == null) {
 			return;
-		if (this.account == null)
+		}
+		if (this.account == null) {
 			this.account = new java.util.LinkedHashSet<Account2_>();
+		}
 		if (!this.account.contains(newAccount)) {
 			this.account.add(newAccount);
 			newAccount.setRole(this);
@@ -79,9 +84,10 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 	}
 
 	public void removeAccount(Account2_ oldAccount) {
-		if (oldAccount == null)
+		if (oldAccount == null) {
 			return;
-		if (this.account != null)
+		}
+		if (this.account != null) {
 			if (this.account.contains(oldAccount)) {
 				for (Account2_ temp : this.account) {
 					if (oldAccount.equals(temp)) {
@@ -94,6 +100,7 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 				this.account.remove(oldAccount);
 				oldAccount.setRole((Role2_) null);
 			}
+		}
 	}
 
 	public void removeAllAccount() {

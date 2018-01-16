@@ -4,7 +4,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.9.2</version>
+	<version>0.9.3-beta</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -79,19 +79,22 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -185,7 +188,6 @@
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>${jta.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.atomikos</groupId>

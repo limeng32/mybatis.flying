@@ -186,6 +186,8 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 				triggerMethods.get(clazz1).add(method);
 			}
 			break;
+		default:
+			break;
 		}
 	}
 

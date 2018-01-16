@@ -1,24 +1,15 @@
 package indi.mybatis.flying.models;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
-
-import javax.persistence.Column;
 
 import org.apache.ibatis.type.JdbcType;
 
-import indi.mybatis.flying.annotations.FieldMapperAnnotation;
-import indi.mybatis.flying.exception.BuildSqlException;
-import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.ConditionType;
-import indi.mybatis.flying.utils.TypeJdbcTypeConverter;
 
 /**
  * 条件映射类，用于描述被ConditionMapperAnnotation标注过的对象字段和sql之间的对应关系
  */
 public class ConditionMapper implements Mapperable {
-
-	private Field field;
 
 	/**
 	 * Java对象字段名
@@ -65,29 +56,15 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private String typeHandlerPath;
 
-	private FieldMapperAnnotation fieldMapperAnnotation;
+	/**
+	 * 此变量的类型
+	 */
+	private Class<?> fieldType;
 
-	private Column column;
-
-	public void buildMapper() {
-		if (fieldMapperAnnotation == null && column == null) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
-		}
-		setFieldName(field.getName());
-		if (fieldMapperAnnotation != null) {
-			setDbFieldName(fieldMapperAnnotation.dbFieldName());
-			setJdbcType(fieldMapperAnnotation.jdbcType());
-			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
-			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
-		} else if (column != null) {
-			if ("".equals(column.name())) {
-				setDbFieldName(field.getName());
-			} else {
-				setDbFieldName(column.name());
-			}
-			setJdbcType(TypeJdbcTypeConverter.map.get(field.getType()));
-		}
-	}
+	/**
+	 * 标识此项条件是针对哪个（业务上）子对象的，默认为Void，即是针对自身的；此属性只在或逻辑（Or标签）中起作用
+	 */
+	private Class<?> subTarget;
 
 	@Override
 	public String getFieldName() {
@@ -163,14 +140,33 @@ public class ConditionMapper implements Mapperable {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 
+	@Override
 	public String getTypeHandlerPath() {
 		return typeHandlerPath;
 	}
 
 	public void setTypeHandlerPath(Class<?> typeHandler) {
-		if (!Object.class.equals(typeHandler)) {
+		if (!Void.class.equals(typeHandler)) {
 			this.typeHandlerPath = typeHandler.getName();
 		}
+	}
+
+	@Override
+	public Class<?> getFieldType() {
+		return fieldType;
+	}
+
+	public void setFieldType(Class<?> fieldType) {
+		this.fieldType = fieldType;
+	}
+
+	@Override
+	public Class<?> getSubTarget() {
+		return subTarget;
+	}
+
+	public void setSubTarget(Class<?> subTarget) {
+		this.subTarget = subTarget;
 	}
 
 }
