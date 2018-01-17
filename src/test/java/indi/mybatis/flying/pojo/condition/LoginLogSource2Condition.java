@@ -2,14 +2,12 @@ package indi.mybatis.flying.pojo.condition;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
-import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.statics.ConditionType;
 
-@QueryMapperAnnotation(tableName = "LOGINLOG_")
 public class LoginLogSource2Condition extends LoginLogSource2 implements Conditionable {
 
 	private static final long serialVersionUID = 1L;
