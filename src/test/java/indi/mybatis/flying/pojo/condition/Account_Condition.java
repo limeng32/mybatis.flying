@@ -5,7 +5,6 @@ import java.util.List;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
-import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Queryable;
@@ -13,7 +12,6 @@ import indi.mybatis.flying.models.Sortable;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.statics.ConditionType;
 
-@QueryMapperAnnotation(tableName = "Account_")
 public class Account_Condition extends Account_ implements Conditionable {
 
 	private static final long serialVersionUID = 1L;
