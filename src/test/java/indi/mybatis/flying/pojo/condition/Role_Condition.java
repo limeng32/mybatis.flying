@@ -2,14 +2,12 @@ package indi.mybatis.flying.pojo.condition;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
-import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.statics.ConditionType;
 
-@QueryMapperAnnotation(tableName = "Role_")
 public class Role_Condition extends Role_ implements Conditionable {
 
 	private static final long serialVersionUID = 1L;

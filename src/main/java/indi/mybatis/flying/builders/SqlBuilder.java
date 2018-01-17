@@ -18,7 +18,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
-import indi.mybatis.flying.annotations.QueryMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
@@ -1029,26 +1028,6 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
-	private static boolean hasTableMapperAnnotation(Class<?> clazz) {
-		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
-		for (Annotation an : classAnnotations) {
-			if (an instanceof TableMapperAnnotation || an instanceof Table) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static boolean hasQueryMapperAnnotation(Class<?> clazz) {
-		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
-		for (Annotation an : classAnnotations) {
-			if (an instanceof QueryMapperAnnotation) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
 			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag)
@@ -1097,8 +1076,7 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
-					&& fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, tableName, null);
 			} else {
@@ -1228,8 +1206,7 @@ public class SqlBuilder {
 				continue;
 			}
 			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
-			if ((hasTableMapperAnnotation(value.getClass()) || hasQueryMapperAnnotation(value.getClass()))
-					&& (fieldMapper.isForeignKey())) {
+			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
 						tableName);
 			} else {
