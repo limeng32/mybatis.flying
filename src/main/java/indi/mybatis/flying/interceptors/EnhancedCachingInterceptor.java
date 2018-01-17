@@ -136,7 +136,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
 					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 			/* 当需要分页查询时，缓存里加入page信息 */
-			// if (metaParameter.getOriginalObject() instanceof Conditionable) {
 			Cache cache = mappedStatement.getCache();
 			Object value = cache.getObject(cacheKey);
 			if (metaExecutor.hasGetter("delegate")) {
@@ -152,7 +151,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 					return list;
 				}
 			}
-			// }
 		}
 
 		return result;

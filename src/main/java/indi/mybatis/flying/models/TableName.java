@@ -4,11 +4,6 @@ import java.util.HashMap;
 
 public class TableName {
 
-	// public TableName(TableMapper tableMapper, int index) {
-	// this.tableMapper = tableMapper;
-	// this.index = index;
-	// }
-
 	public TableName(TableMapper tableMapper, int index, HashMap<Class<?>, TableName> map) {
 		this.tableMapper = tableMapper;
 		this.index = index;
