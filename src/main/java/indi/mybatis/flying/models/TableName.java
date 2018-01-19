@@ -1,14 +1,14 @@
 package indi.mybatis.flying.models;
 
-import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public class TableName {
 
-	public TableName(TableMapper tableMapper, int index, HashMap<Class<?>, TableName> map) {
+	public TableName(TableMapper tableMapper, int index, WeakHashMap<Class<?>, TableName> map) {
 		this.tableMapper = tableMapper;
 		this.index = index;
 		if (map == null) {
-			map = new HashMap<Class<?>, TableName>();
+			map = new WeakHashMap<Class<?>, TableName>(1);
 		}
 		this.map = map;
 		this.map.put(this.tableMapper.getClazz(), this);
@@ -18,13 +18,13 @@ public class TableName {
 
 	private int index = 0;
 
-	private HashMap<Class<?>, TableName> map;
+	private WeakHashMap<Class<?>, TableName> map;
 
-	public HashMap<Class<?>, TableName> getMap() {
+	public WeakHashMap<Class<?>, TableName> getMap() {
 		return map;
 	}
 
-	public void setMap(HashMap<Class<?>, TableName> map) {
+	public void setMap(WeakHashMap<Class<?>, TableName> map) {
 		this.map = map;
 	}
 
