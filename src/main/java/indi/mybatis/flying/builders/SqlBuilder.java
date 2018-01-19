@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -127,7 +127,7 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fieldMapperCache = new HashMap<String, FieldMapper>(16);
+		fieldMapperCache = new WeakHashMap<String, FieldMapper>(16);
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
 			boolean b = fieldMapper.buildMapper(field);
@@ -202,8 +202,8 @@ public class SqlBuilder {
 		if (queryMapper != null) {
 			return queryMapper;
 		}
-		Map<String, ConditionMapper> conditionMapperCache = new HashMap<>(16);
-		Map<String, OrMapper> orMapperCache = new HashMap<>(4);
+		Map<String, ConditionMapper> conditionMapperCache = new WeakHashMap<>(16);
+		Map<String, OrMapper> orMapperCache = new WeakHashMap<>(4);
 		Field[] fields = null;
 
 		ConditionMapperAnnotation conditionMapperAnnotation = null;

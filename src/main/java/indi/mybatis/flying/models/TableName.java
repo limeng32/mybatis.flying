@@ -1,19 +1,14 @@
 package indi.mybatis.flying.models;
 
-import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public class TableName {
 
-	// public TableName(TableMapper tableMapper, int index) {
-	// this.tableMapper = tableMapper;
-	// this.index = index;
-	// }
-
-	public TableName(TableMapper tableMapper, int index, HashMap<Class<?>, TableName> map) {
+	public TableName(TableMapper tableMapper, int index, WeakHashMap<Class<?>, TableName> map) {
 		this.tableMapper = tableMapper;
 		this.index = index;
 		if (map == null) {
-			map = new HashMap<Class<?>, TableName>();
+			map = new WeakHashMap<Class<?>, TableName>(1);
 		}
 		this.map = map;
 		this.map.put(this.tableMapper.getClazz(), this);
@@ -23,13 +18,13 @@ public class TableName {
 
 	private int index = 0;
 
-	private HashMap<Class<?>, TableName> map;
+	private WeakHashMap<Class<?>, TableName> map;
 
-	public HashMap<Class<?>, TableName> getMap() {
+	public WeakHashMap<Class<?>, TableName> getMap() {
 		return map;
 	}
 
-	public void setMap(HashMap<Class<?>, TableName> map) {
+	public void setMap(WeakHashMap<Class<?>, TableName> map) {
 		this.map = map;
 	}
 
@@ -50,15 +45,11 @@ public class TableName {
 	}
 
 	public StringBuffer sqlSelect() {
-		// return new StringBuffer(tableName).append(" as
-		// ").append(tableName).append("_").append(index);
 		return new StringBuffer(tableMapper.getTableName()).append(" as ").append(tableMapper.getTableName())
 				.append("_").append(index);
 	}
 
 	public StringBuffer sqlWhere() {
-		// return new
-		// StringBuffer(tableName).append("_").append(index).append(".");
 		return new StringBuffer(tableMapper.getTableName()).append("_").append(index).append(".");
 	}
 }
