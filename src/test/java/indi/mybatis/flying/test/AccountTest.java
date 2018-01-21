@@ -105,7 +105,7 @@ public class AccountTest {
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testInsert.datasource2.result.xml") })
 	public void testInsert() {
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setName("ann");
 		a.setEmail("ann@live.cn");
 		a.setPassword("5a690d842935c51f26f473e025c1b97a");

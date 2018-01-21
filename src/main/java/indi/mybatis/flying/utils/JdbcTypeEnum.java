@@ -45,7 +45,7 @@ public enum JdbcTypeEnum {
 		this.jdbcType = jdbcType;
 	}
 	
-	private static Map<String,JdbcType> nameLookup = new HashMap<>();
+	private static final Map<String,JdbcType> nameLookup = new HashMap<>(64);
 	
 	static {
 		for (JdbcTypeEnum jdbcTypeEnum : JdbcTypeEnum.values()) {
