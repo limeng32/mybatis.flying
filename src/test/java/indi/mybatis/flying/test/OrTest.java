@@ -248,7 +248,7 @@ public class OrTest {
 	public void testOr2() {
 		LoginLog_Condition lc = new LoginLog_Condition();
 		lc.setAccount(new Account_Condition());
-		((Account_Condition) lc.getAccount()).setIdEqualsOr(1l, 2l);
+		((Account_Condition) lc.getAccount()).setIdEqualsOr(1L, 2L);
 		int i = loginLogService.count(lc);
 		Assert.assertEquals(4, i);
 	}
@@ -263,9 +263,9 @@ public class OrTest {
 		// loginLogSource2.setAccount(new Account_Condition());
 		// ((Account_Condition)loginLogSource2.getAccount()).setIdEqualsOr(1,2);
 		Account_ ac1 = new Account_();
-		ac1.setId(1l);
+		ac1.setId(1L);
 		Account_ ac2 = new Account_();
-		ac2.setId(2l);
+		ac2.setId(2L);
 		loginLogSource2.setAccountEqualsOr(ac1, ac2);
 		int i = loginLogSource2Service.count(loginLogSource2);
 		Assert.assertEquals(4, i);
@@ -286,9 +286,9 @@ public class OrTest {
 	public void testOrMashup() {
 		LoginLogSource2Condition l2c = new LoginLogSource2Condition();
 		Account_ a1 = new Account_();
-		a1.setId(1l);
+		a1.setId(1L);
 		Account_ a2 = new Account_();
-		a2.setId(2l);
+		a2.setId(2L);
 		l2c.setAccountEqualsOr2(a1, a2, "23453");
 		int i1 = loginLogSource2Service.count(l2c);
 		Assert.assertEquals(3, i1);

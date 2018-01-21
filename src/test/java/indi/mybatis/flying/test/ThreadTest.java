@@ -73,8 +73,8 @@ public class ThreadTest extends TestCase {
 
 		// 实例化 TestRunnable 类
 		TestRunnable tr1, tr2;
-		tr1 = new accountInsert(2l, "ann");
-		tr2 = new accountInsert(3l, "ann");
+		tr1 = new accountInsert(2L, "ann");
+		tr2 = new accountInsert(3L, "ann");
 		// 把实例传递给 MTTR
 		TestRunnable[] trs = { tr1, tr2 };
 		MultiThreadedTestRunner mttr = new MultiThreadedTestRunner(trs);

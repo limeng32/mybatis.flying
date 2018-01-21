@@ -210,22 +210,22 @@ public class CacheTest {
 		String name1 = "ann", name2 = "bob", name3 = "carl", name4 = "duke";
 
 		Account_ a1 = new Account_();
-		a1.setId(1l);
+		a1.setId(1L);
 		a1.setName(name1);
 		accountService.insert(a1);
 
 		Account_ a2 = new Account_();
-		a2.setId(2l);
+		a2.setId(2L);
 		a2.setName(name2);
 		accountService.insert(a2);
 
 		Account_ a3 = new Account_();
-		a3.setId(3l);
+		a3.setId(3L);
 		a3.setName(name3);
 		accountService.insert(a3);
 
 		Account_ a4 = new Account_();
-		a4.setId(4l);
+		a4.setId(4L);
 		a4.setName(name4);
 		accountService.insert(a4);
 
@@ -569,7 +569,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -597,7 +597,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -630,7 +630,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -663,7 +663,7 @@ public class CacheTest {
 		r.setName("ann");
 		roleService.insert(r);
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setRole(r);
 		a.setEmail("email");
 		accountService.insert(a);
@@ -766,7 +766,7 @@ public class CacheTest {
 		roleService.insert(r);
 
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setName("deployer");
 		accountService.insert(a);
 
@@ -804,7 +804,7 @@ public class CacheTest {
 		roleService.insert(r2);
 
 		Account_ a = new Account_();
-		a.setId(1l);
+		a.setId(1L);
 		a.setRole(r);
 		a.setRoleDeputy(r2);
 		a.setName("deployer");
