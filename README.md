@@ -112,6 +112,8 @@ flying 特点总结如下：
 
 - 加入了优化过的缓存插件，可以对多数据源环境下 flying 方法和传统 mybatis 方法同时进行缓存管理。
 
+- 可以自定义主键生成器，全面支持或逻辑查询。（初雪版新增特性）
+
 #### flying 获取方式：
 
   flying 的 maven 坐标为：
@@ -119,23 +121,21 @@ flying 特点总结如下：
 ```xml
     <groupId>com.github.limeng32</groupId>
     <artifactId>mybatis.flying</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
 ```
 
-mybatis 版本与 flying 最新版本的对应关系见下：
+mybatis 版本与 flying 最新版本初雪的对应关系见下：
 
- |mybatis 版本|flying 版本 |
+ |mybatis 版本|flying-初雪 |
  |---|---|
- |3.2.6、3.2.7、3.2.8|0.7.4|
- |3.3.0、3.3.1|0.8.2|
- |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5|0.9.2|
+ |3.3.0、3.3.1|0.8.3|
+ |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5|0.9.3|
  
 之所以采用分版本发布的方式是因为我们对 mybatis 每个版本的用户都认真负责，力求使您得到 flying 最大的好处。
 
 #### flying 代码示例：
-我们还为您提供了两个快速上手的示例：
+我们还为您提供了一个快速上手的示例：
 
-1. 最新版本下单数据源不使用缓存：[https://gitee.com/limeng32/flying-demo/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo/tree/use-flying-0.9.2/)
-2. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/)
+1. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)。
