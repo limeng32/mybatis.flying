@@ -136,6 +136,6 @@ mybatis 版本与 flying 最新版本初雪的对应关系见下：
 #### flying 代码示例：
 我们还为您提供了一个快速上手的示例：
 
-1. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.2/)
+1. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.3/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.3/)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)。
