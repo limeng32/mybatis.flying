@@ -1012,4 +1012,36 @@ public class CacheTest {
 		int i2 = accountService.count(new Account_());
 		Assert.assertEquals(2, i2);
 	}
+
+	/* 一个展示n+1问题的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne.datasource2.result.xml")
+	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne.datasource2.result.xml")
+	public void testNPlusOne() {
+		Role2_ r = new Role2_();
+		r.setId(1);
+		r.setName("root");
+		role2Service.insert(r);
+
+		Role2_ r2 = new Role2_();
+		r2.setId(2);
+		r2.setName("user");
+		role2Service.insert(r2);
+
+		Account2_ a = new Account2_();
+		a.setId(21);
+		a.setEmail("10");
+		a.setRole(r);
+		account2Service.insert(a);
+
+		Account2_ a2 = new Account2_();
+		a2.setId(22);
+		a2.setEmail("11");
+		a2.setRole(r);
+		account2Service.insert(a2);
+
+		Collection<Account2_> accounts = account2Service.selectAll(new Account2_());
+		Assert.assertEquals(2, accounts.size());
+	}
 }
