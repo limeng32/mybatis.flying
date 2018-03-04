@@ -1,4 +1,4 @@
-package indi.mybatis.flying.mapper2;
+package indi.mybatis.flying.mapper;
 
 import java.util.Collection;
 

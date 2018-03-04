@@ -42,11 +42,11 @@ import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Role_Condition;
+import indi.mybatis.flying.service.Account22Service;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service.RoleService;
-import indi.mybatis.flying.service2.Account22Service;
 import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
@@ -1053,8 +1053,12 @@ public class CacheTest {
 	/* 一个展示n+1问题的测试用例 */
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
-	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml")
-	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml")
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource1.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml"), })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource1.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml"), })
 	public void testNPlusOne2() {
 		Role2_ r = new Role2_();
 		r.setId(1);

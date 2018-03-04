@@ -11,7 +11,7 @@ import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 import indi.mybatis.flying.statics.OpLockType;
 
-@TableMapperAnnotation(tableName = "ACCOUNT22")
+@TableMapperAnnotation(tableName = "account22")
 public class Account22 extends PojoSupport<Account22> implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="indi.mybatis.flying.mapper2.Account22Mapper">
+<mapper namespace="indi.mybatis.flying.mapper.Account22Mapper">
 	<cache />
 
 	<select id="select" resultMap="result">
@@ -37,7 +37,9 @@
 
 	<resultMap id="result" type="Account22" autoMapping="true">
 		<id property="id" column="id" />
-		<association property="role" javaType="Role2_"
-			select="indi.mybatis.flying.mapper2.Role2Mapper.select" column="role_id" />
+		<!-- <association property="role" javaType="Role2_" select="indi.mybatis.flying.mapper2.Role2Mapper.select" 
+			column="role_id" /> -->
+		<result property="role" column="role_id"
+			typeHandler="indi.mybatis.flying.typeHandler.Role2TypeHandler" />
 	</resultMap>
 </mapper>

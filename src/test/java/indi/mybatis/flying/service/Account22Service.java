@@ -1,11 +1,11 @@
-package indi.mybatis.flying.service2;
+package indi.mybatis.flying.service;
 
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import indi.mybatis.flying.mapper2.Account22Mapper;
+import indi.mybatis.flying.mapper.Account22Mapper;
 import indi.mybatis.flying.pojo.Account22;
 import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
