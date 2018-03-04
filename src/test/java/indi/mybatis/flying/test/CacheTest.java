@@ -32,6 +32,7 @@ import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
+import indi.mybatis.flying.pojo.Account22;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
@@ -45,6 +46,7 @@ import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service.RoleService;
+import indi.mybatis.flying.service2.Account22Service;
 import indi.mybatis.flying.service2.Account2Service;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 import indi.mybatis.flying.service2.Role2Service;
@@ -70,6 +72,9 @@ public class CacheTest {
 
 	@Autowired
 	private Account2Service account2Service;
+
+	@Autowired
+	private Account22Service account22Service;
 
 	@Autowired
 	private Role2Service role2Service;
@@ -1042,6 +1047,38 @@ public class CacheTest {
 		account2Service.insert(a2);
 
 		Collection<Account2_> accounts = account2Service.selectAll(new Account2_());
+		Assert.assertEquals(2, accounts.size());
+	}
+
+	/* 一个展示n+1问题的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml")
+	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml")
+	public void testNPlusOne2() {
+		Role2_ r = new Role2_();
+		r.setId(1);
+		r.setName("root");
+		role2Service.insert(r);
+
+		Role2_ r2 = new Role2_();
+		r2.setId(2);
+		r2.setName("user");
+		role2Service.insert(r2);
+
+		Account22 a = new Account22();
+		a.setId(21);
+		a.setEmail("10");
+		a.setRole(r);
+		account22Service.insert(a);
+
+		Account22 a2 = new Account22();
+		a2.setId(22);
+		a2.setEmail("11");
+		a2.setRole(r);
+		account22Service.insert(a2);
+
+		Collection<Account22> accounts = account22Service.selectAll(new Account22());
 		Assert.assertEquals(2, accounts.size());
 	}
 }

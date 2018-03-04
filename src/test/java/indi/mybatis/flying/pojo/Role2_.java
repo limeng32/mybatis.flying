@@ -21,6 +21,8 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 
 	private java.util.Collection<Account2_> account;
 
+	private java.util.Collection<Account22> account2;
+
 	@Override
 	public Integer getId() {
 		return id;
@@ -112,6 +114,83 @@ public class Role2_ extends PojoSupport<Role2_> implements Serializable {
 				oldAccount.setRole((Role2_) null);
 			}
 			account.clear();
+		}
+	}
+
+	public java.util.Collection<Account22> getAccount2() {
+		if (account2 == null) {
+			account2 = new java.util.LinkedHashSet<Account22>();
+		}
+		return account2;
+	}
+
+	public java.util.Iterator<Account22> getIteratorAccount2() {
+		if (account2 == null) {
+			account2 = new java.util.LinkedHashSet<Account22>();
+		}
+		return account2.iterator();
+	}
+
+	public void setAccount2(java.util.Collection<Account22> newAccount) {
+		removeAllAccount2();
+		for (java.util.Iterator<Account22> iter = newAccount.iterator(); iter.hasNext();) {
+			addAccount2((Account22) iter.next());
+		}
+	}
+
+	public void addAccount2(Account22 newAccount) {
+		if (newAccount == null) {
+			return;
+		}
+		if (this.account2 == null) {
+			this.account2 = new java.util.LinkedHashSet<Account22>();
+		}
+		if (!this.account2.contains(newAccount)) {
+			this.account2.add(newAccount);
+			newAccount.setRole(this);
+		} else {
+			for (Account22 temp : this.account2) {
+				if (newAccount.equals(temp)) {
+					if (temp != newAccount) {
+						removeAccount2(temp);
+						this.account2.add(newAccount);
+						newAccount.setRole(this);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public void removeAccount2(Account22 oldAccount) {
+		if (oldAccount == null) {
+			return;
+		}
+		if (this.account2 != null) {
+			if (this.account2.contains(oldAccount)) {
+				for (Account22 temp : this.account2) {
+					if (oldAccount.equals(temp)) {
+						if (temp != oldAccount) {
+							temp.setRole((Role2_) null);
+						}
+						break;
+					}
+				}
+				this.account2.remove(oldAccount);
+				oldAccount.setRole((Role2_) null);
+			}
+		}
+	}
+
+	public void removeAllAccount2() {
+		if (account2 != null) {
+			Account22 oldAccount;
+			for (java.util.Iterator<Account22> iter = getIteratorAccount2(); iter.hasNext();) {
+				oldAccount = (Account22) iter.next();
+				iter.remove();
+				oldAccount.setRole((Role2_) null);
+			}
+			account2.clear();
 		}
 	}
 }
