@@ -10,7 +10,7 @@ import indi.mybatis.flying.exceptions.Configurer2Exception;
 import indi.mybatis.flying.exceptions.ConfigurerException;
 import indi.mybatis.flying.pojo.Role_;
 
-@Service
+//@Service
 public class TransactiveService {
 
 	@Autowired

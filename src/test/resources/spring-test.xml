@@ -18,21 +18,21 @@
 
 	<context:component-scan base-package="indi.mybatis.flying.*" />
 
-	<bean id="dataSource1" class="com.atomikos.jdbc.AtomikosDataSourceBean"
-		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="testdb" />
-		<property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" />
-		<property name="xaProperties">
-			<props>
-				<prop key="user">sa</prop>
-				<prop key="password"></prop>
-				<prop key="URL">jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-				</prop>
-			</props>
-		</property>
-		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
-		<property name="maxIdleTime" value="60" />
+	<!-- <bean id="dataSource1" class="com.atomikos.jdbc.AtomikosDataSourceBean" 
+		init-method="init" destroy-method="close"> <property name="uniqueResourceName" 
+		value="testdb" /> <property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" 
+		/> <property name="xaProperties"> <props> <prop key="user">sa</prop> <prop 
+		key="password"></prop> <prop key="URL">jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE 
+		</prop> </props> </property> <property name="minPoolSize" value="1" /> <property 
+		name="maxPoolSize" value="3" /> <property name="maxIdleTime" value="60" /> 
+		</bean> -->
+	<bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
+		<property name="url"
+			value="jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value=""></property>
 	</bean>
 	<!-- 测试环境下初始化dataSource1表结构 -->
 	<jdbc:initialize-database data-source="dataSource1"
@@ -41,21 +41,21 @@
 			encoding="UTF-8" />
 	</jdbc:initialize-database>
 
-	<bean id="dataSource2" class="com.atomikos.jdbc.AtomikosDataSourceBean"
-		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="testdb2" />
-		<property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" />
-		<property name="xaProperties">
-			<props>
-				<prop key="user">sa</prop>
-				<prop key="password"></prop>
-				<prop key="URL">jdbc:h2:mem:testdb2;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-				</prop>
-			</props>
-		</property>
-		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
-		<property name="maxIdleTime" value="60" />
+	<!-- <bean id="dataSource2" class="com.atomikos.jdbc.AtomikosDataSourceBean" 
+		init-method="init" destroy-method="close"> <property name="uniqueResourceName" 
+		value="testdb2" /> <property name="xaDataSourceClassName" value="org.h2.jdbcx.JdbcDataSource" 
+		/> <property name="xaProperties"> <props> <prop key="user">sa</prop> <prop 
+		key="password"></prop> <prop key="URL">jdbc:h2:mem:testdb2;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE 
+		</prop> </props> </property> <property name="minPoolSize" value="1" /> <property 
+		name="maxPoolSize" value="3" /> <property name="maxIdleTime" value="60" /> 
+		</bean> -->
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
+		<property name="url"
+			value="jdbc:h2:mem:testdb2;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value=""></property>
 	</bean>
 	<!-- 测试环境下初始化dataSource2表结构 -->
 	<jdbc:initialize-database data-source="dataSource2"
@@ -76,41 +76,58 @@
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper2/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
-	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="indi.mybatis.flying.mapper" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-	</bean>
-	<bean id="mapperScannerConfigurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="indi.mybatis.flying.mapper2" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
+
+	<!-- <bean id="multipleDataSource" class="indi.mybatis.flying.MultipleDataSource"> 
+		<property name="defaultTargetDataSource" ref="dataSource1"/> <property name="targetDataSources"> 
+		<map> <entry key="dataSource1" value-ref="dataSource1"/> <entry key="dataSource2" 
+		value-ref="dataSource2"/> </map> </property> </bean> -->
+
+	<!-- <bean id="sqlSessionFactoryM" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+		<property name="dataSource" ref="multipleDataSource"/> </bean> -->
+
+	<!-- <bean id="mapperScannerConfigurerM" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+		<property name="basePackage" value="indi.mybatis.flying.mapper" /> <property 
+		name="sqlSessionFactoryBeanName" value="sqlSessionFactoryM" /> </bean> -->
+
+	<!-- 配置自定义的SqlSessionTemplate模板，注入相关配置 -->
+	<bean id="sqlSessionTemplate" class="indi.mybatis.flying.CustomSqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+		<property name="targetSqlSessionFactorys">
+			<map>
+				<entry key="dataSource1" value-ref="sqlSessionFactory" />
+				<entry key="dataSource2" value-ref="sqlSessionFactory2" />
+			</map>
+		</property>
 	</bean>
 
-	<bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
-		init-method="init" destroy-method="close">
-		<property name="forceShutdown">
-			<value>true</value>
-		</property>
+	<bean id="mapperScannerConfigurerMM" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="indi.mybatis.flying.mapper,indi.mybatis.flying.mapper2" />
+		<!-- 注意注入sqlSessionTemplate -->
+		<property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate" />
 	</bean>
-	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
-		<property name="transactionTimeout" value="300" />
-	</bean>
-	<bean id="springTransactionManager"
-		class="org.springframework.transaction.jta.JtaTransactionManager">
-		<property name="transactionManager">
-			<ref bean="atomikosTransactionManager" />
-		</property>
-		<property name="userTransaction">
-			<ref bean="atomikosUserTransaction" />
-		</property>
-		<property name="allowCustomIsolationLevels" value="true" />
-	</bean>
-	<tx:annotation-driven transaction-manager="springTransactionManager" />
+
+	<!-- <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+		<property name="basePackage" value="indi.mybatis.flying.mapper" /> <property 
+		name="sqlSessionFactoryBeanName" value="sqlSessionFactory" /> </bean> <bean 
+		id="mapperScannerConfigurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+		<property name="basePackage" value="indi.mybatis.flying.mapper2" /> <property 
+		name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" /> </bean> -->
+
+	<!-- <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" 
+		init-method="init" destroy-method="close"> <property name="forceShutdown"> 
+		<value>true</value> </property> </bean> <bean id="atomikosUserTransaction" 
+		class="com.atomikos.icatch.jta.UserTransactionImp"> <property name="transactionTimeout" 
+		value="300" /> </bean> <bean id="springTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"> 
+		<property name="transactionManager"> <ref bean="atomikosTransactionManager" 
+		/> </property> <property name="userTransaction"> <ref bean="atomikosUserTransaction" 
+		/> </property> <property name="allowCustomIsolationLevels" value="true" /> 
+		</bean> <tx:annotation-driven transaction-manager="springTransactionManager" 
+		/> -->
 	<bean id="distributedSnowflakeKeyGenerator"
 		class="indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator">
 		<property name="workerId" value="5" />
 		<property name="datacenterId" value="5" />
 	</bean>
 
-	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
-	
 </beans>

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import indi.mybatis.flying.exceptions.Configurer2Exception;
 import indi.mybatis.flying.service.TransactiveService;
 
-@Service
+//@Service
 public class TransactiveService3 {
 
 	@Autowired

@@ -12,7 +12,7 @@ import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.service.RoleService;
 import indi.mybatis.flying.service.TransactiveService;
 
-@Service
+//@Service
 public class TransactiveService2 {
 
 	@Autowired
