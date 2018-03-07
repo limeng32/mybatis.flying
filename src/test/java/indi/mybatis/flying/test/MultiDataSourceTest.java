@@ -24,7 +24,9 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
+import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.CustomerContextHolder;
+import indi.mybatis.flying.Sleepable;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -46,6 +48,9 @@ public class MultiDataSourceTest {
 	@Autowired
 	private LoginLogSource2Service loginLogSource2Service;
 
+	@Autowired
+	private Sleepable humanProxy;
+	
 	@Test
 	public void testDataSource() {
 		Assert.assertNotNull(dataSource1);
@@ -63,12 +68,12 @@ public class MultiDataSourceTest {
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
 	public void testCondition() {
-
 		LoginLog_Condition lc1 = new LoginLog_Condition();
 		lc1.setIpLikeFilter("5");
 		int i1 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i1);
-		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
+//		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
+		humanProxy.sleep();
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
 		lc2.setIpLikeFilter("2");
 		int i2 = loginLogSource2Service.count(lc2);

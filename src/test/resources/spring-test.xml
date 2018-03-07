@@ -129,5 +129,20 @@
 		<property name="workerId" value="5" />
 		<property name="datacenterId" value="5" />
 	</bean>
-
+	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
+	<bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper">
+	</bean>
+	<bean id="sleepPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value=".*sleep" />
+	</bean>
+	<bean id="sleepHelperAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="sleepHelper" />
+		<property name="pointcut" ref="sleepPointcut" />
+	</bean>
+	<bean id="human" class="indi.mybatis.flying.Human" />
+	<bean id="humanProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="human" />
+		<property name="interceptorNames" value="sleepHelperAdvisor" />
+		<property name="proxyInterfaces" value="indi.mybatis.flying.Sleepable" />
+	</bean>
 </beans>
