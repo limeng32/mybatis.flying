@@ -12,18 +12,18 @@ public class MapperHelper {
 
 	}
 
-	@Pointcut("execution(* indi.mybatis.flying.*.LoginLogSource2Mapper.count(..))")
+	@Pointcut("execution(* indi.mybatis.flying.*.AccountMapper.*(..))")
 	public void sleeppoint() {
 	}
 
 	@Before("sleeppoint()")
 	public void before() throws Throwable {
-		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
-		System.out.println("通常情况下睡觉之前要脱衣服！");
+		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_1);
+		System.out.println("开始切为datasource1。");
 	}
 
 	@AfterReturning("sleeppoint()")
 	public void afterReturning() throws Throwable {
-		System.out.println("起床后要先穿衣服！");
+		System.out.println("已经切为datasource1。");
 	}
 }

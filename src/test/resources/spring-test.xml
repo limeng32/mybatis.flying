@@ -131,5 +131,6 @@
 	</bean>
 	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
 	<bean id="mapperHelper" class="indi.mybatis.flying.MapperHelper" />
+	<bean id="mapperHelper2" class="indi.mybatis.flying.MapperHelper2" />
 	<aop:aspectj-autoproxy proxy-target-class="false" />
 </beans>

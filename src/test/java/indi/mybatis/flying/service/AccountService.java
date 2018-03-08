@@ -12,7 +12,7 @@ import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
-public class AccountService extends ServiceSupport<Account_> implements AccountMapper {
+public class AccountService extends ServiceSupport<Account_> {
 
 	@Autowired
 	private AccountMapper mapper;
@@ -22,12 +22,10 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return supportSelect(mapper, id);
 	}
 
-	@Override
 	public Account_ selectEverything(Object id) {
 		return mapper.selectEverything(id);
 	}
 
-	@Override
 	public Account_ selectWithoutRole(Object id) {
 		return mapper.selectWithoutRole(id);
 	}
@@ -42,7 +40,6 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		supportInsert(mapper, t);
 	}
 
-	@Override
 	public void insertSnowFlake(Account_ t) {
 		mapper.insertSnowFlake(t);
 	}
@@ -57,7 +54,6 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return supportSelectAll(mapper, t);
 	}
 
-	@Override
 	public Collection<Account_> selectAllEverything(Account_ t) {
 		return mapper.selectAllEverything(t);
 	}
@@ -77,31 +73,26 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return supportCount(mapper, t);
 	}
 
-	@Override
 	public void loadRole(Role_ role, Account_ account) {
 		role.removeAllAccount();
 		account.setRole(role);
 		role.setAccount(mapper.selectAll(account));
 	}
 
-	@Override
 	public void loadRoleDeputy(Role_ roleDeputy, Account_ accountDeputy) {
 		roleDeputy.removeAllAccountDeputy();
 		accountDeputy.setRoleDeputy(roleDeputy);
 		roleDeputy.setAccountDeputy(mapper.selectAll(accountDeputy));
 	}
 
-	@Override
 	public Account_ selectDirect(Object id) {
 		return mapper.selectDirect(id);
 	}
 
-	@Override
 	public Collection<Account_> selectAllDirect(Map<String, Object> map) {
 		return mapper.selectAllDirect(map);
 	}
 
-	@Override
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map) {
 		return mapper.selectAccountByRole(map);
 	}

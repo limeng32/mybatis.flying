@@ -6,7 +6,7 @@
 	<select id="select" resultMap="result">
 		flying#{?}:select
 	</select>
-	
+
 	<select id="selectWithoutAccount" resultMap="result">
 		flying#{?}:select:noAccount
 	</select>
@@ -41,7 +41,7 @@
 
 	<resultMap id="result" type="LoginLogSource2" autoMapping="true">
 		<id property="id" column="id" />
-		<result property="account" column="accountId"
-			typeHandler="indi.mybatis.flying.typeHandler.AccountTypeHandler" />
+		<!-- <association property="account" javaType="Account_"
+			select="indi.mybatis.flying.mapper.AccountMapper.select" column="accountId" /> -->
 	</resultMap>
 </mapper>

@@ -24,10 +24,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
-import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.mapper2.LoginLogSource2Mapper;
+import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
+import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.service2.LoginLogSource2Service;
 
@@ -42,10 +44,13 @@ public class MultiDataSourceTest {
 	private DataSource dataSource1;
 
 	@Autowired
+	private AccountService accountService;
+
+	@Autowired
 	private LoginLogService loginLogService;
 
-	 @Autowired
-	 private LoginLogSource2Service loginLogSource2Service;
+	@Autowired
+	private LoginLogSource2Service loginLogSource2Service;
 
 	@Autowired
 	private LoginLogSource2Mapper loginLogSource2Mapper;
@@ -58,27 +63,32 @@ public class MultiDataSourceTest {
 	/** 测试insert功能（有乐观锁） */
 	@Test
 	@DatabaseSetups({
-			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.xml"),
-			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.xml") })
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource.xml"),
+			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource2.xml") })
 	@ExpectedDatabases({
-			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.result.xml"),
-			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource2.result.xml") })
 	@DatabaseTearDowns({
-			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource.result.xml"),
-			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest2/testCondition.datasource2.result.xml") })
-	public void testCondition() {
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource2.result.xml") })
+	public void test1() {
 		LoginLog_Condition lc1 = new LoginLog_Condition();
 		lc1.setIpLikeFilter("5");
 		int i1 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i1);
 		// CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
-		// human.sleep();
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
 		lc2.setIpLikeFilter("2");
 		int i2 = loginLogSource2Mapper.count(lc2);
 		Assert.assertEquals(1, i2);
-		
+
 		int i3 = loginLogSource2Service.count(lc2);
 		Assert.assertEquals(1, i3);
+
+		Account_ account = accountService.select(1);
+		Assert.assertEquals("zhang", account.getName());
+
+		LoginLogSource2 loginLog2 = loginLogSource2Service.selectOne(lc2);
+		Assert.assertEquals("23456", loginLog2.getLoginIP());
 	}
 }
