@@ -130,14 +130,11 @@
 		<property name="datacenterId" value="5" />
 	</bean>
 	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
-	<!-- <bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" />
-	<bean id="sleepAdvisor"
-		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-		<property name="advice" ref="sleepHelper" />
-		<property name="pattern" value=".*sleep" />
-	</bean>
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" /> -->
+	<!-- <bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" /> <bean 
+		id="sleepAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"> 
+		<property name="advice" ref="sleepHelper" /> <property name="pattern" value=".*sleep" 
+		/> </bean> <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" 
+		/> -->
 	<bean id="human" class="indi.mybatis.flying.Human" />
 	<bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
