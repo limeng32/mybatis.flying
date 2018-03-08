@@ -24,7 +24,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
-import indi.mybatis.flying.Human;
+import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.mapper2.LoginLogSource2Mapper;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
@@ -44,8 +44,8 @@ public class MultiDataSourceTest {
 	@Autowired
 	private LoginLogService loginLogService;
 
-	@Autowired
-	private LoginLogSource2Service loginLogSource2Service;
+	 @Autowired
+	 private LoginLogSource2Service loginLogSource2Service;
 
 	@Autowired
 	private LoginLogSource2Mapper loginLogSource2Mapper;
@@ -75,7 +75,10 @@ public class MultiDataSourceTest {
 		// human.sleep();
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
 		lc2.setIpLikeFilter("2");
-		int i2 = loginLogSource2Service.count(lc2);
+		int i2 = loginLogSource2Mapper.count(lc2);
 		Assert.assertEquals(1, i2);
+		
+		int i3 = loginLogSource2Service.count(lc2);
+		Assert.assertEquals(1, i3);
 	}
 }

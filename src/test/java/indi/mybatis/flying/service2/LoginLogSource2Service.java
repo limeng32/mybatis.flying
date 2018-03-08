@@ -11,44 +11,44 @@ import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
-public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> implements LoginLogSource2Mapper {
+public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> {
 
 	@Autowired
 	private LoginLogSource2Mapper mapper;
 
-	@Override
+	// @Override
 	public LoginLogSource2 select(Object id) {
-		return supportSelect(mapper, id);
+		return mapper.select(id);
 	}
 
-	@Override
+	// @Override
 	public LoginLogSource2 selectOne(LoginLogSource2 t) {
-		return supportSelectOne(mapper, t);
+		return mapper.selectOne(t);
 	}
 
-	@Override
+	// @Override
 	public void insert(LoginLogSource2 t) {
-		supportInsert(mapper, t);
+		mapper.insert(t);
 	}
 
-	@Override
+	// @Override
 	public int update(LoginLogSource2 t) {
-		return supportUpdate(mapper, t);
+		return mapper.update(t);
 	}
 
-	@Override
+	// @Override
 	public Collection<LoginLogSource2> selectAll(LoginLogSource2 t) {
-		return supportSelectAll(mapper, t);
+		return mapper.selectAll(t);
 	}
 
-	@Override
+	// @Override
 	public int updatePersistent(LoginLogSource2 t) {
-		return supportUpdatePersistent(mapper, t);
+		return mapper.updatePersistent(t);
 	}
 
-	@Override
+	// @Override
 	public int delete(LoginLogSource2 t) {
-		return supportDelete(mapper, t);
+		return mapper.delete(t);
 	}
 
 	@Override
@@ -56,14 +56,14 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 		return supportCount(mapper, t);
 	}
 
-	@Override
+	// @Override
 	public void loadAccount(Account_ account, LoginLogSource2 loginLogSource2) {
 		account.removeAllLoginLogSource2();
 		loginLogSource2.setAccount(account);
 		account.setLoginLogSource2(mapper.selectAll(loginLogSource2));
 	}
 
-	@Override
+	// @Override
 	public LoginLogSource2 selectWithoutAccount(Object id) {
 		return mapper.selectWithoutAccount(id);
 	}
