@@ -16,39 +16,39 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> {
 	@Autowired
 	private LoginLogSource2Mapper mapper;
 
-	// @Override
+	@Override
 	public LoginLogSource2 select(Object id) {
-		return mapper.select(id);
+		return supportSelect(mapper, id);
 	}
 
-	// @Override
-	public LoginLogSource2 selectOne(LoginLogSource2 t) {
-		return mapper.selectOne(t);
-	}
-
-	// @Override
-	public void insert(LoginLogSource2 t) {
-		mapper.insert(t);
-	}
-
-	// @Override
-	public int update(LoginLogSource2 t) {
-		return mapper.update(t);
-	}
-
-	// @Override
+	@Override
 	public Collection<LoginLogSource2> selectAll(LoginLogSource2 t) {
-		return mapper.selectAll(t);
+		return supportSelectAll(mapper, t);
 	}
 
-	// @Override
+	@Override
+	public LoginLogSource2 selectOne(LoginLogSource2 t) {
+		return supportSelectOne(mapper, t);
+	}
+
+	@Override
+	public void insert(LoginLogSource2 t) {
+		supportInsert(mapper, t);
+	}
+
+	@Override
+	public int update(LoginLogSource2 t) {
+		return supportUpdate(mapper, t);
+	}
+
+	@Override
 	public int updatePersistent(LoginLogSource2 t) {
-		return mapper.updatePersistent(t);
+		return supportUpdatePersistent(mapper, t);
 	}
 
-	// @Override
+	@Override
 	public int delete(LoginLogSource2 t) {
-		return mapper.delete(t);
+		return supportDelete(mapper, t);
 	}
 
 	@Override
@@ -56,14 +56,12 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> {
 		return supportCount(mapper, t);
 	}
 
-	// @Override
 	public void loadAccount(Account_ account, LoginLogSource2 loginLogSource2) {
 		account.removeAllLoginLogSource2();
 		loginLogSource2.setAccount(account);
 		account.setLoginLogSource2(mapper.selectAll(loginLogSource2));
 	}
 
-	// @Override
 	public LoginLogSource2 selectWithoutAccount(Object id) {
 		return mapper.selectWithoutAccount(id);
 	}
