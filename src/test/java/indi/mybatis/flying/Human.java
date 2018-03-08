@@ -1,6 +1,6 @@
 package indi.mybatis.flying;
 
-public class Human implements Sleepable {
+public class Human {
 
 	/*
 	 * 这人莫非跟寡人差不多？ 除了睡觉睡的比较好之外其余的什么也不会做？

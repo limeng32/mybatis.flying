@@ -62,12 +62,12 @@
 			<groupId>aopalliance</groupId>
 			<artifactId>aopalliance</artifactId>
 			<version>1.0</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>1.8.13</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
