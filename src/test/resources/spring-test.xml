@@ -135,8 +135,7 @@
 		<property name="advice" ref="sleepHelper" /> <property name="pattern" value=".*sleep" 
 		/> </bean> <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" 
 		/> -->
-	<bean id="human" class="indi.mybatis.flying.Human" />
-	<bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" />
+	<!-- <bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" /> -->
 	<bean id="serviceHelper" class="indi.mybatis.flying.ServiceHelper" />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 </beans>
