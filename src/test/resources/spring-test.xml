@@ -67,13 +67,13 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource1" />
-		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
 	<bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource2" />
-		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper2/*.xml" />
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
 
