@@ -49,7 +49,7 @@ public class MultiDataSourceTest {
 	private LoginLogSource2Service loginLogSource2Service;
 
 	@Autowired
-	private Sleepable humanProxy;
+	private Sleepable humanProxy1;
 	
 	@Test
 	public void testDataSource() {
@@ -73,7 +73,7 @@ public class MultiDataSourceTest {
 		int i1 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i1);
 //		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
-		humanProxy.sleep();
+		humanProxy1.sleep();
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
 		lc2.setIpLikeFilter("2");
 		int i2 = loginLogSource2Service.count(lc2);
