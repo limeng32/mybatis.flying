@@ -71,7 +71,7 @@ public class MultiDataSourceTest {
 		int i1 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i1);
 		// CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
-		human.sleep();
+//		human.sleep();
 		LoginLogSource2Condition lc2 = new LoginLogSource2Condition();
 		lc2.setIpLikeFilter("2");
 		int i2 = loginLogSource2Service.count(lc2);

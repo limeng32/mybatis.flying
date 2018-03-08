@@ -137,5 +137,6 @@
 		/> -->
 	<bean id="human" class="indi.mybatis.flying.Human" />
 	<bean id="sleepHelper" class="indi.mybatis.flying.SleepHelper" />
+	<bean id="serviceHelper" class="indi.mybatis.flying.ServiceHelper" />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 </beans>
