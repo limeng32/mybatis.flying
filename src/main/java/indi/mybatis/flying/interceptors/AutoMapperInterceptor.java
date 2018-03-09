@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.statement.BaseStatementHandler;
@@ -37,6 +38,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -76,12 +78,25 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-
+		Connection connection1 = (Connection) invocation.getArgs()[0];
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
+		if ("flying?:select:noPassword".equals(originalSql)) {
+			System.out.println("0::" + connection1.getCatalog());
+			BasicDataSource basicDataSource = (BasicDataSource) ApplicationContextProvider.getApplicationContext()
+					.getBean("dataSource1");
+			invocation.getArgs()[0] = basicDataSource.getConnection();
+			Connection connection2 = (Connection) invocation.getArgs()[0];
+			System.out.println("2::" + connection2.getCatalog());
+			MetaObject delegate = MetaObject.forObject(metaStatementHandler.getValue("delegate"),
+					DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+			for (String s : delegate.getGetterNames()) {
+				System.out.println("1::" + s);
+			}
+		}
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
@@ -98,7 +113,6 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
 				break;
 			case select:
-				System.out.println("::"+parameterObject);
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;
 			case selectAll:

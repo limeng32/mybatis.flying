@@ -25,7 +25,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.mapper2.LoginLogSource2Mapper;
-import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.pojo.condition.LoginLogSource2Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
@@ -72,6 +71,11 @@ public class MultiDataSourceTest {
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/multiDataSourceTest/test1.datasource2.result.xml") })
 	public void test1() {
+
+		// BasicDataSource basicDataSource = (BasicDataSource)
+		// ApplicationContextProvider.getApplicationContext()
+		// .getBean("dataSource1");
+		// basicDataSource.getConnection().g
 		LoginLog_Condition lc1 = new LoginLog_Condition();
 		lc1.setIpLikeFilter("5");
 		int i1 = loginLogService.count(lc1);
@@ -82,13 +86,13 @@ public class MultiDataSourceTest {
 		int i2 = loginLogSource2Mapper.count(lc2);
 		Assert.assertEquals(1, i2);
 
-		int i3 = loginLogSource2Service.count(lc2);
-		Assert.assertEquals(1, i3);
-		
+		LoginLogSource2 i3 = loginLogSource2Service.selectOne(lc2);
+		Assert.assertEquals("zhang", i3.getAccount().getName());
+
 		int i4 = loginLogService.count(lc1);
 		Assert.assertEquals(1, i4);
-		
-		Account_ account = accountService.select(1);
-		Assert.assertEquals("zhang", account.getName());
+
+		// Account_ account = accountService.select(1);
+		// Assert.assertEquals("zhang", account.getName());
 	}
 }
