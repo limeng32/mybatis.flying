@@ -1,6 +1,6 @@
 <dataset>
-	<account_ ID="1" NAME="zhang" />
-	<account_ ID="2" NAME="li" />
+	<account_ ID="1" NAME="zhang" OPLOCK="1" />
+	<account_ ID="2" NAME="li" OPLOCK="1" />
 	<loginlog_ LOGINIP="2345" />
 	<loginlog_ LOGINIP="23456" />
 </dataset>

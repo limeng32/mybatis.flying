@@ -84,11 +84,11 @@ public class MultiDataSourceTest {
 
 		int i3 = loginLogSource2Service.count(lc2);
 		Assert.assertEquals(1, i3);
-
+		
+		int i4 = loginLogService.count(lc1);
+		Assert.assertEquals(1, i4);
+		
 		Account_ account = accountService.select(1);
 		Assert.assertEquals("zhang", account.getName());
-
-		LoginLogSource2 loginLog2 = loginLogSource2Service.selectOne(lc2);
-		Assert.assertEquals("23456", loginLog2.getLoginIP());
 	}
 }

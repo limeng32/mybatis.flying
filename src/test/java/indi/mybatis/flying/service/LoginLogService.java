@@ -11,7 +11,7 @@ import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
-public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginLogMapper {
+public class LoginLogService extends ServiceSupport<LoginLog_> {
 
 	@Autowired
 	private LoginLogMapper mapper;
@@ -56,7 +56,6 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 		return supportCount(mapper, t);
 	}
 
-	@Override
 	public void loadAccount(Account_ account, LoginLog_ loginLog) {
 		account.removeAllLoginLog();
 		loginLog.setAccount(account);

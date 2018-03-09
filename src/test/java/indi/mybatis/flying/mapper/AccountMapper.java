@@ -40,7 +40,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public void insertSnowFlake(Account_ t);
 
 	@Override
-	@CacheAnnotation(role = CacheRoleType.Trigger)
+//	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int update(Account_ t);
 
 	@Override

@@ -64,7 +64,7 @@
 			encoding="UTF-8" />
 	</jdbc:initialize-database>
 
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource1" />
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
@@ -75,22 +75,32 @@
 		<property name="dataSource" ref="dataSource2" />
 		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
+	</bean> -->
+
+	<bean id="multipleDataSource" class="indi.mybatis.flying.MultipleDataSource"> 
+		<property name="defaultTargetDataSource" ref="dataSource1"/> 
+		<property name="targetDataSources"> 
+			<map> 
+				<entry key="dataSource1" value-ref="dataSource1"/> 
+				<entry key="dataSource2" value-ref="dataSource2"/> 
+			</map> 
+		</property> 
 	</bean>
 
-	<!-- <bean id="multipleDataSource" class="indi.mybatis.flying.MultipleDataSource"> 
-		<property name="defaultTargetDataSource" ref="dataSource1"/> <property name="targetDataSources"> 
-		<map> <entry key="dataSource1" value-ref="dataSource1"/> <entry key="dataSource2" 
-		value-ref="dataSource2"/> </map> </property> </bean> -->
+	<bean id="sqlSessionFactoryM" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+		<property name="configLocation" value="classpath:Configuration.xml" />
+		<property name="dataSource" ref="multipleDataSource"/> 
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
+		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
+	</bean>
 
-	<!-- <bean id="sqlSessionFactoryM" class="org.mybatis.spring.SqlSessionFactoryBean"> 
-		<property name="dataSource" ref="multipleDataSource"/> </bean> -->
-
-	<!-- <bean id="mapperScannerConfigurerM" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
-		<property name="basePackage" value="indi.mybatis.flying.mapper" /> <property 
-		name="sqlSessionFactoryBeanName" value="sqlSessionFactoryM" /> </bean> -->
+	<bean id="mapperScannerConfigurerM" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+		<property name="basePackage" value="indi.mybatis.flying.mapper,indi.mybatis.flying.mapper2" /> 
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryM" /> 
+	</bean>
 
 	<!-- 配置自定义的SqlSessionTemplate模板，注入相关配置 -->
-	<bean id="sqlSessionTemplate" class="indi.mybatis.flying.CustomSqlSessionTemplate">
+	<!-- <bean id="sqlSessionTemplate" class="indi.mybatis.flying.CustomSqlSessionTemplate">
 		<constructor-arg ref="sqlSessionFactory" />
 		<property name="targetSqlSessionFactorys">
 			<map>
@@ -103,9 +113,9 @@
 	<bean id="mapperScannerConfigurerMM" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage"
 			value="indi.mybatis.flying.mapper,indi.mybatis.flying.mapper2" />
-		<!-- 注意注入sqlSessionTemplate -->
+		注意注入sqlSessionTemplate
 		<property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate" />
-	</bean>
+	</bean> -->
 
 	<!-- <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
 		<property name="basePackage" value="indi.mybatis.flying.mapper" /> <property 

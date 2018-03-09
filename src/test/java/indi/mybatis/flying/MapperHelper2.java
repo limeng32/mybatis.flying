@@ -12,18 +12,17 @@ public class MapperHelper2 {
 
 	}
 
-	@Pointcut("execution(* indi.mybatis.flying.*.LoginLogSource2Mapper.*(..))")
+	@Pointcut("execution(* indi.mybatis.flying.mapper2.*Mapper.*(..))")
 	public void sleeppoint() {
 	}
 
 	@Before("sleeppoint()")
 	public void before() throws Throwable {
-		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
-		System.out.println("开始切为datasource2。");
+//		CustomerContextHolder.setContextType(CustomerContextHolder.SESSION_FACTORY_2);
+		MultipleDataSource.setDataSourceKey(CustomerContextHolder.SESSION_FACTORY_2);
 	}
 
 	@AfterReturning("sleeppoint()")
 	public void afterReturning() throws Throwable {
-		System.out.println("已经切为datasource2。");
 	}
 }
