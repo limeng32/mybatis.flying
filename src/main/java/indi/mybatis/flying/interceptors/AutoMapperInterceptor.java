@@ -84,23 +84,24 @@ public class AutoMapperInterceptor implements Interceptor {
 				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
-		if ("flying?:select:noPassword".equals(originalSql)) {
-			System.out.println("0::" + connection1.getCatalog());
-			BasicDataSource basicDataSource = (BasicDataSource) ApplicationContextProvider.getApplicationContext()
-					.getBean("dataSource1");
-			invocation.getArgs()[0] = basicDataSource.getConnection();
-			Connection connection2 = (Connection) invocation.getArgs()[0];
-			System.out.println("2::" + connection2.getCatalog());
-			MetaObject delegate = MetaObject.forObject(metaStatementHandler.getValue("delegate"),
-					DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
-			for (String s : delegate.getGetterNames()) {
-				System.out.println("1::" + s);
-			}
-		}
-		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
+		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		if (flyingModel.isHasFlyingFeature()) {
+			if (flyingModel.getDataSourceId() != null) {
+				System.out.println("0::" + connection1.getCatalog());
+				BasicDataSource basicDataSource = (BasicDataSource) ApplicationContextProvider.getApplicationContext()
+						.getBean(flyingModel.getDataSourceId());
+				invocation.getArgs()[0] = basicDataSource.getConnection();
+				Connection connection2 = (Connection) invocation.getArgs()[0];
+				System.out.println("2::" + connection2.getCatalog());
+				MetaObject delegate = MetaObject.forObject(metaStatementHandler.getValue("delegate"),
+						DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+				for (String s : delegate.getGetterNames()) {
+					System.out.println("1::" + s);
+				}
+			}
+
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case count:
