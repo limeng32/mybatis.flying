@@ -30,8 +30,8 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
+		<property name="minPoolSize" value="8" />
+		<property name="maxPoolSize" value="8" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource1表结构 -->
@@ -53,8 +53,8 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
+		<property name="minPoolSize" value="8" />
+		<property name="maxPoolSize" value="8" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource2表结构 -->
@@ -67,13 +67,13 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource1" />
-		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper/*.xml" />
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
 	<bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
 		<property name="dataSource" ref="dataSource2" />
-		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper2/*.xml" />
+		<property name="mapperLocations" value="classpath:indi/mybatis/flying/mapper*/*.xml" />
 		<property name="typeAliasesPackage" value="indi.mybatis.flying" />
 	</bean>
 	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.statement.BaseStatementHandler;
@@ -36,8 +38,8 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.springframework.context.ApplicationContextAware;
 
+import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -53,7 +55,6 @@ import indi.mybatis.flying.utils.ReflectHelper;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
 	private String dialect = "";
-	private Class<? extends ApplicationContextAware> applicationContextProvider;
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -64,7 +65,6 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String DELEGATE = "delegate";
 	private static final String MAPPEDSTATEMENT = "mappedStatement";
 	private static final String DIALECT = "dialect";
-	private static final String APPLICATIONCONTEXTAWARE = "applicationContextAware";
 	private static final String SQL = "sql";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
@@ -79,7 +79,6 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-		System.out.println("::" + applicationContextProvider.getName());
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
@@ -88,7 +87,29 @@ public class AutoMapperInterceptor implements Interceptor {
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
+		Connection connection1 = null;
+		boolean b = false;
 		if (flyingModel.isHasFlyingFeature()) {
+			if (flyingModel.getDataSourceId() != null) {
+				DataSource dataSource = (DataSource) ApplicationContextProvider.getApplicationContext()
+						.getBean(flyingModel.getDataSourceId());
+				if (dataSource == null) {
+					logger.error(AutoMapperExceptionEnum.cannotFindAssignedDataSourceInContext.description());
+				} else {
+					connection1 = dataSource.getConnection();
+					System.out.println("11::" + ((Connection) invocation.getArgs()[0]).getCatalog());
+					System.out.println("12::" + connection1.getCatalog());
+					if (!((Connection) invocation.getArgs()[0]).getCatalog().equals(connection1.getCatalog())) {
+						b = true;
+						System.out.println("21::" + ((Connection) invocation.getArgs()[0]).getCatalog());
+						System.out.println("22::" + connection1.getCatalog());
+//						((Connection) invocation.getArgs()[0]).close();
+						invocation.getArgs()[0] = connection1;
+					}else{
+						connection1.close();
+					}
+				}
+			}
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case count:
@@ -162,6 +183,13 @@ public class AutoMapperInterceptor implements Interceptor {
 		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
 		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
 		/* 传递给下一个拦截器处理 */
+		if (connection1 != null && !b) {
+//		if (connection1 != null) {	
+			System.out.println(b);
+			Object result = invocation.proceed();
+			connection1.close();
+			return result;
+		}
 		return invocation.proceed();
 	}
 
@@ -179,17 +207,6 @@ public class AutoMapperInterceptor implements Interceptor {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
 			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
-		}
-		String applicationContextProviderStr = properties.getProperty(APPLICATIONCONTEXTAWARE);
-		if (applicationContextProviderStr != null) {
-			try {
-				@SuppressWarnings("unchecked")
-				Class<? extends ApplicationContextAware> clazz = (Class<? extends ApplicationContextAware>) Class
-						.forName(applicationContextProviderStr);
-				applicationContextProvider = clazz;
-			} catch (Exception e) {
-				logger.error(AutoMapperExceptionEnum.cannotFindAssignedApplicationContextProvider.description());
-			}
 		}
 	}
 
