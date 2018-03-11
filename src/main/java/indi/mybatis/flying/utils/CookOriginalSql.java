@@ -34,6 +34,11 @@ public class CookOriginalSql {
 		String extension = null;
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(":") > -1) {
 			String s1 = originalSql.substring(0, originalSql.indexOf(":"));
+			String dataSourceId = null;
+			if (s1.endsWith(")") && s1.indexOf("(") != -1) {
+				dataSourceId = s1.substring(s1.indexOf('(') + 1, s1.lastIndexOf(')'));
+				s1 = s1.substring(0, originalSql.indexOf("("));
+			}
 			if (FLYING.equals(s1) || FLYING_QUESTIONMARK.equals(s1)) {
 				String s2 = originalSql.substring(originalSql.indexOf(":") + 1, originalSql.length());
 				String actionTypeStr = null;
@@ -49,6 +54,7 @@ public class CookOriginalSql {
 				ActionType actionType = ActionType.valueOf(actionTypeStr);
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
+					ret.setDataSourceId(dataSourceId);
 					ret.setActionType(actionType);
 					if (s2.indexOf(":") > -1) {
 						String s3 = s2.substring(s2.indexOf(":") + 1, s2.length());
