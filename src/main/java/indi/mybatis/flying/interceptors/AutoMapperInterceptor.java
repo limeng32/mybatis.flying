@@ -36,6 +36,7 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.springframework.context.ApplicationContextAware;
 
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
@@ -52,6 +53,7 @@ import indi.mybatis.flying.utils.ReflectHelper;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
 	private String dialect = "";
+	private Class<? extends ApplicationContextAware> applicationContextProvider;
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -62,6 +64,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String DELEGATE = "delegate";
 	private static final String MAPPEDSTATEMENT = "mappedStatement";
 	private static final String DIALECT = "dialect";
+	private static final String APPLICATIONCONTEXTAWARE = "applicationContextAware";
 	private static final String SQL = "sql";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
@@ -76,7 +79,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
-
+		System.out.println("::" + applicationContextProvider.getName());
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
 				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
@@ -98,7 +101,6 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
 				break;
 			case select:
-				System.out.println("::"+parameterObject);
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;
 			case selectAll:
@@ -177,6 +179,17 @@ public class AutoMapperInterceptor implements Interceptor {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
 			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
+		}
+		String applicationContextProviderStr = properties.getProperty(APPLICATIONCONTEXTAWARE);
+		if (applicationContextProviderStr != null) {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<? extends ApplicationContextAware> clazz = (Class<? extends ApplicationContextAware>) Class
+						.forName(applicationContextProviderStr);
+				applicationContextProvider = clazz;
+			} catch (Exception e) {
+				logger.error(AutoMapperExceptionEnum.cannotFindAssignedApplicationContextProvider.description());
+			}
 		}
 	}
 

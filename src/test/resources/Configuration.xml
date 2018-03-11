@@ -28,6 +28,8 @@
 		</plugin>
 		<plugin interceptor="indi.mybatis.flying.interceptors.AutoMapperInterceptor">
 			<property name="dialect" value="mysql" />
+			<property name="applicationContextAware"
+				value="indi.mybatis.flying.ApplicationContextProvider2" />
 		</plugin>
 	</plugins>
 </configuration>

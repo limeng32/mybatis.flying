@@ -6,7 +6,8 @@ public enum AutoMapperExceptionEnum {
 			"Dialect property is not found"), noTypeHandlerSuitable(
 					"There was no TypeHandler found for parameter "), wrongKeyGeneratorType(
 							"Find an error KeyGeneratorType in "), wrongCustomKeyGenerator(
-									"Find an error custom key generator in ");
+									"Find an error custom key generator in "), cannotFindAssignedApplicationContextProvider(
+											"Can not find the ApplicationContextProvider assigned in the plugin property");
 
 	private final String description;
 
