@@ -80,8 +80,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
-		MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
-				DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+		MetaObject metaStatementHandler = getRealObj(statementHandler);
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
@@ -171,6 +170,24 @@ public class AutoMapperInterceptor implements Interceptor {
 		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
 		/* 传递给下一个拦截器处理 */
 		return invocation.proceed();
+	}
+
+	private MetaObject getRealObj(Object obj) {
+		MetaObject metaStatement = MetaObject.forObject(obj, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+				DEFAULT_REFLECTOR_FACTORY);
+		// 分离代理对象链(由于目标类可能被多个拦截器拦截，从而形成多次代理，通过下面的两次循环可以分离出最原始的的目标类)
+		while (metaStatement.hasGetter("h")) {
+			Object object = metaStatement.getValue("h");
+			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+					DEFAULT_REFLECTOR_FACTORY);
+		}
+		// 分离最后一个代理对象的目标类
+		while (metaStatement.hasGetter("target")) {
+			Object object = metaStatement.getValue("target");
+			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+					DEFAULT_REFLECTOR_FACTORY);
+		}
+		return metaStatement;
 	}
 
 	@Override
