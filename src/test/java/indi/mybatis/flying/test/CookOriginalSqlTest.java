@@ -55,9 +55,10 @@ public class CookOriginalSqlTest {
 
 	@Test
 	public void testCook4() {
-		String sql = "flying(datasource1):insert(uuid):noPassword";
+		String sql = "flying(datasource1 testdb):insert(uuid):noPassword";
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(sql);
 		Assert.assertEquals("datasource1", flyingModel.getDataSourceId());
+		Assert.assertEquals("testdb", flyingModel.getConnectionCatalog());
 		Assert.assertTrue(flyingModel.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.insert, flyingModel.getActionType());
 		Assert.assertEquals("noPassword", flyingModel.getIgnoreTag());
@@ -65,7 +66,8 @@ public class CookOriginalSqlTest {
 
 		String sql2 = "flying?(datasource2):select:noPassword";
 		FlyingModel flyingModel2 = CookOriginalSql.fetchFlyingFeature(sql2);
-		Assert.assertEquals("datasource2", flyingModel2.getDataSourceId());
+		Assert.assertNull(flyingModel2.getDataSourceId());
+		Assert.assertNull(flyingModel2.getConnectionCatalog());
 		Assert.assertTrue(flyingModel2.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.select, flyingModel2.getActionType());
 		Assert.assertEquals("noPassword", flyingModel2.getIgnoreTag());

@@ -4,7 +4,7 @@
 	<cache />
 
 	<select id="select" resultMap="result">
-		flying#{?}(dataSource1):select
+		flying#{?}(dataSource1 testdb):select
 	</select>
 	
 	<select id="selectEverything" resultMap="result">

@@ -34,9 +34,9 @@ public class CookOriginalSql {
 		String extension = null;
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(":") > -1) {
 			String s1 = originalSql.substring(0, originalSql.indexOf(":"));
-			String dataSourceId = null;
+			String dataSourceIdAndConnectionCatalog = null;
 			if (s1.endsWith(")") && s1.indexOf("(") != -1) {
-				dataSourceId = s1.substring(s1.indexOf('(') + 1, s1.lastIndexOf(')'));
+				dataSourceIdAndConnectionCatalog = s1.substring(s1.indexOf('(') + 1, s1.lastIndexOf(')'));
 				s1 = s1.substring(0, originalSql.indexOf("("));
 			}
 			if (FLYING.equals(s1) || FLYING_QUESTIONMARK.equals(s1)) {
@@ -54,7 +54,14 @@ public class CookOriginalSql {
 				ActionType actionType = ActionType.valueOf(actionTypeStr);
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
-					ret.setDataSourceId(dataSourceId);
+					if (dataSourceIdAndConnectionCatalog != null
+							&& dataSourceIdAndConnectionCatalog.indexOf(' ') != -1) {
+						ret.setDataSourceId(dataSourceIdAndConnectionCatalog.substring(0,
+								dataSourceIdAndConnectionCatalog.indexOf(' ')));
+						ret.setConnectionCatalog(dataSourceIdAndConnectionCatalog.substring(
+								dataSourceIdAndConnectionCatalog.indexOf(' ') + 1,
+								dataSourceIdAndConnectionCatalog.length()));
+					}
 					ret.setActionType(actionType);
 					if (s2.indexOf(":") > -1) {
 						String s3 = s2.substring(s2.indexOf(":") + 1, s2.length());

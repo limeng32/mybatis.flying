@@ -4,7 +4,7 @@
 	<cache />
 
 	<select id="select" resultMap="result">
-		flying#{?}(dataSource1):select:noPassword
+		flying#{?}(dataSource1 testdb):select:noPassword
 	</select>
 
 	<select id="selectEverything" resultMap="result">

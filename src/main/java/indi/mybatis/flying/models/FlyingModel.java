@@ -1,7 +1,5 @@
 package indi.mybatis.flying.models;
 
-import org.springframework.context.ApplicationContextAware;
-
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
@@ -13,7 +11,7 @@ public class FlyingModel {
 	private KeyGeneratorType keyGeneratorType;
 	private KeyHandler keyHandler;
 	private String dataSourceId;
-	private ApplicationContextAware applicationContextProvider;
+	private String connectionCatalog;
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -63,12 +61,12 @@ public class FlyingModel {
 		this.dataSourceId = dataSourceId;
 	}
 
-	public ApplicationContextAware getApplicationContextProvider() {
-		return applicationContextProvider;
+	public String getConnectionCatalog() {
+		return connectionCatalog;
 	}
 
-	public void setApplicationContextProvider(ApplicationContextAware applicationContextProvider) {
-		this.applicationContextProvider = applicationContextProvider;
+	public void setConnectionCatalog(String connectionCatalog) {
+		this.connectionCatalog = connectionCatalog;
 	}
 
 }
