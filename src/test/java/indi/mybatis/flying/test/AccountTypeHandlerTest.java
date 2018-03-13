@@ -101,6 +101,10 @@ public class AccountTypeHandlerTest {
 		LoginLogSource2 l2c2 = new LoginLogSource2();
 		l2c2.setAccount(ac2);
 		LoginLogSource2 loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
+		loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
+		loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
+		loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
+		loginLogSource4 = loginLogSource2Service.selectOne(l2c2);
 		Assert.assertEquals("bob@live.cn", loginLogSource4.getAccount().getEmail());
 
 		Account_ ac3 = new Account_();

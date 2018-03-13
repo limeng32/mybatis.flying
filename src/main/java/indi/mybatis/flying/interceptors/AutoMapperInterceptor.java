@@ -38,6 +38,7 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.springframework.jdbc.datasource.SmartDataSource;
 
 import indi.mybatis.flying.ApplicationContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
@@ -94,7 +95,9 @@ public class AutoMapperInterceptor implements Interceptor {
 				if (dataSource == null) {
 					logger.error(AutoMapperExceptionEnum.cannotFindAssignedDataSourceInContext.description());
 				}
-				invocation.getArgs()[0] = dataSource.getConnection();
+				Connection connection = ((SmartDataSource) (ApplicationContextProvider.getApplicationContext()
+						.getBean(flyingModel.getDataSourceId()))).getConnection();
+				invocation.getArgs()[0] = connection;
 			}
 			String newSql = "";
 			switch (flyingModel.getActionType()) {

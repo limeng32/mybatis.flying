@@ -30,8 +30,8 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="8" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="3" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource1表结构 -->
@@ -40,6 +40,15 @@
 		<jdbc:script location="classpath:/INIT_TABLE.sql"
 			encoding="UTF-8" />
 	</jdbc:initialize-database>
+	<bean id="smartDataSource1"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		init-method="initConnection" destroy-method="closeConnection">
+		<property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
+		<property name="url"
+			value="jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value=""></property>
+	</bean>
 
 	<bean id="dataSource2" class="com.atomikos.jdbc.AtomikosDataSourceBean"
 		init-method="init" destroy-method="close">
@@ -53,8 +62,8 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="8" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="3" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource2表结构 -->
@@ -63,6 +72,15 @@
 		<jdbc:script location="classpath:/INIT_TABLE2.sql"
 			encoding="UTF-8" />
 	</jdbc:initialize-database>
+	<bean id="smartDataSource2"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		init-method="initConnection" destroy-method="closeConnection">
+		<property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
+		<property name="url"
+			value="jdbc:h2:mem:testdb2;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value=""></property>
+	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation" value="classpath:Configuration.xml" />
@@ -112,5 +130,5 @@
 	</bean>
 
 	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
-	
+
 </beans>
