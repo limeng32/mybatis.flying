@@ -67,4 +67,9 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 	public LoginLogSource2 selectWithoutAccount(Object id) {
 		return mapper.selectWithoutAccount(id);
 	}
+
+	@Override
+	public int updateNoFlush(LoginLogSource2 t) {
+		return mapper.updateNoFlush(t);
+	}
 }

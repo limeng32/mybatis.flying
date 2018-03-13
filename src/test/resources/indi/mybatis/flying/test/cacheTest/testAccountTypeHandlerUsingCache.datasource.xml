@@ -1,6 +1,5 @@
 <dataset>
-	<account_ ID="1" EMAIL="ann@live.cn" ROLE_ID="101" />
-	<account_ ID="2" EMAIL="bob@live.cn" />
-	<loginlog_ ID="2" LOGINIP="2" />
-	<role_ ID="101" NAME="user" />
+	<account_ />
+	<loginlog_ />
+	<role_ />
 </dataset>

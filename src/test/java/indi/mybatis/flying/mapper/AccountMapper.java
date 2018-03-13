@@ -18,6 +18,9 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ select(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Account_ selectCross(Object id);
+
+	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ selectEverything(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -36,7 +39,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@Override
 	public void insert(Account_ t);
-	
+
 	public void insertSnowFlake(Account_ t);
 
 	@Override

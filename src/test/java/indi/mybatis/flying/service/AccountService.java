@@ -106,4 +106,9 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return mapper.selectAccountByRole(map);
 	}
 
+	@Override
+	public Account_ selectCross(Object id) {
+		return mapper.selectCross(id);
+	}
+
 }

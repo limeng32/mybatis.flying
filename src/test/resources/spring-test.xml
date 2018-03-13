@@ -30,7 +30,7 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="8" />
+		<property name="minPoolSize" value="2" />
 		<property name="maxPoolSize" value="8" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
@@ -53,7 +53,7 @@
 				</prop>
 			</props>
 		</property>
-		<property name="minPoolSize" value="8" />
+		<property name="minPoolSize" value="2" />
 		<property name="maxPoolSize" value="8" />
 		<property name="maxIdleTime" value="60" />
 	</bean>

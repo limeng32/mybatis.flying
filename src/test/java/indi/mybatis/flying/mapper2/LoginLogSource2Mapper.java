@@ -33,6 +33,8 @@ public interface LoginLogSource2Mapper extends MapperFace<LoginLogSource2> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public int update(LoginLogSource2 t);
+	
+	public int updateNoFlush(LoginLogSource2 t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Trigger)
