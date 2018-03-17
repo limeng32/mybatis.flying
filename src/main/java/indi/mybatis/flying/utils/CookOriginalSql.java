@@ -20,7 +20,11 @@ public class CookOriginalSql {
 
 	private static final String FLYING = "flying";
 
+	private static final String FLYING_LEFTBRACKET = "flying(";
+
 	private static final String FLYING_QUESTIONMARK = "flying?";
+
+	private static final String FLYING_QUESTIONMARK_LEFTBRACKET = "flying?(";
 
 	private static Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
@@ -32,42 +36,53 @@ public class CookOriginalSql {
 		}
 		FlyingModel ret = new FlyingModel();
 		String extension = null;
-		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(":") > -1) {
-			String s1 = originalSql.substring(0, originalSql.indexOf(":"));
+		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
 			String dataSourceIdAndConnectionCatalog = null;
-			if (s1.endsWith(")") && s1.indexOf("(") != -1) {
-				dataSourceIdAndConnectionCatalog = s1.substring(s1.indexOf('(') + 1, s1.lastIndexOf(')'));
-				s1 = s1.substring(0, originalSql.indexOf("("));
+			String s1 = null;
+			if ((originalSql.startsWith(FLYING_LEFTBRACKET) || originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET))
+					&& originalSql.indexOf(')') > 0) {
+				String s0 = originalSql.substring(0, originalSql.indexOf(')') + 1);
+				dataSourceIdAndConnectionCatalog = s0.substring(s0.indexOf('(') + 1, s0.lastIndexOf(')'));
+				s1 = originalSql.substring(0, originalSql.indexOf(':', originalSql.indexOf(')')));
+			} else {
+				s1 = originalSql.substring(0, originalSql.indexOf(':'));
 			}
-			if (FLYING.equals(s1) || FLYING_QUESTIONMARK.equals(s1)) {
-				String s2 = originalSql.substring(originalSql.indexOf(":") + 1, originalSql.length());
+			if (FLYING.equals(s1) || FLYING_QUESTIONMARK.equals(s1) || s1.startsWith(FLYING_LEFTBRACKET)
+					|| originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET)) {
+				String s2 = null;
+				if (s1.startsWith(FLYING_LEFTBRACKET) || originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET)) {
+					s2 = originalSql.substring(originalSql.indexOf(":", originalSql.indexOf(')')) + 1,
+							originalSql.length());
+				} else {
+					s2 = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
+				}
 				String actionTypeStr = null;
-				if (s2.indexOf(":") > -1) {
-					actionTypeStr = s2.substring(0, s2.indexOf(":"));
+				if (s2.indexOf(':') > -1) {
+					actionTypeStr = s2.substring(0, s2.indexOf(':'));
 				} else {
 					actionTypeStr = s2;
 				}
-				if (actionTypeStr.endsWith(")") && actionTypeStr.indexOf("(") != -1) {
-					extension = actionTypeStr.substring(actionTypeStr.lastIndexOf("(") + 1, actionTypeStr.length() - 1);
-					actionTypeStr = actionTypeStr.substring(0, actionTypeStr.lastIndexOf("("));
+				if (actionTypeStr.endsWith(")") && actionTypeStr.indexOf('(') != -1) {
+					extension = actionTypeStr.substring(actionTypeStr.lastIndexOf('(') + 1, actionTypeStr.length() - 1);
+					actionTypeStr = actionTypeStr.substring(0, actionTypeStr.lastIndexOf('('));
 				}
 				ActionType actionType = ActionType.valueOf(actionTypeStr);
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
 					if (dataSourceIdAndConnectionCatalog != null
-							&& dataSourceIdAndConnectionCatalog.indexOf(' ') != -1) {
+							&& dataSourceIdAndConnectionCatalog.indexOf(':') != -1) {
 						ret.setDataSourceId(dataSourceIdAndConnectionCatalog.substring(0,
-								dataSourceIdAndConnectionCatalog.indexOf(' ')));
+								dataSourceIdAndConnectionCatalog.indexOf(':')));
 						ret.setConnectionCatalog(dataSourceIdAndConnectionCatalog.substring(
-								dataSourceIdAndConnectionCatalog.indexOf(' ') + 1,
+								dataSourceIdAndConnectionCatalog.indexOf(':') + 1,
 								dataSourceIdAndConnectionCatalog.length()));
 					}
 					ret.setActionType(actionType);
-					if (s2.indexOf(":") > -1) {
-						String s3 = s2.substring(s2.indexOf(":") + 1, s2.length());
+					if (s2.indexOf(':') > -1) {
+						String s3 = s2.substring(s2.indexOf(':') + 1, s2.length());
 						String ignoreTag = null;
-						if (s3.indexOf(":") > -1) {
-							ignoreTag = s3.substring(0, s3.indexOf(":"));
+						if (s3.indexOf(':') > -1) {
+							ignoreTag = s3.substring(0, s3.indexOf(':'));
 						} else {
 							ignoreTag = s3;
 						}

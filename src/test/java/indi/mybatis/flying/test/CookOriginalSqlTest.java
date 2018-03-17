@@ -55,7 +55,7 @@ public class CookOriginalSqlTest {
 
 	@Test
 	public void testCook4() {
-		String sql = "flying(datasource1 testdb):insert(uuid):noPassword";
+		String sql = "flying(datasource1:testdb):insert(uuid):noPassword";
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(sql);
 		Assert.assertEquals("datasource1", flyingModel.getDataSourceId());
 		Assert.assertEquals("testdb", flyingModel.getConnectionCatalog());

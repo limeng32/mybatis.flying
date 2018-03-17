@@ -4,13 +4,13 @@
 	<cache />
 
 	<select id="select" resultMap="result">
-		flying#{?}(smartDataSource1 testdb):select
+		flying#{?}(smartDataSource1:testdb):select
 	</select>
-	
+
 	<select id="selectEverything" resultMap="result">
 		flying#{?}:select
 	</select>
-	
+
 	<select id="selectNoId" resultMap="result">
 		flying#{?}:select:noId
 	</select>
@@ -42,9 +42,10 @@
 	<delete id="delete">
 		flying:delete
 	</delete>
-	
-	<update flushCache="false" id="updateDirect" >
-		update role_ set name = #{name} where id = #{id}
+
+	<update flushCache="false" id="updateDirect">
+		update role_ set
+		name = #{name} where id = #{id}
 	</update>
 
 	<resultMap id="result" type="Role_" autoMapping="true">
