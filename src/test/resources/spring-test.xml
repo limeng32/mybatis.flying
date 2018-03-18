@@ -31,7 +31,7 @@
 			</props>
 		</property>
 		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
+		<property name="maxPoolSize" value="2" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource1表结构 -->
@@ -63,7 +63,7 @@
 			</props>
 		</property>
 		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
+		<property name="maxPoolSize" value="2" />
 		<property name="maxIdleTime" value="60" />
 	</bean>
 	<!-- 测试环境下初始化dataSource2表结构 -->

@@ -21,26 +21,17 @@ public class Role2TypeHandler extends BaseTypeHandler<Role2_> implements TypeHan
 
 	@Override
 	public Role2_ getNullableResult(ResultSet arg0, String arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
 	public Role2_ getNullableResult(ResultSet arg0, int arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
 	public Role2_ getNullableResult(CallableStatement arg0, int arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
@@ -48,9 +39,5 @@ public class Role2TypeHandler extends BaseTypeHandler<Role2_> implements TypeHan
 		if (arg2 != null) {
 			arg0.setString(arg1, arg2.getId().toString());
 		}
-	}
-
-	private Role2Service getService() {
-		return (Role2Service) ApplicationContextProvider.getApplicationContext().getBean(Role2Service.class);
 	}
 }

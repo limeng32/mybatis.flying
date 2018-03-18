@@ -28,26 +28,17 @@ public class AccountTypeHandler extends BaseTypeHandler<Account_> implements Typ
 
 	@Override
 	public Account_ getNullableResult(ResultSet arg0, String arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
 	public Account_ getNullableResult(ResultSet arg0, int arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
 	public Account_ getNullableResult(CallableStatement arg0, int arg1) throws SQLException {
-		if (arg0.getString(arg1) == null) {
-			return null;
-		}
-		return (getService().select(arg0.getString(arg1)));
+		return null;
 	}
 
 	@Override
@@ -56,9 +47,5 @@ public class AccountTypeHandler extends BaseTypeHandler<Account_> implements Typ
 		if (arg2 != null) {
 			arg0.setString(arg1, arg2.getId().toString());
 		}
-	}
-
-	private AccountService getService() {
-		return (AccountService) ApplicationContextProvider.getApplicationContext().getBean(AccountService.class);
 	}
 }
