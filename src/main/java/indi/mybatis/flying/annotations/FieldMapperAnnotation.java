@@ -30,7 +30,7 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 如果是外键，对应数据库其他表的主键字段的名称。默认为空，表示不是外键。此属性用于解决同一数据库内表关联问题，因此不应和dbAssociationTypeHandler同时出现。
+	 * 如果是外键，对应数据库其他表的主键字段的名称，需大小写完全相同。默认为空，表示不是外键。此属性用于解决同一数据库内表关联问题，因此不应和dbAssociationTypeHandler同时出现。
 	 * 
 	 * @return String
 	 */
@@ -79,7 +79,7 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称。默认为空，表示不是外键。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
+	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称，需大小写完全相同。默认为空，表示不是外键。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
 	 * 
 	 * @return String
 	 */

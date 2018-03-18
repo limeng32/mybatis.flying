@@ -177,16 +177,12 @@ public class SqlBuilder {
 			}
 
 			if (fieldMapper.isCrossDbForeignKey()) {
-				System.out.println("4::");
 				if (!tableMapperCache.containsKey(field.getType())) {
 					buildTableMapper(field.getType());
 				}
-				System.out.println("5::");
 				TableMapper tm = tableMapperCache.get(field.getType());
-				System.out.println("6::" + tm + "::" + fieldMapper.getDbCrossedAssociationUniqueKey());
 				String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
 						fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
-				System.out.println("7::" + foreignFieldName);
 				fieldMapper.setForeignFieldName(foreignFieldName);
 			}
 
@@ -304,8 +300,6 @@ public class SqlBuilder {
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
-						System.out.println("2::" + fieldMapper.getDbAssociationUniqueKey() + "::"
-								+ fieldMapper.getDbCrossedAssociationUniqueKey());
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
 					}
@@ -327,18 +321,13 @@ public class SqlBuilder {
 					}
 
 					if (fieldMapper.isCrossDbForeignKey()) {
-						System.out.println("13::" + pojoField.getType());
 						if (!tableMapperCache.containsKey(pojoField.getType())) {
 							buildTableMapper(pojoField.getType());
 						}
-						System.out.println("15::");
 						TableMapper tm = tableMapperCache.get(pojoField.getType());
-						System.out.println("16::" + tm.getFieldMapperCache() + "::"
-								+ fieldMapper.getDbCrossedAssociationUniqueKey());
 						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
 								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
 
-						System.out.println("17::" + foreignFieldName);
 						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
 				}
@@ -754,7 +743,6 @@ public class SqlBuilder {
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			System.out.println("8::" + fieldMapper.isCrossDbForeignKey());
 			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
