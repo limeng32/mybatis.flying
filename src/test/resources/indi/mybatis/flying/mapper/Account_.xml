@@ -3,7 +3,7 @@
 <mapper namespace="indi.mybatis.flying.mapper.AccountMapper">
 	<cache />
 
-	<select id="selectCross" resultMap="result" flushCache="true">
+	<select id="selectCross" resultMap="result">
 		flying#{?}(smartDataSource1:testdb):select:noPassword
 	</select>
 
