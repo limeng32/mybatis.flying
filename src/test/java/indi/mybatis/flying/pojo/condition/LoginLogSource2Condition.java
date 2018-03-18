@@ -19,17 +19,17 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
 	private String ipLikeFilter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal) })
 	private Object[] accountEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal), })
 	private Object[] accountEqualsOr2;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.Detail2_.class), })
 	private Object[] accountEqualsOr3;

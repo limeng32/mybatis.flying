@@ -254,7 +254,7 @@ public class OrTest {
 	}
 
 	/* 一个dbAssociationTypeHandler型外键的或逻辑测试用例 */
-	@Test
+//	@Test
 	@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.xml")
 	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.result.xml")
 	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.result.xml")
@@ -273,7 +273,7 @@ public class OrTest {
 
 	/* 一个在缓存状态下或逻辑查询的测试用例 */
 	/* 需要同时涉及同库外键和跨库外键 */
-	@Test
+//	@Test
 	@DatabaseSetups({
 			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource1.xml"),
 			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource2.xml"), })

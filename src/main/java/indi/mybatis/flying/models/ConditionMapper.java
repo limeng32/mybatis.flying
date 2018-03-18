@@ -71,6 +71,8 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private Class<?> subTarget;
 
+	private boolean isCrossDbForeignKey;
+
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -183,4 +185,12 @@ public class ConditionMapper implements Mapperable {
 		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
 	}
 
+	@Override
+	public boolean isCrossDbForeignKey() {
+		return isCrossDbForeignKey;
+	}
+
+	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
+		this.isCrossDbForeignKey = isCrossDbForeignKey;
+	}
 }

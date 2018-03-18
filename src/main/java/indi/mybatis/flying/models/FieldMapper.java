@@ -57,6 +57,8 @@ public class FieldMapper implements Mapperable {
 	 */
 	private boolean isForeignKey;
 
+	private boolean isCrossDbForeignKey;
+
 	/**
 	 * 如果此变量对应数据库表的外键，ForeignFieldName表示相关表的主键的Java对象字段名。不是外键时为null。
 	 */
@@ -120,6 +122,7 @@ public class FieldMapper implements Mapperable {
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
 		}
 		/* Id标注的优先级最高，所以写在最后 */
 		if (id != null) {
@@ -368,6 +371,15 @@ public class FieldMapper implements Mapperable {
 
 	public void setDbCrossedAssociationUniqueKey(String dbCrossedAssociationUniqueKey) {
 		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
+	}
+
+	@Override
+	public boolean isCrossDbForeignKey() {
+		return isCrossDbForeignKey;
+	}
+
+	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
+		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
 
 }

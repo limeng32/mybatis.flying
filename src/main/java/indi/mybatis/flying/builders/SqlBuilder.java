@@ -158,11 +158,10 @@ public class SqlBuilder {
 				}
 			}
 
-			if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-			} else {
-				fieldMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+			if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 				fieldMapper.setForeignKey(true);
 			}
+
 			if (fieldMapper.isForeignKey()) {
 				if (!tableMapperCache.containsKey(field.getType())) {
 					buildTableMapper(field.getType());
@@ -172,6 +171,25 @@ public class SqlBuilder {
 						fieldMapper.getDbAssociationUniqueKey()).getFieldName();
 				fieldMapper.setForeignFieldName(foreignFieldName);
 			}
+
+			if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
+				fieldMapper.setCrossDbForeignKey(true);
+			}
+
+			if (fieldMapper.isCrossDbForeignKey()) {
+				System.out.println("4::");
+				if (!tableMapperCache.containsKey(field.getType())) {
+					buildTableMapper(field.getType());
+				}
+				System.out.println("5::");
+				TableMapper tm = tableMapperCache.get(field.getType());
+				System.out.println("6::" + tm + "::" + fieldMapper.getDbCrossedAssociationUniqueKey());
+				String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+						fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+				System.out.println("7::" + foreignFieldName);
+				fieldMapper.setForeignFieldName(foreignFieldName);
+			}
+
 			if (fieldMapper.isOpVersionLock()) {
 				opVersionLockList.add(fieldMapper);
 			}
@@ -290,8 +308,9 @@ public class SqlBuilder {
 					}
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
-					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-					} else {
+					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
+						System.out.println("2::" + fieldMapper.getDbAssociationUniqueKey() + "::"
+								+ fieldMapper.getDbCrossedAssociationUniqueKey());
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
 					}
@@ -304,6 +323,26 @@ public class SqlBuilder {
 						String foreignFieldName = tm.getFieldMapperCache().get(fieldMapper.getDbAssociationUniqueKey())
 								.getFieldName();
 						conditionMapper.setForeignFieldName(foreignFieldName);
+					}
+
+					if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
+						conditionMapper
+								.setDbCrossedAssociationUniqueKey(fieldMapper.getDbCrossedAssociationUniqueKey());
+						fieldMapper.setCrossDbForeignKey(true);
+					}
+
+					if (fieldMapper.isCrossDbForeignKey()) {
+						System.out.println("14::");
+						if (!tableMapperCache.containsKey(field.getType())) {
+							buildTableMapper(field.getType());
+						}
+						System.out.println("15::");
+						TableMapper tm = tableMapperCache.get(field.getType());
+						System.out.println("16::" + tm + "::" + fieldMapper.getDbCrossedAssociationUniqueKey());
+						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+						System.out.println("17::" + foreignFieldName);
+						fieldMapper.setForeignFieldName(foreignFieldName);
 					}
 				}
 			}
@@ -505,7 +544,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (mapper.isForeignKey()) {
+		if (mapper.isForeignKey() || mapper.isCrossDbForeignKey()) {
 			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
@@ -645,7 +684,7 @@ public class SqlBuilder {
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
 			valueSql.append(POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				valueSql.append(fieldMapper.getFieldName());
@@ -721,7 +760,8 @@ public class SqlBuilder {
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			System.out.println("8::" + fieldMapper.isCrossDbForeignKey());
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
@@ -794,7 +834,7 @@ public class SqlBuilder {
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());

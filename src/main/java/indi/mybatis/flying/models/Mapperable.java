@@ -27,4 +27,6 @@ public interface Mapperable {
 	Class<?> getSubTarget();
 
 	String getDbCrossedAssociationUniqueKey();
+	
+	public boolean isCrossDbForeignKey();
 }
