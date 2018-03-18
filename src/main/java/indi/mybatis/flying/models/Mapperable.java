@@ -25,4 +25,6 @@ public interface Mapperable {
 	Class<?> getFieldType();
 
 	Class<?> getSubTarget();
+
+	String getDbCrossedAssociationUniqueKey();
 }

@@ -32,7 +32,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	private java.lang.String loginIP;
 
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, ignoreTag = {
-			"noAccount" }, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class)
+			"noAccount" }, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class, dbCrossedAssociationUniqueKey = "id")
 	private Account_ account;
 
 	private java.util.Collection<Detail2_> detail2;

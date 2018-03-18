@@ -76,4 +76,12 @@ public @interface FieldMapperAnnotation {
 	 * @return Class
 	 */
 	Class<?> dbAssociationTypeHandler() default Void.class;
+
+	/**
+	 * 
+	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称。默认为空，表示不是外键。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
+	 * 
+	 * @return String
+	 */
+	String dbCrossedAssociationUniqueKey() default "";
 }

@@ -38,9 +38,14 @@ public class FieldMapper implements Mapperable {
 	private JdbcType jdbcType;
 
 	/**
-	 * 如果是外键，对应数据库其他表的主键字段的名称。不是外键时为null。
+	 * 如果是外键，对应数据库其他表的主键字段的名称。不是外键时为""。
 	 */
 	private String dbAssociationUniqueKey = "";
+
+	/**
+	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称。不是外键时为""。
+	 */
+	private String dbCrossedAssociationUniqueKey = "";
 
 	/**
 	 * 此变量是否对应数据库表的主键。默认为否。
@@ -354,6 +359,15 @@ public class FieldMapper implements Mapperable {
 	@Override
 	public Class<?> getSubTarget() {
 		return subTarget;
+	}
+
+	@Override
+	public String getDbCrossedAssociationUniqueKey() {
+		return dbCrossedAssociationUniqueKey;
+	}
+
+	public void setDbCrossedAssociationUniqueKey(String dbCrossedAssociationUniqueKey) {
+		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
 	}
 
 }
