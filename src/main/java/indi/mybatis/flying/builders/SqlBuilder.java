@@ -206,12 +206,7 @@ public class SqlBuilder {
 	/* 从newFieldMapperCache中获取已知dbFieldName的FieldMapper */
 	private static Mapperable getFieldMapperByDbFieldName(Map<String, FieldMapper> newFieldMapperCache,
 			String dbFieldName) {
-		for (Mapperable mapper : newFieldMapperCache.values()) {
-			if (dbFieldName.equalsIgnoreCase(mapper.getDbFieldName())) {
-				return mapper;
-			}
-		}
-		return null;
+		return newFieldMapperCache.get(dbFieldName);
 	}
 
 	/**
@@ -320,8 +315,8 @@ public class SqlBuilder {
 							buildTableMapper(pojoField.getType());
 						}
 						TableMapper tm = tableMapperCache.get(pojoField.getType());
-						String foreignFieldName = tm.getFieldMapperCache().get(fieldMapper.getDbAssociationUniqueKey())
-								.getFieldName();
+						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+								fieldMapper.getDbAssociationUniqueKey()).getFieldName();
 						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
 
@@ -333,20 +328,6 @@ public class SqlBuilder {
 
 					if (fieldMapper.isCrossDbForeignKey()) {
 						System.out.println("13::" + pojoField.getType());
-						// if (!tableMapperCache.containsKey(field.getType())) {
-						// buildTableMapper(field.getType());
-						// }
-						// System.out.println("15::");
-						// TableMapper tm =
-						// tableMapperCache.get(field.getType());
-						// System.out.println("16::" + tm + "::" +
-						// fieldMapper.getDbCrossedAssociationUniqueKey());
-						// String foreignFieldName =
-						// getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
-						// fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
-						// System.out.println("17::" + foreignFieldName);
-						// fieldMapper.setForeignFieldName(foreignFieldName);
-
 						if (!tableMapperCache.containsKey(pojoField.getType())) {
 							buildTableMapper(pojoField.getType());
 						}
@@ -354,8 +335,9 @@ public class SqlBuilder {
 						TableMapper tm = tableMapperCache.get(pojoField.getType());
 						System.out.println("16::" + tm.getFieldMapperCache() + "::"
 								+ fieldMapper.getDbCrossedAssociationUniqueKey());
-						String foreignFieldName = tm.getFieldMapperCache()
-								.get(fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+
 						System.out.println("17::" + foreignFieldName);
 						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
