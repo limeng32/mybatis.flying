@@ -332,17 +332,32 @@ public class SqlBuilder {
 					}
 
 					if (fieldMapper.isCrossDbForeignKey()) {
-						System.out.println("14::");
-						if (!tableMapperCache.containsKey(field.getType())) {
-							buildTableMapper(field.getType());
+						System.out.println("13::" + pojoField.getType());
+						// if (!tableMapperCache.containsKey(field.getType())) {
+						// buildTableMapper(field.getType());
+						// }
+						// System.out.println("15::");
+						// TableMapper tm =
+						// tableMapperCache.get(field.getType());
+						// System.out.println("16::" + tm + "::" +
+						// fieldMapper.getDbCrossedAssociationUniqueKey());
+						// String foreignFieldName =
+						// getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+						// fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+						// System.out.println("17::" + foreignFieldName);
+						// fieldMapper.setForeignFieldName(foreignFieldName);
+
+						if (!tableMapperCache.containsKey(pojoField.getType())) {
+							buildTableMapper(pojoField.getType());
 						}
 						System.out.println("15::");
-						TableMapper tm = tableMapperCache.get(field.getType());
-						System.out.println("16::" + tm + "::" + fieldMapper.getDbCrossedAssociationUniqueKey());
-						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
-								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+						TableMapper tm = tableMapperCache.get(pojoField.getType());
+						System.out.println("16::" + tm.getFieldMapperCache() + "::"
+								+ fieldMapper.getDbCrossedAssociationUniqueKey());
+						String foreignFieldName = tm.getFieldMapperCache()
+								.get(fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
 						System.out.println("17::" + foreignFieldName);
-						fieldMapper.setForeignFieldName(foreignFieldName);
+						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
 				}
 			}
@@ -559,10 +574,7 @@ public class SqlBuilder {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
 		if (isOr) {
-			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
-		}
-		if (isOr) {
-			whereSql.append(CLOSEBRACE_OR_);
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName()).append(CLOSEBRACE_OR_);
 		} else {
 			whereSql.append(CLOSEBRACE_AND_);
 		}
@@ -605,11 +617,11 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		if (isOr) {
-			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
+		if (mapper.getTypeHandlerPath() != null) {
+			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
 		if (isOr) {
-			whereSql.append(CLOSEBRACE_OR_);
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName()).append(CLOSEBRACE_OR_);
 		} else {
 			whereSql.append(CLOSEBRACE_AND_);
 		}
