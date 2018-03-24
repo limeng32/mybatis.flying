@@ -1017,12 +1017,7 @@ public class CacheTest {
 
 		LoginLogSource2 loginLogSource5 = loginLogSource2Service.select(21);
 		Assert.assertEquals("ip00", loginLogSource5.getLoginIP());
-		// TODO
-		/*
-		 * Assert.assertEquals(1,
-		 * loginLogSource5.getAccount().getOpLock().intValue());
-		 */
-		Assert.assertEquals(0, loginLogSource5.getAccount().getOpLock().intValue());
+		Assert.assertEquals(1, loginLogSource5.getAccount().getOpLock().intValue());
 	}
 
 	/* 一个在缓存状态下使用自定义主键生成器insert的测试用例 */
