@@ -71,4 +71,9 @@ public class RoleService extends ServiceSupport<Role_> implements RoleMapper {
 		return mapper.updateDirect(m);
 	}
 
+	@Override
+	public Role_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
+
 }

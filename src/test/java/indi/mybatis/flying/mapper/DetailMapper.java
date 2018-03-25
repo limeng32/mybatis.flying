@@ -12,6 +12,9 @@ import indi.mybatis.flying.statics.CacheRoleType;
 @CacheRoleAnnotation(ObserverClass = { LoginLog_.class }, TriggerClass = { Detail_.class })
 public interface DetailMapper extends MapperFace<Detail_> {
 
+	@CacheAnnotation(role = CacheRoleType.Observer)
+	public Detail_ selectWithoutCache(Object id);
+	
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Detail_ select(Object id);

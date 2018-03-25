@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="indi.mybatis.flying.mapper2.Detail2Mapper">
-	<cache type="org.mybatis.caches.redis.RedisCache" />
+	<cache ${mybatis.cache}/>
+
+	<select id="selectWithoutCache" resultMap="result" useCache="false">
+		flying#{?}:select
+	</select>
 
 	<select id="select" resultMap="result">
 		flying#{?}:select
@@ -22,19 +26,21 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		flying:insert
 	</insert>
-	
-	<insert id="insertWithoutName" useGeneratedKeys="true" keyProperty="id">
+
+	<insert id="insertWithoutName" useGeneratedKeys="true"
+		keyProperty="id">
 		flying:insert:noName
 	</insert>
-	
-	<insert id="insertWithoutFoo" useGeneratedKeys="true" keyProperty="id">
+
+	<insert id="insertWithoutFoo" useGeneratedKeys="true"
+		keyProperty="id">
 		flying:insert:noFoo
 	</insert>
 
 	<update id="update">
 		flying:update
 	</update>
-	
+
 	<update id="updateWithoutName">
 		flying:update:noName
 	</update>
@@ -42,7 +48,7 @@
 	<update id="updatePersistent">
 		flying:updatePersistent
 	</update>
-	
+
 	<update id="updatePersistentWithoutName">
 		flying:updatePersistent:noName
 	</update>
@@ -55,7 +61,7 @@
 		<id property="id" column="id" />
 		<result property="number" column="number_" />
 		<association property="loginLogSource2" javaType="LoginLogSource2"
-			select="indi.mybatis.flying.mapper2.LoginLogSource2Mapper.select"
+			select="indi.mybatis.flying.mapper2.LoginLogSource2Mapper.selectWithoutCache"
 			column="loginlog_id" />
 	</resultMap>
 </mapper>

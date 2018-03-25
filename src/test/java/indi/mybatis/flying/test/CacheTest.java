@@ -564,7 +564,7 @@ public class CacheTest {
 	}
 
 	/* 测试在select查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -592,7 +592,7 @@ public class CacheTest {
 	}
 
 	/* 测试在selectAll查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -625,7 +625,7 @@ public class CacheTest {
 	}
 
 	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -658,7 +658,7 @@ public class CacheTest {
 	}
 
 	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")

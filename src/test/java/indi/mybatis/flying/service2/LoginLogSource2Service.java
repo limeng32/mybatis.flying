@@ -72,4 +72,9 @@ public class LoginLogSource2Service extends ServiceSupport<LoginLogSource2> impl
 	public int updateNoFlush(LoginLogSource2 t) {
 		return mapper.updateNoFlush(t);
 	}
+
+	@Override
+	public LoginLogSource2 selectWithoutCache(Object id) {
+		return mapper.selectWithoutAccount(id);
+	}
 }

@@ -18,7 +18,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ select(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
-	public Account_ selectCross(Object id);
+	public Account_ selectWithoutCache(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ selectEverything(Object id);

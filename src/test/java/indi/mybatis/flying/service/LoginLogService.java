@@ -62,4 +62,9 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 		loginLog.setAccount(account);
 		account.setLoginLog(mapper.selectAll(loginLog));
 	}
+
+	@Override
+	public LoginLog_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
 }

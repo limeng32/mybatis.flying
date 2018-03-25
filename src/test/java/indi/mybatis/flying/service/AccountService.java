@@ -107,8 +107,8 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
-	public Account_ selectCross(Object id) {
-		return mapper.selectCross(id);
+	public Account_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
 	}
 
 }
