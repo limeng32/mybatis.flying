@@ -4,6 +4,7 @@ jdk:
   - oraclejdk8
 script: 
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -B
         - mvn clean test -B
         - mvn jacoco:report
         - pip install --user codecov

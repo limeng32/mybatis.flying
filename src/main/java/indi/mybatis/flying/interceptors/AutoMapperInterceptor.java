@@ -38,6 +38,7 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.SmartDataSource;
 
 import indi.mybatis.flying.ApplicationContextProvider;
@@ -90,14 +91,20 @@ public class AutoMapperInterceptor implements Interceptor {
 		if (flyingModel.isHasFlyingFeature()) {
 			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
 					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
-				DataSource dataSource = (DataSource) ApplicationContextProvider.getApplicationContext()
-						.getBean(flyingModel.getDataSourceId());
-				if (dataSource == null) {
-					logger.error(AutoMapperExceptionEnum.cannotFindAssignedDataSourceInContext.description());
+				ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
+				if (applicationContext != null) {
+					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
+					if (dataSource == null) {
+						throw new AutoMapperException(
+								AutoMapperExceptionEnum.cannotFindAssignedDataSourceInContext.description());
+					}
+					Connection connection = ((SmartDataSource) (applicationContext
+							.getBean(flyingModel.getDataSourceId()))).getConnection();
+					invocation.getArgs()[0] = connection;
+				} else {
+					throw new AutoMapperException(
+							AutoMapperExceptionEnum.cannotFindApplicationContextProvider.description());
 				}
-				Connection connection = ((SmartDataSource) (ApplicationContextProvider.getApplicationContext()
-						.getBean(flyingModel.getDataSourceId()))).getConnection();
-				invocation.getArgs()[0] = connection;
 			}
 			String newSql = "";
 			switch (flyingModel.getActionType()) {

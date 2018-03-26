@@ -1,0 +1,6 @@
+<dataset>
+	<ACCOUNT2_ ID="1" EMAIL="l@x.com" NICKNAME="nick" />
+	<DETAIL2_ ID="11" NAME="dd" />
+	<LOGINLOG_ ID="21" ACCOUNTID="1" LOGINIP="ll" />
+	<ROLE2_ ID="31" NAME="rr" />
+</dataset>
