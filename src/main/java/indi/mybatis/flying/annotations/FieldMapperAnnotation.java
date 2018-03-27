@@ -11,7 +11,8 @@ import org.apache.ibatis.type.JdbcType;
 import indi.mybatis.flying.statics.OpLockType;
 
 /**
- * 用于描述java对象字段对应的数据库表字段的注解（数据库字段名，对应数据库其他表的主键字段的名称，是否为数据库主键，字段对应的jdbc类型）
+ * Annotations that describe the database table fields corresponding to the Java
+ * object fields
  * 
  * @author david,limeng32
  * 
@@ -22,56 +23,73 @@ import indi.mybatis.flying.statics.OpLockType;
 public @interface FieldMapperAnnotation {
 	/**
 	 * 
-	 * 对应数据库表的字段名称
+	 * The field name of the corresponding database table
 	 * 
 	 * @return String
+	 * @since 0.9.0
 	 */
 	String dbFieldName();
 
 	/**
 	 * 
-	 * 如果是外键，对应数据库其他表的主键字段的名称，需大小写完全相同。默认为空，表示不是外键。此属性用于解决同一数据库内表关联问题，因此不应和dbAssociationTypeHandler同时出现。
+	 * If it is a foreign key, it corresponds to the name of the primary key
+	 * field of the other table in the database (Case is identical), the default
+	 * is blank meaning not foreign key.
+	 * 
+	 * This property is used to solve the table association problem in the same
+	 * database, so it should not appear at the same time as the
+	 * dbCrossedAssociationUniqueKey.
 	 * 
 	 * @return String
+	 * @since 0.9.0
 	 */
 	String dbAssociationUniqueKey() default "";
 
 	/**
 	 * 
-	 * 此变量是否对应数据库表的主键。默认为否。
+	 * This variable corresponds to the primary key of the database table, the
+	 * default is false
 	 * 
 	 * @return boolean
+	 * @since 0.9.0
 	 */
 	boolean isUniqueKey() default false;
 
 	/**
 	 * 
-	 * 此变量是否是乐观锁，默认不是。
+	 * This variable is optimistic locking, the default is "Null" meaning not
 	 * 
 	 * @return OpLockType
+	 * @since 0.9.0
 	 */
 	OpLockType opLockType() default OpLockType.Null;
 
 	/**
 	 * 
-	 * 字段用JDBC接口存入数据库需要设置的数据类型,Integer,Long,Short,Float,Double,String,Date
-	 * ,Timestamp,Time
+	 * The field USES the JDBC interface to store the data type that the
+	 * database needs to set, e.g Integer, Long, Short, Float, Double, String,
+	 * Date, Timestamp, Time and so on
 	 * 
 	 * @return JdbcType
+	 * @since 0.9.0
 	 */
 	JdbcType jdbcType();
 
 	/**
 	 * 
-	 * 是否拥有忽略标志。默认为无。当有忽略标志foo时，flying表达式最后加上“:foo”即可在新增、查询、修改语句中忽略此字段
+	 * Whether or not to have the ignore sign, the default is not.When the flag
+	 * "foo" is appeared, the flying expression ends with ":foo" to ignore this
+	 * field in the addition, query, or modification statement.
 	 * 
 	 * @return String[]
+	 * @since 0.9.0
 	 */
 	String[] ignoreTag() default {};
 
 	/**
 	 * 
-	 * 是否使用指定TypeHandler处理（优先级最高）。默认为Void.class，表示不指定TypeHandler。
+	 * Whether to use the specified TypeHandler (highest priority).the default
+	 * is "Void" meaning not specified
 	 * 
 	 * @return Class
 	 * @since 0.9.4
@@ -80,9 +98,15 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称，需大小写完全相同。默认为空，表示不是外键。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
+	 * If it is a cross-source foreign key, the name of the primary key field
+	 * for the table of the other database(Case is identical), the default is
+	 * blank meaning not foreign key.
+	 * 
+	 * This property is used to solve the cross-source association problem, so
+	 * it should not appear at the same time as dbAssociationUniqueKey.
 	 * 
 	 * @return String
+	 * @since 0.9.1
 	 */
 	String dbCrossedAssociationUniqueKey() default "";
 }

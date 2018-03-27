@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用于描述mapper类在缓存中的角色情况
+ * Used to describe the role of the mapper class in the cache
  * 
  * @author limeng32
  * 
@@ -19,17 +19,19 @@ public @interface CacheRoleAnnotation {
 
 	/**
 	 * 
-	 * 当前类对哪些类作为Observer
+	 * Which classes are the current classes to Observe
 	 * 
 	 * @return Class[]
+	 * @since 0.9.0
 	 */
 	Class<?>[] ObserverClass();
 
 	/**
 	 * 
-	 * 当前类对哪些类作为Trigger
+	 * Which classes are the Trigger for the current classes
 	 * 
 	 * @return Class[]
+	 * @since 0.9.0
 	 */
 	Class<?>[] TriggerClass();
 

@@ -11,6 +11,10 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD })
 public @interface Or {
 
+	/**
+	 * 
+	 * @since 0.9.3
+	 */
 	ConditionMapperAnnotation[] value();
 
 }
