@@ -270,7 +270,7 @@ public class SqlBuilder {
 		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
 		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
 		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
-		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.dbAssociationTypeHandler());
+		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.customTypeHandler());
 		for (Field pojoField : pojoClass.getDeclaredFields()) {
 			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
@@ -926,7 +926,11 @@ public class SqlBuilder {
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
-					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
+			whereSql.append(CLOSEBRACE_AND_);
 		}
 		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return selectSql.append(whereSql).toString();

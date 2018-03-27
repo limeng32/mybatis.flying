@@ -71,11 +71,12 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * 跨库相关表是否使用指定TypeHandler处理。默认为Void.class，表示不指定TypeHandler。此属性用于解决跨库表关联问题，因此不应和dbAssociationUniqueKey同时出现。
+	 * 是否使用指定TypeHandler处理（优先级最高）。默认为Void.class，表示不指定TypeHandler。
 	 * 
 	 * @return Class
+	 * @since 0.9.4
 	 */
-	Class<?> dbAssociationTypeHandler() default Void.class;
+	Class<?> customTypeHandler() default Void.class;
 
 	/**
 	 * 

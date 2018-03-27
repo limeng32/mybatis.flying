@@ -42,6 +42,13 @@ public @interface ConditionMapperAnnotation {
 	 * @return Class
 	 */
 	Class<?> subTarget() default Void.class;
-	
-	Class<?> dbAssociationTypeHandler() default Void.class;
+
+	/**
+	 * 
+	 * 是否使用指定TypeHandler处理（优先级最高）。默认为Void.class，表示不指定TypeHandler。
+	 * 
+	 * @return Class
+	 * @since 0.9.4
+	 */
+	Class<?> customTypeHandler() default Void.class;
 }
