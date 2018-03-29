@@ -19,7 +19,6 @@ import indi.mybatis.flying.utils.ReflectHelper;
 
 public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
-	// 每一个statementId 更新依赖的statementId集合
 	private Map<String, Set<String>> observers = new ConcurrentHashMap<>();
 	private Map<Class<?>, Set<Method>> triggerMethods = new ConcurrentHashMap<>();
 	private ConcurrentSkipListMap<Class<?>, Set<Method>> observerMethods = new ConcurrentSkipListMap<>(
@@ -31,9 +30,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private Map<Class<?>, Set<Class<?>>> observersClassesNew = new ConcurrentHashMap<>();
 
-	// 全局性的 statemntId与CacheKey集合
 	private CacheKeysPool sharedCacheKeysPool = new CacheKeysPool();
-	// 记录每一个statementId 对应的Cache 对象
 	private Map<String, Cache> holds = new ConcurrentHashMap<String, Cache>();
 	private boolean initialized = false;
 	private boolean cacheEnabled = false;
@@ -66,7 +63,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 					}
 				}
 			}
-			// clear shared cacheKey Pool width specific key
+			/* clear shared cacheKey Pool width specific key */
 			sharedCacheKeysPool.remove(observable);
 		}
 	}
@@ -79,7 +76,6 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 	@Override
 	public void initialize(Properties properties) {
 		initialized = true;
-		// cacheEnabled
 		String cacheEnabled = properties.getProperty("cacheEnabled", "true");
 		if ("true".equals(cacheEnabled)) {
 			this.cacheEnabled = true;
@@ -99,7 +95,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		dealPackageInit2(classes);
 	}
 
-	/* 将observerClasses中的value进行扩展 */
+	/* expand the value in observerClasses */
 	private void dealObserverClasses(Map<Class<?>, Set<Class<?>>> m) {
 		for (Entry<Class<?>, Set<Class<?>>> e : observerClasses.entrySet()) {
 			Set<Class<?>> set = new HashSet<Class<?>>();
@@ -121,7 +117,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		}
 	}
 
-	/* 在triggerClasses中通过value获取key */
+	/* get the key through value in triggerClasses */
 	private Class<?> getKeyFormValue(Class<?> clazz) {
 		for (Entry<Class<?>, Set<Class<?>>> e : triggerClasses.entrySet()) {
 			if (e.getValue().contains(clazz)) {
@@ -133,7 +129,6 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private void dealPackageInit(Set<Class<?>> classes) {
 		for (Class<?> clazz : classes) {
-			// 将每个class中的cacheRole取出，放入一个集合
 			Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
 			for (Annotation an : classAnnotations) {
 				if (an instanceof CacheRoleAnnotation) {

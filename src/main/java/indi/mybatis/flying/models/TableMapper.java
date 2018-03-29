@@ -7,7 +7,8 @@ import javax.persistence.Table;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 
 /**
- * 描述java对象的数据库映射信息（数据库表的映射、字段的映射）
+ * Description of database mapping information for Java objects (mapping of
+ * database tables, mapping of fields)
  */
 public class TableMapper {
 

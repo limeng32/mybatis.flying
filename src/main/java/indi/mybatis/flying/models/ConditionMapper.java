@@ -7,67 +7,76 @@ import org.apache.ibatis.type.JdbcType;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
- * 条件映射类，用于描述被ConditionMapperAnnotation标注过的对象字段和sql之间的对应关系
+ * Conditions of mapping class, is used to describe ConditionMapperAnnotation
+ * annotation object field and corresponding relation between the SQL
  */
 public class ConditionMapper implements Mapperable {
 
 	/**
-	 * Java对象字段名
+	 * Java object field name.
 	 */
 	private String fieldName;
 
 	/**
-	 * 数据库表字段名
+	 * Database table field name.
 	 */
 	private String dbFieldName;
 
 	/**
-	 * 数据库字段对应的jdbc类型
+	 * The JDBC type corresponding to the database field.
 	 */
 	private JdbcType jdbcType;
 
 	/**
-	 * 条件类型
+	 * Conditions type
 	 */
 	private ConditionType conditionType;
 
 	/**
-	 * 如果是外键，对应数据库其他表的主键字段的名称。不是外键时为""。
+	 * If it is a foreign key, it corresponds to the name of the primary key
+	 * field of the other table in the database. Blank means it's not a foreign
+	 * key.
 	 */
 	private String dbAssociationUniqueKey = "";
 
 	/**
-	 * 如果是跨库外键，对应其他数据库的表的主键字段的名称。不是外键时为""。
+	 * If it is a cross-source foreign key, the name of the primary key field
+	 * for the table of the other database.Blank means it's not a foreign key.
 	 */
 	private String dbCrossedAssociationUniqueKey = "";
 
 	/**
-	 * 此变量是否对应数据库表的外键。默认为否。
+	 * This variable corresponds to the foreign key of the database table, the
+	 * default value is no.
 	 */
 	private boolean isForeignKey;
 
 	/**
-	 * 如果此变量对应数据库表的外键，ForeignFieldName表示相关表的主键的Java对象字段名。不是外键时为null。
+	 * If this variable corresponds to the foreign key of the database table,
+	 * the ForeignFieldName represents the Java object field name of the related
+	 * table's primary key, it is null when not foreign key.
 	 */
 	private String foreignFieldName;
 
 	/**
-	 * 此变量的ignoreTag的set，默认为空。
+	 * The ignoreTag set for this variable,
 	 */
 	private HashSet<String> ignoreTagSet;
 
 	/**
-	 * 此变量的指定typeHandler的访问路径，默认为null。
+	 * This variable specifies the access path for the custom typeHandler, the
+	 * default is null.
 	 */
 	private String typeHandlerPath;
 
 	/**
-	 * 此变量的类型
+	 * Field type
 	 */
 	private Class<?> fieldType;
 
 	/**
-	 * 标识此项条件是针对哪个（业务上）子对象的，默认为Void，即是针对自身的；此属性只在或逻辑（Or标签）中起作用
+	 * Identify the condition for which (business) child objects, by default
+	 * Void, are for themselves. This property works only in Or annotation
 	 */
 	private Class<?> subTarget;
 

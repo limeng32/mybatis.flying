@@ -3,7 +3,7 @@ package indi.mybatis.flying.models;
 import java.util.Map;
 
 /**
- * 描述PojoCondition对象的数据库映射信息
+ * Describes the database mapping information for PojoCondition objects.
  */
 public class QueryMapper {
 

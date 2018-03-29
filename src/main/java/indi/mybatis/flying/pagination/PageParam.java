@@ -21,10 +21,16 @@ public class PageParam implements Limitable, Serializable {
 
 	private int pageSize;
 
-	/* totalCount 并且不适合作为缓存key的一部分，故声明为 transient */
+	/*
+	 * The totalCount is not appropriate as part of the cache key, so it is
+	 * declared transient.
+	 */
 	private transient int totalCount;
 
-	/* maxPageNum 并且不适合作为缓存key的一部分，故声明为 transient */
+	/*
+	 * The maxPageNum is not appropriate as part of the cache key, so it is
+	 * declared transient.
+	 */
 	private transient int maxPageNum;
 
 	@Override
