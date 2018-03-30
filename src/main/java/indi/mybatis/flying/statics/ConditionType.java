@@ -1,32 +1,38 @@
 package indi.mybatis.flying.statics;
 
 public enum ConditionType {
-	/** 相等 */
+	/** Equal */
 	Equal,
-	/** like匹配 */
+	/** Like matching */
 	Like,
-	/** 开头like匹配 */
+	/** Start like match */
 	HeadLike,
-	/** 结尾like匹配 */
+	/** End like match */
 	TailLike,
-	/** 多like条件匹配 ，与关系，此操作无法在Or标签下使用 */
+	/**
+	 * Multiple like condition matching, and relationship, this operation cannot
+	 * be used under Or annotation.
+	 */
 	MultiLikeAND,
-	/** 多like条件匹配 ，或关系，此操作无法在Or标签下使用 */
+	/**
+	 * Multiple like condition matching, or relationship, cannot be used under
+	 * Or annotation.
+	 */
 	MultiLikeOR,
-	/** 大于 */
+	/** Is greater than */
 	GreaterThan,
-	/** 大于或等于 */
+	/** Greater than or equal to */
 	GreaterOrEqual,
-	/** 小于 */
+	/** Less than */
 	LessThan,
-	/** 小于或等于 */
+	/** Less than or equal to */
 	LessOrEqual,
-	/** 不等于 */
+	/** Is not equal to */
 	NotEqual,
-	/** 属于，此操作无法在Or标签下使用 */
+	/** Belong, this condition cannot be used under Or annotation. */
 	In,
-	/** 不属于，此操作无法在Or标签下使用 */
+	/** Nor belong, this condition cannot be used under Or annotation. */
 	NotIn,
-	/** 为null或不为null */
+	/** Null or not null */
 	NullOrNot
 }

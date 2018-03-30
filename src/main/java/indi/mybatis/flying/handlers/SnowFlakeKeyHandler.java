@@ -2,7 +2,6 @@ package indi.mybatis.flying.handlers;
 
 import indi.mybatis.flying.exception.SnowFlakeException;
 import indi.mybatis.flying.type.KeyHandler;
-import indi.mybatis.flying.utils.SnowflakeIdWorker;
 
 public class SnowFlakeKeyHandler implements KeyHandler {
 
@@ -151,7 +150,7 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 
 	@Override
 	public String getKey() {
-		return new Long(SnowflakeIdWorker.getInstance().nextId()).toString();
+		return new Long(SnowFlakeKeyHandler.getInstance().nextId()).toString();
 	}
 
 }
