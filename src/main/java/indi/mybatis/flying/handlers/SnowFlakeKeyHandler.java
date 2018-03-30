@@ -129,6 +129,7 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 	 * Block to the next millisecond until a new timestamp is obtained.
 	 * 
 	 * @param lastTimestamp
+	 *            long
 	 * @return Current timestamp
 	 */
 	protected long tilNextMillis(long lastTimestamp) {

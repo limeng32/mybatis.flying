@@ -84,8 +84,10 @@ public class EnhancedCachingInterceptor implements Interceptor {
 	 * statement's id and
 	 * 
 	 * @param invocation
-	 * @return
+	 *            Invocation
+	 * @return object
 	 * @throws Throwable
+	 *             Throwable
 	 */
 	protected Object processQuery(Invocation invocation) throws Throwable {
 		Object result = invocation.proceed();

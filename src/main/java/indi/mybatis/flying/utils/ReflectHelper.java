@@ -63,6 +63,7 @@ public class ReflectHelper {
 	 * Gets all the classes from the package
 	 * 
 	 * @param packageName
+	 *            String
 	 * @return SetOfClasses
 	 */
 	public static Set<Class<?>> getClasses(String packageName) {

@@ -21,6 +21,7 @@ public @interface QueryMapperAnnotation {
 	/**
 	 * 
 	 * Table name of the database table corresponding to
+	 * @return String
 	 */
 	public String tableName();
 }

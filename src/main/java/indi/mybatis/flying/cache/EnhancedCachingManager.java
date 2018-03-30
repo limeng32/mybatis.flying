@@ -44,7 +44,7 @@ public interface EnhancedCachingManager {
 	 * global CacheKey buffer pool.
 	 * 
 	 * @param sessionCacheKeysPool
-	 * 
+	 *            CacheKeysPool
 	 */
 	public void refreshCacheKey(CacheKeysPool sessionCacheKeysPool);
 
@@ -56,6 +56,7 @@ public interface EnhancedCachingManager {
 	 * cache.
 	 * 
 	 * @param set
+	 *            Set
 	 */
 	public void clearRelatedCaches(Set<String> set);
 
@@ -66,8 +67,9 @@ public interface EnhancedCachingManager {
 	 * global Cache manager.
 	 * 
 	 * @param statementId
-	 * 
+	 *            String
 	 * @param cache
+	 *            Cache
 	 */
 	public void appendStatementCacheMap(String statementId, Cache cache);
 
