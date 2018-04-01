@@ -1,4 +1,4 @@
-package indi.mybatis.flying.bean;
+package indi.mybatis.flying;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
