@@ -41,7 +41,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.SmartDataSource;
 
-import indi.mybatis.flying.ApplicationContextProvider;
+import indi.mybatis.flying.bean.ApplicationContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;

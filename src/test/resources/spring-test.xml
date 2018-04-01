@@ -18,6 +18,4 @@
 
 	<import resource="classpath:spring-test-no-context-provider.xml" />
 
-	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
-
 </beans>
