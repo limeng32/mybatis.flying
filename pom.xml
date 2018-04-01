@@ -214,6 +214,7 @@
 			<groupId>org.mybatis.caches</groupId>
 			<artifactId>mybatis-redis</artifactId>
 			<version>${mybatis.caches.version}</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<repositories>

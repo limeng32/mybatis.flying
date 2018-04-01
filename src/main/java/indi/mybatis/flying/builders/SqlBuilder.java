@@ -191,7 +191,7 @@ public class SqlBuilder {
 			if (fieldMapper.isOpVersionLock()) {
 				opVersionLockList.add(fieldMapper);
 			}
-			fieldMapperCache.put(field.getName(), fieldMapper);
+			fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));

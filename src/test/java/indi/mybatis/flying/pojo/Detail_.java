@@ -20,7 +20,7 @@ public class Detail_ extends PojoSupport<Detail_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String name;
 
-	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
+	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD")
 	private LoginLog_ loginLog;
 
 	@Override
