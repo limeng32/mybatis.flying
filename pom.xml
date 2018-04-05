@@ -364,6 +364,10 @@
 					<version>${mybatis-341.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>mybatis-342</id>
@@ -380,6 +384,10 @@
 					<version>${mybatis-342.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>mybatis-343</id>
@@ -396,6 +404,10 @@
 					<version>${mybatis-343.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>mybatis-344</id>
@@ -412,6 +424,10 @@
 					<version>${mybatis-344.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>mybatis-345</id>
@@ -428,6 +444,10 @@
 					<version>${mybatis-345.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>mybatis-346</id>
@@ -444,6 +464,10 @@
 					<version>${mybatis-346.version}</version>
 				</dependency>
 			</dependencies>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
 		</profile>
 		<profile>
 			<id>gpg</id>

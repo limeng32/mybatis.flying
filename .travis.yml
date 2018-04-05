@@ -3,18 +3,31 @@ sudo: false
 jdk:
   - oraclejdk8
 script: 
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -B
         - mvn clean test -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-341 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-341 -B
         - mvn clean test -P mybatis-341 -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-342 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-342 -B
         - mvn clean test -P mybatis-342 -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-343 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-343 -B
         - mvn clean test -P mybatis-343 -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-344 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-344 -B
         - mvn clean test -P mybatis-344 -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-345 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-345 -B
         - mvn clean test -P mybatis-345 -B
+        
+        - mvn clean test -DNO_PROVIDER=true -Dtest=NoApplicationContextProviderTest -P mybatis-346 -B
         - mvn clean test -DCACHE=true -Dtest=CacheTest -P mybatis-346 -B
         - mvn clean test -P mybatis-346 -B
         - mvn jacoco:report
