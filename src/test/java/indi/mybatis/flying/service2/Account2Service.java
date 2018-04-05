@@ -63,4 +63,9 @@ public class Account2Service extends ServiceSupport<Account2_> implements Accoun
 		role2_.setAccount(mapper.selectAll(account2_));
 	}
 
+	@Override
+	public Account2_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
+
 }

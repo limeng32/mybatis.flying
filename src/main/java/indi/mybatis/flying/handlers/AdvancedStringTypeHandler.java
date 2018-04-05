@@ -12,7 +12,7 @@ import org.apache.ibatis.type.MappedTypes;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
- * 明确指定了MappedTypes和MappedJdbcTypes的StringTypeHandler
+ * Specify the StringTypeHandler of MappedTypes and MappedJdbcTypes.
  * 
  * @author limeng32
  * 

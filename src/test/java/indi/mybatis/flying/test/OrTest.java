@@ -24,7 +24,6 @@ import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
-import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail2_;
 import indi.mybatis.flying.pojo.LogStatus;
 import indi.mybatis.flying.pojo.LoginLog_;
@@ -165,16 +164,6 @@ public class OrTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr3.result.xml")
 	public void testOr3() {
-		/*
-		 * LoginLog_Condition lc1 = new LoginLog_Condition();
-		 * lc1.setLoginIP("a1"); lc1.setLoginIP2("a1"); int i =
-		 * loginLogService.count(lc1); Assert.assertEquals(1, i);
-		 * 
-		 * LoginLog_Condition lc2 = new LoginLog_Condition();
-		 * lc2.setLoginIP2("a1"); lc2.setLoginIP("a1"); int i2 =
-		 * loginLogService.count(lc2); Assert.assertEquals(1, i2);
-		 */
-
 		LoginLog_Condition lc4 = new LoginLog_Condition();
 		Account_Condition2 ac = new Account_Condition2();
 		ac.setNameEqualsOr("ann", "bob");
@@ -260,13 +249,7 @@ public class OrTest {
 	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr7.datasource2.result.xml")
 	public void testOr7() {
 		LoginLogSource2Condition loginLogSource2 = new LoginLogSource2Condition();
-		// loginLogSource2.setAccount(new Account_Condition());
-		// ((Account_Condition)loginLogSource2.getAccount()).setIdEqualsOr(1,2);
-		Account_ ac1 = new Account_();
-		ac1.setId(1L);
-		Account_ ac2 = new Account_();
-		ac2.setId(2L);
-		loginLogSource2.setAccountEqualsOr(ac1, ac2);
+		loginLogSource2.setAccountEqualsOr(1L, 2L);
 		int i = loginLogSource2Service.count(loginLogSource2);
 		Assert.assertEquals(4, i);
 	}
@@ -285,16 +268,12 @@ public class OrTest {
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOrMashup.dataSource2.result.xml"), })
 	public void testOrMashup() {
 		LoginLogSource2Condition l2c = new LoginLogSource2Condition();
-		Account_ a1 = new Account_();
-		a1.setId(1L);
-		Account_ a2 = new Account_();
-		a2.setId(2L);
-		l2c.setAccountEqualsOr2(a1, a2, "23453");
+		l2c.setAccountEqualsOr2(1L, 2L, "23453");
 		int i1 = loginLogSource2Service.count(l2c);
 		Assert.assertEquals(3, i1);
 
 		LoginLogSource2Condition l2c2 = new LoginLogSource2Condition();
-		l2c2.setAccountEqualsOr3(a1, a2, "23453", "d4");
+		l2c2.setAccountEqualsOr3(1L, 2L, "23453", "d4");
 		Detail2_ d2c = new Detail2_();
 		d2c.setLoginLogSource2(l2c2);
 		int i2 = detail2Service.count(d2c);

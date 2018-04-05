@@ -10,10 +10,8 @@ CREATE TABLE account2_ (
   status char(1) DEFAULT NULL,
   nickname varchar(32) DEFAULT NULL,
   role_id int(11) DEFAULT NULL,
-  deputy_id int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY role1 (role_id) USING BTREE,
-  KEY role2 (deputy_id) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=456 DEFAULT CHARSET=utf8;
 DROP TABLE IF EXISTS detail2_;
 CREATE TABLE detail2_ (

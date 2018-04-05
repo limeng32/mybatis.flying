@@ -16,59 +16,80 @@ import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
 
 /**
- * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系
+ * Field mapping class that describes the correspondence between a Java object
+ * field and a database table field.
  */
 public class FieldMapper implements Mapperable {
 
 	private Field field;
 
 	/**
-	 * Java对象字段名
+	 * Java object field name.
 	 */
 	private String fieldName;
 
 	/**
-	 * 数据库表字段名
+	 * Database table field name.
 	 */
 	private String dbFieldName;
 
 	/**
-	 * 数据库字段对应的jdbc类型
+	 * The JDBC type corresponding to the database field.
 	 */
 	private JdbcType jdbcType;
 
 	/**
-	 * 如果是外键，对应数据库其他表的主键字段的名称。不是外键时为null。
+	 * If it is a foreign key, it corresponds to the name of the primary key
+	 * field of the other table in the database. Blank means it's not foreign
+	 * key.
 	 */
 	private String dbAssociationUniqueKey = "";
 
 	/**
-	 * 此变量是否对应数据库表的主键。默认为否。
+	 * If it is a cross-source foreign key, it corresponds to the name of the
+	 * primary key field for the table of the other database. Blank means it's
+	 * not foreign key.
+	 */
+	private String dbCrossedAssociationUniqueKey = "";
+
+	/**
+	 * This variable corresponds to the primary key of the database table. The
+	 * default is false.
 	 */
 	private boolean isUniqueKey;
 
 	/**
-	 * 此变量是否对应数据库表的外键。默认为否。
+	 * This variable corresponds to the foreign key of the database table. The
+	 * default is false.
 	 */
 	private boolean isForeignKey;
 
 	/**
-	 * 如果此变量对应数据库表的外键，ForeignFieldName表示相关表的主键的Java对象字段名。不是外键时为null。
+	 * This variable corresponds to the foreign key of the cross-source database
+	 * table. The default is false.
+	 */
+	private boolean isCrossDbForeignKey;
+
+	/**
+	 * If this variable corresponds to the foreign key of the database table,
+	 * the ForeignFieldName represents the Java object field name of the related
+	 * table's primary key.Blank means it's not foreign key.
 	 */
 	private String foreignFieldName;
 
 	/**
-	 * 此变量是否为version型乐观锁。默认为否。
+	 * Whether this variable is a version optimistic lock, the default is false.
 	 */
 	private boolean isOpVersionLock;
 
 	/**
-	 * 此变量的ignoreTag的set，默认为空。
+	 * IgnoreTag's set for this variable, the default is empty.
 	 */
 	private HashSet<String> ignoreTagSet;
 
 	/**
-	 * 此变量的指定typeHandler的访问路径，默认为null。
+	 * The access path of the custom typeHandler for this variable, the default
+	 * is null.
 	 */
 	private String typeHandlerPath;
 
@@ -100,7 +121,10 @@ public class FieldMapper implements Mapperable {
 		}
 		setFieldName(field.getName());
 		setFieldType(field.getType());
-		/* Column标注的优先级最低，所以写在最前 */
+		/*
+		 * The Column annotation has the lowest priority, so it is written at
+		 * the top.
+		 */
 		if (column != null) {
 			setDbFieldName(getColumnName(column, field));
 			setJdbcType(getColumnType(column, field));
@@ -110,13 +134,14 @@ public class FieldMapper implements Mapperable {
 		if (fieldMapperAnnotation != null) {
 			setDbFieldName(fieldMapperAnnotation.dbFieldName());
 			setJdbcType(fieldMapperAnnotation.jdbcType());
-			setTypeHandlerPath(fieldMapperAnnotation.dbAssociationTypeHandler());
+			setTypeHandlerPath(fieldMapperAnnotation.customTypeHandler());
 			setOpLockType(fieldMapperAnnotation.opLockType());
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
 		}
-		/* Id标注的优先级最高，所以写在最后 */
+		/* The Id has the highest priority, so it's written at the end. */
 		if (id != null) {
 			setUniqueKey(true);
 		}
@@ -354,6 +379,24 @@ public class FieldMapper implements Mapperable {
 	@Override
 	public Class<?> getSubTarget() {
 		return subTarget;
+	}
+
+	@Override
+	public String getDbCrossedAssociationUniqueKey() {
+		return dbCrossedAssociationUniqueKey;
+	}
+
+	public void setDbCrossedAssociationUniqueKey(String dbCrossedAssociationUniqueKey) {
+		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
+	}
+
+	@Override
+	public boolean isCrossDbForeignKey() {
+		return isCrossDbForeignKey;
+	}
+
+	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
+		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
 
 }

@@ -1,11 +1,11 @@
 package indi.mybatis.flying;
 
-/* 本类中放置当前flying版本号，和flying各分支代码的主要不同之处 */
+/* The current flying version number and alias are placed in this class. */
 public class AerialView {
 
-	/* flying当前版本 */
-	public static final String FLYING_VERSION = "0.9.3";
+	/* Flying current version */
+	public static final String FLYING_VERSION = "0.9.4";
 
-	/* 当前版本别名 */
-	public static final String FLYING_NAME = "FIRST_SNOW";
+	/* Current version alias */
+	public static final String FLYING_NAME = "SUNNY_SPRING";
 }

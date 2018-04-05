@@ -82,4 +82,9 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 	public int updatePersistentWithoutName(Detail2_ t) {
 		return mapper.updatePersistentWithoutName(t);
 	}
+
+	@Override
+	public Detail2_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
 }

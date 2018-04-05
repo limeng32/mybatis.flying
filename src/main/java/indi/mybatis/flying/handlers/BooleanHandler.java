@@ -11,7 +11,7 @@ import org.apache.ibatis.type.MappedTypes;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
- * 解决布尔类型对象的处理器
+ * The handler for the Boolean type object.
  * 
  * @author limeng32
  * 

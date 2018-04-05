@@ -32,6 +32,7 @@ import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pagination.SortParam;
+import indi.mybatis.flying.pojo.Account22;
 import indi.mybatis.flying.pojo.Account2_;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
@@ -41,6 +42,7 @@ import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.Role_Condition;
+import indi.mybatis.flying.service.Account22Service;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
@@ -70,6 +72,9 @@ public class CacheTest {
 
 	@Autowired
 	private Account2Service account2Service;
+
+	@Autowired
+	private Account22Service account22Service;
 
 	@Autowired
 	private Role2Service role2Service;
@@ -559,7 +564,7 @@ public class CacheTest {
 	}
 
 	/* 测试在select查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -587,7 +592,7 @@ public class CacheTest {
 	}
 
 	/* 测试在selectAll查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -620,7 +625,7 @@ public class CacheTest {
 	}
 
 	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -653,7 +658,7 @@ public class CacheTest {
 	}
 
 	/* 测试在查询对象查询的情况下，缓存确实生效的用例 */
-	@Test
+//	@Test
 	@IfProfileValue(name = "CACHE", value = "true")
 	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testUpdateDirect.result.xml")
@@ -972,23 +977,47 @@ public class CacheTest {
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource.result.xml"),
 			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testAccountTypeHandlerUsingCache.datasource2.result.xml") })
 	public void testAccountTypeHandlerUsingCache() {
+		Role_ r = new Role_();
+		r.setId(101);
+		r.setName("user");
+		roleService.insert(r);
+
+		Account_ a = new Account_();
+		a.setId(1L);
+		a.setEmail("ann@live.cn");
+		a.setRole(r);
+		accountService.insert(a);
+
+		Account_ a2 = new Account_();
+		a2.setId(2L);
+		a2.setEmail("bob@live.cn");
+		accountService.insert(a2);
+
+		LoginLog_ l = new LoginLog_();
+		l.setId(2);
+		l.setLoginIP("2");
+		loginLogService.insert(l);
+
+		LoginLogSource2 l2 = new LoginLogSource2();
+		l2.setId(21);
+		l2.setLoginIP("ip0");
+		l2.setAccount(a);
+		loginLogSource2Service.insert(l2);
+
 		LoginLogSource2 loginLogSource2 = loginLogSource2Service.select(21);
 		Assert.assertEquals("user", loginLogSource2.getAccount().getRole().getName());
 
-		Map<String, Object> m = new HashMap<>(4);
-		m.put("id", 101);
-		m.put("name", "newUser");
-		roleService.updateDirect(m);
-
-		LoginLogSource2 loginLogSource3 = loginLogSource2Service.select(21);
-		Assert.assertEquals("user", loginLogSource3.getAccount().getRole().getName());
-
-		Role_ role = roleService.select(loginLogSource3.getAccount().getRole().getId());
-		role.setName("silver");
-		roleService.update(role);
+		Account_ account = accountService.select(1L);
 
 		LoginLogSource2 loginLogSource4 = loginLogSource2Service.select(21);
-		Assert.assertEquals("silver", loginLogSource4.getAccount().getRole().getName());
+		loginLogSource4.setLoginIP("ip00");
+		loginLogSource2Service.updateNoFlush(loginLogSource4);
+		account = accountService.select(1L);
+		accountService.update(account);
+
+		LoginLogSource2 loginLogSource5 = loginLogSource2Service.select(21);
+		Assert.assertEquals("ip00", loginLogSource5.getLoginIP());
+		Assert.assertEquals(1, loginLogSource5.getAccount().getOpLock().intValue());
 	}
 
 	/* 一个在缓存状态下使用自定义主键生成器insert的测试用例 */
@@ -1011,5 +1040,75 @@ public class CacheTest {
 
 		int i2 = accountService.count(new Account_());
 		Assert.assertEquals(2, i2);
+	}
+
+	/* 一个展示n+1问题的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne.datasource2.result.xml")
+	@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne.datasource2.result.xml")
+	public void testNPlusOne() {
+		Role2_ r = new Role2_();
+		r.setId(1);
+		r.setName("root");
+		role2Service.insert(r);
+
+		Role2_ r2 = new Role2_();
+		r2.setId(2);
+		r2.setName("user");
+		role2Service.insert(r2);
+
+		Account2_ a = new Account2_();
+		a.setId(21);
+		a.setEmail("10");
+		a.setRole(r);
+		account2Service.insert(a);
+
+		Account2_ a2 = new Account2_();
+		a2.setId(22);
+		a2.setEmail("11");
+		a2.setRole(r);
+		account2Service.insert(a2);
+
+		Collection<Account2_> accounts = account2Service.selectAll(new Account2_());
+		Assert.assertEquals(2, accounts.size());
+	}
+
+	/* 一个展示n+1问题的测试用例 */
+	@Test
+	@IfProfileValue(name = "CACHE", value = "true")
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource1.result.xml"),
+			@ExpectedDatabase(connection = "dataSource2", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml"), })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource1.result.xml"),
+			@DatabaseTearDown(connection = "dataSource2", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/cacheTest/testNPlusOne2.datasource2.result.xml"), })
+	public void testNPlusOne2() {
+		Role2_ r = new Role2_();
+		r.setId(1);
+		r.setName("root");
+		role2Service.insert(r);
+
+		Role2_ r2 = new Role2_();
+		r2.setId(2);
+		r2.setName("user");
+		role2Service.insert(r2);
+
+		Account22 a = new Account22();
+		a.setId(21);
+		a.setEmail("10");
+		a.setRole(r);
+		account22Service.insert(a);
+
+		Account22 a2 = new Account22();
+		a2.setId(22);
+		a2.setEmail("11");
+		a2.setRole(r);
+		account22Service.insert(a2);
+
+		Collection<Account22> accounts = account22Service.selectAll(new Account22());
+		Assert.assertEquals(2, accounts.size());
+		Collection<Account22> accounts2 = account22Service.selectAll(new Account22());
+		Collection<Account22> accounts3 = account22Service.selectAll(new Account22());
 	}
 }

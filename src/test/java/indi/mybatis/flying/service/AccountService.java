@@ -106,4 +106,9 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return mapper.selectAccountByRole(map);
 	}
 
+	@Override
+	public Account_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
+
 }

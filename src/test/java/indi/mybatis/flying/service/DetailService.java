@@ -62,4 +62,9 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 		detail.setLoginLog(loginlog);
 		loginlog.setDetail(mapper.selectAll(detail));
 	}
+
+	@Override
+	public Detail_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
 }

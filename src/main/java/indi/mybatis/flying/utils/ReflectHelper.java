@@ -60,83 +60,85 @@ public class ReflectHelper {
 	}
 
 	/**
-	 * 从包package中获取所有的Class
+	 * Gets all the classes from the package
 	 * 
 	 * @param packageName
-	 *            包路径名称
+	 *            String
 	 * @return SetOfClasses
 	 */
 	public static Set<Class<?>> getClasses(String packageName) {
 
-		/* 第一个class类的集合 */
+		/* The collection of the first class. */
 		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
-		/* 是否循环迭代 */
+		/* Cyclic iteration */
 		boolean recursive = true;
-		/* 获取包的名字并进行替换 */
+		/* Get the name of the package and replace it. */
 		String packageDirName = packageName.replace('.', '/');
-		/* 定义一个枚举的集合 并进行循环来处理这个目录下的things */
+		/*
+		 * Define a collection of enumerations and loop through the files in
+		 * this directory.
+		 */
 		Enumeration<URL> dirs;
 		try {
 			dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
-			/* 循环迭代下去 */
+			/* Loop iteration */
 			while (dirs.hasMoreElements()) {
-				/* 获取下一个元素 */
+				/* Gets the next element. */
 				URL url = dirs.nextElement();
 
 				switch (url.getProtocol()) {
-				/* 如果是以文件的形式保存在服务器上 */
+				/* If it is stored on the server as a file. */
 				case "file":
-					/* 获取包的物理路径 */
+					/* Gets the physical path of the package. */
 					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-					/* 以文件的方式扫描整个包下的文件 并添加到集合中 */
+					/*
+					 * Scan the entire package of files in a file and add them
+					 * to the collection.
+					 */
 					findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
 					break;
-				/* 如果是jar包文件 */
 				case "jar":
-					/* 定义一个JarFile */
 					JarFile jar;
 					try {
-						/* 获取jar */
 						jar = ((JarURLConnection) url.openConnection()).getJarFile();
-						/* 从此jar包 得到一个枚举类 */
+						/* The jar package gets an enumeration class. */
 						Enumeration<JarEntry> entries = jar.entries();
-						/* 同样的进行循环迭代 */
 						while (entries.hasMoreElements()) {
-							/* 获取jar里的一个实体 可以是目录 和一些jar包里的其他文件 如META-INF等文件 */
+							/*
+							 * Getting an entity in the jar can be a directory
+							 * and other files in a jar package such as
+							 * meta-inf.
+							 */
 							JarEntry entry = entries.nextElement();
 							String name = entry.getName();
-							/* 如果是以/开头的 */
 							if (name.charAt(0) == '/') {
-								/* 获取后面的字符串 */
 								name = name.substring(1);
 							}
-							/* 如果前半部分和定义的包名相同 */
 							if (name.startsWith(packageDirName)) {
 								int idx = name.lastIndexOf('/');
-								/* 如果以"/"结尾 是一个包 */
 								if (idx != -1) {
-									/* 获取包名 把"/"替换成"." */
 									packageName = name.substring(0, idx).replace('/', '.');
 								}
-								/* 如果可以迭代下去 并且是一个包 */
+								/* If it can iterate and is a package. */
 								if ((idx != -1) || recursive) {
-									/* 如果是一个.class文件 而且不是目录 */
 									if (name.endsWith(".class") && !entry.isDirectory()) {
-										/* 去掉后面的".class" 获取真正的类名 */
+										/* Gets the real class name. */
 										String className = name.substring(packageName.length() + 1, name.length() - 6);
 										try {
-											/* 添加到classes */
 											classes.add(Class.forName(packageName + '.' + className));
 										} catch (ClassNotFoundException e) {
-											logger.error(new StringBuffer("添加用户自定义视图类错误 找不到此类的.class文件").append(e)
-													.toString());
+											logger.error(new StringBuffer(
+													"Add user mapper class error, find no such.class file: ").append(e)
+															.toString());
 										}
 									}
 								}
 							}
 						}
 					} catch (IOException e) {
-						logger.error(new StringBuffer("在扫描用户定义视图时从jar包获取文件出错，原因：").append(e).toString());
+						logger.error(new StringBuffer(
+								"Error accessing file from jar package when scanning user mapper class: ").append(e)
+										.toString());
 					}
 					break;
 				default:
@@ -151,7 +153,7 @@ public class ReflectHelper {
 	}
 
 	/**
-	 * 以文件的形式来获取包下的所有Class
+	 * Gets all the classes under the package in the form of a file
 	 * 
 	 * @param packageName
 	 * @param packagePath
@@ -160,34 +162,29 @@ public class ReflectHelper {
 	 */
 	private static void findAndAddClassesInPackageByFile(String packageName, String packagePath,
 			final boolean recursive, Set<Class<?>> classes) {
-		/* 获取此包的目录 建立一个File */
+		/* Get the directory of this package to create a File. */
 		File dir = new File(packagePath);
-		/* 如果不存在或者 也不是目录就直接返回 */
 		if (!dir.exists() || !dir.isDirectory()) {
 			return;
 		}
-		/* 如果存在 就获取包下的所有文件 包括目录 */
 		File[] dirfiles = dir.listFiles(new FileFilter() {
-			/* 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件) */
 			@Override
 			public boolean accept(File file) {
 				return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
 			}
 		});
-		/* 循环所有文件 */
 		for (File file : dirfiles) {
-			/* 如果是目录 则继续扫描 */
 			if (file.isDirectory()) {
 				findAndAddClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(), recursive,
 						classes);
 			} else {
-				/* 如果是java类文件 去掉后面的.class 只留下类名 */
 				String className = file.getName().substring(0, file.getName().length() - 6);
 				try {
 					classes.add(
 							Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
 				} catch (ClassNotFoundException e) {
-					logger.error(new StringBuffer("添加用户自定义视图类错误 找不到此类的.class文件，原因：").append(e).toString());
+					logger.error(new StringBuffer("Add user mapper class error to find no such. Class file: ").append(e)
+							.toString());
 				}
 			}
 		}

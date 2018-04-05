@@ -55,4 +55,9 @@ public class Role2Service extends ServiceSupport<Role2_> implements Role2Mapper 
 		return supportCount(mapper, t);
 	}
 
+	@Override
+	public Role2_ selectWithoutCache(Object id) {
+		return mapper.selectWithoutCache(id);
+	}
+
 }

@@ -10,6 +10,8 @@ public class FlyingModel {
 	private String ignoreTag;
 	private KeyGeneratorType keyGeneratorType;
 	private KeyHandler keyHandler;
+	private String dataSourceId;
+	private String connectionCatalog;
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -49,6 +51,22 @@ public class FlyingModel {
 
 	public void setKeyHandler(KeyHandler keyHandler) {
 		this.keyHandler = keyHandler;
+	}
+
+	public String getDataSourceId() {
+		return dataSourceId;
+	}
+
+	public void setDataSourceId(String dataSourceId) {
+		this.dataSourceId = dataSourceId;
+	}
+
+	public String getConnectionCatalog() {
+		return connectionCatalog;
+	}
+
+	public void setConnectionCatalog(String connectionCatalog) {
+		this.connectionCatalog = connectionCatalog;
 	}
 
 }

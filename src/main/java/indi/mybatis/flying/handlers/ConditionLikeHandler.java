@@ -12,9 +12,8 @@ import org.apache.ibatis.type.MappedTypes;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
- * 解决sql查询语句中like '%xxx%'条件的处理器
- * 
- * @author limeng32
+ * The handler that solves the like '% XXX %' condition in the SQL query
+ * statement.
  * 
  */
 @MappedTypes({ String.class })

@@ -1,10 +1,13 @@
 package indi.mybatis.flying.pojo.condition;
 
+import org.apache.ibatis.type.LongTypeHandler;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Sortable;
+import indi.mybatis.flying.pojo.Detail2_;
 import indi.mybatis.flying.pojo.LoginLogSource2;
 import indi.mybatis.flying.statics.ConditionType;
 
@@ -19,19 +22,19 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
 	private String ipLikeFilter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class) })
 	private Object[] accountEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
 			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal), })
 	private Object[] accountEqualsOr2;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, dbAssociationTypeHandler = indi.mybatis.flying.typeHandler.AccountTypeHandler.class),
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
 			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.Detail2_.class), })
+			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.Equal, subTarget = Detail2_.class), })
 	private Object[] accountEqualsOr3;
 
 	@Override

@@ -36,16 +36,16 @@ import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
- * 通过注解生成sql
+ * Generate SQL through annotations
  * 
  * @author david, limeng32
  * 
  */
 public class SqlBuilder {
 
-	/* 缓存TableMapper */
+	/* Cache TableMapper */
 	private static Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
-	/* 缓存QueryMapper */
+	/* Cache QueryMapper */
 	private static Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
 
 	private static final String DOT = ".";
@@ -98,8 +98,17 @@ public class SqlBuilder {
 	private static final String _OR_ = " or ";
 	private static final String _SET_ = " set ";
 
+	private static StringBuffer whereSql;
+	private static StringBuffer tableSql;
+	private static StringBuffer tempWhereSql;
+	private static StringBuffer selectSql;
+	private static StringBuffer fromSql;
+	private static AtomicInteger ai;
+
 	/**
-	 * 由传入的dto对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
+	 * The class of the incoming dto object builds the TableMapper object, and
+	 * the constructed object is stored in the cache, which is retrieved
+	 * directly from the cache later.
 	 * 
 	 * @param dtoClass
 	 * @return TableMapper
@@ -151,11 +160,10 @@ public class SqlBuilder {
 				}
 			}
 
-			if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-			} else {
-				fieldMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+			if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 				fieldMapper.setForeignKey(true);
 			}
+
 			if (fieldMapper.isForeignKey()) {
 				if (!tableMapperCache.containsKey(field.getType())) {
 					buildTableMapper(field.getType());
@@ -165,10 +173,25 @@ public class SqlBuilder {
 						fieldMapper.getDbAssociationUniqueKey()).getFieldName();
 				fieldMapper.setForeignFieldName(foreignFieldName);
 			}
+
+			if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
+				fieldMapper.setCrossDbForeignKey(true);
+			}
+
+			if (fieldMapper.isCrossDbForeignKey()) {
+				if (!tableMapperCache.containsKey(field.getType())) {
+					buildTableMapper(field.getType());
+				}
+				TableMapper tm = tableMapperCache.get(field.getType());
+				String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+						fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+				fieldMapper.setForeignFieldName(foreignFieldName);
+			}
+
 			if (fieldMapper.isOpVersionLock()) {
 				opVersionLockList.add(fieldMapper);
 			}
-			fieldMapperCache.put(field.getName(), fieldMapper);
+			fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
@@ -181,24 +204,20 @@ public class SqlBuilder {
 	/* 从newFieldMapperCache中获取已知dbFieldName的FieldMapper */
 	private static Mapperable getFieldMapperByDbFieldName(Map<String, FieldMapper> newFieldMapperCache,
 			String dbFieldName) {
-		for (Mapperable mapper : newFieldMapperCache.values()) {
-			if (dbFieldName.equalsIgnoreCase(mapper.getDbFieldName())) {
-				return mapper;
-			}
-		}
-		return null;
+		return newFieldMapperCache.get(dbFieldName);
 	}
 
 	/**
-	 * 由传入的dto对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
+	 * The class of the incoming dto object builds the QueryMapper object, and
+	 * the constructed object is stored in the cache, which is retrieved
+	 * directly from the cache later.
 	 * 
 	 * @param dtoClass
 	 * @param pojoClass
 	 * @return QueryMapper
 	 */
 	private static QueryMapper buildQueryMapper(Class<?> dtoClass, Class<?> pojoClass) {
-		QueryMapper queryMapper = null;
-		queryMapper = queryMapperCache.get(dtoClass);
+		QueryMapper queryMapper = queryMapperCache.get(dtoClass);
 		if (queryMapper != null) {
 			return queryMapper;
 		}
@@ -255,7 +274,7 @@ public class SqlBuilder {
 		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
 		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
 		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
-		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.dbAssociationTypeHandler());
+		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.customTypeHandler());
 		for (Field pojoField : pojoClass.getDeclaredFields()) {
 			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
@@ -284,8 +303,7 @@ public class SqlBuilder {
 					}
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
-					if ("".equals(fieldMapper.getDbAssociationUniqueKey())) {
-					} else {
+					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
 					}
@@ -295,8 +313,25 @@ public class SqlBuilder {
 							buildTableMapper(pojoField.getType());
 						}
 						TableMapper tm = tableMapperCache.get(pojoField.getType());
-						String foreignFieldName = tm.getFieldMapperCache().get(fieldMapper.getDbAssociationUniqueKey())
-								.getFieldName();
+						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+								fieldMapper.getDbAssociationUniqueKey()).getFieldName();
+						conditionMapper.setForeignFieldName(foreignFieldName);
+					}
+
+					if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
+						conditionMapper
+								.setDbCrossedAssociationUniqueKey(fieldMapper.getDbCrossedAssociationUniqueKey());
+						fieldMapper.setCrossDbForeignKey(true);
+					}
+
+					if (fieldMapper.isCrossDbForeignKey()) {
+						if (!tableMapperCache.containsKey(pojoField.getType())) {
+							buildTableMapper(pojoField.getType());
+						}
+						TableMapper tm = tableMapperCache.get(pojoField.getType());
+						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
+								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
+
 						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
 				}
@@ -305,8 +340,10 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 查找类clazz及其所有父类，直到找到一个拥有TableMapperAnnotation注解或Table注解的类为止，
-	 * 然后返回这个拥有TableMapperAnnotation注解的类
+	 * 
+	 * Find the class clazz and all the parent classes until you find a class
+	 * with the TableMapperAnnotation or Table annotation, and then return the
+	 * class with the TableMapperAnnotation annotation
 	 * 
 	 * @param object
 	 * @return
@@ -324,7 +361,9 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 判断clazz是否符合条件，即是否存在TableMapperAnnotation类型的标注。如存在返回true，否则返回false。
+	 * To determine whether clazz meets the criteria, whether there is a
+	 * TableMapperAnnotation type annotation. If there is one return true, else
+	 * return false
 	 * 
 	 * @param clazz
 	 * @return
@@ -385,7 +424,7 @@ public class SqlBuilder {
 		}
 		List<?> multiConditionC = (List<?>) value;
 		if (multiConditionC.size() > 0) {
-			StringBuffer tempWhereSql = new StringBuffer();
+			tempWhereSql = new StringBuffer();
 			handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
 			switch (type) {
 			case In:
@@ -437,7 +476,7 @@ public class SqlBuilder {
 		}
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
-			StringBuffer tempWhereSql = new StringBuffer();
+			tempWhereSql = new StringBuffer();
 			tempWhereSql.append(_OPENPAREN);
 			int j = -1;
 			boolean allNull = true;
@@ -499,7 +538,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (mapper.isForeignKey()) {
+		if (mapper.isForeignKey() || mapper.isCrossDbForeignKey()) {
 			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
@@ -514,10 +553,7 @@ public class SqlBuilder {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
 		if (isOr) {
-			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
-		}
-		if (isOr) {
-			whereSql.append(CLOSEBRACE_OR_);
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName()).append(CLOSEBRACE_OR_);
 		} else {
 			whereSql.append(CLOSEBRACE_AND_);
 		}
@@ -560,11 +596,11 @@ public class SqlBuilder {
 		if (mapper.getJdbcType() != null) {
 			whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(mapper.getJdbcType().toString());
 		}
-		if (isOr) {
-			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName());
+		if (mapper.getTypeHandlerPath() != null) {
+			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(mapper.getTypeHandlerPath());
 		}
 		if (isOr) {
-			whereSql.append(CLOSEBRACE_OR_);
+			whereSql.append(COMMA_JAVATYPE_EQUAL).append(mapper.getFieldType().getName()).append(CLOSEBRACE_OR_);
 		} else {
 			whereSql.append(CLOSEBRACE_AND_);
 		}
@@ -601,14 +637,27 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成insert sql语句
+	 * The insert SQL statement is generated from the incoming object
 	 * 
 	 * @param object
-	 *            pojo @return String @throws IllegalAccessException @throws
-	 *            IllegalArgumentException @throws NoSuchFieldException @throws
-	 *            SecurityException @throws NoSuchMethodException @throws
-	 *            InvocationTargetException @throws Exception
-	 *            RuntimeException @throws
+	 *            Object
+	 * @param flyingModel
+	 *            FlyingModel
+	 * @return String
+	 * @throws IllegalArgumentException
+	 *             Exception
+	 * @throws NoSuchFieldException
+	 *             Exception
+	 * @throws SecurityException
+	 *             Exception
+	 * @throws NoSuchMethodException
+	 *             Exception
+	 * @throws InvocationTargetException
+	 *             Exception
+	 * @throws RuntimeException
+	 *             Exception
+	 * @throws IllegalAccessException
+	 *             Exception
 	 */
 	public static String buildInsertSql(Object object, FlyingModel flyingModel)
 			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
@@ -619,7 +668,7 @@ public class SqlBuilder {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
 		String tableName = tableMapper.getTableName();
-		StringBuffer tableSql = new StringBuffer();
+		tableSql = new StringBuffer();
 		StringBuffer valueSql = new StringBuffer();
 
 		tableSql.append(INSERT_INTO_).append(tableName).append(_OPENPAREN);
@@ -639,7 +688,7 @@ public class SqlBuilder {
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
 			valueSql.append(POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				valueSql.append(fieldMapper.getFieldName());
@@ -680,15 +729,21 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成update sql语句
+	 * The update SQL statement is generated by the incoming object
 	 * 
 	 * @param object
-	 *            pojo
+	 *            Object
+	 * @param flyingModel
+	 *            FlyingModel
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildUpdateSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -701,8 +756,8 @@ public class SqlBuilder {
 
 		String tableName = tableMapper.getTableName();
 
-		StringBuffer tableSql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer(WHERE_);
+		tableSql = new StringBuffer();
+		whereSql = new StringBuffer(WHERE_);
 
 		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
@@ -715,7 +770,7 @@ public class SqlBuilder {
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
@@ -754,15 +809,22 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成update持久态对象的 sql语句
+	 * Generate the SQL statement for the update persistent state object from
+	 * the incoming object
 	 * 
 	 * @param object
 	 *            pojo
+	 * @param flyingModel
+	 *            FlyingModel
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -775,8 +837,8 @@ public class SqlBuilder {
 
 		String tableName = tableMapper.getTableName();
 
-		StringBuffer tableSql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer(WHERE_);
+		tableSql = new StringBuffer();
+		whereSql = new StringBuffer(WHERE_);
 
 		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
@@ -788,7 +850,7 @@ public class SqlBuilder {
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey()) {
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
 				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 			} else {
 				tableSql.append(fieldMapper.getFieldName());
@@ -828,15 +890,19 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成delete sql语句
+	 * The delete SQL statement is generated from the incoming object
 	 * 
 	 * @param object
-	 *            pojo
+	 *            Object
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildDeleteSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -869,10 +935,12 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成query sql语句
+	 * The query SQL statement is generated from the incoming object
 	 * 
 	 * @param clazz
 	 *            pojo Class
+	 * @param flyingModel
+	 *            FlyingModel
 	 * @return sql
 	 */
 	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel) {
@@ -880,7 +948,7 @@ public class SqlBuilder {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		String tableName = tableMapper.getTableName();
 
-		StringBuffer selectSql = new StringBuffer(SELECT_);
+		selectSql = new StringBuffer(SELECT_);
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
@@ -894,26 +962,36 @@ public class SqlBuilder {
 
 		selectSql.append(FROM).append(tableName);
 
-		StringBuffer whereSql = new StringBuffer(WHERE_);
+		whereSql = new StringBuffer(WHERE_);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
-					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
+			whereSql.append(CLOSEBRACE_AND_);
 		}
 		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return selectSql.append(whereSql).toString();
 	}
 
 	/**
-	 * 由传入的对象生成query sql语句
+	 * The query SQL statement is generated from the incoming object
 	 * 
 	 * @param object
-	 *            pojo
+	 *            Object
+	 * @param flyingModel
+	 *            FlyingModel
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildSelectAllSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -921,10 +999,10 @@ public class SqlBuilder {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		String ignoreTag = flyingModel.getIgnoreTag();
-		StringBuffer selectSql = new StringBuffer(SELECT_);
-		StringBuffer fromSql = new StringBuffer(FROM);
-		StringBuffer whereSql = new StringBuffer(WHERE_);
-		AtomicInteger ai = new AtomicInteger(0);
+		selectSql = new StringBuffer(SELECT_);
+		fromSql = new StringBuffer(FROM);
+		whereSql = new StringBuffer(WHERE_);
+		ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
@@ -940,15 +1018,21 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成query sql语句
+	 * The query SQL statement is generated from the incoming object
 	 * 
 	 * @param object
-	 *            pojo
+	 *            Object
+	 * @param flyingModel
+	 *            FlyingModel
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildSelectOneSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -959,10 +1043,10 @@ public class SqlBuilder {
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}
-		StringBuffer selectSql = new StringBuffer(SELECT_);
-		StringBuffer fromSql = new StringBuffer(FROM);
-		StringBuffer whereSql = new StringBuffer(WHERE_);
-		AtomicInteger ai = new AtomicInteger(0);
+		selectSql = new StringBuffer(SELECT_);
+		fromSql = new StringBuffer(FROM);
+		whereSql = new StringBuffer(WHERE_);
+		ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
@@ -978,15 +1062,19 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 由传入的对象生成count sql语句
+	 * Generate the count SQL statement from the incoming object
 	 * 
 	 * @param object
-	 *            pojo
+	 *            Object
 	 * @return sql
 	 * @throws NoSuchMethodException
+	 *             Exception
 	 * @throws InvocationTargetException
+	 *             Exception
 	 * @throws IllegalAccessException
+	 *             Exception
 	 * @throws RuntimeException
+	 *             Exception
 	 */
 	public static String buildCountSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -995,14 +1083,16 @@ public class SqlBuilder {
 		}
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		AtomicInteger ai = new AtomicInteger(0);
+		ai = new AtomicInteger(0);
 		TableName tableName = new TableName(tableMapper, 0, null);
 
-		StringBuffer selectSql = new StringBuffer();
+		selectSql = new StringBuffer();
 		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
 		/*
-		 * 如果有且只有一个主键，采用select count("主键")的方式；如果无主键或有多个主键（联合主键），采用select
-		 * count(*)的方式。
+		 * If there is and only one primary key, select count(" primary key ");
+		 * If there are no primary keys or multiple primary keys (co-primary
+		 * keys), select count(*).
+		 * 
 		 */
 		if (tableMapper.getUniqueKeyNames().length == 1) {
 			selectSql.append(tableMapper.getUniqueKeyNames()[0].getDbFieldName());
@@ -1011,8 +1101,8 @@ public class SqlBuilder {
 		}
 		selectSql.append(CLOSEPAREN);
 
-		StringBuffer fromSql = new StringBuffer(FROM);
-		StringBuffer whereSql = new StringBuffer(WHERE_);
+		fromSql = new StringBuffer(FROM);
+		whereSql = new StringBuffer(WHERE_);
 
 		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai, tableName);
 
@@ -1042,7 +1132,9 @@ public class SqlBuilder {
 			tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
 		}
 		/*
-		 * 在第一次遍历中，处理好selectSql和fromSql。 如果originFieldMapper为null则可认为是第一次遍历
+		 * If originFieldMapper is null, it is considered to be the first
+		 * traversal. In the first iteration, handle selectSql and fromSql.
+		 * 
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
@@ -1053,29 +1145,30 @@ public class SqlBuilder {
 			}
 		}
 		/*
-		 * 在非第一次遍历中，处理fieldPerfix和fromSql。
-		 * 如果originFieldMapper和originTableName均不为null则可认为是非第一次遍历
+		 * If the originFieldMapper and originTableName are not null, it can be
+		 * considered a non-first traversal.In the non-first traversal, process
+		 * fieldPerfix and fromSql.
+		 * 
 		 */
 		String temp = null;
 		if (originFieldMapper != null && originTableName != null) {
-			/* 处理fieldPerfix */
+			/* Processing fieldPerfix */
 			temp = originFieldMapper.getFieldName();
 			if (fieldPerfix != null) {
 				temp = fieldPerfix + DOT + temp;
 			}
-			/* 处理fromSql */
+			/* Processing fromSql */
 			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
 					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
 					.append(originFieldMapper.getDbAssociationUniqueKey());
 		}
 
-		/* 处理fieldMapper中的条件 */
+		/* Handle the conditions in the fieldMapper */
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
 				continue;
 			}
-			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
 						temp, index, tableName, null);
@@ -1084,7 +1177,7 @@ public class SqlBuilder {
 			}
 		}
 
-		/* 处理queryMapper中的“且”条件 */
+		/* Handle the "and" condition in the queryMapper */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
@@ -1093,7 +1186,7 @@ public class SqlBuilder {
 			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
 		}
 
-		/* 处理queryMapper中的“或”条件 */
+		/* Handle the "or" condition in the queryMapper */
 		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
 			Object value = dtoFieldMap.get(orMapper.getFieldName());
 			if (value == null) {
@@ -1176,36 +1269,39 @@ public class SqlBuilder {
 		TableName tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
 
 		/*
-		 * 在第一次遍历中，处理好fromSql。 如果originFieldMapper为null则可认为是第一次遍历
+		 * If originFieldMapper is null, it is considered to be the first
+		 * traversal.In the first iteration, handle fromSql.
+		 * 
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 		}
 
 		/*
-		 * 在非第一次遍历中，处理fieldPerfix和fromSql。
-		 * 如果originFieldMapper和originTableName均不为null则可认为是非第一次遍历
+		 * If the originFieldMapper and originTableName are not null, it can be
+		 * considered a non-first traversal. In the non-first traversal, process
+		 * fieldPerfix and fromSql.
+		 * 
 		 */
 		String temp = null;
 		if (originFieldMapper != null && originTableName != null) {
-			/* 处理fieldPerfix */
+			/* Processing fieldPerfix */
 			temp = originFieldMapper.getFieldName();
 			if (fieldPerfix != null) {
 				temp = fieldPerfix + DOT + temp;
 			}
-			/* 处理fromSql */
+			/* Processing fromSql */
 			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
 					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
 					.append(originFieldMapper.getDbAssociationUniqueKey());
 		}
 
-		/* 处理fieldMapper中的条件 */
+		/* Handle the conditions in the fieldMapper */
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
 				continue;
 			}
-			/* 此处当value拥有TableMapper或QueryMapper标注时，开始进行迭代 */
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, fromSql, whereSql, tableName, fieldMapper, temp, index,
 						tableName);
@@ -1214,7 +1310,9 @@ public class SqlBuilder {
 			}
 		}
 
-		/* 处理queryMapper中的“且”条件 */
+		/*
+		 * Handle the "and" condition in the queryMapper
+		 */
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
@@ -1222,7 +1320,9 @@ public class SqlBuilder {
 			}
 			dealConditionMapper(conditionMapper, value, whereSql, tableName, temp, false, 0);
 		}
-		/* 处理queryMapper中的“或”条件 */
+		/*
+		 * Handle the "or" condition in the queryMapper
+		 */
 		for (OrMapper orMapper : queryMapper.getOrMapperCache().values()) {
 			Object value = dtoFieldMap.get(orMapper.getFieldName());
 			if (value == null) {

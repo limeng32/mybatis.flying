@@ -1,7 +1,9 @@
 package indi.mybatis.flying.models;
 
 /**
- * 或条件组映射类，用于描述被Or标注过的对象字段和ConditionMapper之间的对应关系
+ * Or conditional group mapping class,Used to describe the corresponding
+ * relationship between the object field and ConditionMapper that is marked by
+ * Or.
  */
 public class OrMapper {
 

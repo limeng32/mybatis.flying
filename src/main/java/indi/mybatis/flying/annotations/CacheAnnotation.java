@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import indi.mybatis.flying.statics.CacheRoleType;
 
 /**
- * 用于描述mapper中的方法是用于触发还是用于观察
+ * describe the method in mapper is used to trigger or to observe
  * 
  * @author limeng32
  * 
@@ -20,9 +20,11 @@ import indi.mybatis.flying.statics.CacheRoleType;
 public @interface CacheAnnotation {
 	/**
 	 * 
-	 * 目标方法是用于触发还是用于观察，前者为trigger，后者为observer。
+	 * The target method is used to trigger or to observe, the former is trigger
+	 * and the latter is observer
 	 * 
 	 * @return CacheRoleType
+	 * @since 0.9.0
 	 */
 	CacheRoleType role();
 }

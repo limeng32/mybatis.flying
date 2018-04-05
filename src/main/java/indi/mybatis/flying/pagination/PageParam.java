@@ -21,7 +21,17 @@ public class PageParam implements Limitable, Serializable {
 
 	private int pageSize;
 
-	private int totalCount;
+	/*
+	 * The totalCount is not appropriate as part of the cache key, so it is
+	 * declared transient.
+	 */
+	private transient int totalCount;
+
+	/*
+	 * The maxPageNum is not appropriate as part of the cache key, so it is
+	 * declared transient.
+	 */
+	private transient int maxPageNum;
 
 	@Override
 	public int getPageNo() {
@@ -60,7 +70,8 @@ public class PageParam implements Limitable, Serializable {
 
 	@Override
 	public int getMaxPageNum() {
-		return ((totalCount - 1) / pageSize) + 1;
+		maxPageNum = ((totalCount - 1) / pageSize) + 1;
+		return maxPageNum;
 	}
 
 }

@@ -4,7 +4,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.9.3</version>
+	<version>0.9.4</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -39,7 +39,8 @@
 		<mybatis-342.version>3.4.2</mybatis-342.version>
 		<mybatis-343.version>3.4.3</mybatis-343.version>
 		<mybatis-344.version>3.4.4</mybatis-344.version>
-		<mybatis-345.version>3.4.5</mybatis-345.version>
+		<mybatis-344.version>3.4.5</mybatis-344.version>
+		<mybatis-344.version>3.4.6</mybatis-344.version>
 		<commons-beanutils.version>1.8.3</commons-beanutils.version>
 		<fastjson.version>1.2.38</fastjson.version>
 		<h2database.version>1.3.176</h2database.version>
@@ -57,6 +58,7 @@
 		<atomikos.version>3.9.3</atomikos.version>
 		<jta.version>1.1</jta.version>
 		<javax.persistence.version>1.0</javax.persistence.version>
+		<mybatis.caches.version>1.0.0-beta2</mybatis.caches.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -69,31 +71,35 @@
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>${mybatis.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>${commons-beanutils.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
-			<!-- <scope>test</scope> -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-			<!-- <scope>test</scope> -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-			<!-- <scope>test</scope> -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -124,7 +130,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
-			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.github.springtestdbunit</groupId>
@@ -148,6 +154,7 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -183,11 +190,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-java.version}</version>
 			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>${jta.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.atomikos</groupId>
@@ -199,6 +208,13 @@
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 			<version>${javax.persistence.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.caches</groupId>
+			<artifactId>mybatis-redis</artifactId>
+			<version>${mybatis.caches.version}</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -305,6 +321,7 @@
 			</activation>
 			<properties>
 				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
 		<profile>
@@ -317,6 +334,19 @@
 			<id>cache</id>
 			<properties>
 				<mybatis.cacheEnabled>true</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
+		</profile>
+		<profile>
+			<activation>
+				<property>
+					<name>REDIS</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<id>redis</id>
+			<properties>
+				<mybatis.cache>type="org.mybatis.caches.redis.RedisCache"</mybatis.cache>
 			</properties>
 		</profile>
 		<profile>
@@ -396,6 +426,22 @@
 					<groupId>org.mybatis</groupId>
 					<artifactId>mybatis</artifactId>
 					<version>${mybatis-345.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-346</id>
+			<activation>
+				<property>
+					<name>MYBATIS-346</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-346.version}</version>
 				</dependency>
 			</dependencies>
 		</profile>

@@ -1,20 +1,27 @@
 package indi.mybatis.flying.statics;
 
 public enum ActionType {
-	/** 查询数量，接受Pojo型参数 */
+	/** Number of queries, accept Pojo type parameters. */
 	count,
-	/** 删除一条记录，接受Pojo型参数 */
+	/** Delete a record, accept Pojo type parameters. */
 	delete,
-	/** 增加一条记录，接受Pojo型参数 */
+	/** Add a record, accept Pojo type parameters. */
 	insert,
-	/** 查询一条记录，接受主键型参数 */
+	/** Query a record, accept the primary key parameter. */
 	select,
-	/** 查询多条记录，接受Pojo型参数 */
+	/** Query multiple records, accept Pojo type parameters. */
 	selectAll,
-	/** 查询一条记录，接受Pojo型参数 */
+	/** Query a record, accept Pojo type parameters. */
 	selectOne,
-	/** 更新一条记录，接受Pojo型参数（忽视Pojo中为null的属性） */
+	/**
+	 * Update a record, accept Pojo type parameters (ignoring attributes that
+	 * are null in pojos)
+	 */
 	update,
-	/** 完全更新一条记录，接受Pojo型参数（不忽视Pojo中为null的属性，将为null属性在数据库中更新为null） */
+	/**
+	 * Completely updating a record, accept Pojo type parameters (does not
+	 * ignore the null attribute in the Pojo, which is updated to null in the
+	 * database.)
+	 */
 	updatePersistent
 }
