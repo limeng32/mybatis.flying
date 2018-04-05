@@ -17,5 +17,5 @@
        	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
 	<import resource="classpath:spring-test-no-context-provider.xml" />
-	<bean id="applicationContextProvder" class="indi.mybatis.flying.ApplicationContextProvider" />
+	<bean id="applicationContextProvder" class="indi.mybatis.flying.FlyingContextProvider" />
 </beans>

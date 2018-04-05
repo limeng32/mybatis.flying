@@ -41,7 +41,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.SmartDataSource;
 
-import indi.mybatis.flying.ApplicationContextProvider;
+import indi.mybatis.flying.FlyingContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -93,7 +93,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		if (flyingModel.isHasFlyingFeature()) {
 			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
 					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
-				ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
+				ApplicationContext applicationContext = FlyingContextProvider.getApplicationContext();
 				if (applicationContext != null) {
 					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
 					if (dataSource == null) {
