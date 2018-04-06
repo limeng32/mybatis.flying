@@ -365,7 +365,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
@@ -385,7 +384,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
@@ -405,7 +403,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
@@ -425,7 +422,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
@@ -445,7 +441,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
@@ -465,7 +460,6 @@
 				</dependency>
 			</dependencies>
 			<properties>
-				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
 				<mybatis.cache></mybatis.cache>
 			</properties>
 		</profile>
