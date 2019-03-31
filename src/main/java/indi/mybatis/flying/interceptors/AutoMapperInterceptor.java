@@ -47,6 +47,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
+import indi.mybatis.flying.models.ParameterObjectContextHolder;
 import indi.mybatis.flying.utils.CookOriginalSql;
 import indi.mybatis.flying.utils.ReflectHelper;
 
@@ -88,6 +89,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
+		// save parameterObject with ThreadLocal
+		ParameterObjectContextHolder.set(parameterObject);
 		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		if (flyingModel.isHasFlyingFeature()) {
@@ -229,7 +232,9 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@SuppressWarnings("unchecked")
 	private void setParameters(PreparedStatement ps, MappedStatement mappedStatement, BoundSql boundSql,
-			Object parameterObject) throws SQLException {
+			Object parameterObject2) throws SQLException {
+		// get thread-safe parameterObject from ThreadLocal
+		Object parameterObject = ParameterObjectContextHolder.get();
 		ErrorContext.instance().activity(SETTING_PARAMETERS).object(mappedStatement.getParameterMap().getId());
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		if (parameterMappings != null) {
