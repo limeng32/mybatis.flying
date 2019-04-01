@@ -3,7 +3,7 @@ package indi.mybatis.flying.builders;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -98,13 +98,6 @@ public class SqlBuilder {
 	private static final String _OR_ = " or ";
 	private static final String _SET_ = " set ";
 
-	private static StringBuffer whereSql;
-	private static StringBuffer tableSql;
-	private static StringBuffer tempWhereSql;
-	private static StringBuffer selectSql;
-	private static StringBuffer fromSql;
-	private static AtomicInteger ai;
-
 	/**
 	 * The class of the incoming dto object builds the TableMapper object, and
 	 * the constructed object is stored in the cache, which is retrieved
@@ -126,8 +119,8 @@ public class SqlBuilder {
 		}
 		tableMapper = new TableMapper();
 		tableMapper.setClazz(dtoClass);
-		List<FieldMapper> uniqueKeyList = new ArrayList<FieldMapper>();
-		List<FieldMapper> opVersionLockList = new ArrayList<FieldMapper>();
+		List<FieldMapper> uniqueKeyList = new LinkedList<FieldMapper>();
+		List<FieldMapper> opVersionLockList = new LinkedList<FieldMapper>();
 		Annotation[] classAnnotations = dtoClass.getDeclaredAnnotations();
 		for (Annotation an : classAnnotations) {
 			if (an instanceof TableMapperAnnotation) {
@@ -424,7 +417,7 @@ public class SqlBuilder {
 		}
 		List<?> multiConditionC = (List<?>) value;
 		if (multiConditionC.size() > 0) {
-			tempWhereSql = new StringBuffer();
+			StringBuffer tempWhereSql = new StringBuffer();
 			handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
 			switch (type) {
 			case In:
@@ -476,7 +469,7 @@ public class SqlBuilder {
 		}
 		List<String> multiConditionList = (List<String>) value;
 		if (multiConditionList.size() > 0) {
-			tempWhereSql = new StringBuffer();
+			StringBuffer tempWhereSql = new StringBuffer();
 			tempWhereSql.append(_OPENPAREN);
 			int j = -1;
 			boolean allNull = true;
@@ -668,7 +661,7 @@ public class SqlBuilder {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 
 		String tableName = tableMapper.getTableName();
-		tableSql = new StringBuffer();
+		StringBuffer tableSql = new StringBuffer();
 		StringBuffer valueSql = new StringBuffer();
 
 		tableSql.append(INSERT_INTO_).append(tableName).append(_OPENPAREN);
@@ -756,8 +749,8 @@ public class SqlBuilder {
 
 		String tableName = tableMapper.getTableName();
 
-		tableSql = new StringBuffer();
-		whereSql = new StringBuffer(WHERE_);
+		StringBuffer tableSql = new StringBuffer();
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
 		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
@@ -837,8 +830,8 @@ public class SqlBuilder {
 
 		String tableName = tableMapper.getTableName();
 
-		tableSql = new StringBuffer();
-		whereSql = new StringBuffer(WHERE_);
+		StringBuffer tableSql = new StringBuffer();
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
 		tableSql.append(UPDATE_).append(tableName).append(_SET_);
 
@@ -948,7 +941,7 @@ public class SqlBuilder {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		String tableName = tableMapper.getTableName();
 
-		selectSql = new StringBuffer(SELECT_);
+		StringBuffer selectSql = new StringBuffer(SELECT_);
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
@@ -962,7 +955,7 @@ public class SqlBuilder {
 
 		selectSql.append(FROM).append(tableName);
 
-		whereSql = new StringBuffer(WHERE_);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 			whereSql.append(fieldMapper.getDbFieldName());
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
@@ -999,10 +992,10 @@ public class SqlBuilder {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
 		String ignoreTag = flyingModel.getIgnoreTag();
-		selectSql = new StringBuffer(SELECT_);
-		fromSql = new StringBuffer(FROM);
-		whereSql = new StringBuffer(WHERE_);
-		ai = new AtomicInteger(0);
+		StringBuffer selectSql = new StringBuffer(SELECT_);
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
+		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
@@ -1043,10 +1036,10 @@ public class SqlBuilder {
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}
-		selectSql = new StringBuffer(SELECT_);
-		fromSql = new StringBuffer(FROM);
-		whereSql = new StringBuffer(WHERE_);
-		ai = new AtomicInteger(0);
+		StringBuffer selectSql = new StringBuffer(SELECT_);
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
+		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
 				ignoreTag);
 
@@ -1083,10 +1076,10 @@ public class SqlBuilder {
 		}
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		ai = new AtomicInteger(0);
+		AtomicInteger ai = new AtomicInteger(0);
 		TableName tableName = new TableName(tableMapper, 0, null);
 
-		selectSql = new StringBuffer();
+		StringBuffer selectSql = new StringBuffer();
 		selectSql.append(SELECT_COUNT_OPENPAREN).append(tableName.sqlWhere());
 		/*
 		 * If there is and only one primary key, select count(" primary key ");
@@ -1101,8 +1094,8 @@ public class SqlBuilder {
 		}
 		selectSql.append(CLOSEPAREN);
 
-		fromSql = new StringBuffer(FROM);
-		whereSql = new StringBuffer(WHERE_);
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
 
 		dealMapperAnnotationIterationForCount(object, fromSql, whereSql, null, null, null, ai, tableName);
 
