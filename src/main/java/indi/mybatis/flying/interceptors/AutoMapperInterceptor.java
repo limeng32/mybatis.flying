@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
@@ -84,6 +84,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
+//		System.out.println("::cool::");
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 		MetaObject metaStatementHandler = getRealObj(statementHandler);
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
@@ -142,7 +143,8 @@ public class AutoMapperInterceptor implements Interceptor {
 			}
 			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
-			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
+			CopyOnWriteArrayList<ParameterMapping> parameterMappings = new CopyOnWriteArrayList(
+					sqlSource.getBoundSql(parameterObject).getParameterMappings());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
 		}
@@ -236,7 +238,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		// get thread-safe parameterObject from ThreadLocal
 		Object parameterObject = ParameterObjectContextHolder.get();
 		ErrorContext.instance().activity(SETTING_PARAMETERS).object(mappedStatement.getParameterMap().getId());
-		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+		CopyOnWriteArrayList<ParameterMapping> parameterMappings = new CopyOnWriteArrayList(
+				boundSql.getParameterMappings());
 		if (parameterMappings != null) {
 			Configuration configuration = mappedStatement.getConfiguration();
 			TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();

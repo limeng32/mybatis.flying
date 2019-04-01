@@ -3,11 +3,10 @@ package indi.mybatis.flying.builders;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.Column;
@@ -44,9 +43,9 @@ import indi.mybatis.flying.utils.ReflectHelper;
 public class SqlBuilder {
 
 	/* Cache TableMapper */
-	private static Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
+	private static ConcurrentHashMap<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
 	/* Cache QueryMapper */
-	private static Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
+	private static ConcurrentHashMap<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
 
 	private static final String DOT = ".";
 	private static final String COMMA = ",";
@@ -115,7 +114,7 @@ public class SqlBuilder {
 	 */
 	private static TableMapper buildTableMapper(Class<?> dtoClass) {
 
-		Map<String, FieldMapper> fieldMapperCache = null;
+		ConcurrentHashMap<String, FieldMapper> fieldMapperCache = null;
 		Field[] fields = dtoClass.getDeclaredFields();
 
 		FieldMapper fieldMapper = null;
@@ -126,8 +125,8 @@ public class SqlBuilder {
 		}
 		tableMapper = new TableMapper();
 		tableMapper.setClazz(dtoClass);
-		List<FieldMapper> uniqueKeyList = new ArrayList<FieldMapper>();
-		List<FieldMapper> opVersionLockList = new ArrayList<FieldMapper>();
+		CopyOnWriteArrayList<FieldMapper> uniqueKeyList = new CopyOnWriteArrayList<FieldMapper>();
+		CopyOnWriteArrayList<FieldMapper> opVersionLockList = new CopyOnWriteArrayList<FieldMapper>();
 		Annotation[] classAnnotations = dtoClass.getDeclaredAnnotations();
 		for (Annotation an : classAnnotations) {
 			if (an instanceof TableMapperAnnotation) {
@@ -136,7 +135,7 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fieldMapperCache = new WeakHashMap<String, FieldMapper>(16);
+		fieldMapperCache = new ConcurrentHashMap<String, FieldMapper>(16);
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
 			boolean b = fieldMapper.buildMapper(field);
@@ -202,7 +201,7 @@ public class SqlBuilder {
 	}
 
 	/* 从newFieldMapperCache中获取已知dbFieldName的FieldMapper */
-	private static Mapperable getFieldMapperByDbFieldName(Map<String, FieldMapper> newFieldMapperCache,
+	private static Mapperable getFieldMapperByDbFieldName(ConcurrentHashMap<String, FieldMapper> newFieldMapperCache,
 			String dbFieldName) {
 		return newFieldMapperCache.get(dbFieldName);
 	}
@@ -221,8 +220,8 @@ public class SqlBuilder {
 		if (queryMapper != null) {
 			return queryMapper;
 		}
-		Map<String, ConditionMapper> conditionMapperCache = new WeakHashMap<>(16);
-		Map<String, OrMapper> orMapperCache = new WeakHashMap<>(4);
+		ConcurrentHashMap<String, ConditionMapper> conditionMapperCache = new ConcurrentHashMap<>(16);
+		ConcurrentHashMap<String, OrMapper> orMapperCache = new ConcurrentHashMap<>(4);
 		Field[] fields = null;
 
 		ConditionMapperAnnotation conditionMapperAnnotation = null;
@@ -290,8 +289,8 @@ public class SqlBuilder {
 							buildTableMapper(conditionMapper.getSubTarget());
 						}
 						TableMapper tableMapper = tableMapperCache.get(conditionMapper.getSubTarget());
-						Map<String, FieldMapper> fieldMapperCache = tableMapper.getFieldMapperCache();
-						for (Map.Entry<String, FieldMapper> e : fieldMapperCache.entrySet()) {
+						ConcurrentHashMap<String, FieldMapper> fieldMapperCache = tableMapper.getFieldMapperCache();
+						for (ConcurrentHashMap.Entry<String, FieldMapper> e : fieldMapperCache.entrySet()) {
 							if (conditionMapper.getDbFieldName().equalsIgnoreCase(e.getValue().getDbFieldName())) {
 								fieldMapper = e.getValue();
 								break;
@@ -422,7 +421,7 @@ public class SqlBuilder {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
 		}
-		List<?> multiConditionC = (List<?>) value;
+		CopyOnWriteArrayList<Object> multiConditionC = new CopyOnWriteArrayList<Object> ((Collection)value);
 		if (multiConditionC.size() > 0) {
 			tempWhereSql = new StringBuffer();
 			handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
@@ -474,7 +473,7 @@ public class SqlBuilder {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
 		}
-		List<String> multiConditionList = (List<String>) value;
+		CopyOnWriteArrayList<String> multiConditionList = new CopyOnWriteArrayList<String> ((Collection)value);
 		if (multiConditionList.size() > 0) {
 			tempWhereSql = new StringBuffer();
 			tempWhereSql.append(_OPENPAREN);
