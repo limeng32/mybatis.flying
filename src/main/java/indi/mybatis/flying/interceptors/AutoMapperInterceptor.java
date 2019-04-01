@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
@@ -111,36 +111,35 @@ public class AutoMapperInterceptor implements Interceptor {
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case count:
-				newSql = new SqlBuilder().buildCountSql(parameterObject);
+				newSql = SqlBuilder.buildCountSql(parameterObject);
 				break;
 			case delete:
-				newSql = new SqlBuilder().buildDeleteSql(parameterObject);
+				newSql = SqlBuilder.buildDeleteSql(parameterObject);
 				break;
 			case insert:
-				newSql = new SqlBuilder().buildInsertSql(parameterObject, flyingModel);
+				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
 				break;
 			case select:
-				newSql = new SqlBuilder().buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
+				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;
 			case selectAll:
-				newSql = new SqlBuilder().buildSelectAllSql(parameterObject, flyingModel);
+				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
 				break;
 			case selectOne:
-				newSql = new SqlBuilder().buildSelectOneSql(parameterObject, flyingModel);
+				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
 				break;
 			case update:
-				newSql = new SqlBuilder().buildUpdateSql(parameterObject, flyingModel);
+				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
 				break;
 			case updatePersistent:
-				newSql = new SqlBuilder().buildUpdatePersistentSql(parameterObject, flyingModel);
+				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
 				break;
 			default:
 				break;
 			}
 			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
-			CopyOnWriteArrayList<ParameterMapping> parameterMappings = new CopyOnWriteArrayList(
-					sqlSource.getBoundSql(parameterObject).getParameterMappings());
+			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
 		}
@@ -232,8 +231,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private void setParameters(PreparedStatement ps, MappedStatement mappedStatement, BoundSql boundSql,
 			Object parameterObject) throws SQLException {
 		ErrorContext.instance().activity(SETTING_PARAMETERS).object(mappedStatement.getParameterMap().getId());
-		CopyOnWriteArrayList<ParameterMapping> parameterMappings = new CopyOnWriteArrayList(
-				boundSql.getParameterMappings());
+		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		if (parameterMappings != null) {
 			Configuration configuration = mappedStatement.getConfiguration();
 			TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
