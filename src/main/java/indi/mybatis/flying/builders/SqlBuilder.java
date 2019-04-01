@@ -99,12 +99,12 @@ public class SqlBuilder {
 	private static final String _OR_ = " or ";
 	private static final String _SET_ = " set ";
 
-	private static StringBuffer whereSql;
-	private static StringBuffer tableSql;
-	private static StringBuffer tempWhereSql;
-	private static StringBuffer selectSql;
-	private static StringBuffer fromSql;
-	private static AtomicInteger ai;
+	private StringBuffer whereSql;
+	private StringBuffer tableSql;
+	private StringBuffer tempWhereSql;
+	private StringBuffer selectSql;
+	private StringBuffer fromSql;
+	private AtomicInteger ai;
 
 	/**
 	 * The class of the incoming dto object builds the TableMapper object, and
@@ -114,7 +114,7 @@ public class SqlBuilder {
 	 * @param dtoClass
 	 * @return TableMapper
 	 */
-	private static TableMapper buildTableMapper(Class<?> dtoClass) {
+	private TableMapper buildTableMapper(Class<?> dtoClass) {
 
 		ConcurrentHashMap<String, FieldMapper> fieldMapperCache = null;
 		Field[] fields = dtoClass.getDeclaredFields();
@@ -203,7 +203,7 @@ public class SqlBuilder {
 	}
 
 	/* 从newFieldMapperCache中获取已知dbFieldName的FieldMapper */
-	private static Mapperable getFieldMapperByDbFieldName(ConcurrentHashMap<String, FieldMapper> newFieldMapperCache,
+	private Mapperable getFieldMapperByDbFieldName(ConcurrentHashMap<String, FieldMapper> newFieldMapperCache,
 			String dbFieldName) {
 		return newFieldMapperCache.get(dbFieldName);
 	}
@@ -217,7 +217,7 @@ public class SqlBuilder {
 	 * @param pojoClass
 	 * @return QueryMapper
 	 */
-	private static QueryMapper buildQueryMapper(Class<?> dtoClass, Class<?> pojoClass) {
+	private QueryMapper buildQueryMapper(Class<?> dtoClass, Class<?> pojoClass) {
 		QueryMapper queryMapper = queryMapperCache.get(dtoClass);
 		if (queryMapper != null) {
 			return queryMapper;
@@ -269,7 +269,7 @@ public class SqlBuilder {
 		return queryMapper;
 	}
 
-	private static void buildConditionMapper(ConditionMapper conditionMapper,
+	private void buildConditionMapper(ConditionMapper conditionMapper,
 			ConditionMapperAnnotation conditionMapperAnnotation, Class<?> pojoClass, Field field) {
 		conditionMapper.setFieldName(field.getName());
 		conditionMapper.setDbFieldName(conditionMapperAnnotation.dbFieldName());
@@ -349,7 +349,7 @@ public class SqlBuilder {
 	 * @param object
 	 * @return
 	 */
-	private static Class<?> getTableMappedClass(Class<?> clazz) {
+	private Class<?> getTableMappedClass(Class<?> clazz) {
 		Class<?> c = clazz;
 		while (!interview(c) && !(c.equals(Object.class))) {
 			c = c.getSuperclass();
@@ -369,7 +369,7 @@ public class SqlBuilder {
 	 * @param clazz
 	 * @return
 	 */
-	private static boolean interview(Class<?> clazz) {
+	private boolean interview(Class<?> clazz) {
 		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
 		if (classAnnotations.length > 0) {
 			for (Annotation an : classAnnotations) {
@@ -381,7 +381,7 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private static void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
+	private void dealConditionLike(StringBuffer whereSql, ConditionMapper conditionMapper, ConditionType type,
 			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
 		whereSql.append(_LIKE__POUND_OPENBRACE);
@@ -418,7 +418,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
+	private void dealConditionInOrNot(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
@@ -470,7 +470,7 @@ public class SqlBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void dealConditionMultiLike(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
+	private void dealConditionMultiLike(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
@@ -532,7 +532,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionEqual(StringBuffer whereSql, Mapperable mapper, TableName tableName,
+	private void dealConditionEqual(StringBuffer whereSql, Mapperable mapper, TableName tableName,
 			String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(EQUAL_POUND_OPENBRACE);
@@ -560,7 +560,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
+	private void dealConditionNotEqual(StringBuffer whereSql, Mapperable mapper, ConditionType type,
 			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		switch (type) {
@@ -607,8 +607,8 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper,
-			TableName tableName, String fieldNamePrefix, boolean isOr) {
+	private void dealConditionNullOrNot(Object value, StringBuffer whereSql, Mapperable mapper, TableName tableName,
+			String fieldNamePrefix, boolean isOr) {
 		Boolean isNull = (Boolean) value;
 		handleWhereSql(whereSql, mapper, tableName, fieldNamePrefix);
 		whereSql.append(_IS);
@@ -623,8 +623,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName,
-			String fieldNamePrefix) {
+	private void handleWhereSql(StringBuffer whereSql, Mapperable mapper, TableName tableName, String fieldNamePrefix) {
 		if (tableName != null) {
 			if (mapper.getSubTarget() == null || Void.class.equals(mapper.getSubTarget())) {
 				whereSql.append(tableName.sqlWhere());
@@ -719,8 +718,8 @@ public class SqlBuilder {
 		return tableSql.append(CLOSEPAREN_).append(valueSql).append(CLOSEPAREN).toString();
 	}
 
-	private static void handleInsertSql(KeyHandler keyHandler, StringBuffer valueSql, FieldMapper fieldMapper,
-			Object object, boolean uniqueKeyHandled) throws IllegalAccessException, NoSuchFieldException {
+	private void handleInsertSql(KeyHandler keyHandler, StringBuffer valueSql, FieldMapper fieldMapper, Object object,
+			boolean uniqueKeyHandled) throws IllegalAccessException, NoSuchFieldException {
 		if (!uniqueKeyHandled) {
 			valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
@@ -1196,8 +1195,8 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuffer whereSql,
-			TableName tableName, String temp) {
+	private void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuffer whereSql, TableName tableName,
+			String temp) {
 		ConditionMapper[] conditionMappers = orMapper.getConditionMappers();
 		Object[] os = (Object[]) value;
 		int i = 0;
@@ -1209,7 +1208,7 @@ public class SqlBuilder {
 		whereSql.delete(whereSql.lastIndexOf(_OR_), whereSql.lastIndexOf(_OR_) + 4).append(") and ");
 	}
 
-	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
+	private void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuffer whereSql,
 			TableName tableName, String temp, boolean isOr, int i) {
 		switch (conditionMapper.getConditionType()) {
 		case Equal:
