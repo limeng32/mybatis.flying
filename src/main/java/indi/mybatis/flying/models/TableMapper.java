@@ -1,6 +1,6 @@
 package indi.mybatis.flying.models;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import javax.persistence.Table;
 
@@ -16,7 +16,7 @@ public class TableMapper {
 
 	private Table table;
 
-	private ConcurrentHashMap<String, FieldMapper> fieldMapperCache;
+	private Map<String, FieldMapper> fieldMapperCache;
 
 	private FieldMapper[] uniqueKeyNames;
 
@@ -34,11 +34,11 @@ public class TableMapper {
 		this.tableMapperAnnotation = tableMapperAnnotation;
 	}
 
-	public ConcurrentHashMap<String, FieldMapper> getFieldMapperCache() {
+	public Map<String, FieldMapper> getFieldMapperCache() {
 		return fieldMapperCache;
 	}
 
-	public void setFieldMapperCache(ConcurrentHashMap<String, FieldMapper> fieldMapperCache) {
+	public void setFieldMapperCache(Map<String, FieldMapper> fieldMapperCache) {
 		this.fieldMapperCache = fieldMapperCache;
 	}
 
