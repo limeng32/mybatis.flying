@@ -77,5 +77,7 @@
 			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="role_id" />
 		<association property="roleDeputy" javaType="Role_"
 			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="deputy_id" />
+		<association property="permission" javaType="Permission"
+			select="indi.mybatis.flying.mapper.PermissionMapper.select" column="permission_id" />
 	</resultMap>
 </mapper>

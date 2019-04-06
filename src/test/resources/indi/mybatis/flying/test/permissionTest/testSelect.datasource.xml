@@ -1,0 +1,7 @@
+<dataset>
+	<account_ ID="1" NAME="ann" EMAIL="an%%n@live.cn" OPLOCK="1"
+		STATUS="p" PERMISSION_ID="2" />
+	<account_ ID="2" NAME="ann2" EMAIL="an%%n@live.cn" OPLOCK="1"
+		STATUS="p" PERMISSION_ID="2" />
+	<permission ID="2" FAKE_ID="20" NAME="ann" />
+</dataset>
