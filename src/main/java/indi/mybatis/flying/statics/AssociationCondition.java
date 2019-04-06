@@ -1,12 +1,12 @@
 package indi.mybatis.flying.statics;
 
-public enum AssociationType {
+public enum AssociationCondition {
 
 	Equal("="), GreaterThan(">"), GreaterOrEqual(">="), LessThan("<"), LessOrEqual("<="), NotEqual("<>");
 
 	private final String value;
 
-	private AssociationType(String value) {
+	private AssociationCondition(String value) {
 		this.value = value;
 	}
 

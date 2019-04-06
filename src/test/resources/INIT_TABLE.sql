@@ -10,6 +10,7 @@ CREATE TABLE account_ (
   status char(1) DEFAULT NULL,
   role_id int(11) DEFAULT NULL,
   deputy_id int(11) DEFAULT NULL,
+  permission_id int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY role1 (role_id) USING BTREE,
   KEY role2 (deputy_id) USING BTREE
@@ -59,4 +60,11 @@ CREATE TABLE account22 (
   nickname varchar(32) DEFAULT NULL,
   role_id int(11) DEFAULT NULL,
   PRIMARY KEY (id),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS permission;
+CREATE TABLE permission (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  fake_id int(11) DEFAULT NULL,
+  name varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

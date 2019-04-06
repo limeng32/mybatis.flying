@@ -1,6 +1,6 @@
 package indi.mybatis.flying.annotations;
 
-import indi.mybatis.flying.statics.AssociationType;
+import indi.mybatis.flying.statics.AssociationCondition;
 
 /**
  * 
@@ -40,5 +40,5 @@ public @interface ForeignAssociation {
 	 * NotEqual
 	 * 
 	 */
-	AssociationType condition() default AssociationType.Equal;
+	AssociationCondition condition() default AssociationCondition.Equal;
 }

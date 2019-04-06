@@ -1,10 +1,10 @@
 package indi.mybatis.flying.models;
 
-import indi.mybatis.flying.statics.AssociationType;
+import indi.mybatis.flying.statics.AssociationCondition;
 
 public class ForeignAssociationMapper {
 
-	public ForeignAssociationMapper(String dbFieldName, String dbAssociationFieldName, AssociationType condition) {
+	public ForeignAssociationMapper(String dbFieldName, String dbAssociationFieldName, AssociationCondition condition) {
 		this.dbFieldName = dbFieldName;
 		this.dbAssociationFieldName = dbAssociationFieldName;
 		this.condition = condition;
@@ -14,7 +14,7 @@ public class ForeignAssociationMapper {
 
 	private String dbAssociationFieldName;
 
-	private AssociationType condition;
+	private AssociationCondition condition;
 
 	public String getDbFieldName() {
 		return dbFieldName;
@@ -32,11 +32,11 @@ public class ForeignAssociationMapper {
 		this.dbAssociationFieldName = dbAssociationFieldName;
 	}
 
-	public AssociationType getCondition() {
+	public AssociationCondition getCondition() {
 		return condition;
 	}
 
-	public void setCondition(AssociationType condition) {
+	public void setCondition(AssociationCondition condition) {
 		this.condition = condition;
 	}
 

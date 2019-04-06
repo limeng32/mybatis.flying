@@ -13,7 +13,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
-import indi.mybatis.flying.statics.AssociationType;
+import indi.mybatis.flying.statics.AssociationCondition;
 import indi.mybatis.flying.statics.OpLockType;
 
 @TableMapperAnnotation(tableName = "account_")
@@ -57,11 +57,15 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
 			"noRole" }, associationExtra = {
 					@ForeignAssociation(dbFieldName = "role_id", dbAssociationFieldName = "id"),
-					@ForeignAssociation(dbFieldName = "role_id", dbAssociationFieldName = "id", condition = AssociationType.LessOrEqual) })
+					@ForeignAssociation(dbFieldName = "role_id", dbAssociationFieldName = "id", condition = AssociationCondition.LessOrEqual) })
 	private Role_ role;
 
 	@FieldMapperAnnotation(dbFieldName = "deputy_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
 	private Role_ roleDeputy;
+
+	@FieldMapperAnnotation(dbFieldName = "permission_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", associationExtra = {
+			@ForeignAssociation(dbFieldName = "name", dbAssociationFieldName = "name") })
+	private Permission permission;
 
 	private java.util.Collection<LoginLog_> loginLog;
 
@@ -318,4 +322,21 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		}
 	}
 
+	public Permission getPermission() {
+		return permission;
+	}
+
+	public void setPermission(Permission newPermission) {
+		if (this.permission == null || !this.permission.equals(newPermission)) {
+			if (this.permission != null) {
+				Permission oldPermission = this.permission;
+				this.permission = null;
+				oldPermission.removeAccount(this);
+			}
+			if (newPermission != null) {
+				this.permission = newPermission;
+				this.permission.addAccount(this);
+			}
+		}
+	}
 }
