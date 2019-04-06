@@ -13,6 +13,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
 
@@ -122,6 +123,11 @@ public class FieldMapper implements Mapperable {
 
 	private Class<?> subTarget;
 
+	/**
+	 * How the tables are related (e.g. left join or right join)
+	 */
+	private AssociationType associationType;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
@@ -146,6 +152,7 @@ public class FieldMapper implements Mapperable {
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+			setAssociationType(fieldMapperAnnotation.associationType());
 			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
 			if (fieldMapperAnnotation.associationExtra().length > 0) {
 				ForeignAssociation[] fas = fieldMapperAnnotation.associationExtra();
@@ -425,6 +432,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
 		this.isCrossDbForeignKey = isCrossDbForeignKey;
+	}
+
+	public AssociationType getAssociationType() {
+		return associationType;
+	}
+
+	public void setAssociationType(AssociationType associationType) {
+		this.associationType = associationType;
 	}
 
 }

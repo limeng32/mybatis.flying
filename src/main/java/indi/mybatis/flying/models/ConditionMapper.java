@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
@@ -87,6 +88,8 @@ public class ConditionMapper implements Mapperable {
 	private Class<?> subTarget;
 
 	private boolean isCrossDbForeignKey;
+
+	private AssociationType associationType;
 
 	@Override
 	public String getFieldName() {
@@ -217,4 +220,13 @@ public class ConditionMapper implements Mapperable {
 	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
 		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
+
+	public AssociationType getAssociationType() {
+		return associationType;
+	}
+
+	public void setAssociationType(AssociationType associationType) {
+		this.associationType = associationType;
+	}
+
 }

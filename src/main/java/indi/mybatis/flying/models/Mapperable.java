@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.statics.AssociationType;
+
 public interface Mapperable {
 
 	String getFieldName();
@@ -22,7 +24,7 @@ public interface Mapperable {
 
 	Set<String> getIgnoreTagSet();
 
-	public String getTypeHandlerPath();
+	String getTypeHandlerPath();
 
 	Class<?> getFieldType();
 
@@ -30,5 +32,7 @@ public interface Mapperable {
 
 	String getDbCrossedAssociationUniqueKey();
 
-	public boolean isCrossDbForeignKey();
+	boolean isCrossDbForeignKey();
+
+	AssociationType getAssociationType();
 }
