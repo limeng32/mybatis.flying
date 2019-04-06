@@ -25,6 +25,7 @@ import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
 import indi.mybatis.flying.models.FlyingModel;
+import indi.mybatis.flying.models.ForeignAssociationMapper;
 import indi.mybatis.flying.models.Mapperable;
 import indi.mybatis.flying.models.OrMapper;
 import indi.mybatis.flying.models.QueryMapper;
@@ -1154,6 +1155,14 @@ public class SqlBuilder {
 			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
 					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
 					.append(originFieldMapper.getDbAssociationUniqueKey());
+			ForeignAssociationMapper[] fams = originFieldMapper.getForeignAssociationMappers();
+			if (fams != null && fams.length > 0) {
+				for (ForeignAssociationMapper fam : fams) {
+					fromSql.append(_AND_).append(originTableName.sqlWhere()).append(fam.getDbFieldName())
+							.append(fam.getCondition().value()).append(tableName.sqlWhere())
+							.append(fam.getDbAssociationFieldName());
+				}
+			}
 		}
 
 		/* Handle the conditions in the fieldMapper */

@@ -109,4 +109,18 @@ public @interface FieldMapperAnnotation {
 	 * @since 0.9.1
 	 */
 	String dbCrossedAssociationUniqueKey() default "";
+
+	/**
+	 * 
+	 * When declaring a foreign key relationship, make an extra declaration here
+	 * if there are other constraints besides foreign keys (e. g. select * from
+	 * a left join b on a.fid = b.id and a.name = b.name)
+	 * 
+	 * 声明外键关系时，如果除了外键之外还有其它约束，在这里做额外声明（例如 select * from a left join b on a.fid =
+	 * b.id and a.name = b.name）
+	 * 
+	 * @return ForeignAssociation
+	 * @since 0.9.7
+	 */
+	ForeignAssociation[] associationExtra() default {};
 }

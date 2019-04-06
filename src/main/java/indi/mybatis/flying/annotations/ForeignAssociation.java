@@ -1,6 +1,6 @@
 package indi.mybatis.flying.annotations;
 
-import indi.mybatis.flying.statics.ConditionType;
+import indi.mybatis.flying.statics.AssociationType;
 
 /**
  * 
@@ -28,7 +28,7 @@ public @interface ForeignAssociation {
 	 * 关联表字段名称
 	 * 
 	 */
-	String foreignDbFieldName();
+	String dbAssociationFieldName();
 
 	/**
 	 * 
@@ -40,5 +40,5 @@ public @interface ForeignAssociation {
 	 * NotEqual
 	 * 
 	 */
-	ConditionType condition() default ConditionType.Equal;
+	AssociationType condition() default AssociationType.Equal;
 }

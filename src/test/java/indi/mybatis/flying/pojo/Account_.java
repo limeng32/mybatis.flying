@@ -10,8 +10,10 @@ import org.apache.ibatis.type.JdbcType;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
+import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 
 @TableMapperAnnotation(tableName = "account_")
@@ -53,7 +55,9 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private java.lang.String activateValue;
 
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
-			"noRole" })
+			"noRole" }, associationExtra = {
+					@ForeignAssociation(dbFieldName = "role_id", dbAssociationFieldName = "id"),
+					@ForeignAssociation(dbFieldName = "role_id", dbAssociationFieldName = "id", condition = AssociationType.LessOrEqual) })
 	private Role_ role;
 
 	@FieldMapperAnnotation(dbFieldName = "deputy_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")

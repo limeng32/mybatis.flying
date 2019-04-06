@@ -18,6 +18,8 @@ public interface Mapperable {
 
 	String getDbAssociationUniqueKey();
 
+	ForeignAssociationMapper[] getForeignAssociationMappers();
+
 	Set<String> getIgnoreTagSet();
 
 	public String getTypeHandlerPath();
@@ -27,6 +29,6 @@ public interface Mapperable {
 	Class<?> getSubTarget();
 
 	String getDbCrossedAssociationUniqueKey();
-	
+
 	public boolean isCrossDbForeignKey();
 }

@@ -4,7 +4,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>0.9.6.m</version>
+	<version>0.9.7.m.SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>

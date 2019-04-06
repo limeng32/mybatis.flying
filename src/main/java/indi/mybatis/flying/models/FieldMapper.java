@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.statics.OpLockType;
@@ -44,6 +45,12 @@ public class FieldMapper implements Mapperable {
 	 * key.
 	 */
 	private String dbAssociationUniqueKey = "";
+
+	/**
+	 * Describes the association between this table and related table,
+	 * especially when there are other constraints other than foreign key.
+	 */
+	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
 	 * If it is a cross-source foreign key, it corresponds to the name of the
@@ -140,6 +147,18 @@ public class FieldMapper implements Mapperable {
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
+			if (fieldMapperAnnotation.associationExtra().length > 0) {
+				ForeignAssociation[] fas = fieldMapperAnnotation.associationExtra();
+				ForeignAssociationMapper[] fams = new ForeignAssociationMapper[fieldMapperAnnotation
+						.associationExtra().length];
+				int i = 0;
+				for (ForeignAssociation fa : fas) {
+					fams[i] = new ForeignAssociationMapper(fa.dbFieldName(), fa.dbAssociationFieldName(),
+							fa.condition());
+					i++;
+				}
+				setForeignAssociationMappers(fams);
+			}
 		}
 		/* The Id has the highest priority, so it's written at the end. */
 		if (id != null) {
@@ -228,6 +247,15 @@ public class FieldMapper implements Mapperable {
 
 	public void setDbAssociationUniqueKey(String dbAssociationUniqueKey) {
 		this.dbAssociationUniqueKey = dbAssociationUniqueKey;
+	}
+
+	@Override
+	public ForeignAssociationMapper[] getForeignAssociationMappers() {
+		return foreignAssociationMappers;
+	}
+
+	public void setForeignAssociationMappers(ForeignAssociationMapper[] foreignAssociationMappers) {
+		this.foreignAssociationMappers = foreignAssociationMappers;
 	}
 
 	public boolean isUniqueKey() {
