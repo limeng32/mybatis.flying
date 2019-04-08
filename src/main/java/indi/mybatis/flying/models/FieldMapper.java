@@ -10,8 +10,10 @@ import javax.persistence.Id;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
 
@@ -44,6 +46,12 @@ public class FieldMapper implements Mapperable {
 	 * key.
 	 */
 	private String dbAssociationUniqueKey = "";
+
+	/**
+	 * Describes the association between this table and related table,
+	 * especially when there are other constraints other than foreign key.
+	 */
+	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
 	 * If it is a cross-source foreign key, it corresponds to the name of the
@@ -115,6 +123,11 @@ public class FieldMapper implements Mapperable {
 
 	private Class<?> subTarget;
 
+	/**
+	 * How the tables are related (e.g. left join or right join)
+	 */
+	private AssociationType associationType;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
@@ -139,7 +152,20 @@ public class FieldMapper implements Mapperable {
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
+			setAssociationType(fieldMapperAnnotation.associationType());
 			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
+			if (fieldMapperAnnotation.associationExtra().length > 0) {
+				ForeignAssociation[] fas = fieldMapperAnnotation.associationExtra();
+				ForeignAssociationMapper[] fams = new ForeignAssociationMapper[fieldMapperAnnotation
+						.associationExtra().length];
+				int i = 0;
+				for (ForeignAssociation fa : fas) {
+					fams[i] = new ForeignAssociationMapper(fa.dbFieldName(), fa.dbAssociationFieldName(),
+							fa.condition());
+					i++;
+				}
+				setForeignAssociationMappers(fams);
+			}
 		}
 		/* The Id has the highest priority, so it's written at the end. */
 		if (id != null) {
@@ -228,6 +254,15 @@ public class FieldMapper implements Mapperable {
 
 	public void setDbAssociationUniqueKey(String dbAssociationUniqueKey) {
 		this.dbAssociationUniqueKey = dbAssociationUniqueKey;
+	}
+
+	@Override
+	public ForeignAssociationMapper[] getForeignAssociationMappers() {
+		return foreignAssociationMappers;
+	}
+
+	public void setForeignAssociationMappers(ForeignAssociationMapper[] foreignAssociationMappers) {
+		this.foreignAssociationMappers = foreignAssociationMappers;
 	}
 
 	public boolean isUniqueKey() {
@@ -397,6 +432,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
 		this.isCrossDbForeignKey = isCrossDbForeignKey;
+	}
+
+	public AssociationType getAssociationType() {
+		return associationType;
+	}
+
+	public void setAssociationType(AssociationType associationType) {
+		this.associationType = associationType;
 	}
 
 }

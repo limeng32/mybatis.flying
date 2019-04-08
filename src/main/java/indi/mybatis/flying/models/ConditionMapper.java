@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
@@ -38,6 +39,12 @@ public class ConditionMapper implements Mapperable {
 	 * key.
 	 */
 	private String dbAssociationUniqueKey = "";
+
+	/**
+	 * Describes the association between this table and related table,
+	 * especially when there are other constraints other than foreign key.
+	 */
+	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
 	 * If it is a cross-source foreign key, the name of the primary key field
@@ -82,6 +89,8 @@ public class ConditionMapper implements Mapperable {
 
 	private boolean isCrossDbForeignKey;
 
+	private AssociationType associationType;
+
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -116,6 +125,15 @@ public class ConditionMapper implements Mapperable {
 
 	public void setDbAssociationUniqueKey(String dbAssociationUniqueKey) {
 		this.dbAssociationUniqueKey = dbAssociationUniqueKey;
+	}
+
+	@Override
+	public ForeignAssociationMapper[] getForeignAssociationMappers() {
+		return foreignAssociationMappers;
+	}
+
+	public void setForeignAssociationMappers(ForeignAssociationMapper[] foreignAssociationMappers) {
+		this.foreignAssociationMappers = foreignAssociationMappers;
 	}
 
 	@Override
@@ -202,4 +220,13 @@ public class ConditionMapper implements Mapperable {
 	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
 		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
+
+	public AssociationType getAssociationType() {
+		return associationType;
+	}
+
+	public void setAssociationType(AssociationType associationType) {
+		this.associationType = associationType;
+	}
+
 }

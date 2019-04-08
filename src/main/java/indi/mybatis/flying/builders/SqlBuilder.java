@@ -25,6 +25,7 @@ import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
 import indi.mybatis.flying.models.FlyingModel;
+import indi.mybatis.flying.models.ForeignAssociationMapper;
 import indi.mybatis.flying.models.Mapperable;
 import indi.mybatis.flying.models.OrMapper;
 import indi.mybatis.flying.models.QueryMapper;
@@ -85,7 +86,6 @@ public class SqlBuilder {
 	private static final String _GREATER_EQUAL_ = " >= ";
 	private static final String _IN_OPENPAREN = " in(";
 	private static final String _IS = " is";
-	private static final String _LEFT_JOIN_ = " left join ";
 	private static final String _LESS_ = " < ";
 	private static final String _LESS_EQUAL_ = " <= ";
 	private static final String _LESS_GREATER_ = " <> ";
@@ -1151,9 +1151,17 @@ public class SqlBuilder {
 				temp = fieldPerfix + DOT + temp;
 			}
 			/* Processing fromSql */
-			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
-					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
-					.append(originFieldMapper.getDbAssociationUniqueKey());
+			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect()).append(_ON_)
+					.append(originTableName.sqlWhere()).append(originFieldMapper.getDbFieldName()).append(_EQUAL_)
+					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
+			ForeignAssociationMapper[] fams = originFieldMapper.getForeignAssociationMappers();
+			if (fams != null && fams.length > 0) {
+				for (ForeignAssociationMapper fam : fams) {
+					fromSql.append(_AND_).append(originTableName.sqlWhere()).append(fam.getDbFieldName())
+							.append(fam.getCondition().value()).append(tableName.sqlWhere())
+							.append(fam.getDbAssociationFieldName());
+				}
+			}
 		}
 
 		/* Handle the conditions in the fieldMapper */
@@ -1284,9 +1292,9 @@ public class SqlBuilder {
 				temp = fieldPerfix + DOT + temp;
 			}
 			/* Processing fromSql */
-			fromSql.append(_LEFT_JOIN_).append(tableName.sqlSelect()).append(_ON_).append(originTableName.sqlWhere())
-					.append(originFieldMapper.getDbFieldName()).append(_EQUAL_).append(tableName.sqlWhere())
-					.append(originFieldMapper.getDbAssociationUniqueKey());
+			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect()).append(_ON_)
+					.append(originTableName.sqlWhere()).append(originFieldMapper.getDbFieldName()).append(_EQUAL_)
+					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
 		}
 
 		/* Handle the conditions in the fieldMapper */
