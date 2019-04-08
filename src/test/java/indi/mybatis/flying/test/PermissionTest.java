@@ -23,6 +23,8 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Permission;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
+import indi.mybatis.flying.pojo.condition.PermissionCondition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.PermissionService;
 
@@ -58,7 +60,8 @@ public class PermissionTest {
 
 		// 当account.permission不为null时，外键发生作用，并且这是一个右联外键
 		Permission p = new Permission();
-		Account_ a = new Account_();
+		Account_Condition a = new Account_Condition();
+		a.setEmailHeadLike("an");
 		a.setPermission(p);
 		Collection<Account_> accounts2 = accountService.selectAll(a);
 		Assert.assertEquals(1, accounts2.size());
