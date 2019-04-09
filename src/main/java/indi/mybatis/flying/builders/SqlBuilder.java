@@ -441,16 +441,13 @@ public class SqlBuilder {
 					if (fieldNamePrefix != null) {
 						tempWhereSql.append(fieldNamePrefix).append(DOT);
 					}
-					if (conditionMapper.isForeignKey()) {
-						tempWhereSql.append(conditionMapper.getFieldName()).append(DOT)
-								.append(conditionMapper.getForeignFieldName()).append(OPENBRACKET).append(j)
-								.append(CLOSEBRACKET);
-					} else {
-						tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
-								.append(CLOSEBRACKET);
+					tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
+							.append(CLOSEBRACKET).append(COMMA).append(JDBCTYPE_EQUAL)
+							.append(conditionMapper.getJdbcType().toString());
+					if (conditionMapper.getTypeHandlerPath() != null) {
+						tempWhereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
 					}
-					tempWhereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
-							.append(CLOSEBRACE_COMMA);
+					tempWhereSql.append(CLOSEBRACE_COMMA);
 				}
 			}
 			if (!allNull) {

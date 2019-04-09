@@ -3,6 +3,9 @@ package indi.mybatis.flying.pojo.condition;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.ibatis.type.IntegerTypeHandler;
+import org.apache.ibatis.type.StringTypeHandler;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.models.Conditionable;
@@ -72,7 +75,7 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MultiLikeOR)
 	private List<String> multiLikeOR;
 
-	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.In)
+	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.In, customTypeHandler = StringTypeHandler.class)
 	private Collection<String> nameIn;
 
 	@ConditionMapperAnnotation(dbFieldName = field_opLock, conditionType = ConditionType.In)
@@ -89,6 +92,12 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NullOrNot)
 	private Boolean roleIsNull;
+
+	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.In, customTypeHandler = IntegerTypeHandler.class)
+	private List<Integer> roleIdIn;
+
+	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NotIn)
+	private List<Integer> roleIdNotIn;
 
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
@@ -221,6 +230,22 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setIdEqualsOr(Object... idEqualsOr) {
 		this.idEqualsOr = idEqualsOr;
+	}
+
+	public List<Integer> getRoleIdIn() {
+		return roleIdIn;
+	}
+
+	public void setRoleIdIn(List<Integer> roleIdIn) {
+		this.roleIdIn = roleIdIn;
+	}
+
+	public List<Integer> getRoleIdNotIn() {
+		return roleIdNotIn;
+	}
+
+	public void setRoleIdNotIn(List<Integer> roleIdNotIn) {
+		this.roleIdNotIn = roleIdNotIn;
 	}
 
 }
