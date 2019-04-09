@@ -7,13 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,6 +27,7 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.AccountService;
@@ -125,5 +122,44 @@ public class ConditionInTest {
 		lc.setLoginTimeIn(timeC);
 		int count = loginLogService.count(lc);
 		Assert.assertEquals(2, count);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn5.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn5.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionInTest/testConditionIn5.xml")
+	public void testConditionIn5() {
+		Account_Condition ac = new Account_Condition();
+		Account_Condition ac2 = new Account_Condition();
+		Account_Condition ac3 = new Account_Condition();
+		List<Integer> roleIds = new ArrayList<>();
+		roleIds.add(1);
+		roleIds.add(2);
+		ac.setRoleIdIn(roleIds);
+		Role_ r1 = new Role_();
+		r1.setId(1);
+		Role_ r2 = new Role_();
+		r2.setId(2);
+		int c = accountService.count(ac);
+		Assert.assertEquals(2, c);
+		ac3.setRoleIdNotIn(roleIds);
+		int c3 = accountService.count(ac3);
+		Assert.assertEquals(1, c3);
+		ac2.setRoleIdNotIn(roleIds);
+		Account_ account = accountService.selectOne(ac2);
+		Assert.assertEquals("role3", account.getRole().getName());
+		LoginLog_ l = new LoginLog_();
+		l.setAccount(ac2);
+		LoginLog_ loginLog = loginLogService.selectOne(l);
+		Assert.assertEquals("role3", loginLog.getAccount().getRole().getName());
+		List<String> nameIn = new ArrayList<>();
+		nameIn.add("ann");
+		nameIn.add("bob");
+		Account_Condition ac4 = new Account_Condition();
+		ac4.setNameIn(nameIn);
+		LoginLog_ l2 = new LoginLog_();
+		l2.setAccount(ac4);
+		int c4 = loginLogService.count(l2);
+		Assert.assertEquals(2, c4);
 	}
 }
