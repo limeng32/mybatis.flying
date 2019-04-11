@@ -24,7 +24,6 @@ import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Permission;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
-import indi.mybatis.flying.pojo.condition.PermissionCondition;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.PermissionService;
 
@@ -69,5 +68,8 @@ public class PermissionTest {
 			Assert.assertEquals(1, e.getId().intValue());
 			Assert.assertEquals(20, e.getPermission().getFakeId().intValue());
 		}
+
+		int c = accountService.count(a);
+		Assert.assertEquals(1, c);
 	}
 }
