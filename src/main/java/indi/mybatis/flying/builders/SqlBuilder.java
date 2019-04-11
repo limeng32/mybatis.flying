@@ -1292,6 +1292,14 @@ public class SqlBuilder {
 			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect()).append(_ON_)
 					.append(originTableName.sqlWhere()).append(originFieldMapper.getDbFieldName()).append(_EQUAL_)
 					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
+			ForeignAssociationMapper[] fams = originFieldMapper.getForeignAssociationMappers();
+			if (fams != null && fams.length > 0) {
+				for (ForeignAssociationMapper fam : fams) {
+					fromSql.append(_AND_).append(originTableName.sqlWhere()).append(fam.getDbFieldName())
+							.append(fam.getCondition().value()).append(tableName.sqlWhere())
+							.append(fam.getDbAssociationFieldName());
+				}
+			}
 		}
 
 		/* Handle the conditions in the fieldMapper */
