@@ -100,7 +100,7 @@ public class Account {
     accountService.delete(newAccount);
 ```
 
-由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountById、getAccountByName、getAccountByAge” 这样重复性强的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。以上只是 flying 功能的冰山一角，其它的功能如多表联查、分页、乐观锁、跨数据源查询、二级缓存等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
+由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountById、getAccountByName、getAccountByAge” 这样重复性强的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。以上只是 flying 功能的冰山一角，其它的功能如多表联查、分页、乐观锁、或逻辑查询、复杂外键关系等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
 
 flying 特点总结如下：
 
@@ -123,7 +123,7 @@ flying 特点总结如下：
 ```xml
     <groupId>com.github.limeng32</groupId>
     <artifactId>mybatis.flying</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.9</version>
 ```
 
 mybatis 版本与 flying 最新版本的对应关系见下：
@@ -138,6 +138,6 @@ mybatis 版本与 flying 最新版本的对应关系见下：
 #### flying 代码示例：
 我们还为您提供了一个快速上手的示例：
 
-1. 最新版本下多数据源且使用缓存：[https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.4/](https://gitee.com/limeng32/flying-demo2/tree/use-flying-0.9.4/)
+1. 最新版本demo：[https://gitee.com/limeng32/flying-demo-use-springboot](https://gitee.com/limeng32/flying-demo-use-springboot)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)（国外）[https://flyingdoc.gitee.io](https://flyingdoc.gitee.io)（国内）。
