@@ -90,6 +90,8 @@ public class AccountTest {
 	@Test
 	public void testDataSource() {
 		Assert.assertNotNull(dataSource1);
+		// 测试安全源码
+		Assert.assertEquals(1, accountService.selectCheckHealth());
 	}
 
 	/** 测试insert功能（有乐观锁） */

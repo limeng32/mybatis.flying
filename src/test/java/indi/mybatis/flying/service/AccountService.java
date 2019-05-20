@@ -111,4 +111,9 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return mapper.selectWithoutCache(id);
 	}
 
+	@Override
+	public int selectCheckHealth() {
+		return mapper.selectCheckHealth();
+	}
+
 }

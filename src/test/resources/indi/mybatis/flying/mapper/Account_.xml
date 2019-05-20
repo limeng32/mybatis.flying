@@ -70,6 +70,10 @@
 		from account_ as account_0 left join role_ as role_1 on
 		account_0.role_id = role_1.id where role_1.id = #{role_id}
 	</select>
+	
+	<select id="selectCheckHealth" resultType="int">
+		select 1;
+	</select>
 
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />

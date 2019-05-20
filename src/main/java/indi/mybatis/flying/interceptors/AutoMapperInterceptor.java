@@ -142,17 +142,14 @@ public class AutoMapperInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
-		}
 
-		/* Start dealing with paging */
-		if (invocation.getTarget() instanceof RoutingStatementHandler) {
-			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper.getValueByFieldName(statementHandler,
-					DELEGATE);
-			mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
-			BoundSql boundSql = delegate.getBoundSql();
-			if (parameterObject == null) {
-				throw new AutoMapperException(AutoMapperExceptionEnum.parameterObjectIsNull);
-			} else if (parameterObject instanceof Conditionable) {
+			/* Start dealing with paging */
+			if ((parameterObject instanceof Conditionable)
+					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
+				BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper
+						.getValueByFieldName(statementHandler, DELEGATE);
+				mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
+				BoundSql boundSql = delegate.getBoundSql();
 				Conditionable condition = (Conditionable) parameterObject;
 				String sql = boundSql.getSql();
 				if (condition.getLimiter() != null) {
@@ -174,9 +171,9 @@ public class AutoMapperInterceptor implements Interceptor {
 				}
 				String pageSql = generatePageSql(sql, condition);
 				ReflectHelper.setValueByFieldName(boundSql, SQL, pageSql);
-			} else {
 			}
 		}
+
 		/*
 		 * Call the original statementHandler's prepare method to complete the
 		 * original logic.

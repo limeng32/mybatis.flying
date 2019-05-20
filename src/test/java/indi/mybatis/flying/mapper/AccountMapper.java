@@ -70,4 +70,6 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
+	
+	public int selectCheckHealth();
 }

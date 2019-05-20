@@ -4,7 +4,7 @@ package indi.mybatis.flying;
 public class AerialView {
 
 	/* Flying current version */
-	public static final String FLYING_VERSION = "0.9.9";
+	public static final String FLYING_VERSION = "0.9.10";
 
 	/* Current version alias */
 	public static final String FLYING_NAME = "QING_MING";
