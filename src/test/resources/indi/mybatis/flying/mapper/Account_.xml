@@ -4,24 +4,23 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}(smartDataSource1:testdb):select:noPassword
+		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "dataSourceId":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		<!-- flying#{?}:select:noPassword -->
 		flying#{?}:{"action":"select", "ignoreTag":"noPassword"}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying#{?}:select
+		flying#{?}:{"action":"select"}
 	</select>
 
 	<select id="selectWithoutRole" resultMap="result">
-		flying#{?}:select:noRole
+		flying#{?}:{"action":"select", "ignoreTag":"noRole"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:selectAll:noPassword
+		flying:{"action":"selectAll", "ignoreTag":"noPassword"}
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">

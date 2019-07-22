@@ -49,6 +49,8 @@ public class CookOriginalSql {
 					ret.setHasFlyingFeature(true);
 					ret.setActionType(actionType);
 					ret.setIgnoreTag(json.getString("ignoreTag"));
+					ret.setDataSourceId(json.getString("dataSourceId"));
+					ret.setConnectionCatalog(json.getString("connectionCatalog"));
 					flyingModelCache.put(originalSql, ret);
 					return ret;
 				}
