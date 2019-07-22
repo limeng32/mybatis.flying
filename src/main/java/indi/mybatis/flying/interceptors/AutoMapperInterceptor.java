@@ -88,7 +88,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
-		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
+		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeatureNew(originalSql);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		if (flyingModel.isHasFlyingFeature()) {
 			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()

@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
 import indi.mybatis.flying.handlers.SnowFlakeKeyHandler;
@@ -29,6 +31,37 @@ public class CookOriginalSql {
 	private static Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
 	private static final Log logger = LogFactory.getLog(CookOriginalSql.class);
+
+	public static FlyingModel fetchFlyingFeatureNew(String originalSql) {
+		if (flyingModelCache.get(originalSql) != null) {
+			return flyingModelCache.get(originalSql);
+		}
+		FlyingModel ret = new FlyingModel();
+		String extension = null;
+		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
+			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
+			System.out.println("::" + jsonStr);
+			try {
+				JSONObject json = JSONObject.parseObject(jsonStr);
+				System.out.println("::::::" + json.toJSONString());
+				ActionType actionType = ActionType.valueOf(json.getString("action"));
+				if (actionType != null) {
+					ret.setHasFlyingFeature(true);
+					ret.setActionType(actionType);
+					ret.setIgnoreTag(json.getString("ignoreTag"));
+					flyingModelCache.put(originalSql, ret);
+					return ret;
+				}
+			} catch (Exception e) {
+				// make sonar happy
+//				e.printStackTrace();
+				return fetchFlyingFeature(originalSql);
+			}
+		}
+		ret.setHasFlyingFeature(false);
+		flyingModelCache.put(originalSql, ret);
+		return ret;
+	}
 
 	public static FlyingModel fetchFlyingFeature(String originalSql) {
 		if (flyingModelCache.get(originalSql) != null) {
