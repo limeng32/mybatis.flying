@@ -37,7 +37,6 @@ public class CookOriginalSql {
 			return flyingModelCache.get(originalSql);
 		}
 		FlyingModel ret = new FlyingModel();
-		String extension = null;
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			System.out.println("::" + jsonStr);
@@ -51,12 +50,12 @@ public class CookOriginalSql {
 					ret.setIgnoreTag(json.getString("ignoreTag"));
 					ret.setDataSourceId(json.getString("dataSourceId"));
 					ret.setConnectionCatalog(json.getString("connectionCatalog"));
+					dealKeyHandler(actionType, json.getString("keyGeneratorType"), originalSql, ret);
 					flyingModelCache.put(originalSql, ret);
 					return ret;
 				}
 			} catch (Exception e) {
 				// make sonar happy
-//				e.printStackTrace();
 				return fetchFlyingFeature(originalSql);
 			}
 		}
@@ -123,53 +122,7 @@ public class CookOriginalSql {
 						}
 						ret.setIgnoreTag(ignoreTag);
 					}
-					if (ActionType.insert.equals(actionType) && extension != null) {
-						KeyGeneratorType keyGeneratorType = null;
-						if (extension.indexOf(".") == -1) {
-							try {
-								keyGeneratorType = KeyGeneratorType.valueOf(extension);
-
-							} catch (IllegalArgumentException e) {
-								logger.error(
-										new StringBuffer(AutoMapperExceptionEnum.wrongKeyGeneratorType.description())
-												.append(originalSql).append(" because of ").append(e).toString());
-							}
-							ret.setKeyGeneratorType(keyGeneratorType);
-							if (keyGeneratorType != null) {
-								KeyHandler keyHandler;
-								switch (keyGeneratorType) {
-								case uuid:
-									keyHandler = UuidKeyHandler.getInstance();
-									break;
-								case uuid_no_line:
-									keyHandler = UuidWithoutLineKeyHandler.getInstance();
-									break;
-								case millisecond:
-									keyHandler = MilliSecondKeyHandler.getInstance();
-									break;
-								case snowflake:
-									keyHandler = SnowFlakeKeyHandler.getInstance();
-									break;
-								default:
-									keyHandler = null;
-									break;
-								}
-								ret.setKeyHandler(keyHandler);
-							}
-						} else {
-							try {
-								@SuppressWarnings("unchecked")
-								Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class
-										.forName(extension);
-								ret.setKeyGeneratorType(KeyGeneratorType.custom);
-								ret.setKeyHandler(clazz.newInstance());
-							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-								logger.error(
-										new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
-												.append(originalSql).append(" because of ").append(e).toString());
-							}
-						}
-					}
+					dealKeyHandler(actionType, extension, originalSql, ret);
 					flyingModelCache.put(originalSql, ret);
 					return ret;
 				}
@@ -180,4 +133,49 @@ public class CookOriginalSql {
 		return ret;
 	}
 
+	private static void dealKeyHandler(ActionType actionType, String extension, String originalSql, FlyingModel ret) {
+		if (ActionType.insert.equals(actionType) && extension != null) {
+			KeyGeneratorType keyGeneratorType = null;
+			if (extension.indexOf(".") == -1) {
+				try {
+					keyGeneratorType = KeyGeneratorType.valueOf(extension);
+				} catch (IllegalArgumentException e) {
+					logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGeneratorType.description())
+							.append(originalSql).append(" because of ").append(e).toString());
+				}
+				ret.setKeyGeneratorType(keyGeneratorType);
+				if (keyGeneratorType != null) {
+					KeyHandler keyHandler;
+					switch (keyGeneratorType) {
+					case uuid:
+						keyHandler = UuidKeyHandler.getInstance();
+						break;
+					case uuid_no_line:
+						keyHandler = UuidWithoutLineKeyHandler.getInstance();
+						break;
+					case millisecond:
+						keyHandler = MilliSecondKeyHandler.getInstance();
+						break;
+					case snowflake:
+						keyHandler = SnowFlakeKeyHandler.getInstance();
+						break;
+					default:
+						keyHandler = null;
+						break;
+					}
+					ret.setKeyHandler(keyHandler);
+				}
+			} else {
+				try {
+					@SuppressWarnings("unchecked")
+					Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class.forName(extension);
+					ret.setKeyGeneratorType(KeyGeneratorType.custom);
+					ret.setKeyHandler(clazz.newInstance());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+					logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
+							.append(originalSql).append(" because of ").append(e).toString());
+				}
+			}
+		}
+	}
 }

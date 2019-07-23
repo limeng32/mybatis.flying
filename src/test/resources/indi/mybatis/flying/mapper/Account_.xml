@@ -24,35 +24,35 @@
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">
-		flying:selectAll
+		flying:{"action":"selectAll"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne:noPassword
+		flying:{"action":"selectOne", "ignoreTag":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:count
+		flying:{"action":"count"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:insert
+		flying:{"action":"insert"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator)
+		flying:{"action":"select", "keyGeneratorType":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
 	<update id="update">
-		flying:update
+		flying:{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:updatePersistent
+		flying:{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:delete
+		flying:{"action":"delete"}
 	</delete>
 
 	<select id="selectDirect" resultMap="result">
