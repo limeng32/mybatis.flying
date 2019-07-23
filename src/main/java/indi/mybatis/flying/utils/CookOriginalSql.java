@@ -49,6 +49,7 @@ public class CookOriginalSql {
 					ret.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
 					ret.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
 					ret.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+					ret.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
 					dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, ret);
 					flyingModelCache.put(originalSql, ret);
 					return ret;

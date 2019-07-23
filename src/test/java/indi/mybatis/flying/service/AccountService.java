@@ -23,6 +23,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Account_ selectAsd(Object id) {
+		return mapper.selectAsd(id);
+	}
+
+	@Override
 	public Account_ selectEverything(Object id) {
 		return mapper.selectEverything(id);
 	}

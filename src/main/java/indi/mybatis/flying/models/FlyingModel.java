@@ -1,5 +1,8 @@
 package indi.mybatis.flying.models;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
@@ -12,6 +15,8 @@ public class FlyingModel {
 	private KeyHandler keyHandler;
 	private String dataSourceId;
 	private String connectionCatalog;
+	private String prefix;
+	private Set<FlyingModel> properties = new LinkedHashSet<>(2);
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -67,6 +72,22 @@ public class FlyingModel {
 
 	public void setConnectionCatalog(String connectionCatalog) {
 		this.connectionCatalog = connectionCatalog;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public Set<FlyingModel> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Set<FlyingModel> properties) {
+		this.properties = properties;
 	}
 
 }

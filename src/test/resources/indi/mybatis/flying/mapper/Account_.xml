@@ -10,6 +10,10 @@
 	<select id="select" resultMap="result">
 		flying#{?}:{"action":"select", "ignoreTag":"noPassword"}
 	</select>
+	
+	<select id="selectAsd" resultMap="result">
+		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "prefix":"asd_"}
+	</select>
 
 	<select id="selectEverything" resultMap="result">
 		flying#{?}:{"action":"select"}
