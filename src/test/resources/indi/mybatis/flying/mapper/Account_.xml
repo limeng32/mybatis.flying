@@ -40,7 +40,7 @@
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:{"action":"select", "keyGeneratorType":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
+		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
 	<update id="update">
