@@ -42,13 +42,13 @@ public class CookOriginalSql {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				ActionType actionType = ActionType.valueOf(json.getString("action"));
+				ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION.value()));
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
 					ret.setActionType(actionType);
-					ret.setIgnoreTag(json.getString("ignoreTag"));
-					ret.setDataSourceId(json.getString("dataSourceId"));
-					ret.setConnectionCatalog(json.getString("connectionCatalog"));
+					ret.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
+					ret.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
+					ret.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
 					dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, ret);
 					flyingModelCache.put(originalSql, ret);
 					return ret;

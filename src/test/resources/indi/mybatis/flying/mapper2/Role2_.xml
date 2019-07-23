@@ -4,11 +4,11 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result">
-		flying#{?}:{"action":"select", "dataSourceId":"smartDataSource2", "connectionCatalog":"testdb2"}
+		flying#{?}:{"action":"select", "dataSource":"smartDataSource2", "connectionCatalog":"testdb2"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select", "dataSourceId":"smartDataSource2", "connectionCatalog":"testdb2"}
+		flying#{?}:{"action":"select", "dataSource":"smartDataSource2", "connectionCatalog":"testdb2"}
 	</select>
 
 	<select id="selectAll" resultMap="result">

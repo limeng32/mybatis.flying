@@ -4,7 +4,7 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "dataSourceId":"smartDataSource1", "connectionCatalog":"testdb"}
+		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
