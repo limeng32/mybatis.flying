@@ -12,39 +12,39 @@
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying#{?}:select
+		flying#{?}:{"action":"select"}
 	</select>
 
 	<select id="selectNoId" resultMap="result">
-		flying#{?}:select:noId
+		flying#{?}:{"action":"select", "ignoreTag":"noId"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:selectAll
+		flying:{"action":"selectAll"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne
+		flying:{"action":"selectOne"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:count
+		flying:{"action":"count"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:insert
+		flying:{"action":"insert"}
 	</insert>
 
 	<update id="update">
-		flying:update
+		flying:{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:updatePersistent
+		flying:{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:delete
+		flying:{"action":"delete"}
 	</delete>
 
 	<update flushCache="false" id="updateDirect">

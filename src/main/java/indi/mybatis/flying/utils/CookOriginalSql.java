@@ -39,10 +39,8 @@ public class CookOriginalSql {
 		FlyingModel ret = new FlyingModel();
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
-			System.out.println("::" + jsonStr);
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				System.out.println("::::::" + json.toJSONString());
 				ActionType actionType = ActionType.valueOf(json.getString("action"));
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);

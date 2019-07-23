@@ -4,51 +4,51 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="select" resultMap="result">
-		flying#{?}:select:noPassword
+		flying#{?}:{"action":"select", "ignoreTag":"select:noPassword"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne
+		flying:{"action":"selectOne"}
 	</select>
 
 	<insert id="insert" keyProperty="id">
-		flying:insert(uuid_no_line)
+		flying:{"action":"insert", "keyGeneratorType":"uuid_no_line"}
 	</insert>
 
 	<insert id="insert2" keyProperty="id">
-		flying:insert
+		flying:{"action":"insert"}
 	</insert>
 
 	<insert id="insert3">
-		flying:insert(ERROR)
+		flying:{"action":"insert", "keyGeneratorType":"ERROR"}
 	</insert>
 
 	<insert id="insertMilliSecond">
-		flying:insert(millisecond)
+		flying:{"action":"insert", "keyGeneratorType":"millisecond"}
 	</insert>
 
 	<insert id="insertMilliSecond2">
-		flying:insert(millisecond)
+		flying:{"action":"insert", "keyGeneratorType":"millisecond"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:insert(snowflake)
+		flying:{"action":"insert", "keyGeneratorType":"snowflake"}
 	</insert>
 
 	<insert id="insertMySnowFlake">
-		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler)
+		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler"}
 	</insert>
 
 	<insert id="insertMySnowFlake2">
-		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2)
+		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2"}
 	</insert>
 
 	<insert id="insertAsd">
-		flying:insert(indi.mybatis.flying.keyHandler.AsdKeyGenerator)
+		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.keyHandler.AsdKeyGenerator"}
 	</insert>
 
 	<insert id="insertDistributedSnowflake">
-		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2)
+		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2"}
 	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">
