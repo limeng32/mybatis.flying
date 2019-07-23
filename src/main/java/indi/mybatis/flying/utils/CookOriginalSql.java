@@ -15,6 +15,7 @@ import indi.mybatis.flying.handlers.UuidKeyHandler;
 import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
+import indi.mybatis.flying.statics.FlyingKeyword;
 import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
 
@@ -48,7 +49,7 @@ public class CookOriginalSql {
 					ret.setIgnoreTag(json.getString("ignoreTag"));
 					ret.setDataSourceId(json.getString("dataSourceId"));
 					ret.setConnectionCatalog(json.getString("connectionCatalog"));
-					dealKeyHandler(actionType, json.getString("keyGeneratorType"), originalSql, ret);
+					dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, ret);
 					flyingModelCache.put(originalSql, ret);
 					return ret;
 				}

@@ -12,7 +12,7 @@
 	</select>
 
 	<insert id="insert" keyProperty="id">
-		flying:{"action":"insert", "keyGeneratorType":"uuid_no_line"}
+		flying:{"action":"insert", "keyGenerator":"uuid_no_line"}
 	</insert>
 
 	<insert id="insert2" keyProperty="id">
@@ -20,35 +20,35 @@
 	</insert>
 
 	<insert id="insert3">
-		flying:{"action":"insert", "keyGeneratorType":"ERROR"}
+		flying:{"action":"insert", "keyGenerator":"ERROR"}
 	</insert>
 
 	<insert id="insertMilliSecond">
-		flying:{"action":"insert", "keyGeneratorType":"millisecond"}
+		flying:{"action":"insert", "keyGenerator":"millisecond"}
 	</insert>
 
 	<insert id="insertMilliSecond2">
-		flying:{"action":"insert", "keyGeneratorType":"millisecond"}
+		flying:{"action":"insert", "keyGenerator":"millisecond"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:{"action":"insert", "keyGeneratorType":"snowflake"}
+		flying:{"action":"insert", "keyGenerator":"snowflake"}
 	</insert>
 
 	<insert id="insertMySnowFlake">
-		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler"}
+		flying:{"action":"insert", "keyGenerator":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler"}
 	</insert>
 
 	<insert id="insertMySnowFlake2">
-		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2"}
+		flying:{"action":"insert", "keyGenerator":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2"}
 	</insert>
 
 	<insert id="insertAsd">
-		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.keyHandler.AsdKeyGenerator"}
+		flying:{"action":"insert", "keyGenerator":"indi.mybatis.flying.keyHandler.AsdKeyGenerator"}
 	</insert>
 
 	<insert id="insertDistributedSnowflake">
-		flying:{"action":"insert", "keyGeneratorType":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2"}
+		flying:{"action":"insert", "keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2"}
 	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">
