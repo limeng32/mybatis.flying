@@ -1,5 +1,6 @@
 package indi.mybatis.flying.test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,23 @@ public class PrefixTest {
 	public void testSelect() {
 		Map<String, String> map = new HashMap<>();
 		map.put("id", "1");
-		Account_ account = accountService.selectAsd(map);
-		System.out.println(JSONObject.toJSONString(account));
+		Account_ account = accountService.selectAsd(1);
+		Assert.assertTrue(account.getActivated());
+		Assert.assertEquals("bob", account.getName());
+		Assert.assertEquals("bob@live.cn_", account.getEmail());
+		Assert.assertNull(account.getPassword());
+		Assert.assertEquals("a111", account.getActivateValue());
+		Assert.assertEquals(11, account.getOpLock().intValue());
+
+		Account_ ac = new Account_();
+		ac.setName("carl");
+		Collection<Account_> accountC = accountService.selectAllAsd(ac);
+		System.out.println(JSONObject.toJSONString(accountC));
+		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
+		Assert.assertEquals(3, accounts[0].getId().intValue());
+		Assert.assertEquals(4, accounts[1].getId().intValue());
+
+		int c = accountService.countAsd(ac);
+		Assert.assertEquals(2, c);
 	}
 }

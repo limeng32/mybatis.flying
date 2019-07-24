@@ -63,6 +63,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Collection<Account_> selectAllAsd(Account_ t) {
+		return mapper.selectAllAsd(t);
+	}
+
+	@Override
 	public Collection<Account_> selectAllEverything(Account_ t) {
 		return mapper.selectAllEverything(t);
 	}
@@ -80,6 +85,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	@Override
 	public int count(Account_ t) {
 		return supportCount(mapper, t);
+	}
+
+	@Override
+	public int countAsd(Account_ t) {
+		return mapper.countAsd(t);
 	}
 
 	@Override

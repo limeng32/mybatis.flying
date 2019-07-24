@@ -908,9 +908,6 @@ public class SqlBuilder {
 	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel) {
 		String ignoreTag = flyingModel.getIgnoreTag();
 		String prefix = flyingModel.getPrefix();
-		if (prefix != null) {
-			System.out.println("::::::::::" + prefix);
-		}
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
 		String tableName = tableMapper.getTableName();
 
@@ -918,7 +915,11 @@ public class SqlBuilder {
 
 		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-				selectSql.append(fieldMapper.getDbFieldName()).append(COMMA);
+				selectSql.append(fieldMapper.getDbFieldName());
+				if (prefix != null) {
+					selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+				}
+				selectSql.append(COMMA);
 			}
 		}
 
@@ -958,13 +959,12 @@ public class SqlBuilder {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-		String ignoreTag = flyingModel.getIgnoreTag();
 		StringBuffer selectSql = new StringBuffer(SELECT_);
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				ignoreTag);
+				flyingModel);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -993,7 +993,6 @@ public class SqlBuilder {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
 		}
-		String ignoreTag = flyingModel.getIgnoreTag();
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
 		}
@@ -1002,7 +1001,7 @@ public class SqlBuilder {
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				ignoreTag);
+				flyingModel);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1069,8 +1068,14 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, TableName lastTableName, String ignoreTag)
+			String fieldPerfix, AtomicInteger index, TableName lastTableName, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		String ignoreTag = null;
+		String prefix = null;
+		if (flyingModel != null) {
+			ignoreTag = flyingModel.getIgnoreTag();
+			prefix = flyingModel.getPrefix();
+		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
@@ -1089,7 +1094,11 @@ public class SqlBuilder {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(COMMA);
+					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+					if (prefix != null) {
+						selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+					}
+					selectSql.append(COMMA);
 				}
 			}
 		}
