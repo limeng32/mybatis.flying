@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="indi.mybatis.flying.mapper.AccountMapper">
-	<cache ${mybatis.cache}/>
+	<cache ${mybatis.cache} />
 
-	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+	<select id="selectWithoutCache" resultMap="result"
+		useCache="false">
+		flying#{?}:{"action":"select", "ignoreTag":"noPassword",
+		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword"}
+		flying#{?}:{"action":"select",
+		"ignoreTag":"noPassword"}
 	</select>
-	
-	<select id="selectAsd" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword", "prefix":"asd_"}
+
+	<select id="selectAsd" resultMap="asd_result">
+		<!-- flying#{?}:{"action":"select","ignoreTag":"noPassword", "prefix":"asd_"} -->
+		select id as asd_id, name as asd_name, email as asd_email, password as asd_password,
+		opLock as asd_opLock, status as asd_status, activated as
+		asd_activated, activateValue as asd_activateValue from account_ where id = #{id};
 	</select>
 
 	<select id="selectEverything" resultMap="result">
@@ -24,7 +30,8 @@
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:{"action":"selectAll", "ignoreTag":"noPassword"}
+		flying:{"action":"selectAll",
+		"ignoreTag":"noPassword"}
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">
@@ -32,7 +39,8 @@
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:{"action":"selectOne", "ignoreTag":"noPassword"}
+		flying:{"action":"selectOne",
+		"ignoreTag":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">
@@ -44,7 +52,8 @@
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:{"action":"insert", "keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
+		flying:{"action":"insert",
+		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
 	<update id="update">
@@ -74,7 +83,7 @@
 		from account_ as account_0 left join role_ as role_1 on
 		account_0.role_id = role_1.id where role_1.id = #{role_id}
 	</select>
-	
+
 	<select id="selectCheckHealth" resultType="int">
 		select 1;
 	</select>
@@ -82,10 +91,24 @@
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
 		<association property="role" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="role_id" />
+			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache"
+			column="role_id" />
 		<association property="roleDeputy" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="deputy_id" />
+			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache"
+			column="deputy_id" />
 		<association property="permission" javaType="Permission"
-			select="indi.mybatis.flying.mapper.PermissionMapper.select" column="permission_id" />
+			select="indi.mybatis.flying.mapper.PermissionMapper.select"
+			column="permission_id" />
+	</resultMap>
+
+	<resultMap type="Account_" id="asd_result" autoMapping="true">
+		<id property="id" column="asd_id" />
+		<result property="name" column="asd_name" />
+		<result property="email" column="asd_email" />
+		<result property="password" column="asd_password" />
+		<result property="opLock" column="asd_opLock" />
+		<result property="status" column="asd_status" />
+		<result property="activated" column="asd_activated" />
+		<result property="activateValue" column="asd_activateValue" />
 	</resultMap>
 </mapper>

@@ -1,0 +1,10 @@
+<dataset>
+	<account_ ID="1" NAME="bob" EMAIL="bob@live.cn_"
+		PASSWORD="aaa" ACTIVATED="1" ACTIVATEVALUE="a111" OPLOCK="11" />
+	<account_ ID="2" NAME="ann" EMAIL="ann@live.cn" PASSWORD="bbb"
+		ACTIVATED="1" ACTIVATEVALUE="b222" OPLOCK="12" />
+	<account_ ID="3" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="ccc" ACTIVATED="1" ACTIVATEVALUE="c333" OPLOCK="13" />
+	<account_ ID="4" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="ddd" ACTIVATED="1" ACTIVATEVALUE="d444" OPLOCK="14" />
+</dataset>
