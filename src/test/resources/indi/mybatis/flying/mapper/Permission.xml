@@ -4,7 +4,7 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="select" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select"}
+		flying#{?}:{"action":"select", "properties":{"property4":{"prefix":"prefix4_"}}}
 	</select>
 
 	<resultMap id="result" type="Permission" autoMapping="true">

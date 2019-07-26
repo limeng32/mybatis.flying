@@ -33,6 +33,8 @@ public class CookOriginalSql {
 
 	private static Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
+	private static Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
+
 	private static final Log logger = LogFactory.getLog(CookOriginalSql.class);
 
 	public static FlyingModel fetchFlyingFeatureNew(String originalSql, Configuration configuration,
@@ -40,11 +42,7 @@ public class CookOriginalSql {
 		if (flyingModelCache.get(originalSql) != null) {
 			return flyingModelCache.get(originalSql);
 		}
-		
 		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
-		System.out.println("1::::" + configuration.getMappedStatement("indi.mybatis.flying.mapper.DetailMapper.select")
-				.getBoundSql(null).getSql());
-		System.out.println("2::::" + mappedStatement.getId());
 		FlyingModel ret = new FlyingModel();
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
@@ -59,6 +57,11 @@ public class CookOriginalSql {
 					ret.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
 					ret.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
 					dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, ret);
+
+					System.out.println("::::" + json.getJSONObject("properties"));
+					dealInnerPropertiesIteration(mappedStatement.getId(), json, configuration,
+							json.getJSONObject("properties"));
+
 					flyingModelCache.put(originalSql, ret);
 					return ret;
 				}
@@ -70,6 +73,33 @@ public class CookOriginalSql {
 		ret.setHasFlyingFeature(false);
 		flyingModelCache.put(originalSql, ret);
 		return ret;
+	}
+
+	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
+			Configuration configuration, JSONObject threshold) {
+		if (flyingModel2ndCache.get(id) != null) {
+			return flyingModel2ndCache.get(id);
+		}
+		System.out.println("1::" + id);
+		if (flyingJson == null) {
+			flyingJson = new JSONObject();
+		}
+		if (threshold == null || threshold.isEmpty()) {
+			return flyingJson;
+		}
+		for (Map.Entry<String, Object> e : threshold.getInnerMap().entrySet()) {
+			System.out.println("a::" + e.getKey());
+			System.out.println("b::" + e.getValue());
+			JSONObject j = (JSONObject) e.getValue();
+			String flying = j.getString("flying");
+			if (flying != null) {
+				String originalSql = configuration.getMappedStatement(flying).getBoundSql(null).getSql();
+				String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
+				JSONObject json = JSONObject.parseObject(jsonStr);
+				dealInnerPropertiesIteration(flying, json, configuration, json.getJSONObject("properties"));
+			}
+		}
+		return flyingJson;
 	}
 
 	public static FlyingModel fetchFlyingFeature(String originalSql) {

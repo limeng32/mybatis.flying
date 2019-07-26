@@ -15,12 +15,14 @@
 	</select>
 
 	<select id="selectAsd" resultMap="asd_result">
-		flying#{?}:{"action":"select","ignoreTag":"noPassword", "prefix":"asd_"}
-		<!-- select id as asd_id, name as asd_name, email as asd_email, password as asd_password,
-		opLock as asd_opLock, status as asd_status, activated as
-		asd_activated, activateValue as asd_activateValue from account_ where id = #{id}; -->
+		flying#{?}:{"action":"select","ignoreTag":"noPassword",
+		"prefix":"asd_"}
+		<!-- select id as asd_id, name as asd_name, email as asd_email, password 
+			as asd_password, opLock as asd_opLock, status as asd_status, activated as 
+			asd_activated, activateValue as asd_activateValue from account_ where id 
+			= #{id}; -->
 	</select>
-	
+
 	<select id="selectEverything" resultMap="result">
 		flying#{?}:{"action":"select"}
 	</select>
@@ -33,9 +35,14 @@
 		flying:{"action":"selectAll",
 		"ignoreTag":"noPassword"}
 	</select>
-	
+
 	<select id="selectAllAsd" resultMap="asd_result">
-		flying:{"action":"selectAll", "ignoreTag":"noPassword", "prefix":"asd_"}
+		flying:{"action":"selectAll", "ignoreTag":"noPassword",
+		"prefix":"asd_",
+		"properties":{"property1":{"flying":"indi.mybatis.flying.mapper.PermissionMapper.select",
+		"prefix":"prefix1_", "ignoreTag":"tag1"},
+		"property2":{"prefix":"prefix2_", "ignoreTag":"tag2"},
+		"property3":{"prefix":"prefix3_"}}}
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">
@@ -50,9 +57,10 @@
 	<select id="count" resultType="int">
 		flying:{"action":"count"}
 	</select>
-	
+
 	<select id="countAsd" resultType="int">
-		flying:{"action":"count", "prefix":"asd_"}
+		flying:{"action":"count",
+		"prefix":"asd_"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
