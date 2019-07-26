@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.Configuration;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -33,10 +35,16 @@ public class CookOriginalSql {
 
 	private static final Log logger = LogFactory.getLog(CookOriginalSql.class);
 
-	public static FlyingModel fetchFlyingFeatureNew(String originalSql) {
+	public static FlyingModel fetchFlyingFeatureNew(String originalSql, Configuration configuration,
+			MappedStatement mappedStatement) {
 		if (flyingModelCache.get(originalSql) != null) {
 			return flyingModelCache.get(originalSql);
 		}
+		
+		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
+		System.out.println("1::::" + configuration.getMappedStatement("indi.mybatis.flying.mapper.DetailMapper.select")
+				.getBoundSql(null).getSql());
+		System.out.println("2::::" + mappedStatement.getId());
 		FlyingModel ret = new FlyingModel();
 		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
