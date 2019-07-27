@@ -40,7 +40,7 @@
 		flying:{"action":"selectAll", "ignoreTag":"noPassword",
 		"prefix":"asd_",
 		"properties":{"property1":{"flying":"indi.mybatis.flying.mapper.PermissionMapper.select",
-		"prefix":"prefix1_", "ignoreTag":"tag1"},
+		"prefix":"prefix1_"},
 		"property2":{"prefix":"prefix2_",
 		"ignoreTag":"tag2","flying":"select"},
 		"property3":{"prefix":"prefix3_"}}}

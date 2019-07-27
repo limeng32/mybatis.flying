@@ -48,7 +48,7 @@ public class CookOriginalSql {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				buildFlyingModel(ret, json, originalSql, mappedStatement.getId(), true);
+				buildFlyingModel(ret, json, originalSql, mappedStatement.getId(), true, null);
 				dealInnerPropertiesIteration(mappedStatement.getId(), json, configuration,
 						json.getJSONObject("properties"), ret);
 				System.out.println("::::" + JSONObject.toJSONString(ret));
@@ -65,7 +65,7 @@ public class CookOriginalSql {
 	}
 
 	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
-			boolean b) {
+			boolean b, JSONObject innerJson) {
 		if (b) {
 			ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION.value()));
 			flyingModel.setActionType(actionType);
@@ -73,10 +73,24 @@ public class CookOriginalSql {
 		}
 		flyingModel.setId(id);
 		flyingModel.setHasFlyingFeature(true);
-		flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
-		flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
-		flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
-		flyingModel.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
+		if (innerJson != null) {
+			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE_TAG.value()));
+			flyingModel.setPrefix(innerJson.getString(FlyingKeyword.PREFIX.value()));
+			flyingModel.setDataSourceId(innerJson.getString(FlyingKeyword.DATA_SOURCE.value()));
+			flyingModel.setConnectionCatalog(innerJson.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+		}
+		if (json.containsKey(FlyingKeyword.IGNORE_TAG.value())) {
+			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
+		}
+		if (json.containsKey(FlyingKeyword.PREFIX.value())) {
+			flyingModel.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
+		}
+		if (json.containsKey(FlyingKeyword.DATA_SOURCE.value())) {
+			flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
+		}
+		if (json.containsKey(FlyingKeyword.CONNECTION_CATALOG.value())) {
+			flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+		}
 	}
 
 	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
@@ -94,24 +108,24 @@ public class CookOriginalSql {
 		for (Map.Entry<String, Object> e : threshold.getInnerMap().entrySet()) {
 			System.out.println("a::" + e.getKey());
 			System.out.println("b::" + e.getValue());
-			JSONObject j = (JSONObject) e.getValue();
-			String flying = j.getString("flying");
-			if (flying != null) {
+			JSONObject json = (JSONObject) e.getValue();
+			if (json.containsKey(FlyingKeyword.FLYING.value())) {
+				String flying = json.getString("flying");
 				if (flying.indexOf('.') == -1 && id.indexOf('.') > -1) {
 					flying = id.substring(0, id.lastIndexOf('.') + 1) + flying;
 					System.out.println("c::" + flying);
 				}
 				String originalSql = configuration.getMappedStatement(flying).getBoundSql(null).getSql();
 				String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
-				JSONObject json = JSONObject.parseObject(jsonStr);
+				JSONObject innerJson = JSONObject.parseObject(jsonStr);
 				FlyingModel innerFlyingModel = new FlyingModel();
-				buildFlyingModel(innerFlyingModel, j, originalSql, flying, false);
+				buildFlyingModel(innerFlyingModel, json, originalSql, flying, false, innerJson);
 				flyingModel.getProperties().put(e.getKey(), innerFlyingModel);
-				dealInnerPropertiesIteration(flying, json, configuration, json.getJSONObject("properties"),
+				dealInnerPropertiesIteration(flying, innerJson, configuration, innerJson.getJSONObject("properties"),
 						innerFlyingModel);
 			} else {
 				FlyingModel innerFlyingModel = new FlyingModel();
-				buildFlyingModel(innerFlyingModel, j, "", flying, false);
+				buildFlyingModel(innerFlyingModel, json, "", null, false, null);
 				flyingModel.getProperties().put(e.getKey(), innerFlyingModel);
 			}
 		}
