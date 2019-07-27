@@ -79,5 +79,23 @@ public class PrefixTest {
 
 		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectAllAsd");
 		System.out.println("fm::" + JSONObject.toJSONString(fm));
+
+		Assert.assertEquals("noPassword", fm.getIgnoreTag());
+		Assert.assertEquals("asd_", fm.getPrefix());
+
+		FlyingModel fm1 = fm.getProperties().get("property1");
+		Assert.assertEquals("aaaa", fm1.getIgnoreTag());
+		Assert.assertEquals("asd_prefix1_", fm1.getPrefix());
+		Assert.assertEquals("indi.mybatis.flying.mapper.PermissionMapper.select", fm1.getId());
+		FlyingModel fm4 = fm1.getProperties().get("property4");
+		Assert.assertEquals("asd_prefix1_prefix4_", fm4.getPrefix());
+
+		FlyingModel fm2 = fm.getProperties().get("property2");
+		Assert.assertEquals("indi.mybatis.flying.mapper.AccountMapper.select", fm2.getId());
+		Assert.assertEquals("tag2", fm2.getIgnoreTag());
+		Assert.assertEquals("asd_prefix2_", fm2.getPrefix());
+
+		FlyingModel fm3 = fm.getProperties().get("property3");
+		Assert.assertEquals("asd_prefix3_", fm3.getPrefix());
 	}
 }

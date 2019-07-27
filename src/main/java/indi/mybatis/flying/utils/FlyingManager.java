@@ -55,7 +55,6 @@ public class FlyingManager {
 				JSONObject json = JSONObject.parseObject(jsonStr);
 				buildFlyingModel(ret, json, originalSql, id, true, null, null);
 				dealInnerPropertiesIteration(id, json, configuration, json.getJSONObject("properties"), ret);
-				System.out.println("::::" + JSONObject.toJSONString(ret));
 				flyingModelCache.put(id, ret);
 				return ret;
 			} catch (Exception e) {
@@ -104,7 +103,6 @@ public class FlyingManager {
 		if (flyingModel2ndCache.get(id) != null) {
 			return flyingModel2ndCache.get(id);
 		}
-		System.out.println("1::" + id);
 		if (flyingJson == null) {
 			flyingJson = new JSONObject();
 		}
@@ -112,14 +110,11 @@ public class FlyingManager {
 			return flyingJson;
 		}
 		for (Map.Entry<String, Object> e : threshold.getInnerMap().entrySet()) {
-			System.out.println("a::" + e.getKey());
-			System.out.println("b::" + e.getValue());
 			JSONObject json = (JSONObject) e.getValue();
 			if (json.containsKey(FlyingKeyword.FLYING.value())) {
 				String flying = json.getString("flying");
 				if (flying.indexOf('.') == -1 && id.indexOf('.') > -1) {
 					flying = id.substring(0, id.lastIndexOf('.') + 1) + flying;
-					System.out.println("c::" + flying);
 				}
 				String originalSql = configuration.getMappedStatement(flying).getBoundSql(null).getSql();
 				String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
