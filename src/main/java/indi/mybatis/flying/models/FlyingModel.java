@@ -8,6 +8,7 @@ import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
 
 public class FlyingModel {
+
 	private String id;
 	private boolean hasFlyingFeature;
 	private ActionType actionType;
@@ -17,6 +18,7 @@ public class FlyingModel {
 	private String dataSourceId;
 	private String connectionCatalog;
 	private String prefix;
+	private transient String unstablePrefix;
 	private Map<String, FlyingModel> properties = new HashMap<>(2);
 
 	public String getId() {
@@ -89,6 +91,14 @@ public class FlyingModel {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public String getUnstablePrefix() {
+		return unstablePrefix;
+	}
+
+	public void setUnstablePrefix(String unstablePrefix) {
+		this.unstablePrefix = unstablePrefix;
 	}
 
 	public Map<String, FlyingModel> getProperties() {
