@@ -48,23 +48,12 @@ public class CookOriginalSql {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION.value()));
-				if (actionType != null) {
-					ret.setHasFlyingFeature(true);
-					ret.setActionType(actionType);
-					ret.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
-					ret.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
-					ret.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
-					ret.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
-					dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, ret);
-
-					System.out.println("::::" + json.getJSONObject("properties"));
-					dealInnerPropertiesIteration(mappedStatement.getId(), json, configuration,
-							json.getJSONObject("properties"));
-
-					flyingModelCache.put(originalSql, ret);
-					return ret;
-				}
+				buildFlyingModel(ret, json, originalSql, mappedStatement.getId(), true);
+				dealInnerPropertiesIteration(mappedStatement.getId(), json, configuration,
+						json.getJSONObject("properties"), ret);
+				System.out.println("::::" + JSONObject.toJSONString(ret));
+				flyingModelCache.put(originalSql, ret);
+				return ret;
 			} catch (Exception e) {
 				// make sonar happy
 				return fetchFlyingFeature(originalSql);
@@ -75,8 +64,23 @@ public class CookOriginalSql {
 		return ret;
 	}
 
+	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
+			boolean b) {
+		if (b) {
+			ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION.value()));
+			flyingModel.setActionType(actionType);
+			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, flyingModel);
+		}
+		flyingModel.setId(id);
+		flyingModel.setHasFlyingFeature(true);
+		flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
+		flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
+		flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+		flyingModel.setPrefix(json.getString(FlyingKeyword.PREFIX.value()));
+	}
+
 	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
-			Configuration configuration, JSONObject threshold) {
+			Configuration configuration, JSONObject threshold, FlyingModel flyingModel) {
 		if (flyingModel2ndCache.get(id) != null) {
 			return flyingModel2ndCache.get(id);
 		}
@@ -93,10 +97,22 @@ public class CookOriginalSql {
 			JSONObject j = (JSONObject) e.getValue();
 			String flying = j.getString("flying");
 			if (flying != null) {
+				if (flying.indexOf('.') == -1 && id.indexOf('.') > -1) {
+					flying = id.substring(0, id.lastIndexOf('.') + 1) + flying;
+					System.out.println("c::" + flying);
+				}
 				String originalSql = configuration.getMappedStatement(flying).getBoundSql(null).getSql();
 				String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				dealInnerPropertiesIteration(flying, json, configuration, json.getJSONObject("properties"));
+				FlyingModel innerFlyingModel = new FlyingModel();
+				buildFlyingModel(innerFlyingModel, j, originalSql, flying, false);
+				flyingModel.getProperties().put(e.getKey(), innerFlyingModel);
+				dealInnerPropertiesIteration(flying, json, configuration, json.getJSONObject("properties"),
+						innerFlyingModel);
+			} else {
+				FlyingModel innerFlyingModel = new FlyingModel();
+				buildFlyingModel(innerFlyingModel, j, "", flying, false);
+				flyingModel.getProperties().put(e.getKey(), innerFlyingModel);
 			}
 		}
 		return flyingJson;

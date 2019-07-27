@@ -1,13 +1,14 @@
 package indi.mybatis.flying.models;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
 
 public class FlyingModel {
+	private String id;
 	private boolean hasFlyingFeature;
 	private ActionType actionType;
 	private String ignoreTag;
@@ -16,7 +17,15 @@ public class FlyingModel {
 	private String dataSourceId;
 	private String connectionCatalog;
 	private String prefix;
-	private Set<FlyingModel> properties = new LinkedHashSet<>(2);
+	private Map<String, FlyingModel> properties = new HashMap<>(2);
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public boolean isHasFlyingFeature() {
 		return hasFlyingFeature;
@@ -82,11 +91,11 @@ public class FlyingModel {
 		this.prefix = prefix;
 	}
 
-	public Set<FlyingModel> getProperties() {
+	public Map<String, FlyingModel> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Set<FlyingModel> properties) {
+	public void setProperties(Map<String, FlyingModel> properties) {
 		this.properties = properties;
 	}
 
