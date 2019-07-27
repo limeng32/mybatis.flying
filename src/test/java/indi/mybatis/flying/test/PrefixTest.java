@@ -26,8 +26,10 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.utils.FlyingManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -74,5 +76,8 @@ public class PrefixTest {
 
 		int c = accountService.countAsd(ac);
 		Assert.assertEquals(2, c);
+
+		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectAllAsd");
+		System.out.println("fm::" + JSONObject.toJSONString(fm));
 	}
 }

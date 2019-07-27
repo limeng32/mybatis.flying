@@ -21,7 +21,7 @@ import indi.mybatis.flying.statics.FlyingKeyword;
 import indi.mybatis.flying.statics.KeyGeneratorType;
 import indi.mybatis.flying.type.KeyHandler;
 
-public class CookOriginalSql {
+public class FlyingManager {
 
 	private static final String FLYING = "flying";
 
@@ -35,12 +35,17 @@ public class CookOriginalSql {
 
 	private static Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
 
-	private static final Log logger = LogFactory.getLog(CookOriginalSql.class);
+	private static final Log logger = LogFactory.getLog(FlyingManager.class);
+
+	public static FlyingModel getFlyingModelFromCache(String key) {
+		return flyingModelCache.get(key);
+	}
 
 	public static FlyingModel fetchFlyingFeatureNew(String originalSql, Configuration configuration,
 			MappedStatement mappedStatement) {
-		if (flyingModelCache.get(originalSql) != null) {
-			return flyingModelCache.get(originalSql);
+		String id = mappedStatement.getId();
+		if (flyingModelCache.get(id) != null) {
+			return flyingModelCache.get(id);
 		}
 		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
 		FlyingModel ret = new FlyingModel();
@@ -48,19 +53,18 @@ public class CookOriginalSql {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				buildFlyingModel(ret, json, originalSql, mappedStatement.getId(), true, null, null);
-				dealInnerPropertiesIteration(mappedStatement.getId(), json, configuration,
-						json.getJSONObject("properties"), ret);
+				buildFlyingModel(ret, json, originalSql, id, true, null, null);
+				dealInnerPropertiesIteration(id, json, configuration, json.getJSONObject("properties"), ret);
 				System.out.println("::::" + JSONObject.toJSONString(ret));
-				flyingModelCache.put(originalSql, ret);
+				flyingModelCache.put(id, ret);
 				return ret;
 			} catch (Exception e) {
 				// make sonar happy
-				return fetchFlyingFeature(originalSql);
+				return fetchFlyingFeature(originalSql, id);
 			}
 		}
 		ret.setHasFlyingFeature(false);
-		flyingModelCache.put(originalSql, ret);
+		flyingModelCache.put(id, ret);
 		return ret;
 	}
 
@@ -135,9 +139,9 @@ public class CookOriginalSql {
 		return flyingJson;
 	}
 
-	public static FlyingModel fetchFlyingFeature(String originalSql) {
-		if (flyingModelCache.get(originalSql) != null) {
-			return flyingModelCache.get(originalSql);
+	public static FlyingModel fetchFlyingFeature(String originalSql, String id) {
+		if (flyingModelCache.get(id) != null) {
+			return flyingModelCache.get(id);
 		}
 		FlyingModel ret = new FlyingModel();
 		String extension = null;
@@ -194,14 +198,18 @@ public class CookOriginalSql {
 						ret.setIgnoreTag(ignoreTag);
 					}
 					dealKeyHandler(actionType, extension, originalSql, ret);
-					flyingModelCache.put(originalSql, ret);
+					flyingModelCache.put(id, ret);
 					return ret;
 				}
 			}
 		}
 		ret.setHasFlyingFeature(false);
-		flyingModelCache.put(originalSql, ret);
+		flyingModelCache.put(id, ret);
 		return ret;
+	}
+
+	public static FlyingModel fetchFlyingFeature(String originalSql) {
+		return fetchFlyingFeature(originalSql, originalSql);
 	}
 
 	private static void dealKeyHandler(ActionType actionType, String extension, String originalSql, FlyingModel ret) {

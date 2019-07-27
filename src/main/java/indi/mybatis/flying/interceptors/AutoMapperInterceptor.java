@@ -47,7 +47,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
-import indi.mybatis.flying.utils.CookOriginalSql;
+import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -89,7 +89,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
-		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
+		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
 			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
 					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
