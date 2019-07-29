@@ -23,14 +23,6 @@ import indi.mybatis.flying.type.KeyHandler;
 
 public class FlyingManager {
 
-	private static final String FLYING = "flying";
-
-	private static final String FLYING_LEFTBRACKET = "flying(";
-
-	private static final String FLYING_QUESTIONMARK = "flying?";
-
-	private static final String FLYING_QUESTIONMARK_LEFTBRACKET = "flying?(";
-
 	private static Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
 	private static Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
@@ -49,12 +41,12 @@ public class FlyingManager {
 		}
 		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
 		FlyingModel ret = new FlyingModel();
-		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
+		if (null != originalSql && originalSql.startsWith(FlyingKeyword.FLYING) && originalSql.indexOf(':') > -1) {
 			String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
 				buildFlyingModel(ret, json, originalSql, id, true, null, null);
-				dealInnerPropertiesIteration(id, json, configuration, json.getJSONObject("properties"), ret);
+				dealInnerPropertiesIteration(id, json, configuration, ret);
 				flyingModelCache.put(id, ret);
 				return ret;
 			} catch (Exception e) {
@@ -70,61 +62,58 @@ public class FlyingManager {
 	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
 			boolean b, JSONObject innerJson, String outerPrefix) {
 		if (b) {
-			ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION.value()));
+			ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION));
 			flyingModel.setActionType(actionType);
-			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR.value()), originalSql, flyingModel);
+			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR), originalSql, flyingModel);
 		}
 		flyingModel.setId(id);
 		flyingModel.setHasFlyingFeature(true);
 		if (innerJson != null) {
-			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE_TAG.value()));
-			flyingModel.setUnstablePrefix(innerJson.getString(FlyingKeyword.PREFIX.value()));
-			flyingModel.setDataSourceId(innerJson.getString(FlyingKeyword.DATA_SOURCE.value()));
-			flyingModel.setConnectionCatalog(innerJson.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE_TAG));
+			flyingModel.setUnstablePrefix(innerJson.getString(FlyingKeyword.PREFIX));
+			flyingModel.setDataSourceId(innerJson.getString(FlyingKeyword.DATA_SOURCE));
+			flyingModel.setConnectionCatalog(innerJson.getString(FlyingKeyword.CONNECTION_CATALOG));
 		}
-		if (json.containsKey(FlyingKeyword.IGNORE_TAG.value())) {
-			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG.value()));
+		if (json.containsKey(FlyingKeyword.IGNORE_TAG)) {
+			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE_TAG));
 		}
-		if (json.containsKey(FlyingKeyword.PREFIX.value())) {
-			flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX.value()));
+		if (json.containsKey(FlyingKeyword.PREFIX)) {
+			flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX));
 		}
-		if (json.containsKey(FlyingKeyword.DATA_SOURCE.value())) {
-			flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE.value()));
+		if (json.containsKey(FlyingKeyword.DATA_SOURCE)) {
+			flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE));
 		}
-		if (json.containsKey(FlyingKeyword.CONNECTION_CATALOG.value())) {
-			flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG.value()));
+		if (json.containsKey(FlyingKeyword.CONNECTION_CATALOG)) {
+			flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG));
 		}
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
 				: (outerPrefix + flyingModel.getUnstablePrefix()));
 	}
 
 	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
-			Configuration configuration, JSONObject threshold, FlyingModel flyingModel) {
+			Configuration configuration, FlyingModel flyingModel) {
 		if (flyingModel2ndCache.get(id) != null) {
 			return flyingModel2ndCache.get(id);
 		}
-		if (flyingJson == null) {
-			flyingJson = new JSONObject();
-		}
+		JSONObject threshold = flyingJson.getJSONObject("properties");
 		if (threshold == null || threshold.isEmpty()) {
 			return flyingJson;
 		}
 		for (Map.Entry<String, Object> e : threshold.getInnerMap().entrySet()) {
 			JSONObject json = (JSONObject) e.getValue();
-			if (json.containsKey(FlyingKeyword.FLYING.value())) {
-				String flying = json.getString("flying");
-				if (flying.indexOf('.') == -1 && id.indexOf('.') > -1) {
-					flying = id.substring(0, id.lastIndexOf('.') + 1) + flying;
+			if (json.containsKey(FlyingKeyword.ID)) {
+				String innerId = json.getString(FlyingKeyword.ID);
+				if (innerId.indexOf('.') == -1 && id.indexOf('.') > -1) {
+					innerId = id.substring(0, id.lastIndexOf('.') + 1) + innerId;
 				}
-				String originalSql = configuration.getMappedStatement(flying).getBoundSql(null).getSql();
+				String originalSql = configuration.getMappedStatement(innerId).getBoundSql(null).getSql();
 				String jsonStr = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
 				JSONObject innerJson = JSONObject.parseObject(jsonStr);
 				FlyingModel innerFlyingModel = new FlyingModel();
-				buildFlyingModel(innerFlyingModel, json, originalSql, flying, false, innerJson,
+				buildFlyingModel(innerFlyingModel, json, originalSql, innerId, false, innerJson,
 						flyingModel.getPrefix());
+				dealInnerPropertiesIteration(innerId, innerJson, configuration, innerFlyingModel);
 				flyingModel.getProperties().put(e.getKey(), innerFlyingModel);
-				dealInnerPropertiesIteration(flying, innerJson, configuration, innerJson.getJSONObject("properties"),
-						innerFlyingModel);
 			} else {
 				FlyingModel innerFlyingModel = new FlyingModel();
 				buildFlyingModel(innerFlyingModel, json, "", null, false, null, flyingModel.getPrefix());
@@ -140,10 +129,11 @@ public class FlyingManager {
 		}
 		FlyingModel ret = new FlyingModel();
 		String extension = null;
-		if (null != originalSql && originalSql.startsWith(FLYING) && originalSql.indexOf(':') > -1) {
+		if (null != originalSql && originalSql.startsWith(FlyingKeyword.FLYING) && originalSql.indexOf(':') > -1) {
 			String dataSourceIdAndConnectionCatalog = null;
 			String s1 = null;
-			if ((originalSql.startsWith(FLYING_LEFTBRACKET) || originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET))
+			if ((originalSql.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
+					|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET))
 					&& originalSql.indexOf(')') > 0) {
 				String s0 = originalSql.substring(0, originalSql.indexOf(')') + 1);
 				dataSourceIdAndConnectionCatalog = s0.substring(s0.indexOf('(') + 1, s0.lastIndexOf(')'));
@@ -151,10 +141,12 @@ public class FlyingManager {
 			} else {
 				s1 = originalSql.substring(0, originalSql.indexOf(':'));
 			}
-			if (FLYING.equals(s1) || FLYING_QUESTIONMARK.equals(s1) || s1.startsWith(FLYING_LEFTBRACKET)
-					|| originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET)) {
+			if (FlyingKeyword.FLYING.equals(s1) || FlyingKeyword.FLYING_QUESTIONMARK.equals(s1)
+					|| s1.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
+					|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET)) {
 				String s2 = null;
-				if (s1.startsWith(FLYING_LEFTBRACKET) || originalSql.startsWith(FLYING_QUESTIONMARK_LEFTBRACKET)) {
+				if (s1.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
+						|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET)) {
 					s2 = originalSql.substring(originalSql.indexOf(":", originalSql.indexOf(')')) + 1,
 							originalSql.length());
 				} else {

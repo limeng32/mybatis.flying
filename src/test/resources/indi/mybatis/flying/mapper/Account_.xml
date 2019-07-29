@@ -39,10 +39,10 @@
 	<select id="selectAllAsd" resultMap="asd_result">
 		flying:{"action":"selectAll", "ignoreTag":"noPassword",
 		"prefix":"asd_",
-		"properties":{"property1":{"flying":"indi.mybatis.flying.mapper.PermissionMapper.select",
+		"properties":{"property1":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select",
 		"prefix":"prefix1_"},
 		"property2":{"prefix":"prefix2_",
-		"ignoreTag":"tag2","flying":"select"},
+		"ignoreTag":"tag2","id":"select"},
 		"property3":{"prefix":"prefix3_"}}}
 	</select>
 

@@ -89,6 +89,7 @@ public class PrefixTest {
 		Assert.assertEquals("indi.mybatis.flying.mapper.PermissionMapper.select", fm1.getId());
 		FlyingModel fm4 = fm1.getProperties().get("property4");
 		Assert.assertEquals("asd_prefix1_prefix4_", fm4.getPrefix());
+		Assert.assertEquals("noId", fm4.getIgnoreTag());
 
 		FlyingModel fm2 = fm.getProperties().get("property2");
 		Assert.assertEquals("indi.mybatis.flying.mapper.AccountMapper.select", fm2.getId());
