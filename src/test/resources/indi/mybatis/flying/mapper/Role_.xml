@@ -16,7 +16,7 @@
 	</select>
 
 	<select id="selectNoId" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noId"}
+		flying#{?}:{"action":"select", "ignore":"noId"}
 	</select>
 
 	<select id="selectAll" resultMap="result">

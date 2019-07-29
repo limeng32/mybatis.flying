@@ -5,17 +5,17 @@
 
 	<select id="selectWithoutCache" resultMap="result"
 		useCache="false">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword",
+		flying#{?}:{"action":"select", "ignore":"noPassword",
 		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
 		flying#{?}:{"action":"select",
-		"ignoreTag":"noPassword"}
+		"ignore":"noPassword"}
 	</select>
 
 	<select id="selectAsd" resultMap="asd_result">
-		flying#{?}:{"action":"select","ignoreTag":"noPassword",
+		flying#{?}:{"action":"select","ignore":"noPassword",
 		"prefix":"asd_"}
 		<!-- select id as asd_id, name as asd_name, email as asd_email, password 
 			as asd_password, opLock as asd_opLock, status as asd_status, activated as 
@@ -28,21 +28,21 @@
 	</select>
 
 	<select id="selectWithoutRole" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noRole"}
+		flying#{?}:{"action":"select", "ignore":"noRole"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
 		flying:{"action":"selectAll",
-		"ignoreTag":"noPassword"}
+		"ignore":"noPassword"}
 	</select>
 
 	<select id="selectAllAsd" resultMap="asd_result">
-		flying:{"action":"selectAll", "ignoreTag":"noPassword",
+		flying:{"action":"selectAll", "ignore":"noPassword",
 		"prefix":"asd_",
 		"properties":{"property1":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select",
 		"prefix":"prefix1_"},
 		"property2":{"prefix":"prefix2_",
-		"ignoreTag":"tag2","id":"select"},
+		"ignore":"tag2","id":"select"},
 		"property3":{"prefix":"prefix3_"}}}
 	</select>
 
@@ -52,7 +52,7 @@
 
 	<select id="selectOne" resultMap="result">
 		flying:{"action":"selectOne",
-		"ignoreTag":"noPassword"}
+		"ignore":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">

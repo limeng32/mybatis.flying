@@ -4,7 +4,7 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"select:noPassword"}
+		flying#{?}:{"action":"select", "ignore":"select:noPassword"}
 	</select>
 
 	<select id="selectOne" resultMap="result">

@@ -18,7 +18,7 @@ public class FlyingKeyword {
 
 	public static final String ID = "id";
 
-	public static final String IGNORE_TAG = "ignoreTag";
+	public static final String IGNORE = "ignore";
 
 	public static final String KEY_GENERATOR = "keyGenerator";
 

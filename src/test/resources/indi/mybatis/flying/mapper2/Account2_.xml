@@ -4,19 +4,19 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword"}
+		flying#{?}:{"action":"select", "ignore":"noPassword"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noPassword"}
+		flying#{?}:{"action":"select", "ignore":"noPassword"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:{"action":"selectAll", "ignoreTag":"noPassword"}
+		flying:{"action":"selectAll", "ignore":"noPassword"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:{"action":"selectOne", "ignoreTag":"noPassword"}
+		flying:{"action":"selectOne", "ignore":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">

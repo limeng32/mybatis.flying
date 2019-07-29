@@ -29,12 +29,12 @@
 
 	<insert id="insertWithoutName" useGeneratedKeys="true"
 		keyProperty="id">
-		flying:{"action":"insert", "ignoreTag":"noName"}
+		flying:{"action":"insert", "ignore":"noName"}
 	</insert>
 
 	<insert id="insertWithoutFoo" useGeneratedKeys="true"
 		keyProperty="id">
-		flying:{"action":"insert", "ignoreTag":"noFoo"}
+		flying:{"action":"insert", "ignore":"noFoo"}
 	</insert>
 
 	<update id="update">
@@ -42,7 +42,7 @@
 	</update>
 
 	<update id="updateWithoutName">
-		flying:{"action":"update", "ignoreTag":"noName"}
+		flying:{"action":"update", "ignore":"noName"}
 	</update>
 
 	<update id="updatePersistent">
@@ -50,7 +50,7 @@
 	</update>
 
 	<update id="updatePersistentWithoutName">
-		flying:{"action":"updatePersistent", "ignoreTag":"noName"}
+		flying:{"action":"updatePersistent", "ignore":"noName"}
 	</update>
 
 	<delete id="delete">

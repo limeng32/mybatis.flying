@@ -12,7 +12,7 @@
 	</select>
 
 	<select id="selectWithoutAccount" resultMap="result">
-		flying#{?}:{"action":"select", "ignoreTag":"noAccount"}
+		flying#{?}:{"action":"select", "ignore":"noAccount"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
