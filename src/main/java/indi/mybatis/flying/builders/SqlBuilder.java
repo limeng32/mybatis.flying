@@ -3,6 +3,7 @@ package indi.mybatis.flying.builders;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
-
-import com.alibaba.fastjson.JSONObject;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
@@ -971,7 +970,7 @@ public class SqlBuilder {
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				flyingModel);
+				flyingModel, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1013,7 +1012,7 @@ public class SqlBuilder {
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				flyingModel);
+				flyingModel, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1078,9 +1077,11 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
 			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, TableName lastTableName, FlyingModel flyingModel)
+			String fieldPerfix, AtomicInteger index, TableName lastTableName, FlyingModel flyingModel,
+			Map<Mapperable, Integer> map)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException,
 			NoSuchFieldException, IllegalArgumentException, InstantiationException {
 		String ignoreTag = null;
@@ -1093,10 +1094,13 @@ public class SqlBuilder {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
 		TableName tableName = null;
+
+		int indexValue = (map == null || map.get(originFieldMapper) == null) ? (index.getAndIncrement())
+				: (map.get(originFieldMapper));
 		if (lastTableName == null) {
-			tableName = new TableName(tableMapper, index.getAndIncrement(), null);
+			tableName = new TableName(tableMapper, indexValue, null);
 		} else {
-			tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
+			tableName = new TableName(tableMapper, indexValue, lastTableName.getMap());
 		}
 		/*
 		 * If originFieldMapper is null, it is considered to be the first traversal. In
@@ -1108,20 +1112,17 @@ public class SqlBuilder {
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 				if (inner != null) {
-//					System.out.println("1::::::" + JSONObject.toJSONString(fieldMapper));
-//					System.out.println("2::::::" + index.get());
-//					System.out.println("3::::::" + JSONObject.toJSONString(inner));
-					System.out.println("0::::::" + dtoFieldMap.get(fieldMapper.getFieldName()));
 					if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
-//						ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(),
-//								fieldMapper.getFieldType().newInstance());
 						dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
-						System.out.println("1::::::" + dtoFieldMap);
 					}
 					TableMapper innerTableMapper = buildTableMapper(fieldMapper.getFieldType());
+					int indexValue2 = index.getAndIncrement();
+					if (map == null) {
+						map = new HashMap<Mapperable, Integer>(4);
+					}
+					map.put(fieldMapper, indexValue2);
 					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {
-						System.out.println("4::::::" + e.getKey() + ":" + JSONObject.toJSONString(e.getValue()));
-						selectSql.append(innerTableMapper.getTableName()).append("_1.")
+						selectSql.append(innerTableMapper.getTableName()).append("_").append(indexValue2).append(DOT)
 								.append(e.getValue().getDbFieldName()).append(" as ").append(inner.getPrefix())
 								.append(e.getValue().getDbFieldName()).append(COMMA);
 					}
@@ -1170,7 +1171,7 @@ public class SqlBuilder {
 			}
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index, tableName, null);
+						temp, index, tableName, null, map);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
