@@ -1095,15 +1095,18 @@ public class SqlBuilder {
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-
-				System.out.println("::::::" + JSONObject.toJSONString(fieldMapper));
-				System.out.println("::::::" + fieldMapper.getFieldName());
 				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 				if (inner != null) {
-					System.out.println("1::::::" + JSONObject.toJSONString(inner));
-					selectSql.append("Permission_1.id as asd_prefix1_id").append(COMMA)
-							.append("Permission_1.fake_id as asd_prefix1_fake_id").append(COMMA)
-							.append("Permission_1.name as asd_prefix1_name").append(COMMA);
+//					System.out.println("1::::::" + JSONObject.toJSONString(fieldMapper));
+//					System.out.println("2::::::" + index.get());
+//					System.out.println("3::::::" + JSONObject.toJSONString(inner));
+					TableMapper innerTableMapper = buildTableMapper(fieldMapper.getFieldType());
+					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {
+						System.out.println("4::::::" + e.getKey() + ":" + JSONObject.toJSONString(e.getValue()));
+						selectSql.append(innerTableMapper.getTableName()).append("_1.")
+								.append(e.getValue().getDbFieldName()).append(" as ").append(inner.getPrefix())
+								.append(e.getValue().getDbFieldName()).append(COMMA);
+					}
 				}
 				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
