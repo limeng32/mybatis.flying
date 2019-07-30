@@ -15,6 +15,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -1093,6 +1095,16 @@ public class SqlBuilder {
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+
+				System.out.println("::::::" + JSONObject.toJSONString(fieldMapper));
+				System.out.println("::::::" + fieldMapper.getFieldName());
+				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
+				if (inner != null) {
+					System.out.println("1::::::" + JSONObject.toJSONString(inner));
+					selectSql.append("Permission_1.id as asd_prefix1_id").append(COMMA)
+							.append("Permission_1.fake_id as asd_prefix1_fake_id").append(COMMA)
+							.append("Permission_1.name as asd_prefix1_name").append(COMMA);
+				}
 				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
 					if (prefix != null) {

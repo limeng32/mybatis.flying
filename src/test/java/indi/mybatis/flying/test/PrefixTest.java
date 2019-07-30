@@ -28,6 +28,7 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.Permission;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.utils.FlyingManager;
 
@@ -68,11 +69,20 @@ public class PrefixTest {
 
 		Account_ ac = new Account_();
 		ac.setName("carl");
+		Permission pc = new Permission();
+		pc.setName("carl");
+		ac.setPermission(pc);
 		Collection<Account_> accountC = accountService.selectAllAsd(ac);
 		System.out.println(JSONObject.toJSONString(accountC));
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertEquals(3, accounts[0].getId().intValue());
+		Assert.assertEquals(23, accounts[0].getPermission().getFakeId().intValue());
+		Assert.assertEquals(3, accounts[0].getPermission().getId().intValue());
+		Assert.assertEquals("carl", accounts[0].getPermission().getName());
 		Assert.assertEquals(4, accounts[1].getId().intValue());
+		Assert.assertEquals(24, accounts[1].getPermission().getFakeId().intValue());
+		Assert.assertEquals(4, accounts[1].getPermission().getId().intValue());
+		Assert.assertEquals("carl", accounts[1].getPermission().getName());
 
 		int c = accountService.countAsd(ac);
 		Assert.assertEquals(2, c);
@@ -83,7 +93,7 @@ public class PrefixTest {
 		Assert.assertEquals("noPassword", fm.getIgnoreTag());
 		Assert.assertEquals("asd_", fm.getPrefix());
 
-		FlyingModel fm1 = fm.getProperties().get("property1");
+		FlyingModel fm1 = fm.getProperties().get("permission");
 		Assert.assertEquals("aaaa", fm1.getIgnoreTag());
 		Assert.assertEquals("asd_prefix1_", fm1.getPrefix());
 		Assert.assertEquals("indi.mybatis.flying.mapper.PermissionMapper.select", fm1.getId());
