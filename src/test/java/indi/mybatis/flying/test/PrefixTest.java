@@ -109,9 +109,10 @@ public class PrefixTest {
 		FlyingModel fm3 = fm.getProperties().get("property3");
 		Assert.assertEquals("asd_prefix3_", fm3.getPrefix());
 		
-//		Account_ ac2 = new Account_();
-//		ac2.setName("carl");
-//		Collection<Account_> accountC2 = accountService.selectAllAsd(ac2);
-//		System.out.println("5::" + JSONObject.toJSONString(accountC2));
+		Account_ ac2 = new Account_();
+		ac2.setName("carl");
+//		ac2.setPermission(new Permission());
+		Collection<Account_> accountC2 = accountService.selectAllAsd(ac2);
+		System.out.println("5::" + JSONObject.toJSONString(accountC2));
 	}
 }
