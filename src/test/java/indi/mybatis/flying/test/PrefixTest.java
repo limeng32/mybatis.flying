@@ -30,7 +30,6 @@ import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Permission;
-import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.utils.FlyingManager;
@@ -144,10 +143,22 @@ public class PrefixTest {
 		Assert.assertEquals("ip2_3", loginLogs[0].getLoginIP2());
 		Assert.assertEquals(3, loginLogs[0].getAccount().getId().intValue());
 		Assert.assertEquals("ccc", loginLogs[0].getAccount().getPassword());
-		
+		Assert.assertEquals(13, loginLogs[0].getAccount().getRole().getId().intValue());
+		Assert.assertEquals("role3", loginLogs[0].getAccount().getRole().getName());
+		Assert.assertEquals(113, loginLogs[0].getAccount().getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy3", loginLogs[0].getAccount().getRoleDeputy().getName());
+
 		Assert.assertEquals(104, loginLogs[1].getId().intValue());
 		Assert.assertEquals("ip2_4", loginLogs[1].getLoginIP2());
 		Assert.assertEquals(4, loginLogs[1].getAccount().getId().intValue());
 		Assert.assertEquals("ddd", loginLogs[1].getAccount().getPassword());
+		Assert.assertEquals(14, loginLogs[1].getAccount().getRole().getId().intValue());
+		Assert.assertEquals("role4", loginLogs[1].getAccount().getRole().getName());
+		Assert.assertEquals(114, loginLogs[1].getAccount().getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy4", loginLogs[1].getAccount().getRoleDeputy().getName());
+
+		FlyingModel fm = FlyingManager
+				.getFlyingModelFromCache("indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefix");
+		System.out.println("fm::" + JSONObject.toJSONString(fm));
 	}
 }

@@ -1109,6 +1109,8 @@ public class SqlBuilder {
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
+		}
+		if (flyingModel != null) {
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 				if (inner != null) {
@@ -1136,6 +1138,7 @@ public class SqlBuilder {
 				}
 			}
 		}
+
 		/*
 		 * If the originFieldMapper and originTableName are not null, it can be
 		 * considered a non-first traversal.In the non-first traversal, process
@@ -1171,7 +1174,9 @@ public class SqlBuilder {
 			}
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index, tableName, null, map);
+						temp, index, tableName,
+						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
+						map);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
