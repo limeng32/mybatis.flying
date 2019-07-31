@@ -161,4 +161,12 @@ public class PrefixTest {
 				.getFlyingModelFromCache("indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefix");
 		System.out.println("fm::" + JSONObject.toJSONString(fm));
 	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
+	public void testSelect3() {
+
+	}
 }

@@ -62,7 +62,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private Role_ roleDeputy;
 
 	@FieldMapperAnnotation(dbFieldName = "permission_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", associationExtra = {
-			@ForeignAssociation(dbFieldName = "name", dbAssociationFieldName = "name") }, associationType = AssociationType.RightJoin)
+			@ForeignAssociation(dbFieldName = "name", dbAssociationFieldName = "name") }, associationType = AssociationType.LeftJoin)
 	private Permission permission;
 
 	private java.util.Collection<LoginLog_> loginLog;

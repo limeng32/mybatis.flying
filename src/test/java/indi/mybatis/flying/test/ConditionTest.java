@@ -170,6 +170,9 @@ public class ConditionTest {
 		lc.setAccount(ac4);
 		Collection<LoginLog_> c4 = loginLogService.selectAll(lc);
 		Assert.assertEquals(1, c4.size());
+
+		Collection<LoginLog_> c5 = loginLogService.selectAllPrefix(lc);
+		Assert.assertEquals(1, c5.size());
 	}
 
 	@Test
@@ -211,6 +214,9 @@ public class ConditionTest {
 		lc.setAccount(ac3);
 		Collection<LoginLog_> c3 = loginLogService.selectAll(lc);
 		Assert.assertEquals(1, c3.size());
+
+		Collection<LoginLog_> c4 = loginLogService.selectAllPrefix(lc);
+		Assert.assertEquals(1, c4.size());
 	}
 
 	/** 测试多重外键情况下sorter是否能正确发挥作用 */

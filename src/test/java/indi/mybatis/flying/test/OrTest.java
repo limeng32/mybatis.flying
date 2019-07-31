@@ -68,10 +68,16 @@ public class OrTest {
 		Collection<LoginLog_> LoginLogC = loginLogService.selectAll(lc1);
 		Assert.assertEquals(2, LoginLogC.size());
 
+		Collection<LoginLog_> LoginLogC11 = loginLogService.selectAllPrefix(lc1);
+		Assert.assertEquals(2, LoginLogC11.size());
+
 		LoginLog_Condition lc2 = new LoginLog_Condition();
 		lc2.setLoginIPLikeOr("b1", "c1");
 		Collection<LoginLog_> LoginLogC2 = loginLogService.selectAll(lc2);
 		Assert.assertEquals(2, LoginLogC2.size());
+
+		Collection<LoginLog_> LoginLogC12 = loginLogService.selectAllPrefix(lc2);
+		Assert.assertEquals(2, LoginLogC12.size());
 
 		int c2 = loginLogService.count(lc2);
 		Assert.assertEquals(2, c2);
@@ -101,6 +107,9 @@ public class OrTest {
 		lc7.setNumEqualsOrLoginIPLike(1, "b1");
 		Collection<LoginLog_> LoginLogC7 = loginLogService.selectAll(lc7);
 		Assert.assertEquals(2, LoginLogC7.size());
+
+		Collection<LoginLog_> LoginLogC17 = loginLogService.selectAllPrefix(lc7);
+		Assert.assertEquals(2, LoginLogC17.size());
 
 		LoginLog_ l1 = new LoginLog_();
 		l1.setLoginIP("a1");
@@ -206,6 +215,9 @@ public class OrTest {
 		((Role_Condition) lc.getAccount().getRoleDeputy()).setNameEqualsOrAccountNameEquals("silver", "bob");
 		Collection<LoginLog_> loginLogC = loginLogService.selectAll(lc);
 		Assert.assertEquals(2, loginLogC.size());
+
+		Collection<LoginLog_> loginLogC2 = loginLogService.selectAllPrefix(lc);
+		Assert.assertEquals(2, loginLogC2.size());
 	}
 
 	/* 一个只有单独入参的或逻辑测试用例 */

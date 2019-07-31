@@ -14,7 +14,7 @@
 		"ignore":"noPassword"}
 	</select>
 
-	<select id="selectAsd" resultMap="prefix_result">
+	<select id="selectAsd" resultMap="resultPrefix">
 		flying#{?}:{
 			"action":"select","ignore":"noPassword"
 		}
@@ -33,7 +33,7 @@
 		"ignore":"noPassword"}
 	</select>
 
-	<select id="selectAllAsd" resultMap="prefix_result">
+	<select id="selectAllAsd" resultMap="resultPrefix">
 		flying:{"action":"selectAll", "ignore":"noPassword", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
@@ -112,7 +112,7 @@
 			column="permission_id" />
 	</resultMap>
 
-	<resultMap type="Account_" id="prefix_result" autoMapping="true">
+	<resultMap type="Account_" id="resultPrefix" autoMapping="true">
 		<id property="id" column="id" />
 		<association property="permission"
 			resultMap="indi.mybatis.flying.mapper.PermissionMapper.result"

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -324,7 +325,8 @@ public class AccountTest {
 
 		LoginLog_ lc2 = new LoginLog_();
 		lc2.setAccount(ac2);
-		Collection<LoginLog_> loginLogC = loginLogService.selectAll(lc2);
+		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc2);
+		System.out.println("::::"+JSONObject.toJSONString(loginLogC));
 		Assert.assertEquals(1, loginLogC.size());
 		for (LoginLog_ l : loginLogC) {
 			Assert.assertEquals("0.0.0.1", l.getLoginIP());

@@ -1104,12 +1104,13 @@ public class SqlBuilder {
 		}
 		/*
 		 * If originFieldMapper is null, it is considered to be the first traversal. In
-		 * the first iteration, handle selectSql and fromSql.
+		 * the first iteration, handle fromSql.
 		 * 
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 		}
+		
 		if (flyingModel != null) {
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
@@ -1120,7 +1121,7 @@ public class SqlBuilder {
 					TableMapper innerTableMapper = buildTableMapper(fieldMapper.getFieldType());
 					int indexValue2 = index.getAndIncrement();
 					if (map == null) {
-						map = new HashMap<Mapperable, Integer>(4);
+						map = new HashMap<Mapperable, Integer>(2);
 					}
 					map.put(fieldMapper, indexValue2);
 					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {

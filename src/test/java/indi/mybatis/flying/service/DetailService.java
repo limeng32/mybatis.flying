@@ -42,6 +42,11 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	}
 
 	@Override
+	public Collection<Detail_> selectAllPrefix(Detail_ t) {
+		return mapper.selectAllPrefix(t);
+	}
+
+	@Override
 	public int updatePersistent(Detail_ t) {
 		return supportUpdatePersistent(mapper, t);
 	}
@@ -55,7 +60,7 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	public int count(Detail_ t) {
 		return supportCount(mapper, t);
 	}
-	
+
 	@Override
 	public void loadLoginLog(LoginLog_ loginlog, Detail_ detail) {
 		loginlog.removeAllDetail();
