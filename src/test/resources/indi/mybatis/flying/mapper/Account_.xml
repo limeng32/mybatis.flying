@@ -15,12 +15,9 @@
 	</select>
 
 	<select id="selectAsd" resultMap="asd_result">
-		flying#{?}:{"action":"select","ignore":"noPassword",
-		"prefix":"asd_"}
-		<!-- select id as asd_id, name as asd_name, email as asd_email, password 
-			as asd_password, opLock as asd_opLock, status as asd_status, activated as 
-			asd_activated, activateValue as asd_activateValue from account_ where id 
-			= #{id}; -->
+		flying#{?}:{
+			"action":"select","ignore":"noPassword"
+		}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
@@ -37,7 +34,7 @@
 	</select>
 
 	<select id="selectAllAsd" resultMap="asd_result">
-		flying:{"action":"selectAll", "ignore":"noPassword", "prefix":"asd_", "properties":{
+		flying:{"action":"selectAll", "ignore":"noPassword", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"prefix1_"},
 			"property2":{"prefix":"prefix2_", "ignore":"tag2","id":"select"},
 			"property3":{"prefix":"prefix3_"}
@@ -58,8 +55,7 @@
 	</select>
 
 	<select id="countAsd" resultType="int">
-		flying:{"action":"count",
-		"prefix":"asd_"}
+		flying:{"action":"count", "prefix":"asd_"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -117,16 +113,16 @@
 	</resultMap>
 
 	<resultMap type="Account_" id="asd_result" autoMapping="true">
-		<id property="id" column="asd_id" />
-		<result property="name" column="asd_name" />
-		<result property="email" column="asd_email" />
-		<result property="password" column="asd_password" />
-		<result property="opLock" column="asd_opLock" />
-		<result property="status" column="asd_status" />
-		<result property="activated" column="asd_activated" />
-		<result property="activateValue" column="asd_activateValue" />
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+		<result property="opLock" column="opLock" />
+		<result property="status" column="status" />
+		<result property="activated" column="activated" />
+		<result property="activateValue" column="activateValue" />
 		<association property="permission"
 			resultMap="indi.mybatis.flying.mapper.PermissionMapper.result"
-			columnPrefix="asd_prefix1_" />
+			columnPrefix="prefix1_" />
 	</resultMap>
 </mapper>
