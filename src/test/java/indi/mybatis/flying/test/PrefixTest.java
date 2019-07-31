@@ -125,12 +125,6 @@ public class PrefixTest {
 
 		FlyingModel fm3 = fm.getProperties().get("roleDeputy");
 		Assert.assertEquals("roleDeputy__", fm3.getPrefix());
-
-		Account_ ac2 = new Account_();
-		ac2.setName("carl");
-//		ac2.setPermission(new Permission());
-		Collection<Account_> accountC2 = accountService.selectAllAsd(ac2);
-		System.out.println("5::" + JSONObject.toJSONString(accountC2));
 	}
 
 	@Test
@@ -163,10 +157,6 @@ public class PrefixTest {
 		Assert.assertEquals("role4", loginLogs[1].getAccount().getRole().getName());
 		Assert.assertEquals(114, loginLogs[1].getAccount().getRoleDeputy().getId().intValue());
 		Assert.assertEquals("roleDeputy4", loginLogs[1].getAccount().getRoleDeputy().getName());
-
-		FlyingModel fm = FlyingManager
-				.getFlyingModelFromCache("indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefix");
-		System.out.println("fm::" + JSONObject.toJSONString(fm));
 	}
 
 	@Test
@@ -202,5 +192,23 @@ public class PrefixTest {
 		Assert.assertEquals("role4", details[1].getLoginLog().getAccount().getRole().getName());
 		Assert.assertEquals(114, details[1].getLoginLog().getAccount().getRoleDeputy().getId().intValue());
 		Assert.assertEquals("roleDeputy4", details[1].getLoginLog().getAccount().getRoleDeputy().getName());
+	}
+
+	// 测试flyingModel深度小于传入object深度的情况
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect4.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect4.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect4.result.xml")
+	public void testSelect4() {
+		Detail_ dc = new Detail_();
+		dc.setName("d3");
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setIdNotEqual(102);
+		dc.setLoginLog(lc);
+		lc.setAccount(new Account_());
+		lc.getAccount().setRoleDeputy(new Role_Condition());
+		((Role_Condition) (lc.getAccount().getRoleDeputy())).setNameNotEquals("roleDeputy3");
+		Collection<Detail_> detailC = detailService.selectAllPrefix2(dc);
+		Assert.assertEquals(1, detailC.size());
 	}
 }

@@ -45,6 +45,11 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	public Collection<Detail_> selectAllPrefix(Detail_ t) {
 		return mapper.selectAllPrefix(t);
 	}
+	
+	@Override
+	public Collection<Detail_> selectAllPrefix2(Detail_ t) {
+		return mapper.selectAllPrefix2(t);
+	}
 
 	@Override
 	public int updatePersistent(Detail_ t) {

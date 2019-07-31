@@ -24,6 +24,8 @@ public interface DetailMapper extends MapperFace<Detail_> {
 	public Collection<Detail_> selectAll(Detail_ t);
 	
 	public Collection<Detail_> selectAllPrefix(Detail_ t);
+	
+	public Collection<Detail_> selectAllPrefix2(Detail_ t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)

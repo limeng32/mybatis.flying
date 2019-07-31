@@ -20,6 +20,13 @@
 			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefix", "prefix":"loginLog__"},
 		}}
 	</select>
+	
+	<!-- 只遍历到LoginLog_的方法 -->
+	<select id="selectAllPrefix2" resultMap="resultPrefix">
+		flying:{"action":"selectAll", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAll", "prefix":"loginLog__"},
+		}}
+	</select>
 
 	<select id="selectOne" resultMap="result">
 		flying:{"action":"selectOne"}
@@ -52,7 +59,7 @@
 			column="loginlog_id" />
 	</resultMap>
 	
-	<resultMap type="Detail_" id="resultPrefix" autoMapping="true">
+	<resultMap id="resultPrefix" type="Detail_" autoMapping="true">
 		<id property="id" column="id" />
 		<association property="loginLog" resultMap="indi.mybatis.flying.mapper.LoginLogMapper.resultPrefix"
 			columnPrefix="loginLog__" />
