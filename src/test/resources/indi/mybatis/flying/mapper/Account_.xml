@@ -35,8 +35,8 @@
 
 	<select id="selectAllAsd" resultMap="asd_result">
 		flying:{"action":"selectAll", "ignore":"noPassword", "properties":{
-			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"prefix1_"},
-			"property2":{"prefix":"prefix2_", "ignore":"tag2","id":"select"},
+			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
+			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
 			"property3":{"prefix":"prefix3_"}
 		}}
 	</select>
@@ -123,6 +123,9 @@
 		<result property="activateValue" column="activateValue" />
 		<association property="permission"
 			resultMap="indi.mybatis.flying.mapper.PermissionMapper.result"
-			columnPrefix="prefix1_" />
+			columnPrefix="permission__" />
+		<association property="role"
+			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
+			columnPrefix="role__" />	
 	</resultMap>
 </mapper>
