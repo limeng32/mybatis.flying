@@ -28,9 +28,13 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.Detail_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Permission;
+import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
+import indi.mybatis.flying.pojo.condition.Role_Condition;
 import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.utils.FlyingManager;
 
@@ -49,6 +53,9 @@ public class PrefixTest {
 
 	@Autowired
 	private LoginLogService loginLogService;
+
+	@Autowired
+	private DetailService detailService;
 
 	@Test
 	public void testDataSource() {
@@ -131,11 +138,11 @@ public class PrefixTest {
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
 	public void testSelect2() {
-		System.out.println("1::");
 		LoginLog_ lc = new LoginLog_();
 		lc.setLoginIP("ip3");
-//		lc.setAccount(new Account_());
-//		lc.getAccount().setRole(new Role_());
+		lc.setAccount(new Account_());
+		lc.getAccount().setRoleDeputy(new Role_Condition());
+		((Role_Condition) (lc.getAccount().getRoleDeputy())).setNameNotEquals("roleDeputy2");
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc);
 		System.out.println("1::" + JSONObject.toJSONString(loginLogC));
 		LoginLog_[] loginLogs = loginLogC.toArray(new LoginLog_[loginLogC.size()]);
@@ -167,6 +174,33 @@ public class PrefixTest {
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
 	public void testSelect3() {
+		Detail_ dc = new Detail_();
+		dc.setName("d3");
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setIdNotEqual(102);
+		dc.setLoginLog(lc);
+		Collection<Detail_> detailC = detailService.selectAllPrefix(dc);
+		System.out.println("11::" + JSONObject.toJSONString(detailC));
+		Detail_[] details = detailC.toArray(new Detail_[detailC.size()]);
 
+		Assert.assertEquals(203, details[0].getId().intValue());
+		Assert.assertEquals(103, details[0].getLoginLog().getId().intValue());
+		Assert.assertEquals("ip2_3", details[0].getLoginLog().getLoginIP2());
+		Assert.assertEquals(3, details[0].getLoginLog().getAccount().getId().intValue());
+		Assert.assertEquals("ccc", details[0].getLoginLog().getAccount().getPassword());
+		Assert.assertEquals(13, details[0].getLoginLog().getAccount().getRole().getId().intValue());
+		Assert.assertEquals("role3", details[0].getLoginLog().getAccount().getRole().getName());
+		Assert.assertEquals(113, details[0].getLoginLog().getAccount().getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy3", details[0].getLoginLog().getAccount().getRoleDeputy().getName());
+
+		Assert.assertEquals(204, details[1].getId().intValue());
+		Assert.assertEquals(104, details[1].getLoginLog().getId().intValue());
+		Assert.assertEquals("ip2_4", details[1].getLoginLog().getLoginIP2());
+		Assert.assertEquals(4, details[1].getLoginLog().getAccount().getId().intValue());
+		Assert.assertEquals("ddd", details[1].getLoginLog().getAccount().getPassword());
+		Assert.assertEquals(14, details[1].getLoginLog().getAccount().getRole().getId().intValue());
+		Assert.assertEquals("role4", details[1].getLoginLog().getAccount().getRole().getName());
+		Assert.assertEquals(114, details[1].getLoginLog().getAccount().getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy4", details[1].getLoginLog().getAccount().getRoleDeputy().getName());
 	}
 }

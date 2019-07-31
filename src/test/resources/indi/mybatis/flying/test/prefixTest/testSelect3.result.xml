@@ -1,8 +1,16 @@
 <dataset>
-	<loginLog_ ID="101" LOGINIP="ip1" LOGINIP2="ip2_1" ACCOUNTID="1" />
-	<loginLog_ ID="102" LOGINIP="ip2" LOGINIP2="ip2_2" ACCOUNTID="2" />
-	<loginLog_ ID="103" LOGINIP="ip3" LOGINIP2="ip2_3" ACCOUNTID="3" />
-	<loginLog_ ID="104" LOGINIP="ip3" LOGINIP2="ip2_4" ACCOUNTID="4" />
+	<detail_ ID="201" NAME="d1" LOGINLOG_ID="101" />
+	<detail_ ID="202" NAME="d3" LOGINLOG_ID="102" />
+	<detail_ ID="203" NAME="d3" LOGINLOG_ID="103" />
+	<detail_ ID="204" NAME="d3" LOGINLOG_ID="104" />
+	<loginLog_ ID="101" LOGINIP="ip1" LOGINIP2="ip2_1"
+		ACCOUNTID="1" />
+	<loginLog_ ID="102" LOGINIP="ip2" LOGINIP2="ip2_2"
+		ACCOUNTID="2" />
+	<loginLog_ ID="103" LOGINIP="ip3" LOGINIP2="ip2_3"
+		ACCOUNTID="3" />
+	<loginLog_ ID="104" LOGINIP="ip3" LOGINIP2="ip2_4"
+		ACCOUNTID="4" />
 	<account_ ID="1" NAME="bob" EMAIL="bob@live.cn_"
 		PASSWORD="aaa" ACTIVATED="1" ACTIVATEVALUE="a111" OPLOCK="11"
 		PERMISSION_ID="1" ROLE_ID="11" DEPUTY_ID="111" />
