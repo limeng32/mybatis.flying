@@ -81,6 +81,8 @@ public class PrefixTest {
 		Assert.assertEquals("carl", accounts[0].getPermission().getName());
 		Assert.assertEquals(13, accounts[0].getRole().getId().intValue());
 		Assert.assertEquals("role3", accounts[0].getRole().getName());
+		Assert.assertEquals(113, accounts[0].getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy3", accounts[0].getRoleDeputy().getName());
 
 		Assert.assertEquals(4, accounts[1].getId().intValue());
 		Assert.assertEquals(24, accounts[1].getPermission().getFakeId().intValue());
@@ -88,6 +90,8 @@ public class PrefixTest {
 		Assert.assertEquals("carl", accounts[1].getPermission().getName());
 		Assert.assertEquals(14, accounts[1].getRole().getId().intValue());
 		Assert.assertEquals("role4", accounts[1].getRole().getName());
+		Assert.assertEquals(114, accounts[1].getRoleDeputy().getId().intValue());
+		Assert.assertEquals("roleDeputy4", accounts[1].getRoleDeputy().getName());
 
 		int c = accountService.countAsd(ac);
 		Assert.assertEquals(2, c);
@@ -107,8 +111,8 @@ public class PrefixTest {
 		Assert.assertEquals("indi.mybatis.flying.mapper.RoleMapper.select", fm2.getId());
 		Assert.assertEquals("role__", fm2.getPrefix());
 
-		FlyingModel fm3 = fm.getProperties().get("property3");
-		Assert.assertEquals("prefix3_", fm3.getPrefix());
+		FlyingModel fm3 = fm.getProperties().get("roleDeputy");
+		Assert.assertEquals("roleDeputy__", fm3.getPrefix());
 
 		Account_ ac2 = new Account_();
 		ac2.setName("carl");

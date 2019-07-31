@@ -37,7 +37,7 @@
 		flying:{"action":"selectAll", "ignore":"noPassword", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
-			"property3":{"prefix":"prefix3_"}
+			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
 		}}
 	</select>
 
@@ -126,6 +126,9 @@
 			columnPrefix="permission__" />
 		<association property="role"
 			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
-			columnPrefix="role__" />	
+			columnPrefix="role__" />
+		<association property="roleDeputy"
+			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
+			columnPrefix="roleDeputy__" />		
 	</resultMap>
 </mapper>
