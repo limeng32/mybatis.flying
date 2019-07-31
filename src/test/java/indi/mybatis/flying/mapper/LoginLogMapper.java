@@ -22,6 +22,8 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<LoginLog_> selectAll(LoginLog_ t);
+	
+	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)

@@ -14,6 +14,12 @@
 	<select id="selectAll" resultMap="result">
 		flying:{"action":"selectAll"}
 	</select>
+	
+	<select id="selectAllPrefix" resultMap="prefix_result">
+		flying:{"action":"selectAll", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllAsd", "prefix":"account__"},
+		}}
+	</select>
 
 	<select id="selectOne" resultMap="result">
 		flying:{"action":"selectOne"}
@@ -44,5 +50,12 @@
 		<association property="account" javaType="Account_"
 			select="indi.mybatis.flying.mapper.AccountMapper.selectWithoutCache"
 			column="accountId" />
+	</resultMap>
+	
+	<resultMap id="prefix_result" type="LoginLog_" autoMapping="true">
+		<id property="id" column="id" />
+		<association property="account"
+			resultMap="indi.mybatis.flying.mapper.AccountMapper.prefix_result"
+			columnPrefix="account__" />
 	</resultMap>
 </mapper>

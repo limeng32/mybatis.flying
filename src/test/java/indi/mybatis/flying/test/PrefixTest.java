@@ -28,8 +28,11 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.Permission;
+import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.service.LoginLogService;
 import indi.mybatis.flying.utils.FlyingManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,6 +47,9 @@ public class PrefixTest {
 
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private LoginLogService loginLogService;
 
 	@Test
 	public void testDataSource() {
@@ -119,5 +125,29 @@ public class PrefixTest {
 //		ac2.setPermission(new Permission());
 		Collection<Account_> accountC2 = accountService.selectAllAsd(ac2);
 		System.out.println("5::" + JSONObject.toJSONString(accountC2));
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
+	public void testSelect2() {
+		System.out.println("1::");
+		LoginLog_ lc = new LoginLog_();
+		lc.setLoginIP("ip3");
+//		lc.setAccount(new Account_());
+//		lc.getAccount().setRole(new Role_());
+		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc);
+		System.out.println("1::" + JSONObject.toJSONString(loginLogC));
+		LoginLog_[] loginLogs = loginLogC.toArray(new LoginLog_[loginLogC.size()]);
+		Assert.assertEquals(103, loginLogs[0].getId().intValue());
+		Assert.assertEquals("ip2_3", loginLogs[0].getLoginIP2());
+		Assert.assertEquals(3, loginLogs[0].getAccount().getId().intValue());
+		Assert.assertEquals("ccc", loginLogs[0].getAccount().getPassword());
+		
+		Assert.assertEquals(104, loginLogs[1].getId().intValue());
+		Assert.assertEquals("ip2_4", loginLogs[1].getLoginIP2());
+		Assert.assertEquals(4, loginLogs[1].getAccount().getId().intValue());
+		Assert.assertEquals("ddd", loginLogs[1].getAccount().getPassword());
 	}
 }
