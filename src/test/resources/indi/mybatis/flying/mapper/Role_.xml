@@ -4,47 +4,47 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying:{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+		{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying:{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+		{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying:{"action":"select#{?}"}
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="selectNoId" resultMap="result">
-		flying:{"action":"select#{?}", "ignore":"noId"}
+		{"action":"select#{?}", "ignore":"noId"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:{"action":"selectAll"}
+		{"action":"selectAll"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:{"action":"selectOne"}
+		{"action":"selectOne"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:{"action":"count"}
+		{"action":"count"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:{"action":"insert"}
+		{"action":"insert"}
 	</insert>
 
 	<update id="update">
-		flying:{"action":"update"}
+		{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:{"action":"updatePersistent"}
+		{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:{"action":"delete"}
+		{"action":"delete"}
 	</delete>
 
 	<update flushCache="false" id="updateDirect">
