@@ -62,7 +62,11 @@ public class FlyingManager {
 	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
 			boolean b, JSONObject innerJson, String outerPrefix) {
 		if (b) {
-			ActionType actionType = ActionType.valueOf(json.getString(FlyingKeyword.ACTION));
+			String temp = json.getString(FlyingKeyword.ACTION);
+			if (temp.endsWith("?")) {
+				temp = temp.substring(0, temp.length() - 1);
+			}
+			ActionType actionType = ActionType.valueOf(temp);
 			flyingModel.setActionType(actionType);
 			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR), originalSql, flyingModel);
 		}

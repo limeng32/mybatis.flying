@@ -5,27 +5,27 @@
 
 	<select id="selectWithoutCache" resultMap="result"
 		useCache="false">
-		flying#{?}:{"action":"select", "ignore":"noPassword",
+		flying:{"action":"select#{?}", "ignore":"noPassword",
 		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select",
+		flying:{"action":"select#{?}",
 		"ignore":"noPassword"}
 	</select>
 
 	<select id="selectAsd" resultMap="resultPrefix">
-		flying#{?}:{
-			"action":"select","ignore":"noPassword"
+		flying:{
+			"action":"select#{?}","ignore":"noPassword"
 		}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying#{?}:{"action":"select"}
+		flying:{"action":"select#{?}"}
 	</select>
 
 	<select id="selectWithoutRole" resultMap="result">
-		flying#{?}:{"action":"select", "ignore":"noRole"}
+		flying:{"action":"select#{?}", "ignore":"noRole"}
 	</select>
 
 	<select id="selectAll" resultMap="result">

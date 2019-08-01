@@ -4,11 +4,11 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select"}
+		flying:{"action":"select#{?}"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select"}
+		flying:{"action":"select#{?}"}
 	</select>
 
 	<select id="selectAll" resultMap="result">

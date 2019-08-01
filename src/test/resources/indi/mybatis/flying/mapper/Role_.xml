@@ -4,19 +4,19 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:{"action":"select", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+		flying:{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:{"action":"select", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+		flying:{"action":"select#{?}", "dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying#{?}:{"action":"select"}
+		flying:{"action":"select#{?}"}
 	</select>
 
 	<select id="selectNoId" resultMap="result">
-		flying#{?}:{"action":"select", "ignore":"noId"}
+		flying:{"action":"select#{?}", "ignore":"noId"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
