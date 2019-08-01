@@ -41,24 +41,16 @@ public class FlyingManager {
 		}
 		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
 		FlyingModel ret = new FlyingModel();
-		if (null != originalSql && originalSql.indexOf(':') > -1) {
-			String jsonStr = originalSql.substring(originalSql.indexOf('{'), originalSql.lastIndexOf('}') + 1);
-			System.out.println("0::::::::::::::" + jsonStr);
-			try {
-				JSONObject json = JSONObject.parseObject(jsonStr);
-				buildFlyingModel(ret, json, originalSql, id, true, null, null);
-				dealInnerPropertiesIteration(id, json, configuration, ret);
-				flyingModelCache.put(id, ret);
-				return ret;
-			} catch (Exception e) {
-				// make sonar happy
-				e.printStackTrace();
-				return fetchFlyingFeature(originalSql, id);
-			}
+		try {
+			JSONObject json = JSONObject.parseObject(originalSql);
+			buildFlyingModel(ret, json, originalSql, id, true, null, null);
+			dealInnerPropertiesIteration(id, json, configuration, ret);
+			flyingModelCache.put(id, ret);
+			return ret;
+		} catch (Exception e) {
+			// make sonar happy
+			return fetchFlyingFeature(originalSql, id);
 		}
-		ret.setHasFlyingFeature(false);
-		flyingModelCache.put(id, ret);
-		return ret;
 	}
 
 	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
@@ -113,8 +105,7 @@ public class FlyingManager {
 					innerId = id.substring(0, id.lastIndexOf('.') + 1) + innerId;
 				}
 				String originalSql = configuration.getMappedStatement(innerId).getBoundSql(null).getSql();
-				String jsonStr = originalSql.substring(originalSql.indexOf('{'), originalSql.lastIndexOf('}') + 1);
-				JSONObject innerJson = JSONObject.parseObject(jsonStr);
+				JSONObject innerJson = JSONObject.parseObject(originalSql);
 				FlyingModel innerFlyingModel = new FlyingModel();
 				buildFlyingModel(innerFlyingModel, json, originalSql, innerId, false, innerJson,
 						flyingModel.getPrefix());
