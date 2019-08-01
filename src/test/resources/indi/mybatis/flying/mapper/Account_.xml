@@ -5,36 +5,36 @@
 
 	<select id="selectWithoutCache" resultMap="result"
 		useCache="false">
-		flying:{"action":"select#{?}", "ignore":"noPassword",
+		{"action":"select#{?}", "ignore":"noPassword",
 		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying:{"action":"select#{?}",
+		{"action":"select#{?}",
 		"ignore":"noPassword"}
 	</select>
 
 	<select id="selectAsd" resultMap="resultPrefix">
-		flying:{
+		{
 			"action":"select#{?}","ignore":"noPassword"
 		}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying:{"action":"select#{?}"}
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="selectWithoutRole" resultMap="result">
-		flying:{"action":"select#{?}", "ignore":"noRole"}
+		{"action":"select#{?}", "ignore":"noRole"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:{"action":"selectAll",
+		{"action":"selectAll",
 		"ignore":"noPassword"}
 	</select>
 
 	<select id="selectAllAsd" resultMap="resultPrefix">
-		flying:{"action":"selectAll", "ignore":"noPassword", "properties":{
+		{"action":"selectAll", "ignore":"noPassword", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
 			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
@@ -42,41 +42,41 @@
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">
-		flying:{"action":"selectAll"}
+		{"action":"selectAll"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:{"action":"selectOne",
+		{"action":"selectOne",
 		"ignore":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:{"action":"count"}
+		{"action":"count"}
 	</select>
 
 	<select id="countAsd" resultType="int">
-		flying:{"action":"count", "prefix":"asd_"}
+		{"action":"count", "prefix":"asd_"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:{"action":"insert"}
+		{"action":"insert"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:{"action":"insert",
+		{"action":"insert",
 		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
 	<update id="update">
-		flying:{"action":"update"}
+		{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:{"action":"updatePersistent"}
+		{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:{"action":"delete"}
+		{"action":"delete"}
 	</delete>
 
 	<select id="selectDirect" resultMap="result">
