@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -86,5 +87,20 @@ public class IgnoreTest {
 		Collection<Detail_> detailC3 = detailService.selectAllPrefixIgnore3(dc);
 		Detail_[] details3 = detailC3.toArray(new Detail_[detailC3.size()]);
 		Assert.assertNull(details3[0].getLoginLog().getId());
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/ignoreTest/testSelectOne.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/ignoreTest/testSelectOne.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/ignoreTest/testSelectOne.result.xml")
+	public void testSelectOne() {
+		Detail_ dc = new Detail_();
+		dc.setId(202);
+		Detail_ detail = detailService.selectOnePrefixIgnore(dc);
+		System.out.println("1::" + JSONObject.toJSONString(detail));
+		Assert.assertNull(detail.getId());
+		Assert.assertNotNull(detail.getLoginLog().getId());
+		Assert.assertNull(detail.getLoginLog().getAccount().getName());
+		Assert.assertEquals("bbb", detail.getLoginLog().getAccount().getPassword());
 	}
 }

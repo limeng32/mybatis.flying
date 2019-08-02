@@ -37,6 +37,8 @@ public interface DetailMapper extends MapperFace<Detail_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Detail_ selectOne(Detail_ t);
 
+	public Detail_ selectOnePrefixIgnore(Detail_ t);
+
 	@Override
 	public void insert(Detail_ t);
 

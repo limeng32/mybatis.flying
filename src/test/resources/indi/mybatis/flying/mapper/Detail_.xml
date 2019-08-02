@@ -51,6 +51,12 @@
 	<select id="selectOne" resultMap="result">
 		{"action":"selectOne"}
 	</select>
+	
+	<select id="selectOnePrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectOne", "ignore":"noId", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore", "prefix":"loginLog__"},
+		}}
+	</select>
 
 	<select id="count" resultType="int">
 		{"action":"count"}

@@ -27,6 +27,11 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	}
 
 	@Override
+	public Detail_ selectOnePrefixIgnore(Detail_ t) {
+		return mapper.selectOnePrefixIgnore(t);
+	}
+
+	@Override
 	public void insert(Detail_ t) {
 		supportInsert(mapper, t);
 	}
