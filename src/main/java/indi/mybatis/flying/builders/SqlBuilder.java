@@ -16,6 +16,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -1110,7 +1112,7 @@ public class SqlBuilder {
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 		}
-		
+
 		if (flyingModel != null) {
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
@@ -1125,9 +1127,11 @@ public class SqlBuilder {
 					}
 					map.put(fieldMapper, indexValue2);
 					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {
-						selectSql.append(innerTableMapper.getTableName()).append("_").append(indexValue2).append(DOT)
-								.append(e.getValue().getDbFieldName()).append(" as ").append(inner.getPrefix())
-								.append(e.getValue().getDbFieldName()).append(COMMA);
+						if ((!e.getValue().getIgnoreTagSet().contains(inner.getIgnoreTag()))) {
+							selectSql.append(innerTableMapper.getTableName()).append("_").append(indexValue2)
+									.append(DOT).append(e.getValue().getDbFieldName()).append(" as ")
+									.append(inner.getPrefix()).append(e.getValue().getDbFieldName()).append(COMMA);
+						}
 					}
 				}
 				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {

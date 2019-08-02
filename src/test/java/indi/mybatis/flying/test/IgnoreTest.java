@@ -24,11 +24,13 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
+import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
+import indi.mybatis.flying.utils.FlyingManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -71,5 +73,10 @@ public class IgnoreTest {
 		LoginLog_ lc = new LoginLog_();
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefixIgnore(lc);
 		System.out.println("2::" + JSONObject.toJSONString(loginLogC));
+		LoginLog_[] loginLogs = loginLogC.toArray(new LoginLog_[loginLogC.size()]);
+		Assert.assertNull(loginLogs[0].getAccount().getName());
+		
+		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore");
+		System.out.println("fm::" + JSONObject.toJSONString(fm));
 	}
 }
