@@ -10,6 +10,12 @@
 	<select id="select" resultMap="result">
 		{"action":"select#{?}"}
 	</select>
+	
+	<select id="selectPrefixIgnore" resultMap="resultPrefix">
+		{"action":"select#{?}", "ignore":"noId", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore", "prefix":"loginLog__"},
+		}}
+	</select>
 
 	<select id="selectAll" resultMap="result">
 		{"action":"selectAll"}

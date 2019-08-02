@@ -97,10 +97,18 @@ public class IgnoreTest {
 		Detail_ dc = new Detail_();
 		dc.setId(202);
 		Detail_ detail = detailService.selectOnePrefixIgnore(dc);
-		System.out.println("1::" + JSONObject.toJSONString(detail));
 		Assert.assertNull(detail.getId());
 		Assert.assertNotNull(detail.getLoginLog().getId());
 		Assert.assertNull(detail.getLoginLog().getAccount().getName());
 		Assert.assertEquals("bbb", detail.getLoginLog().getAccount().getPassword());
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/ignoreTest/testSelectPrefixIgnore.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/ignoreTest/testSelectPrefixIgnore.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/ignoreTest/testSelectPrefixIgnore.result.xml")
+	public void testSelectPrefixIgnore() {
+		Detail_ detail = detailService.selectPrefixIgnore(202);
+		System.out.println("1::" + JSONObject.toJSONString(detail));
 	}
 }

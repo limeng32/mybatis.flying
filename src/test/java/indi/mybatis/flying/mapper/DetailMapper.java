@@ -18,6 +18,8 @@ public interface DetailMapper extends MapperFace<Detail_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Detail_ select(Object id);
+	
+	public Detail_ selectPrefixIgnore(Object id);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
