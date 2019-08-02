@@ -45,6 +45,11 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t) {
 		return mapper.selectAllPrefix(t);
 	}
+	
+	@Override
+	public Collection<LoginLog_> selectAllPrefixIgnore(LoginLog_ t) {
+		return mapper.selectAllPrefixIgnore(t);
+	}
 
 	@Override
 	public int updatePersistent(LoginLog_ t) {

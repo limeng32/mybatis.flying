@@ -25,7 +25,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.BIGINT)
 	private Long id;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" })
 	private java.lang.String name;
 
 	@Column

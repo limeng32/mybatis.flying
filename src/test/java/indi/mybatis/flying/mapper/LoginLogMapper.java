@@ -14,7 +14,7 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public LoginLog_ selectWithoutCache(Object id);
-	
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public LoginLog_ select(Object id);
@@ -22,8 +22,10 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<LoginLog_> selectAll(LoginLog_ t);
-	
+
 	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t);
+
+	public Collection<LoginLog_> selectAllPrefixIgnore(LoginLog_ t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -47,7 +49,7 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(LoginLog_ t);
-	
+
 	public void loadAccount(Account_ account, LoginLog_ loginLog);
 
 }

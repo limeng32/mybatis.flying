@@ -33,12 +33,16 @@
 		"ignore":"noPassword"}
 	</select>
 
-	<select id="selectAllAsd" resultMap="resultPrefix">
+	<select id="selectAllPrefix" resultMap="resultPrefix">
 		{"action":"selectAll", "ignore":"noPassword", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
 			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
 		}}
+	</select>
+	
+	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noName"}
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">

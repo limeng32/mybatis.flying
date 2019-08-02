@@ -63,8 +63,13 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
-	public Collection<Account_> selectAllAsd(Account_ t) {
-		return mapper.selectAllAsd(t);
+	public Collection<Account_> selectAllPrefix(Account_ t) {
+		return mapper.selectAllPrefix(t);
+	}
+
+	@Override
+	public Collection<Account_> selectAllPrefixIgnore(Account_ t) {
+		return mapper.selectAllPrefixIgnore(t);
 	}
 
 	@Override

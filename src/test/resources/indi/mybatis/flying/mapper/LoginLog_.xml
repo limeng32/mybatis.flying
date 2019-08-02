@@ -17,7 +17,13 @@
 	
 	<select id="selectAllPrefix" resultMap="resultPrefix">
 		{"action":"selectAll", "properties":{
-			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllAsd", "prefix":"account__"},
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix", "prefix":"account__"},
+		}}
+	</select>
+	
+	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectAll", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefixIgnore", "prefix":"account__"},
 		}}
 	</select>
 

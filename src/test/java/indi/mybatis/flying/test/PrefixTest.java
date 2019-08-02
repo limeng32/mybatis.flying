@@ -84,7 +84,7 @@ public class PrefixTest {
 		Permission pc = new Permission();
 		pc.setName("carl");
 		ac.setPermission(pc);
-		Collection<Account_> accountC = accountService.selectAllAsd(ac);
+		Collection<Account_> accountC = accountService.selectAllPrefix(ac);
 		System.out.println(JSONObject.toJSONString(accountC));
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertEquals(3, accounts[0].getId().intValue());
@@ -108,7 +108,7 @@ public class PrefixTest {
 		int c = accountService.countAsd(ac);
 		Assert.assertEquals(2, c);
 
-		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectAllAsd");
+		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix");
 		System.out.println("fm::" + JSONObject.toJSONString(fm));
 
 		Assert.assertEquals("noPassword", fm.getIgnoreTag());

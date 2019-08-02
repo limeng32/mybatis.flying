@@ -32,7 +32,9 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAll(Account_ t);
 
-	public Collection<Account_> selectAllAsd(Account_ t);
+	public Collection<Account_> selectAllPrefix(Account_ t);
+	
+	public Collection<Account_> selectAllPrefixIgnore(Account_ t);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAllEverything(Account_ t);
