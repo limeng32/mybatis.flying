@@ -27,6 +27,26 @@
 			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAll", "prefix":"loginLog__"},
 		}}
 	</select>
+	
+	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noId", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore", "prefix":"loginLog__"},
+		}}
+	</select>
+	
+	<!-- 证明加在类上的ignoreTag对property不起作用 -->
+	<select id="selectAllPrefixIgnore2" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noLoginLog", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore", "prefix":"loginLog__"},
+		}}
+	</select>
+	
+	<!-- 证明加在property的id上的ignoreTag可以起作用 -->
+	<select id="selectAllPrefixIgnore3" resultMap="resultPrefix">
+		{"action":"selectAll", "properties":{
+			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore2", "prefix":"loginLog__"},
+		}}
+	</select>
 
 	<select id="selectOne" resultMap="result">
 		{"action":"selectOne"}

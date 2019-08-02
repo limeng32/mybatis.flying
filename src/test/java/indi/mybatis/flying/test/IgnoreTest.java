@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -24,13 +23,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
-import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.Detail_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.DetailService;
 import indi.mybatis.flying.service.LoginLogService;
-import indi.mybatis.flying.utils.FlyingManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
@@ -65,18 +63,28 @@ public class IgnoreTest {
 	public void testIgnore() {
 		Account_ ac = new Account_();
 		Collection<Account_> accountC = accountService.selectAllPrefixIgnore(ac);
-		System.out.println("1::" + JSONObject.toJSONString(accountC));
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertNotNull(accounts[0].getPassword());
 		Assert.assertNull(accounts[0].getName());
 
 		LoginLog_ lc = new LoginLog_();
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefixIgnore(lc);
-		System.out.println("2::" + JSONObject.toJSONString(loginLogC));
 		LoginLog_[] loginLogs = loginLogC.toArray(new LoginLog_[loginLogC.size()]);
 		Assert.assertNull(loginLogs[0].getAccount().getName());
-		
-		FlyingModel fm = FlyingManager.getFlyingModelFromCache("indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore");
-		System.out.println("fm::" + JSONObject.toJSONString(fm));
+
+		Detail_ dc = new Detail_();
+		Collection<Detail_> detailC = detailService.selectAllPrefixIgnore(dc);
+		Detail_[] details = detailC.toArray(new Detail_[detailC.size()]);
+		Assert.assertNull(details[0].getId());
+		Assert.assertNotNull(details[0].getLoginLog().getId());
+		Assert.assertNull(details[0].getLoginLog().getAccount().getName());
+
+		Collection<Detail_> detailC2 = detailService.selectAllPrefixIgnore2(dc);
+		Detail_[] details2 = detailC2.toArray(new Detail_[detailC2.size()]);
+		Assert.assertNotNull(details2[0].getLoginLog());
+
+		Collection<Detail_> detailC3 = detailService.selectAllPrefixIgnore3(dc);
+		Detail_[] details3 = detailC3.toArray(new Detail_[detailC3.size()]);
+		Assert.assertNull(details3[0].getLoginLog().getId());
 	}
 }

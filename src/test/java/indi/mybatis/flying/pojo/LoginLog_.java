@@ -15,7 +15,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "iD", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@FieldMapperAnnotation(dbFieldName = "iD", jdbcType = JdbcType.INTEGER, isUniqueKey = true, ignoreTag = { "noId" })
 	private Integer id;
 
 	@Column

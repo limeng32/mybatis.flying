@@ -26,6 +26,8 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t);
 
 	public Collection<LoginLog_> selectAllPrefixIgnore(LoginLog_ t);
+	
+	public Collection<LoginLog_> selectAllPrefixIgnore2(LoginLog_ t);
 
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)

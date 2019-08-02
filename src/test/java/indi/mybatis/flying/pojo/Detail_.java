@@ -14,13 +14,14 @@ public class Detail_ extends PojoSupport<Detail_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true, ignoreTag = { "noId" })
 	private Integer id;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" })
 	private java.lang.String name;
 
-	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD")
+	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD", ignoreTag = {
+			"noLoginLog" })
 	private LoginLog_ loginLog;
 
 	@Override
