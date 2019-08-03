@@ -116,7 +116,7 @@ public class PrefixTest {
 		Assert.assertNull(fm.getPrefix());
 
 		FlyingModel fm1 = fm.getProperties().get("permission");
-		Assert.assertEquals("aaaa", fm1.getIgnoreTag());
+		Assert.assertNull(fm1.getIgnoreTag());
 		Assert.assertEquals("permission__", fm1.getPrefix());
 		Assert.assertEquals("indi.mybatis.flying.mapper.PermissionMapper.select", fm1.getId());
 
