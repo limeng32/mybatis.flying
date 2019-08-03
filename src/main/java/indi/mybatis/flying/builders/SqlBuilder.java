@@ -16,8 +16,6 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-import com.alibaba.fastjson.JSONObject;
-
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -908,33 +906,21 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel) {
-		String ignoreTag = flyingModel.getIgnoreTag();
-		String prefix = flyingModel.getPrefix();
+	public static String buildSelectSql(Class<?> clazz, FlyingModel flyingModel)
+			throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException,
+			IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(clazz));
-		String tableName = tableMapper.getTableName();
-
 		StringBuffer selectSql = new StringBuffer(SELECT_);
-
-		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-				selectSql.append(fieldMapper.getDbFieldName());
-				if (prefix != null) {
-					selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
-				}
-				selectSql.append(COMMA);
-			}
-		}
-
+		StringBuffer fromSql = new StringBuffer(FROM);
+		StringBuffer whereSql = new StringBuffer(WHERE_);
+		AtomicInteger ai = new AtomicInteger(0);
+		dealMapperAnnotationIterationForSelectAll(clazz, null, selectSql, fromSql, whereSql, null, null, null, ai, null,
+				flyingModel, null);
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
-
-		selectSql.append(FROM).append(tableName);
-
-		StringBuffer whereSql = new StringBuffer(WHERE_);
 		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
-			whereSql.append(fieldMapper.getDbFieldName());
+			whereSql.append(tableMapper.getTableName()).append("_0.").append(fieldMapper.getDbFieldName());
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
 					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
 			if (fieldMapper.getTypeHandlerPath() != null) {
@@ -943,7 +929,7 @@ public class SqlBuilder {
 			whereSql.append(CLOSEBRACE_AND_);
 		}
 		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
-		return selectSql.append(whereSql).toString();
+		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
 	/**
@@ -971,8 +957,8 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				flyingModel, null);
+		dealMapperAnnotationIterationForSelectAll(object.getClass(), object, selectSql, fromSql, whereSql, null, null,
+				null, ai, null, flyingModel, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1013,8 +999,8 @@ public class SqlBuilder {
 		StringBuffer fromSql = new StringBuffer(FROM);
 		StringBuffer whereSql = new StringBuffer(WHERE_);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, null, null, null, ai, null,
-				flyingModel, null);
+		dealMapperAnnotationIterationForSelectAll(object.getClass(), object, selectSql, fromSql, whereSql, null, null,
+				null, ai, null, flyingModel, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1080,10 +1066,10 @@ public class SqlBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuffer selectSql,
-			StringBuffer fromSql, StringBuffer whereSql, TableName originTableName, Mapperable originFieldMapper,
-			String fieldPerfix, AtomicInteger index, TableName lastTableName, FlyingModel flyingModel,
-			Map<Mapperable, Integer> map)
+	private static void dealMapperAnnotationIterationForSelectAll(Class<?> objectType, Object object,
+			StringBuffer selectSql, StringBuffer fromSql, StringBuffer whereSql, TableName originTableName,
+			Mapperable originFieldMapper, String fieldPerfix, AtomicInteger index, TableName lastTableName,
+			FlyingModel flyingModel, Map<Mapperable, Integer> map)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException,
 			NoSuchFieldException, IllegalArgumentException, InstantiationException {
 		String ignoreTag = null;
@@ -1092,9 +1078,9 @@ public class SqlBuilder {
 			ignoreTag = flyingModel.getIgnoreTag();
 			prefix = flyingModel.getPrefix();
 		}
-		Map<Object, Object> dtoFieldMap = PropertyUtils.describe(object);
-		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
+		Map<Object, Object> dtoFieldMap = object == null ? new HashMap<>(4) : PropertyUtils.describe(object);
+		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
+		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
 		TableName tableName = null;
 
 		int indexValue = (map == null || map.get(originFieldMapper) == null) ? (index.getAndIncrement())
@@ -1178,8 +1164,8 @@ public class SqlBuilder {
 				continue;
 			}
 			if (fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, tableName, fieldMapper,
-						temp, index, tableName,
+				dealMapperAnnotationIterationForSelectAll(value.getClass(), value, selectSql, fromSql, whereSql,
+						tableName, fieldMapper, temp, index, tableName,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
 						map);
 			} else {
