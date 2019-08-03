@@ -33,9 +33,10 @@
 		"ignore":"noPassword"}
 	</select>
 
+	<!-- 此处ignore:cccc实际上是无效的  -->
 	<select id="selectAllPrefix" resultMap="resultPrefix">
 		{"action":"selectAll", "ignore":"noPassword", "properties":{
-			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__"},
+			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__", "ignore":"cccc"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
 			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
 		}}

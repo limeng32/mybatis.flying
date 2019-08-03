@@ -68,11 +68,8 @@ public class FlyingManager {
 		flyingModel.setHasFlyingFeature(true);
 		if (innerJson != null) {
 			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE));
-			flyingModel.setUnstablePrefix(innerJson.getString(FlyingKeyword.PREFIX));
-			flyingModel.setDataSourceId(innerJson.getString(FlyingKeyword.DATA_SOURCE));
-			flyingModel.setConnectionCatalog(innerJson.getString(FlyingKeyword.CONNECTION_CATALOG));
 		}
-		if (json.containsKey(FlyingKeyword.IGNORE)) {
+		if (flyingModel.getIgnoreTag() == null) {
 			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE));
 		}
 		if (json.containsKey(FlyingKeyword.PREFIX)) {
