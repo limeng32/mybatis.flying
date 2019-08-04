@@ -47,7 +47,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
-import indi.mybatis.flying.utils.CookOriginalSql;
+import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -88,8 +88,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		String originalSql = (String) metaStatementHandler.getValue(DELEGATE_BOUNDSQL_SQL);
 		Configuration configuration = (Configuration) metaStatementHandler.getValue(DELEGATE_CONFIGURATION);
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
-		FlyingModel flyingModel = CookOriginalSql.fetchFlyingFeature(originalSql);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
+		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
 			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
 					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
@@ -142,17 +142,14 @@ public class AutoMapperInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
-		}
 
-		/* Start dealing with paging */
-		if (invocation.getTarget() instanceof RoutingStatementHandler) {
-			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper.getValueByFieldName(statementHandler,
-					DELEGATE);
-			mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
-			BoundSql boundSql = delegate.getBoundSql();
-			if (parameterObject == null) {
-				throw new AutoMapperException(AutoMapperExceptionEnum.parameterObjectIsNull);
-			} else if (parameterObject instanceof Conditionable) {
+			/* Start dealing with paging */
+			if ((parameterObject instanceof Conditionable)
+					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
+				BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper
+						.getValueByFieldName(statementHandler, DELEGATE);
+				mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
+				BoundSql boundSql = delegate.getBoundSql();
 				Conditionable condition = (Conditionable) parameterObject;
 				String sql = boundSql.getSql();
 				if (condition.getLimiter() != null) {
@@ -174,12 +171,12 @@ public class AutoMapperInterceptor implements Interceptor {
 				}
 				String pageSql = generatePageSql(sql, condition);
 				ReflectHelper.setValueByFieldName(boundSql, SQL, pageSql);
-			} else {
 			}
 		}
+
 		/*
-		 * Call the original statementHandler's prepare method to complete the
-		 * original logic.
+		 * Call the original statementHandler's prepare method to complete the original
+		 * logic.
 		 */
 		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
 		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());

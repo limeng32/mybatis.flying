@@ -23,6 +23,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Account_ selectAsd(Object id) {
+		return mapper.selectAsd(id);
+	}
+
+	@Override
 	public Account_ selectEverything(Object id) {
 		return mapper.selectEverything(id);
 	}
@@ -58,6 +63,16 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Collection<Account_> selectAllPrefix(Account_ t) {
+		return mapper.selectAllPrefix(t);
+	}
+
+	@Override
+	public Collection<Account_> selectAllPrefixIgnore(Account_ t) {
+		return mapper.selectAllPrefixIgnore(t);
+	}
+
+	@Override
 	public Collection<Account_> selectAllEverything(Account_ t) {
 		return mapper.selectAllEverything(t);
 	}
@@ -75,6 +90,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	@Override
 	public int count(Account_ t) {
 		return supportCount(mapper, t);
+	}
+
+	@Override
+	public int countAsd(Account_ t) {
+		return mapper.countAsd(t);
 	}
 
 	@Override
@@ -109,6 +129,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	@Override
 	public Account_ selectWithoutCache(Object id) {
 		return mapper.selectWithoutCache(id);
+	}
+
+	@Override
+	public int selectCheckHealth() {
+		return mapper.selectCheckHealth();
 	}
 
 }

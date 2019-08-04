@@ -4,39 +4,57 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}:select
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:select
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:selectAll
+		{"action":"selectAll"}
+	</select>
+	
+	<select id="selectAllPrefix" resultMap="resultPrefix">
+		{"action":"selectAll", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix", "prefix":"account__"},
+		}}
+	</select>
+	
+	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectAll", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefixIgnore", "prefix":"account__"},
+		}}
+	</select>
+	
+	<select id="selectAllPrefixIgnore2" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noId", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefixIgnore", "prefix":"account__"},
+		}}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne
+		{"action":"selectOne"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:count
+		{"action":"count"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:insert
+		{"action":"insert"}
 	</insert>
 
 	<update id="update">
-		flying:update
+		{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:updatePersistent
+		{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:delete
+		{"action":"delete"}
 	</delete>
 
 	<resultMap id="result" type="LoginLog_" autoMapping="true">
@@ -44,5 +62,12 @@
 		<association property="account" javaType="Account_"
 			select="indi.mybatis.flying.mapper.AccountMapper.selectWithoutCache"
 			column="accountId" />
+	</resultMap>
+	
+	<resultMap id="resultPrefix" type="LoginLog_" autoMapping="true">
+		<id property="id" column="id" />
+		<association property="account"
+			resultMap="indi.mybatis.flying.mapper.AccountMapper.resultPrefix"
+			columnPrefix="account__" />
 	</resultMap>
 </mapper>

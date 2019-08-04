@@ -17,6 +17,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ select(Object id);
 
+	public Account_ selectAsd(Object id);
+
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account_ selectWithoutCache(Object id);
 
@@ -29,6 +31,10 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAll(Account_ t);
+
+	public Collection<Account_> selectAllPrefix(Account_ t);
+	
+	public Collection<Account_> selectAllPrefixIgnore(Account_ t);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAllEverything(Account_ t);
@@ -57,6 +63,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Account_ t);
+	
+	public int countAsd(Account_ t);
 
 	public void loadRole(Role_ role, Account_ account);
 
@@ -70,4 +78,6 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
+
+	public int selectCheckHealth();
 }

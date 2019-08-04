@@ -26,6 +26,9 @@ public class Role_Condition extends Role_ implements Conditionable {
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal) })
 	private Object[] nameEquals;
 
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NotEqual) })
+	private Object[] nameNotEquals;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -68,6 +71,14 @@ public class Role_Condition extends Role_ implements Conditionable {
 
 	public void setNameEquals(Object... nameEquals) {
 		this.nameEquals = nameEquals;
+	}
+
+	public Object[] getNameNotEquals() {
+		return nameNotEquals;
+	}
+
+	public void setNameNotEquals(Object... nameNotEquals) {
+		this.nameNotEquals = nameNotEquals;
 	}
 
 }

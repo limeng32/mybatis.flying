@@ -81,6 +81,11 @@ public class ConditionNotInTest {
 		Assert.assertEquals(0, c.size());
 		int count = loginLogService.count(lc);
 		Assert.assertEquals(0, count);
+		
+		Collection<LoginLog_> c2 = loginLogService.selectAllPrefix(lc);
+		Assert.assertEquals(0, c2.size());
+		int count2 = loginLogService.count(lc);
+		Assert.assertEquals(0, count2);
 	}
 
 	/** 测试无外键情况下condition:notIn功能且变量类型为数字的情况 */

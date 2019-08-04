@@ -323,6 +323,7 @@ public class CacheTest {
 		Assert.assertEquals(12, p.getTotalCount());
 		Assert.assertEquals(1, p.getPageNo());
 		Assert.assertEquals(10, p.getPageItems().size());
+		Assert.assertEquals(10, p.getPageSize());
 
 		Account_Condition ac2 = new Account_Condition();
 		ac2.setLimiter(new PageParam(2, 10));
@@ -332,6 +333,7 @@ public class CacheTest {
 		Assert.assertEquals(12, p2.getTotalCount());
 		Assert.assertEquals(2, p2.getPageNo());
 		Assert.assertEquals(2, p2.getPageItems().size());
+		Assert.assertEquals(10, p2.getPageSize());
 		for (Account_ temp : p2.getPageItems()) {
 			Assert.assertEquals("root", temp.getRole().getName());
 		}
@@ -446,6 +448,7 @@ public class CacheTest {
 		Collection<Account_> c = accountService.selectAll(ac);
 		Page<Account_> p = new Page<>(c, ac.getLimiter());
 		Assert.assertEquals(2, p.getPageItems().size());
+		Assert.assertEquals(10, p.getPageSize());
 		for (Account_ temp : p.getPageItems()) {
 			Assert.assertEquals("root", temp.getRole().getName());
 		}
@@ -692,8 +695,7 @@ public class CacheTest {
 
 	/*
 	 * 设计两个注入值完全相同的同一pojo的select，观察它们是否共享缓存。 方法：先证明缓存生成之前updateDirect可以影响缓存，
-	 * 再证明缓存生成之后updateDirect不能影响缓存，再看注入值相同的另一个select的结果是否受updateDirect影响。
-	 * 结论：不共享缓存。
+	 * 再证明缓存生成之后updateDirect不能影响缓存，再看注入值相同的另一个select的结果是否受updateDirect影响。 结论：不共享缓存。
 	 */
 	@Test
 	@IfProfileValue(name = "CACHE", value = "true")

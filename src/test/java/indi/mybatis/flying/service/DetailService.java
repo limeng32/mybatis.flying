@@ -21,9 +21,18 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 		return supportSelect(mapper, id);
 	}
 
+	public Detail_ selectPrefixIgnore(Object id) {
+		return mapper.selectPrefixIgnore(id);
+	}
+
 	@Override
 	public Detail_ selectOne(Detail_ t) {
 		return supportSelectOne(mapper, t);
+	}
+
+	@Override
+	public Detail_ selectOnePrefixIgnore(Detail_ t) {
+		return mapper.selectOnePrefixIgnore(t);
 	}
 
 	@Override
@@ -42,6 +51,31 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	}
 
 	@Override
+	public Collection<Detail_> selectAllPrefix(Detail_ t) {
+		return mapper.selectAllPrefix(t);
+	}
+
+	@Override
+	public Collection<Detail_> selectAllPrefix2(Detail_ t) {
+		return mapper.selectAllPrefix2(t);
+	}
+
+	@Override
+	public Collection<Detail_> selectAllPrefixIgnore(Detail_ t) {
+		return mapper.selectAllPrefixIgnore(t);
+	}
+
+	@Override
+	public Collection<Detail_> selectAllPrefixIgnore2(Detail_ t) {
+		return mapper.selectAllPrefixIgnore2(t);
+	}
+
+	@Override
+	public Collection<Detail_> selectAllPrefixIgnore3(Detail_ t) {
+		return mapper.selectAllPrefixIgnore3(t);
+	}
+
+	@Override
 	public int updatePersistent(Detail_ t) {
 		return supportUpdatePersistent(mapper, t);
 	}
@@ -55,7 +89,7 @@ public class DetailService extends ServiceSupport<Detail_> implements DetailMapp
 	public int count(Detail_ t) {
 		return supportCount(mapper, t);
 	}
-	
+
 	@Override
 	public void loadLoginLog(LoginLog_ loginlog, Detail_ detail) {
 		loginlog.removeAllDetail();

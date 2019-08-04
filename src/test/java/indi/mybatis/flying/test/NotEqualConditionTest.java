@@ -4,13 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -52,9 +48,17 @@ public class NotEqualConditionTest {
 		LoginLog_[] loginlogs = c.toArray(new LoginLog_[c.size()]);
 		Assert.assertEquals("0.0.0.1", loginlogs[0].getLoginIP());
 
+		Collection<LoginLog_> c11 = loginLogService.selectAllPrefix(lc);
+		Assert.assertEquals(1, c11.size());
+		LoginLog_[] loginlogs11 = c11.toArray(new LoginLog_[c11.size()]);
+		Assert.assertEquals("0.0.0.1", loginlogs11[0].getLoginIP());
+
 		lc2.setLoginTimeGreaterThan(new Date());
 		Collection<LoginLog_> c2 = loginLogService.selectAll(lc2);
 		Assert.assertEquals(0, c2.size());
+
+		Collection<LoginLog_> c12 = loginLogService.selectAllPrefix(lc2);
+		Assert.assertEquals(0, c12.size());
 
 		lc3.setIdGreaterThan(10);
 		int count3 = loginLogService.count(lc3);

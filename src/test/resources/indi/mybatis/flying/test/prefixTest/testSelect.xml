@@ -1,0 +1,26 @@
+<dataset>
+	<account_ ID="1" NAME="bob" EMAIL="bob@live.cn_"
+		PASSWORD="aaa" ACTIVATED="1" ACTIVATEVALUE="a111" OPLOCK="11"
+		PERMISSION_ID="1" ROLE_ID="11" DEPUTY_ID="111" />
+	<account_ ID="2" NAME="ann" EMAIL="ann@live.cn" PASSWORD="bbb"
+		ACTIVATED="1" ACTIVATEVALUE="b222" OPLOCK="12" PERMISSION_ID="2"
+		ROLE_ID="12" DEPUTY_ID="112" />
+	<account_ ID="3" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="ccc" ACTIVATED="1" ACTIVATEVALUE="c333" OPLOCK="13"
+		PERMISSION_ID="3" ROLE_ID="13" DEPUTY_ID="113" />
+	<account_ ID="4" NAME="carl" EMAIL="carl@live.cn"
+		PASSWORD="ddd" ACTIVATED="1" ACTIVATEVALUE="d444" OPLOCK="14"
+		PERMISSION_ID="4" ROLE_ID="14" DEPUTY_ID="114" />
+	<permission ID="1" FAKE_ID="21" NAME="ann" />
+	<permission ID="2" FAKE_ID="22" NAME="bob" />
+	<permission ID="3" FAKE_ID="23" NAME="carl" />
+	<permission ID="4" FAKE_ID="24" NAME="carl" />
+	<role_ ID="11" NAME="role1" />
+	<role_ ID="12" NAME="role2" />
+	<role_ ID="13" NAME="role3" />
+	<role_ ID="14" NAME="role4" />
+	<role_ ID="111" NAME="roleDeputy1" />
+	<role_ ID="112" NAME="roleDeputy2" />
+	<role_ ID="113" NAME="roleDeputy3" />
+	<role_ ID="114" NAME="roleDeputy4" />
+</dataset>

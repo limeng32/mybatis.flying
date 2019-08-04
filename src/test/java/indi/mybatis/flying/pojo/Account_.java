@@ -25,7 +25,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.BIGINT)
 	private Long id;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" })
 	private java.lang.String name;
 
 	@Column
@@ -55,14 +55,14 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private java.lang.String activateValue;
 
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
-			"noRole" }, associationType = AssociationType.RightJoin)
+			"noRole" })
 	private Role_ role;
 
 	@FieldMapperAnnotation(dbFieldName = "deputy_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
 	private Role_ roleDeputy;
 
 	@FieldMapperAnnotation(dbFieldName = "permission_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", associationExtra = {
-			@ForeignAssociation(dbFieldName = "name", dbAssociationFieldName = "name") }, associationType = AssociationType.RightJoin)
+			@ForeignAssociation(dbFieldName = "name", dbAssociationFieldName = "name") }, associationType = AssociationType.LeftJoin)
 	private Permission permission;
 
 	private java.util.Collection<LoginLog_> loginLog;

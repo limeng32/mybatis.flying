@@ -1,58 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="indi.mybatis.flying.mapper.AccountMapper">
-	<cache ${mybatis.cache}/>
+	<cache ${mybatis.cache} />
 
-	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		flying#{?}(smartDataSource1:testdb):select:noPassword
+	<select id="selectWithoutCache" resultMap="result"
+		useCache="false">
+		{"action":"select#{?}", "ignore":"noPassword",
+		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
 	</select>
 
 	<select id="select" resultMap="result">
-		flying#{?}:select:noPassword
+		{"action":"select#{?}",
+		"ignore":"noPassword"}
+	</select>
+
+	<select id="selectAsd" resultMap="resultPrefix">
+		{
+			"action":"select#{?}","ignore":"noPassword"
+		}
 	</select>
 
 	<select id="selectEverything" resultMap="result">
-		flying#{?}:select
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="selectWithoutRole" resultMap="result">
-		flying#{?}:select:noRole
+		{"action":"select#{?}", "ignore":"noRole"}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		flying:selectAll:noPassword
+		{"action":"selectAll",
+		"ignore":"noPassword"}
+	</select>
+
+	<!-- 此处ignore:cccc实际上是无效的  -->
+	<select id="selectAllPrefix" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noPassword", "properties":{
+			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__", "ignore":"cccc"},
+			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
+			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
+		}}
+	</select>
+	
+	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
+		{"action":"selectAll", "ignore":"noName"}
 	</select>
 
 	<select id="selectAllEverything" resultMap="result">
-		flying:selectAll
+		{"action":"selectAll"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne:noPassword
+		{"action":"selectOne",
+		"ignore":"noPassword"}
 	</select>
 
 	<select id="count" resultType="int">
-		flying:count
+		{"action":"count"}
+	</select>
+
+	<select id="countAsd" resultType="int">
+		{"action":"count", "prefix":"asd_"}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		flying:insert
+		{"action":"insert"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator)
+		{"action":"insert",
+		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
 	<update id="update">
-		flying:update
+		{"action":"update"}
 	</update>
 
 	<update id="updatePersistent">
-		flying:updatePersistent
+		{"action":"updatePersistent"}
 	</update>
 
 	<delete id="delete">
-		flying:delete
+		{"action":"delete"}
 	</delete>
 
 	<select id="selectDirect" resultMap="result">
@@ -71,13 +100,33 @@
 		account_0.role_id = role_1.id where role_1.id = #{role_id}
 	</select>
 
+	<select id="selectCheckHealth" resultType="int">
+		select 1;
+	</select>
+
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
 		<association property="role" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="role_id" />
+			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache"
+			column="role_id" />
 		<association property="roleDeputy" javaType="Role_"
-			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache" column="deputy_id" />
+			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache"
+			column="deputy_id" />
 		<association property="permission" javaType="Permission"
-			select="indi.mybatis.flying.mapper.PermissionMapper.select" column="permission_id" />
+			select="indi.mybatis.flying.mapper.PermissionMapper.select"
+			column="permission_id" />
+	</resultMap>
+
+	<resultMap type="Account_" id="resultPrefix" autoMapping="true">
+		<id property="id" column="id" />
+		<association property="permission"
+			resultMap="indi.mybatis.flying.mapper.PermissionMapper.result"
+			columnPrefix="permission__" />
+		<association property="role"
+			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
+			columnPrefix="role__" />
+		<association property="roleDeputy"
+			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
+			columnPrefix="roleDeputy__" />		
 	</resultMap>
 </mapper>

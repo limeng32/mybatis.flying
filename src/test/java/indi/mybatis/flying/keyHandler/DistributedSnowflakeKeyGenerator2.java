@@ -7,46 +7,46 @@ import indi.mybatis.flying.type.KeyHandler;
 /*本handler返回String型的主键*/
 public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 
-	private final long twepoch = 1420041600000L;
+	private static final long TWEPOCH = 1546272000000L;// 从2019-01-01 00:00:00计数
 
 	/** 机器id所占的位数 */
-	private final long workerIdBits = 5L;
+	private static final long WORKER_ID_BITS = 5L;
 
 	/** 数据标识id所占的位数 */
-	private final long datacenterIdBits = 5L;
+	private static final long DATACENTER_ID_BITS = 5L;
 
 	/** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */
-	private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+	private static final long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
 
 	/** 支持的最大数据标识id，结果是31 */
-	private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+	private static final long MAX_DATACENTER_ID = -1L ^ (-1L << DATACENTER_ID_BITS);
 
 	/** 序列在id中占的位数 */
-	private final long sequenceBits = 12L;
+	private static final long SEQUENCE_BITS = 12L;
 
 	/** 机器ID向左移12位 */
-	private final long workerIdShift = sequenceBits;
+	private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
 
 	/** 数据标识id向左移17位(12+5) */
-	private final long datacenterIdShift = sequenceBits + workerIdBits;
+	private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
 
-	/** 时间截向左移22位(5+5+12) */
-	private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+	/** 时间截向左移22位(5+5+12)，这样留给时间戳的位数就有41位(63-22) */
+	private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS;
 
 	/** 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095) */
-	private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+	private static final long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
 
 	/** 工作机器ID(0~31) */
-	private static long _workerId;
+	private long theWorkerId = 31;
 
 	/** 数据中心ID(0~31) */
-	private static long _datacenterId;
+	private long theDatacenterId = 31;
 
 	/** 毫秒内序列(0~4095) */
-	private long sequence = 0L;
+	private static long sequence = 0L;
 
 	/** 上次生成ID的时间截 */
-	private long lastTimestamp = -1L;
+	private static long lastTimestamp = -1L;
 
 	private long workerId;
 
@@ -56,19 +56,17 @@ public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 	/**
 	 * 构造函数
 	 * 
-	 * @param workerId
-	 *            工作ID (0~31)
-	 * @param datacenterId
-	 *            数据中心ID (0~31)
+	 * @param workerId     工作ID (0~31)
+	 * @param datacenterId 数据中心ID (0~31)
 	 */
 	public DistributedSnowflakeKeyGenerator2() {
-		if (_workerId > maxWorkerId || _workerId < 0) {
+		if (theWorkerId > MAX_WORKER_ID || theWorkerId < 0) {
 			throw new IllegalArgumentException(
-					String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
+					String.format("worker Id can't be greater than %d or less than 0", MAX_WORKER_ID));
 		}
-		if (_datacenterId > maxDatacenterId || _datacenterId < 0) {
+		if (theDatacenterId > MAX_DATACENTER_ID || theDatacenterId < 0) {
 			throw new IllegalArgumentException(
-					String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+					String.format("datacenter Id can't be greater than %d or less than 0", MAX_DATACENTER_ID));
 		}
 	}
 
@@ -89,7 +87,7 @@ public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 
 		// 如果是同一时间生成的，则进行毫秒内序列
 		if (lastTimestamp == timestamp) {
-			sequence = (sequence + 1) & sequenceMask;
+			sequence = (sequence + 1) & SEQUENCE_MASK;
 			// 毫秒内序列溢出
 			if (sequence == 0) {
 				// 阻塞到下一个毫秒,获得新的时间戳
@@ -105,17 +103,16 @@ public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 		lastTimestamp = timestamp;
 
 		// 移位并通过或运算拼到一起组成64位的ID
-		return ((timestamp - twepoch) << timestampLeftShift) //
-				| (_datacenterId << datacenterIdShift) //
-				| (_workerId << workerIdShift) //
+		return ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT) //
+				| (theDatacenterId << DATACENTER_ID_SHIFT) //
+				| (theWorkerId << WORKER_ID_SHIFT) //
 				| sequence;
 	}
 
 	/**
 	 * 阻塞到下一个毫秒，直到获得新的时间戳
 	 * 
-	 * @param lastTimestamp
-	 *            上次生成ID的时间截
+	 * @param lastTimestamp 上次生成ID的时间截
 	 * @return 当前时间戳
 	 */
 	protected long tilNextMillis(long lastTimestamp) {
@@ -137,13 +134,13 @@ public class DistributedSnowflakeKeyGenerator2 implements KeyHandler {
 
 	@Override
 	public String getKey() {
-		return new Long(nextId()).toString();
+		return String.valueOf(nextId());
 	}
 
 	@PostConstruct
-	public void init() {
-		_workerId = workerId;
-		_datacenterId = datacenterId;
+	private void init() {
+		theWorkerId = workerId;
+		theDatacenterId = datacenterId;
 	}
 
 	public long getWorkerId() {

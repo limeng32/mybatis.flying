@@ -14,11 +14,14 @@ public class Page<T> {
 
 	private Collection<T> pageItems;
 
+	private int pageSize;
+
 	public Page(Collection<T> items, Limitable limitable) {
 		pageItems = items;
 		pageNo = limitable.getPageNo();
 		maxPageNum = limitable.getMaxPageNum();
 		totalCount = limitable.getTotalCount();
+		pageSize = limitable.getPageSize();
 	}
 
 	public int getPageNo() {
@@ -51,6 +54,14 @@ public class Page<T> {
 
 	public void setPageItems(Collection<T> pageItems) {
 		this.pageItems = pageItems;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 
 }

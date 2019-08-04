@@ -4,51 +4,51 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="select" resultMap="result">
-		flying#{?}:select:noPassword
+		{"action":"select#{?}", "ignore":"select:noPassword"}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		flying:selectOne
+		{"action":"selectOne"}
 	</select>
 
 	<insert id="insert" keyProperty="id">
-		flying:insert(uuid_no_line)
+		{"action":"insert", "keyGenerator":"uuid_no_line"}
 	</insert>
 
 	<insert id="insert2" keyProperty="id">
-		flying:insert
+		{"action":"insert"}
 	</insert>
 
 	<insert id="insert3">
-		flying:insert(ERROR)
+		{"action":"insert", "keyGenerator":"ERROR"}
 	</insert>
 
 	<insert id="insertMilliSecond">
-		flying:insert(millisecond)
+		{"action":"insert", "keyGenerator":"millisecond"}
 	</insert>
 
 	<insert id="insertMilliSecond2">
-		flying:insert(millisecond)
+		{"action":"insert", "keyGenerator":"millisecond"}
 	</insert>
 
 	<insert id="insertSnowFlake">
-		flying:insert(snowflake)
+		{"action":"insert", "keyGenerator":"snowflake"}
 	</insert>
 
 	<insert id="insertMySnowFlake">
-		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler)
+		{"action":"insert", "keyGenerator":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler"}
 	</insert>
 
 	<insert id="insertMySnowFlake2">
-		flying:insert(indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2)
+		{"action":"insert", "keyGenerator":"indi.mybatis.flying.handlers.MySnowFlakeKeyHandler2"}
 	</insert>
 
 	<insert id="insertAsd">
-		flying:insert(indi.mybatis.flying.keyHandler.AsdKeyGenerator)
+		{"action":"insert", "keyGenerator":"indi.mybatis.flying.keyHandler.AsdKeyGenerator"}
 	</insert>
 
 	<insert id="insertDistributedSnowflake">
-		flying:insert(indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2)
+		{"action":"insert", "keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator2"}
 	</insert>
 
 	<resultMap id="result" type="Product" autoMapping="true">
