@@ -1113,7 +1113,8 @@ public class SqlBuilder {
 					}
 					map.put(fieldMapper, indexValue2);
 					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {
-						if ((!e.getValue().getIgnoreTagSet().contains(inner.getIgnoreTag()))) {
+						if (fieldMapper.getFieldName().equals(e.getValue().getFieldName())
+								&& (!e.getValue().getIgnoreTagSet().contains(inner.getIgnoreTag()))) {
 							selectSql.append(innerTableMapper.getTableName()).append("_").append(indexValue2)
 									.append(DOT).append(e.getValue().getDbFieldName()).append(" as ")
 									.append(inner.getPrefix()).append(e.getValue().getDbFieldName()).append(COMMA);
