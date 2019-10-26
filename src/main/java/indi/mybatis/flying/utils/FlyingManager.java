@@ -23,9 +23,9 @@ import indi.mybatis.flying.type.KeyHandler;
 
 public class FlyingManager {
 
-	private static Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
+	private static final Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
-	private static Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
+	private static final Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
 
 	private static final Log logger = LogFactory.getLog(FlyingManager.class);
 

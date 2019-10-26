@@ -25,7 +25,7 @@ public class ReflectHelper {
 			try {
 				return superClass.getDeclaredField(fieldName);
 			} catch (NoSuchFieldException e) {
-				logger.trace(new StringBuffer().append(e).toString());
+				// make sonar happy
 			}
 		}
 		return null;
@@ -62,8 +62,7 @@ public class ReflectHelper {
 	/**
 	 * Gets all the classes from the package
 	 * 
-	 * @param packageName
-	 *            String
+	 * @param packageName String
 	 * @return SetOfClasses
 	 */
 	public static Set<Class<?>> getClasses(String packageName) {
@@ -75,8 +74,8 @@ public class ReflectHelper {
 		/* Get the name of the package and replace it. */
 		String packageDirName = packageName.replace('.', '/');
 		/*
-		 * Define a collection of enumerations and loop through the files in
-		 * this directory.
+		 * Define a collection of enumerations and loop through the files in this
+		 * directory.
 		 */
 		Enumeration<URL> dirs;
 		try {
@@ -92,8 +91,7 @@ public class ReflectHelper {
 					/* Gets the physical path of the package. */
 					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
 					/*
-					 * Scan the entire package of files in a file and add them
-					 * to the collection.
+					 * Scan the entire package of files in a file and add them to the collection.
 					 */
 					findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
 					break;
@@ -105,9 +103,8 @@ public class ReflectHelper {
 						Enumeration<JarEntry> entries = jar.entries();
 						while (entries.hasMoreElements()) {
 							/*
-							 * Getting an entity in the jar can be a directory
-							 * and other files in a jar package such as
-							 * meta-inf.
+							 * Getting an entity in the jar can be a directory and other files in a jar
+							 * package such as meta-inf.
 							 */
 							JarEntry entry = entries.nextElement();
 							String name = entry.getName();
