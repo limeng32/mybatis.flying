@@ -48,6 +48,7 @@ import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.utils.FlyingManager;
+import indi.mybatis.flying.utils.LogLevel;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
@@ -59,6 +60,7 @@ import indi.mybatis.flying.utils.ReflectHelper;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
 	private String dialect = "";
+	private LogLevel logLevel;
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -70,6 +72,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String MAPPEDSTATEMENT = "mappedStatement";
 	private static final String DIALECT = "dialect";
 	private static final String SQL = "sql";
+	private static final String LOG_LEVEL = "logLevel";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
@@ -137,7 +140,7 @@ public class AutoMapperInterceptor implements Interceptor {
 			default:
 				break;
 			}
-			logger.warn(new StringBuffer("Auto generated sql:").append(newSql).toString());
+			log(logger, logLevel, new StringBuffer("Auto generated sql:").append(newSql).toString());
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
@@ -184,6 +187,27 @@ public class AutoMapperInterceptor implements Interceptor {
 		return invocation.proceed();
 	}
 
+	private static void log(Log logger, LogLevel level, String log) {
+		switch (level) {
+		case NONE:
+			break;
+		case TRACE:
+			logger.trace(log);
+			break;
+		case DEBUG:
+			logger.debug(log);
+			break;
+		case WARN:
+			logger.warn(log);
+			break;
+		case ERROR:
+			logger.error(log);
+			break;
+		default:
+			break;
+		}
+	}
+
 	private MetaObject getRealObj(Object obj) {
 		MetaObject metaStatement = MetaObject.forObject(obj, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 				DEFAULT_REFLECTOR_FACTORY);
@@ -216,6 +240,13 @@ public class AutoMapperInterceptor implements Interceptor {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
 			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
+		}
+		String temp = properties.getProperty(LOG_LEVEL);
+		if (temp != null) {
+			logLevel = LogLevel.forValue(temp);
+		}
+		if (logLevel == null) {
+			logLevel = LogLevel.NONE;
 		}
 	}
 
