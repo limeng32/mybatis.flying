@@ -99,13 +99,45 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NotIn)
 	private List<Integer> roleIdNotIn;
 
-	// 专为批量update设计的条件
+	// Conditions designed for batch update
 	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal)
 	private String nameEqual;
 
-	// 专为批量update设计的条件
+	// Conditions designed for batch update
 	@ConditionMapperAnnotation(dbFieldName = "activateValue", conditionType = ConditionType.Equal)
 	private String activateValueEqual;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LessOrEqual)
+	private String nameLessOrEqual;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LessThan)
+	private String nameLessThan;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GreaterOrEqual)
+	private String nameGreaterOrEqual;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GreaterThan)
+	private String nameGreaterThan;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Like)
+	private String nameLike;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.HeadLike)
+	private String nameHeadLike;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.TailLike)
+	private String nameTailLike;
+
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NotEqual)
+	private String nameNotEqual;
 
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
@@ -270,6 +302,70 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setActivateValueEqual(String activateValueEqual) {
 		this.activateValueEqual = activateValueEqual;
+	}
+
+	public String getNameLessOrEqual() {
+		return nameLessOrEqual;
+	}
+
+	public void setNameLessOrEqual(String nameLessOrEqual) {
+		this.nameLessOrEqual = nameLessOrEqual;
+	}
+
+	public String getNameLessThan() {
+		return nameLessThan;
+	}
+
+	public void setNameLessThan(String nameLessThan) {
+		this.nameLessThan = nameLessThan;
+	}
+
+	public String getNameGreaterOrEqual() {
+		return nameGreaterOrEqual;
+	}
+
+	public void setNameGreaterOrEqual(String nameGreaterOrEqual) {
+		this.nameGreaterOrEqual = nameGreaterOrEqual;
+	}
+
+	public String getNameGreaterThan() {
+		return nameGreaterThan;
+	}
+
+	public void setNameGreaterThan(String nameGreaterThan) {
+		this.nameGreaterThan = nameGreaterThan;
+	}
+
+	public String getNameLike() {
+		return nameLike;
+	}
+
+	public void setNameLike(String nameLike) {
+		this.nameLike = nameLike;
+	}
+
+	public String getNameHeadLike() {
+		return nameHeadLike;
+	}
+
+	public void setNameHeadLike(String nameHeadLike) {
+		this.nameHeadLike = nameHeadLike;
+	}
+
+	public String getNameTailLike() {
+		return nameTailLike;
+	}
+
+	public void setNameTailLike(String nameTailLike) {
+		this.nameTailLike = nameTailLike;
+	}
+
+	public String getNameNotEqual() {
+		return nameNotEqual;
+	}
+
+	public void setNameNotEqual(String nameNotEqual) {
+		this.nameNotEqual = nameNotEqual;
 	}
 
 }

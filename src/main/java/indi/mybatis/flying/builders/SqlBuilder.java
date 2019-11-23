@@ -775,7 +775,7 @@ public class SqlBuilder {
 		System.out.println("2::" + tableSql);
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 
-		// 为进行批量更新，开始处理queryMapper
+		// Start processing queryMapper for batch update
 		boolean useBatch = false;
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
@@ -783,12 +783,10 @@ public class SqlBuilder {
 				continue;
 			}
 			System.out.println("1::" + conditionMapper.getFieldName() + ":" + value);
-			whereSql.append(conditionMapper.getDbFieldName());
-			whereSql.append(EQUAL_POUND_OPENBRACE).append(conditionMapper.getFieldName()).append(COMMA)
-					.append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			dealBatchCondition(conditionMapper.getConditionType(), whereSql, conditionMapper);
 			useBatch = true;
 		}
-		// 如果不使用批量提交，默认使用主键提交
+		// Start processing queryMapper for batch update
 		if (!useBatch) {
 			for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
@@ -808,6 +806,64 @@ public class SqlBuilder {
 		}
 		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return tableSql.append(whereSql).toString();
+	}
+
+	private static void dealBatchCondition(ConditionType conditionType, StringBuffer whereSql,
+			ConditionMapper conditionMapper) {
+		switch (conditionType) {
+		case Equal:
+			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case LessOrEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_EQUAL_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case LessThan:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case GreaterOrEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_GREATER_EQUAL_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case GreaterThan:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_GREATER_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case Like:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case HeadLike:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case TailLike:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case NotEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_GREATER_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		default:
+			throw new BuildSqlException(
+					new StringBuffer(BuildSqlExceptionEnum.unkownConditionForBatchProcess.toString())
+							.append(conditionMapper.getDbFieldName()).toString());
+		}
 	}
 
 	/**

@@ -11,7 +11,8 @@ public enum BuildSqlExceptionEnum {
 	updatePersistentUniqueKeyIsNull("Unique key can't be null, build updatePersistent sql failed:"),
 	deleteUniqueKeyIsNull("Unique key can't be null, build delete sql failed:"),
 	noFieldMapperAnnotationOrColumnAnnotation("The Field have no fieldMapperAnnotation or columnAnnotation"),
-	ThisConditionNotSupportOr("The condition you use is not support OR");
+	ThisConditionNotSupportOr("The condition you use is not support OR"),
+	unkownConditionForBatchProcess("condition that cannot be processed when batch processing is encountered");
 
 	private final String description;
 

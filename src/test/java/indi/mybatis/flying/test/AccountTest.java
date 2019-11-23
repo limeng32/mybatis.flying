@@ -223,26 +223,6 @@ public class AccountTest {
 		accountService.update(a);
 	}
 
-	/** 测试批量update功能 */
-	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.xml")
-	public void testBatchUpdate() {
-		Account_ a = accountService.select(1);
-		Account_Condition ac = new Account_Condition();
-		ac.setName(a.getName());
-		ac.setPassword(a.getPassword());
-		ac.setEmail("ann@tom.com");
-		ac.setActivated(false);
-		ac.setOpLock(a.getOpLock());
-		
-		ac.setNameEqual("ann");
-		ac.setActivateValueEqual("aaa");
-		
-		accountService.update(ac);
-	}
-
 	/** 测试delete功能 */
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")

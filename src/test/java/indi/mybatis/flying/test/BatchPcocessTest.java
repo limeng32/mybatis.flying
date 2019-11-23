@@ -1,0 +1,155 @@
+package indi.mybatis.flying.test;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
+
+import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
+import indi.mybatis.flying.service.AccountService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
+		DbUnitTestExecutionListener.class })
+@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
+@ContextConfiguration("classpath:spring-test.xml")
+public class BatchPcocessTest {
+
+	@Autowired
+	private AccountService accountService;
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate.xml")
+	public void testBatchUpdate() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setActivated(false);
+		ac.setOpLock(a.getOpLock());
+
+		ac.setNameEqual("ann");
+		ac.setActivateValueEqual("aaa");
+
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate2.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate2.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate2.xml")
+	public void testBatchUpdate2() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameLessOrEqual("c");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate3.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate3.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate3.xml")
+	public void testBatchUpdate3() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameLessThan("c");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate4.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate4.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate4.xml")
+	public void testBatchUpdate4() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameGreaterOrEqual("b");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate5.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate5.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate5.xml")
+	public void testBatchUpdate5() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameGreaterThan("b");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate6.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate6.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate6.xml")
+	public void testBatchUpdate6() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameLike("a");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate7.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate7.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate7.xml")
+	public void testBatchUpdate7() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameHeadLike("a");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate8.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate8.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate8.xml")
+	public void testBatchUpdate8() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameTailLike("a");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate9.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate9.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate9.xml")
+	public void testBatchUpdate9() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameNotEqual("2a");
+		accountService.update(ac);
+	}
+}
