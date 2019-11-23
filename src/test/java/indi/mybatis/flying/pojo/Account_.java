@@ -122,6 +122,10 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		return opLock;
 	}
 
+	public void setOpLock(Integer opLock) {
+		this.opLock = opLock;
+	}
+
 	public StoryStatus_ getStatus() {
 		return status;
 	}

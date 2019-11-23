@@ -16,6 +16,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -729,6 +731,11 @@ public class SqlBuilder {
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+		// TODO
+		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
+		System.out.println("queryMapper::" + JSONObject.toJSONString(queryMapper));
+		System.out.println("tableMapper::" + JSONObject.toJSONString(tableMapper));
+		System.out.println("object::" + JSONObject.toJSONString(object));
 
 		String tableName = tableMapper.getTableName();
 
@@ -744,6 +751,7 @@ public class SqlBuilder {
 			if (!fieldMapper.isUpdateAble() || (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
 			}
+			System.out.println("0::" + fieldMapper.getFieldName());
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
@@ -764,17 +772,35 @@ public class SqlBuilder {
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
 		}
-
+		System.out.println("2::" + tableSql);
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
-		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
-			whereSql.append(fieldMapper.getDbFieldName());
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+		// 为进行批量更新，开始处理queryMapper
+		boolean useBatch = false;
+		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
+			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
-				throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
-						.append(fieldMapper.getDbFieldName()).toString());
+				continue;
 			}
-			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
-					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			System.out.println("1::" + conditionMapper.getFieldName() + ":" + value);
+			whereSql.append(conditionMapper.getDbFieldName());
+			whereSql.append(EQUAL_POUND_OPENBRACE).append(conditionMapper.getFieldName()).append(COMMA)
+					.append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			useBatch = true;
+		}
+		// 如果不使用批量提交，默认使用主键提交
+		if (!useBatch) {
+			for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (value == null) {
+					throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
+							.append(fieldMapper.getDbFieldName()).toString());
+				} else {
+					whereSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
+							.append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+							.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+				}
+			}
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
 			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
@@ -804,6 +830,7 @@ public class SqlBuilder {
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+		// TODO
 
 		String tableName = tableMapper.getTableName();
 

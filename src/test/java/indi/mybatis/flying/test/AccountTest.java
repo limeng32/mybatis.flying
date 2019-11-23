@@ -223,6 +223,26 @@ public class AccountTest {
 		accountService.update(a);
 	}
 
+	/** 测试批量update功能 */
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testBatchUpdate.xml")
+	public void testBatchUpdate() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setName(a.getName());
+		ac.setPassword(a.getPassword());
+		ac.setEmail("ann@tom.com");
+		ac.setActivated(false);
+		ac.setOpLock(a.getOpLock());
+		
+		ac.setNameEqual("ann");
+		ac.setActivateValueEqual("aaa");
+		
+		accountService.update(ac);
+	}
+
 	/** 测试delete功能 */
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testDelete.xml")
@@ -326,7 +346,7 @@ public class AccountTest {
 		LoginLog_ lc2 = new LoginLog_();
 		lc2.setAccount(ac2);
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc2);
-		System.out.println("::::"+JSONObject.toJSONString(loginLogC));
+		System.out.println("::::" + JSONObject.toJSONString(loginLogC));
 		Assert.assertEquals(1, loginLogC.size());
 		for (LoginLog_ l : loginLogC) {
 			Assert.assertEquals("0.0.0.1", l.getLoginIP());

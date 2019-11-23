@@ -36,8 +36,8 @@ public class Account_Condition extends Account_ implements Conditionable {
 	public static final String field_opLock = "opLock";
 
 	public enum Field implements Queryable {
-		tableName(field_tableName), id(field_id), name(field_name), email(field_email), password(
-				field_password), activated(field_activated), activateValue(field_activateValue);
+		tableName(field_tableName), id(field_id), name(field_name), email(field_email), password(field_password),
+		activated(field_activated), activateValue(field_activateValue);
 
 		private final String value;
 
@@ -98,6 +98,14 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NotIn)
 	private List<Integer> roleIdNotIn;
+
+	// 专为批量update设计的条件
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal)
+	private String nameEqual;
+
+	// 专为批量update设计的条件
+	@ConditionMapperAnnotation(dbFieldName = "activateValue", conditionType = ConditionType.Equal)
+	private String activateValueEqual;
 
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
@@ -246,6 +254,22 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setRoleIdNotIn(List<Integer> roleIdNotIn) {
 		this.roleIdNotIn = roleIdNotIn;
+	}
+
+	public String getNameEqual() {
+		return nameEqual;
+	}
+
+	public void setNameEqual(String nameEqual) {
+		this.nameEqual = nameEqual;
+	}
+
+	public String getActivateValueEqual() {
+		return activateValueEqual;
+	}
+
+	public void setActivateValueEqual(String activateValueEqual) {
+		this.activateValueEqual = activateValueEqual;
 	}
 
 }
