@@ -326,7 +326,7 @@ public class AccountTest {
 		LoginLog_ lc2 = new LoginLog_();
 		lc2.setAccount(ac2);
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc2);
-		System.out.println("::::"+JSONObject.toJSONString(loginLogC));
+		System.out.println("::::" + JSONObject.toJSONString(loginLogC));
 		Assert.assertEquals(1, loginLogC.size());
 		for (LoginLog_ l : loginLogC) {
 			Assert.assertEquals("0.0.0.1", l.getLoginIP());

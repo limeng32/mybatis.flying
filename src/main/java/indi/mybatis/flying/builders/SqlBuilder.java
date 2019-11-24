@@ -416,47 +416,18 @@ public class SqlBuilder {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
 		}
-		List<?> multiConditionC = (List<?>) value;
-		if (multiConditionC.size() > 0) {
-			StringBuffer tempWhereSql = new StringBuffer();
-			handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
-			switch (type) {
-			case In:
-				break;
-			case NotIn:
-				tempWhereSql.append(_NOT);
-				break;
-			default:
-				throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
-			}
-			tempWhereSql.append(_IN_OPENPAREN);
-			int j = -1;
-			boolean allNull = true;
-			for (Object s : multiConditionC) {
-				j++;
-				if (s != null) {
-					if (allNull) {
-						allNull = false;
-					}
-					tempWhereSql.append(POUND_OPENBRACE);
-					if (fieldNamePrefix != null) {
-						tempWhereSql.append(fieldNamePrefix).append(DOT);
-					}
-					tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
-							.append(CLOSEBRACKET).append(COMMA).append(JDBCTYPE_EQUAL)
-							.append(conditionMapper.getJdbcType().toString());
-					if (conditionMapper.getTypeHandlerPath() != null) {
-						tempWhereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
-					}
-					tempWhereSql.append(CLOSEBRACE_COMMA);
-				}
-			}
-			if (!allNull) {
-				tempWhereSql.delete(tempWhereSql.lastIndexOf(COMMA), tempWhereSql.lastIndexOf(COMMA) + 1);
-				tempWhereSql.append(CLOSEPAREN__AND_);
-				whereSql.append(tempWhereSql);
-			}
+		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
+		switch (type) {
+		case In:
+			break;
+		case NotIn:
+			whereSql.append(_NOT);
+			break;
+		default:
+			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
+		whereSql.append(_IN_OPENPAREN);
+		dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -729,6 +700,7 @@ public class SqlBuilder {
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
 
 		String tableName = tableMapper.getTableName();
 
@@ -764,17 +736,30 @@ public class SqlBuilder {
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
 		}
-
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
-		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
-			whereSql.append(fieldMapper.getDbFieldName());
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+		// Start processing queryMapper for batch update
+		boolean useBatch = false;
+		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
+			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
-				throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
-						.append(fieldMapper.getDbFieldName()).toString());
+				continue;
 			}
-			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
-					.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			dealBatchCondition(conditionMapper.getConditionType(), whereSql, conditionMapper, value);
+			useBatch = true;
+		}
+		if (!useBatch) {
+			for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (value == null) {
+					throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
+							.append(fieldMapper.getDbFieldName()).toString());
+				} else {
+					whereSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
+							.append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+							.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+				}
+			}
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
 			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
@@ -782,6 +767,110 @@ public class SqlBuilder {
 		}
 		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		return tableSql.append(whereSql).toString();
+	}
+
+	private static void dealBatchCondition(ConditionType conditionType, StringBuffer whereSql,
+			ConditionMapper conditionMapper, Object value) {
+		switch (conditionType) {
+		case Equal:
+			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case LessOrEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_EQUAL_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case LessThan:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case GreaterOrEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_GREATER_EQUAL_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case GreaterThan:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_GREATER_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case Like:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case HeadLike:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case TailLike:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LIKE__POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_);
+			break;
+		case NotEqual:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_LESS_GREATER_).append(POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			break;
+		case NullOrNot:
+			Boolean isNull = (Boolean) value;
+			whereSql.append(conditionMapper.getDbFieldName()).append(_IS);
+			if (!isNull) {
+				whereSql.append(_NOT);
+			}
+			whereSql.append(_NULL).append(_AND_);
+			break;
+		case In:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_IN_OPENPAREN);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			break;
+		case NotIn:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_NOT).append(_IN_OPENPAREN);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			break;
+		default:
+			throw new BuildSqlException(
+					new StringBuffer(BuildSqlExceptionEnum.unkownConditionForBatchProcess.toString())
+							.append(conditionMapper.getDbFieldName()).toString());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void dealWhereSqlOfIn(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
+			String fieldNamePrefix) {
+		int j = -1;
+		boolean allNull = true;
+		List<Object> multiConditionC = (List<Object>) value;
+		for (Object s : multiConditionC) {
+			j++;
+			if (s != null) {
+				if (allNull) {
+					allNull = false;
+				}
+				whereSql.append(POUND_OPENBRACE);
+				if (fieldNamePrefix != null) {
+					whereSql.append(fieldNamePrefix).append(DOT);
+				}
+				whereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j).append(CLOSEBRACKET)
+						.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString());
+				if (conditionMapper.getTypeHandlerPath() != null) {
+					whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
+				}
+				whereSql.append(CLOSEBRACE_COMMA);
+			}
+		}
+		if (!allNull) {
+			whereSql.delete(whereSql.lastIndexOf(COMMA), whereSql.lastIndexOf(COMMA) + 1);
+		}
+		whereSql.append(CLOSEPAREN__AND_);
 	}
 
 	/**
@@ -804,6 +893,8 @@ public class SqlBuilder {
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+
+		// updatePersistent causes features that do not require batch update
 
 		String tableName = tableMapper.getTableName();
 
@@ -876,20 +967,32 @@ public class SqlBuilder {
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
 		String tableName = tableMapper.getTableName();
-
 		StringBuffer sql = new StringBuffer();
-
 		sql.append(DELETE_FROM_).append(tableName).append(WHERE_);
-		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
-			sql.append(fieldMapper.getDbFieldName());
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+		// Start processing queryMapper for batch delete
+		boolean useBatch = false;
+		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
+			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
 			if (value == null) {
-				throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.deleteUniqueKeyIsNull.toString())
-						.append(fieldMapper.getDbFieldName()).toString());
+				continue;
 			}
-			sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			dealBatchCondition(conditionMapper.getConditionType(), sql, conditionMapper, value);
+			useBatch = true;
+		}
+		if (!useBatch) {
+			for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
+				sql.append(fieldMapper.getDbFieldName());
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (value == null) {
+					throw new BuildSqlException(new StringBuffer(BuildSqlExceptionEnum.deleteUniqueKeyIsNull.toString())
+							.append(fieldMapper.getDbFieldName()).toString());
+				}
+				sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
+						.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
+			}
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
 			sql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
