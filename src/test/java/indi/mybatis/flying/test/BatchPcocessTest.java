@@ -214,4 +214,67 @@ public class BatchPcocessTest {
 		ac.setNameNotIn(nameC);
 		accountService.update(ac);
 	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete.xml")
+	public void testBatchDelete() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setOpLock(a.getOpLock());
+		ac.setNameEqual("a2a");
+		accountService.delete(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete2.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete2.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete2.xml")
+	public void testBatchDelete2() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setOpLock(a.getOpLock());
+		ac.setNameGreaterThan("b");
+		accountService.delete(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete3.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete3.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete3.xml")
+	public void testBatchDelete3() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setOpLock(a.getOpLock());
+		ac.setNameLike("a");
+		accountService.delete(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete4.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete4.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete4.xml")
+	public void testBatchDelete4() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setOpLock(a.getOpLock());
+		ac.setNameIsNull(true);
+		accountService.delete(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete5.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete5.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchDelete5.xml")
+	public void testBatchDelete5() {
+		List<String> nameC = new ArrayList<>();
+		nameC.add("a2");
+		nameC.add("b");
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setOpLock(a.getOpLock());
+		ac.setNameIn(nameC);
+		accountService.delete(ac);
+	}
 }
