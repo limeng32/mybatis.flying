@@ -31,7 +31,7 @@
 			interceptor="indi.mybatis.flying.interceptors.AutoMapperInterceptor">
 			<property name="dialect" value="mysql" />
 			<!-- 对自动生成的sql的打印级别，可接受none、trace、debug、warn、error，默认为none，即不打印日志 -->
-			<property name="logLevel" value="warn" />
+			<!-- <property name="logLevel" value="warn" /> -->
 		</plugin>
 	</plugins>
 </configuration>

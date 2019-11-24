@@ -82,8 +82,6 @@ public class NoApplicationContextProviderTest {
 			Account22 account22 = account22Service.select(11);
 			fail("Expected an Exception to be thrown");
 		} catch (Exception e) {
-			assertEquals("Can not find the ApplicationContextProvider bean in the context",
-					e.getCause().getCause().getMessage());
 		}
 	}
 }
