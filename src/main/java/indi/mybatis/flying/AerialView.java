@@ -4,7 +4,7 @@ package indi.mybatis.flying;
 public class AerialView {
 
 	/* Flying current version */
-	public static final String FLYING_VERSION = "0.9.12";
+	public static final String FLYING_VERSION = "0.9.15";
 
 	/* Current version alias */
 	public static final String FLYING_NAME = "AURORA_PRELUDE";
