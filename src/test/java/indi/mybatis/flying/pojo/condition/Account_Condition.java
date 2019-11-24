@@ -139,6 +139,10 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NotEqual)
 	private String nameNotEqual;
 
+	// Conditions designed for batch update
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NullOrNot)
+	private Boolean nameIsNull;
+
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.LoginLog_.class) })
@@ -366,6 +370,14 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setNameNotEqual(String nameNotEqual) {
 		this.nameNotEqual = nameNotEqual;
+	}
+
+	public Boolean getNameIsNull() {
+		return nameIsNull;
+	}
+
+	public void setNameIsNull(Boolean nameIsNull) {
+		this.nameIsNull = nameIsNull;
 	}
 
 }

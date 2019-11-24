@@ -1,5 +1,8 @@
 package indi.mybatis.flying.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
+import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.condition.Account_Condition;
@@ -25,7 +28,8 @@ import indi.mybatis.flying.service.AccountService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
+@DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
+		"dataSource2" })
 @ContextConfiguration("classpath:spring-test.xml")
 public class BatchPcocessTest {
 
@@ -150,6 +154,64 @@ public class BatchPcocessTest {
 		ac.setEmail("ann@tom.com");
 		ac.setOpLock(a.getOpLock());
 		ac.setNameNotEqual("2a");
+		accountService.update(ac);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate10.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate10.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate10.xml")
+	public void testBatchUpdate10() {
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameIsNull(true);
+		accountService.update(ac);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmail("bob@tom.com");
+		ac2.setOpLock(a.getOpLock());
+		ac2.setNameIsNull(false);
+		ac2.setActivateValueEqual("aaa");
+		accountService.update(ac2);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate11.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate11.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate11.xml")
+	public void testBatchUpdate11() {
+		List<String> nameC = new ArrayList<>();
+		nameC.add("a2");
+		nameC.add("b");
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameIn(nameC);
+		accountService.update(ac);
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmail("bob@tom.com");
+		ac2.setOpLock(a.getOpLock());
+		ac2.setNameIn(new ArrayList<String>());
+		accountService.update(ac2);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate12.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate12.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchUpdate12.xml")
+	public void testBatchUpdate12() {
+		List<String> nameC = new ArrayList<>();
+		nameC.add("a2");
+		nameC.add("b");
+		Account_ a = accountService.select(1);
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setOpLock(a.getOpLock());
+		ac.setNameNotIn(nameC);
 		accountService.update(ac);
 	}
 }

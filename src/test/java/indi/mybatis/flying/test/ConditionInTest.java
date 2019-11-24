@@ -65,7 +65,7 @@ public class ConditionInTest {
 		List<String> nameC2 = new ArrayList<>();
 		ac.setNameIn(nameC2);
 		Collection<Account_> c3 = accountService.selectAll(ac);
-		Assert.assertEquals(2, c3.size());
+		Assert.assertEquals(0, c3.size());
 	}
 
 	/** 测试有外键情况下condition:in功能 */

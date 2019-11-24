@@ -418,47 +418,18 @@ public class SqlBuilder {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
 		}
-		List<?> multiConditionC = (List<?>) value;
-		if (multiConditionC.size() > 0) {
-			StringBuffer tempWhereSql = new StringBuffer();
-			handleWhereSql(tempWhereSql, conditionMapper, tableName, fieldNamePrefix);
-			switch (type) {
-			case In:
-				break;
-			case NotIn:
-				tempWhereSql.append(_NOT);
-				break;
-			default:
-				throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
-			}
-			tempWhereSql.append(_IN_OPENPAREN);
-			int j = -1;
-			boolean allNull = true;
-			for (Object s : multiConditionC) {
-				j++;
-				if (s != null) {
-					if (allNull) {
-						allNull = false;
-					}
-					tempWhereSql.append(POUND_OPENBRACE);
-					if (fieldNamePrefix != null) {
-						tempWhereSql.append(fieldNamePrefix).append(DOT);
-					}
-					tempWhereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
-							.append(CLOSEBRACKET).append(COMMA).append(JDBCTYPE_EQUAL)
-							.append(conditionMapper.getJdbcType().toString());
-					if (conditionMapper.getTypeHandlerPath() != null) {
-						tempWhereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
-					}
-					tempWhereSql.append(CLOSEBRACE_COMMA);
-				}
-			}
-			if (!allNull) {
-				tempWhereSql.delete(tempWhereSql.lastIndexOf(COMMA), tempWhereSql.lastIndexOf(COMMA) + 1);
-				tempWhereSql.append(CLOSEPAREN__AND_);
-				whereSql.append(tempWhereSql);
-			}
+		handleWhereSql(whereSql, conditionMapper, tableName, fieldNamePrefix);
+		switch (type) {
+		case In:
+			break;
+		case NotIn:
+			whereSql.append(_NOT);
+			break;
+		default:
+			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
 		}
+		whereSql.append(_IN_OPENPAREN);
+		dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -783,7 +754,7 @@ public class SqlBuilder {
 				continue;
 			}
 			System.out.println("1::" + conditionMapper.getFieldName() + ":" + value);
-			dealBatchCondition(conditionMapper.getConditionType(), whereSql, conditionMapper);
+			dealBatchCondition(conditionMapper.getConditionType(), whereSql, conditionMapper, value);
 			useBatch = true;
 		}
 		// Start processing queryMapper for batch update
@@ -809,7 +780,7 @@ public class SqlBuilder {
 	}
 
 	private static void dealBatchCondition(ConditionType conditionType, StringBuffer whereSql,
-			ConditionMapper conditionMapper) {
+			ConditionMapper conditionMapper, Object value) {
 		switch (conditionType) {
 		case Equal:
 			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
@@ -859,11 +830,57 @@ public class SqlBuilder {
 					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_);
 			break;
+		case NullOrNot:
+			Boolean isNull = (Boolean) value;
+			whereSql.append(conditionMapper.getDbFieldName()).append(_IS);
+			if (!isNull) {
+				whereSql.append(_NOT);
+			}
+			whereSql.append(_NULL).append(_AND_);
+			break;
+		case In:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_IN_OPENPAREN);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			break;
+		case NotIn:
+			whereSql.append(conditionMapper.getDbFieldName()).append(_NOT).append(_IN_OPENPAREN);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			break;
 		default:
 			throw new BuildSqlException(
 					new StringBuffer(BuildSqlExceptionEnum.unkownConditionForBatchProcess.toString())
 							.append(conditionMapper.getDbFieldName()).toString());
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void dealWhereSqlOfIn(Object value, StringBuffer whereSql, ConditionMapper conditionMapper,
+			String fieldNamePrefix) {
+		int j = -1;
+		boolean allNull = true;
+		List<Object> multiConditionC = (List<Object>) value;
+		for (Object s : multiConditionC) {
+			j++;
+			if (s != null) {
+				if (allNull) {
+					allNull = false;
+				}
+				whereSql.append(POUND_OPENBRACE);
+				if (fieldNamePrefix != null) {
+					whereSql.append(fieldNamePrefix).append(DOT);
+				}
+				whereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j).append(CLOSEBRACKET)
+						.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString());
+				if (conditionMapper.getTypeHandlerPath() != null) {
+					whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
+				}
+				whereSql.append(CLOSEBRACE_COMMA);
+			}
+		}
+		if (!allNull) {
+			whereSql.delete(whereSql.lastIndexOf(COMMA), whereSql.lastIndexOf(COMMA) + 1);
+		}
+		whereSql.append(CLOSEPAREN__AND_);
 	}
 
 	/**
