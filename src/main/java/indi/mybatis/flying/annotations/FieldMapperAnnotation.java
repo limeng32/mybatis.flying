@@ -16,8 +16,7 @@ import indi.mybatis.flying.statics.OpLockType;
  * @date 2019年12月18日 11:56:08
  *
  * @author david,李萌
- * @Email limeng32@live.cn
- * @version
+ * @email limeng32@live.cn
  * @since JDK 1.8
  * @description Annotations that describe the database table fields
  *              corresponding to the Java object fields

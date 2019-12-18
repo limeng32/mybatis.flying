@@ -11,8 +11,7 @@ import java.lang.annotation.Target;
  * @date 2019年12月18日 11:56:08
  *
  * @author huangzipeng
- * @Email limeng32@live.cn
- * @version
+ * @email limeng32@live.cn
  * @since JDK 1.8
  * @description Describes the annotation classes for the relationship between
  *              Java objects and database tables
