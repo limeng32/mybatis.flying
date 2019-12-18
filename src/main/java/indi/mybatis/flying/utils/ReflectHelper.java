@@ -16,6 +16,15 @@ import java.util.jar.JarFile;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
+/**
+ * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ */
 public class ReflectHelper {
 	private static final Log logger = LogFactory.getLog(ReflectHelper.class);
 
