@@ -13,12 +13,13 @@ import org.apache.ibatis.type.TypeHandler;
 
 /**
  * 
+ * @date 2019年12月18日 11:56:08
  *
  * @author 李萌
+ * @email limeng32@live.cn
  * @since JDK 1.8
- * 
- *        The handler that solves the like 'XXX %' condition in the SQL query
- *        statement.
+ * @description The handler that solves the like 'XXX %' condition in the SQL
+ *              query statement.
  */
 @MappedTypes({ String.class })
 @MappedJdbcTypes({ JdbcType.VARCHAR })
