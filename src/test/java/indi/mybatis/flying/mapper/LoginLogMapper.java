@@ -9,7 +9,7 @@ import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
 
-@CacheRoleAnnotation(ObserverClass = { Account_.class }, TriggerClass = { LoginLog_.class })
+@CacheRoleAnnotation(observerClass = { Account_.class }, triggerClass = { LoginLog_.class })
 public interface LoginLogMapper extends MapperFace<LoginLog_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -26,7 +26,7 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t);
 
 	public Collection<LoginLog_> selectAllPrefixIgnore(LoginLog_ t);
-	
+
 	public Collection<LoginLog_> selectAllPrefixIgnore2(LoginLog_ t);
 
 	@Override

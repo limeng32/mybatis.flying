@@ -9,7 +9,7 @@ import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
 
-@CacheRoleAnnotation(ObserverClass = { LoginLog_.class }, TriggerClass = { Detail_.class })
+@CacheRoleAnnotation(observerClass = { LoginLog_.class }, triggerClass = { Detail_.class })
 public interface DetailMapper extends MapperFace<Detail_> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)

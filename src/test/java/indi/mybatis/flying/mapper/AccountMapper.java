@@ -10,7 +10,7 @@ import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
 
-@CacheRoleAnnotation(ObserverClass = { Role_.class }, TriggerClass = { Account_.class })
+@CacheRoleAnnotation(observerClass = { Role_.class }, triggerClass = { Account_.class })
 public interface AccountMapper extends MapperFace<Account_> {
 
 	@Override
@@ -33,7 +33,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Collection<Account_> selectAll(Account_ t);
 
 	public Collection<Account_> selectAllPrefix(Account_ t);
-	
+
 	public Collection<Account_> selectAllPrefixIgnore(Account_ t);
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -63,7 +63,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public int count(Account_ t);
-	
+
 	public int countAsd(Account_ t);
 
 	public void loadRole(Role_ role, Account_ account);

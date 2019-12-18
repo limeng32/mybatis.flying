@@ -148,10 +148,10 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 						triggerClasses.put(clazz, new HashSet<Class<?>>());
 					}
 					CacheRoleAnnotation cacheRoleAnnotation = (CacheRoleAnnotation) an;
-					for (Class<?> clazz1 : cacheRoleAnnotation.ObserverClass()) {
+					for (Class<?> clazz1 : cacheRoleAnnotation.observerClass()) {
 						observerClasses.get(clazz).add(clazz1);
 					}
-					for (Class<?> clazz1 : cacheRoleAnnotation.TriggerClass()) {
+					for (Class<?> clazz1 : cacheRoleAnnotation.triggerClass()) {
 						triggerClasses.get(clazz).add(clazz1);
 					}
 				}

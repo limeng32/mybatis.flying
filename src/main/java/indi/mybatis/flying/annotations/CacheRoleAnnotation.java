@@ -28,7 +28,7 @@ public @interface CacheRoleAnnotation {
 	 * @return Class[]
 	 * @since 0.9.0
 	 */
-	Class<?>[] ObserverClass();
+	Class<?>[] observerClass();
 
 	/**
 	 * 
@@ -37,6 +37,6 @@ public @interface CacheRoleAnnotation {
 	 * @return Class[]
 	 * @since 0.9.0
 	 */
-	Class<?>[] TriggerClass();
+	Class<?>[] triggerClass();
 
 }

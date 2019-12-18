@@ -9,12 +9,12 @@ import indi.mybatis.flying.pojo.Role2_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
 import indi.mybatis.flying.statics.CacheRoleType;
 
-@CacheRoleAnnotation(ObserverClass = { Role2_.class }, TriggerClass = { Account22.class })
+@CacheRoleAnnotation(observerClass = { Role2_.class }, triggerClass = { Account22.class })
 public interface Account22Mapper extends MapperFace<Account22> {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account22 selectWithoutCache(Object id);
-	
+
 	@Override
 	@CacheAnnotation(role = CacheRoleType.Observer)
 	public Account22 select(Object id);

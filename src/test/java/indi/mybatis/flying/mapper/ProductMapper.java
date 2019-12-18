@@ -5,7 +5,7 @@ import indi.mybatis.flying.annotations.CacheRoleAnnotation;
 import indi.mybatis.flying.pojo.Product;
 import indi.mybatis.flying.statics.CacheRoleType;
 
-@CacheRoleAnnotation(ObserverClass = {}, TriggerClass = { Product.class })
+@CacheRoleAnnotation(observerClass = {}, triggerClass = { Product.class })
 public interface ProductMapper {
 
 	@CacheAnnotation(role = CacheRoleType.Observer)
@@ -34,13 +34,13 @@ public interface ProductMapper {
 
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertMySnowFlake(Product t);
-	
+
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertMySnowFlake2(Product t);
-	
+
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertAsd(Product t);
-	
+
 	@CacheAnnotation(role = CacheRoleType.Trigger)
 	public void insertDistributedSnowflake(Product t);
 }
