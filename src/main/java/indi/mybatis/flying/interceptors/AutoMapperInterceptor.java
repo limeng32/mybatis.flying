@@ -107,14 +107,14 @@ public class AutoMapperInterceptor implements Interceptor {
 					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
 					if (dataSource == null) {
 						throw new AutoMapperException(
-								AutoMapperExceptionEnum.cannotFindAssignedDataSourceInContext.description());
+								AutoMapperExceptionEnum.CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT.description());
 					}
 					Connection connection = ((SmartDataSource) (applicationContext
 							.getBean(flyingModel.getDataSourceId()))).getConnection();
 					invocation.getArgs()[0] = connection;
 				} else {
 					throw new AutoMapperException(
-							AutoMapperExceptionEnum.cannotFindApplicationContextProvider.description());
+							AutoMapperExceptionEnum.CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER.description());
 				}
 			}
 			String newSql = "";
@@ -245,7 +245,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	public void setProperties(Properties properties) {
 		dialect = properties.getProperty(DIALECT);
 		if (dialect == null || "".equals(dialect)) {
-			logger.error(AutoMapperExceptionEnum.dialectPropertyCannotFound.description());
+			logger.error(AutoMapperExceptionEnum.DIALECT_PROPERTY_CANNOT_FOUND.description());
 		}
 		String temp = properties.getProperty(LOG_LEVEL);
 		if (temp != null) {
@@ -295,7 +295,7 @@ public class AutoMapperInterceptor implements Interceptor {
 					TypeHandler<Object> typeHandler = (TypeHandler<Object>) parameterMapping.getTypeHandler();
 					if (typeHandler == null) {
 						throw new AutoMapperException(
-								new StringBuffer(AutoMapperExceptionEnum.noTypeHandlerSuitable.toString())
+								new StringBuffer(AutoMapperExceptionEnum.NO_TYPE_HANDLER_SUITABLE.toString())
 										.append(propertyName).append(" of statement ").append(mappedStatement.getId())
 										.toString());
 					}

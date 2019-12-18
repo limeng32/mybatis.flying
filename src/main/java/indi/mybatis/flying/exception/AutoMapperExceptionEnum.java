@@ -10,12 +10,12 @@ package indi.mybatis.flying.exception;
  */
 public enum AutoMapperExceptionEnum {
 
-	parameterObjectIsNull("ParameterObject is null"), dialectPropertyCannotFound("Dialect property is not found"),
-	noTypeHandlerSuitable("There was no TypeHandler found for parameter "),
-	wrongKeyGeneratorType("Find an error KeyGeneratorType in "),
-	wrongCustomKeyGenerator("Find an error custom key generator in "),
-	cannotFindAssignedDataSourceInContext("Can not find the dataSource bean assigned in the context"),
-	cannotFindApplicationContextProvider("Can not find the ApplicationContextProvider bean in the context");
+	PARAMETER_OBJECT_IS_NULL("ParameterObject is null"), DIALECT_PROPERTY_CANNOT_FOUND("Dialect property is not found"),
+	NO_TYPE_HANDLER_SUITABLE("There was no TypeHandler found for parameter "),
+	WRONG_KEY_GENERATOR_TYPE("Find an error KeyGeneratorType in "),
+	WRONG_CUSTOM_KEY_GENERATOR("Find an error custom key generator in "),
+	CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT("Can not find the dataSource bean assigned in the context"),
+	CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER("Can not find the ApplicationContextProvider bean in the context");
 
 	private final String description;
 

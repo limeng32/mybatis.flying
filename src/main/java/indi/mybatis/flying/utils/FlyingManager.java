@@ -201,7 +201,7 @@ public class FlyingManager {
 				try {
 					keyGeneratorType = KeyGeneratorType.valueOf(extension);
 				} catch (IllegalArgumentException e) {
-					logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongKeyGeneratorType.description())
+					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_KEY_GENERATOR_TYPE.description())
 							.append(originalSql).append(" because of ").append(e).toString());
 				}
 				ret.setKeyGeneratorType(keyGeneratorType);
@@ -233,7 +233,7 @@ public class FlyingManager {
 					ret.setKeyGeneratorType(KeyGeneratorType.custom);
 					ret.setKeyHandler(clazz.newInstance());
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-					logger.error(new StringBuffer(AutoMapperExceptionEnum.wrongCustomKeyGenerator.description())
+					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_CUSTOM_KEY_GENERATOR.description())
 							.append(originalSql).append(" because of ").append(e).toString());
 				}
 			}

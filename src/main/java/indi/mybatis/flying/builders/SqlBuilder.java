@@ -1163,9 +1163,9 @@ public class SqlBuilder {
 		}
 		selectSql.append(CLOSEPAREN);
 
-		StringBuilder fromSql = new StringBuilder(FROM);
-		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
-		StringBuilder[] sqlBuilders = new StringBuilder[] { fromSql, whereSql };
+		StringBuilder[] sqlBuilders = new StringBuilder[] { new StringBuilder(FROM), new StringBuilder(WHERE_BLANK) };
+		StringBuilder fromSql = sqlBuilders[0];
+		StringBuilder whereSql = sqlBuilders[1];
 		dealMapperAnnotationIterationForCount(object, sqlBuilders, null, null, null, ai, tableName);
 
 		if (selectSql.indexOf(COMMA) > -1) {
