@@ -9,12 +9,16 @@ import java.lang.annotation.Target;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
- * Used to describe the annotation of the description of the personalization
- * constraints for object fields in pojos, in the PojoCondition class, e.g
- * "like"
  * 
- * @author limeng32
- * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ * @description Used to describe the annotation of the description of the
+ *              personalization constraints for object fields in pojos, in the
+ *              PojoCondition class, e.g "like"
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -50,8 +54,8 @@ public @interface ConditionMapperAnnotation {
 
 	/**
 	 * 
-	 * Whether to use the specified TypeHandler (highest priority).the default
-	 * is "Void" meaning not specified
+	 * Whether to use the specified TypeHandler (highest priority).the default is
+	 * "Void" meaning not specified
 	 * 
 	 * @return Class
 	 * @since 0.9.4

@@ -17,6 +17,15 @@ import indi.mybatis.flying.annotations.CacheAnnotation;
 import indi.mybatis.flying.annotations.CacheRoleAnnotation;
 import indi.mybatis.flying.utils.ReflectHelper;
 
+/**
+ * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ */
 public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private Map<String, Set<String>> observers = new ConcurrentHashMap<>();

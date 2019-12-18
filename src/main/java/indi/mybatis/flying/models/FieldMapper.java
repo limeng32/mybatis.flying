@@ -18,8 +18,15 @@ import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
 
 /**
- * Field mapping class that describes the correspondence between a Java object
- * field and a database table field.
+ * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8。
+ * @description Field mapping class that describes the correspondence between a
+ *              Java object field and a database table field.
  */
 public class FieldMapper implements Mapperable {
 
@@ -41,22 +48,21 @@ public class FieldMapper implements Mapperable {
 	private JdbcType jdbcType;
 
 	/**
-	 * If it is a foreign key, it corresponds to the name of the primary key
-	 * field of the other table in the database. Blank means it's not foreign
-	 * key.
+	 * If it is a foreign key, it corresponds to the name of the primary key field
+	 * of the other table in the database. Blank means it's not foreign key.
 	 */
 	private String dbAssociationUniqueKey = "";
 
 	/**
-	 * Describes the association between this table and related table,
-	 * especially when there are other constraints other than foreign key.
+	 * Describes the association between this table and related table, especially
+	 * when there are other constraints other than foreign key.
 	 */
 	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
 	 * If it is a cross-source foreign key, it corresponds to the name of the
-	 * primary key field for the table of the other database. Blank means it's
-	 * not foreign key.
+	 * primary key field for the table of the other database. Blank means it's not
+	 * foreign key.
 	 */
 	private String dbCrossedAssociationUniqueKey = "";
 
@@ -79,9 +85,9 @@ public class FieldMapper implements Mapperable {
 	private boolean isCrossDbForeignKey;
 
 	/**
-	 * If this variable corresponds to the foreign key of the database table,
-	 * the ForeignFieldName represents the Java object field name of the related
-	 * table's primary key.Blank means it's not foreign key.
+	 * If this variable corresponds to the foreign key of the database table, the
+	 * ForeignFieldName represents the Java object field name of the related table's
+	 * primary key.Blank means it's not foreign key.
 	 */
 	private String foreignFieldName;
 
@@ -96,8 +102,8 @@ public class FieldMapper implements Mapperable {
 	private HashSet<String> ignoreTagSet;
 
 	/**
-	 * The access path of the custom typeHandler for this variable, the default
-	 * is null.
+	 * The access path of the custom typeHandler for this variable, the default is
+	 * null.
 	 */
 	private String typeHandlerPath;
 
@@ -135,8 +141,7 @@ public class FieldMapper implements Mapperable {
 		setFieldName(field.getName());
 		setFieldType(field.getType());
 		/*
-		 * The Column annotation has the lowest priority, so it is written at
-		 * the top.
+		 * The Column annotation has the lowest priority, so it is written at the top.
 		 */
 		if (column != null) {
 			setDbFieldName(getColumnName(column, field));

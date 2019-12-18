@@ -1,5 +1,14 @@
 package indi.mybatis.flying.statics;
 
+/**
+ * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ */
 public enum ActionType {
 	/** Number of queries, accept Pojo type parameters. */
 	count,
@@ -14,14 +23,13 @@ public enum ActionType {
 	/** Query a record, accept Pojo type parameters. */
 	selectOne,
 	/**
-	 * Update a record, accept Pojo type parameters (ignoring attributes that
-	 * are null in pojos)
+	 * Update a record, accept Pojo type parameters (ignoring attributes that are
+	 * null in pojos)
 	 */
 	update,
 	/**
-	 * Completely updating a record, accept Pojo type parameters (does not
-	 * ignore the null attribute in the Pojo, which is updated to null in the
-	 * database.)
+	 * Completely updating a record, accept Pojo type parameters (does not ignore
+	 * the null attribute in the Pojo, which is updated to null in the database.)
 	 */
 	updatePersistent
 }

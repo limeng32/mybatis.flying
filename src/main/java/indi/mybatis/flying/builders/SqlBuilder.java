@@ -38,10 +38,14 @@ import indi.mybatis.flying.type.KeyHandler;
 import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
- * Generate SQL through annotations
  * 
- * @author david, limeng32
- * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author david, 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ * @description Generate SQL through annotations.
  */
 public class SqlBuilder {
 

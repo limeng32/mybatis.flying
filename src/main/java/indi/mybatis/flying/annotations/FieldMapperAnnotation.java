@@ -12,11 +12,15 @@ import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 
 /**
- * Annotations that describe the database table fields corresponding to the Java
- * object fields
  * 
- * @author david,limeng32
- * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author david,李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ * @description Annotations that describe the database table fields
+ *              corresponding to the Java object fields
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -33,9 +37,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * If it is a foreign key, it corresponds to the name of the primary key
-	 * field of the other table in the database (Case is identical), the default
-	 * is blank meaning not foreign key.
+	 * If it is a foreign key, it corresponds to the name of the primary key field
+	 * of the other table in the database (Case is identical), the default is blank
+	 * meaning not foreign key.
 	 * 
 	 * This property is used to solve the table association problem in the same
 	 * database, so it should not appear at the same time as the
@@ -67,9 +71,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * The field USES the JDBC interface to store the data type that the
-	 * database needs to set, e.g Integer, Long, Short, Float, Double, String,
-	 * Date, Timestamp, Time and so on
+	 * The field USES the JDBC interface to store the data type that the database
+	 * needs to set, e.g Integer, Long, Short, Float, Double, String, Date,
+	 * Timestamp, Time and so on
 	 * 
 	 * @return JdbcType
 	 * @since 0.9.0
@@ -89,8 +93,8 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * Whether to use the specified TypeHandler (highest priority).the default
-	 * is "Void" meaning not specified
+	 * Whether to use the specified TypeHandler (highest priority).the default is
+	 * "Void" meaning not specified
 	 * 
 	 * @return Class
 	 * @since 0.9.4
@@ -99,12 +103,12 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * If it is a cross-source foreign key, the name of the primary key field
-	 * for the table of the other database(Case is identical), the default is
-	 * blank meaning not foreign key.
+	 * If it is a cross-source foreign key, the name of the primary key field for
+	 * the table of the other database(Case is identical), the default is blank
+	 * meaning not foreign key.
 	 * 
-	 * This property is used to solve the cross-source association problem, so
-	 * it should not appear at the same time as dbAssociationUniqueKey.
+	 * This property is used to solve the cross-source association problem, so it
+	 * should not appear at the same time as dbAssociationUniqueKey.
 	 * 
 	 * @return String
 	 * @since 0.9.1
@@ -113,9 +117,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * When declaring a foreign key relationship, make an extra declaration here
-	 * if there are other constraints besides foreign keys (e.g. select * from a
-	 * left join b on a.fid = b.id and a.name = b.name)
+	 * When declaring a foreign key relationship, make an extra declaration here if
+	 * there are other constraints besides foreign keys (e.g. select * from a left
+	 * join b on a.fid = b.id and a.name = b.name)
 	 * 
 	 * 声明外键关系时，如果除了外键之外还有其它约束，在这里做额外声明（例如 select * from a left join b on a.fid =
 	 * b.id and a.name = b.name）

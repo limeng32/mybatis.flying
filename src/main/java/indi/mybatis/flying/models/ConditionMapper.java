@@ -8,8 +8,16 @@ import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
- * Conditions of mapping class, is used to describe ConditionMapperAnnotation
- * annotation object field and corresponding relation between the SQL
+ * 
+ * @date 2019年12月18日 11:56:08
+ *
+ * @author 李萌
+ * @Email limeng32@live.cn
+ * @version
+ * @since JDK 1.8
+ * @description Conditions of mapping class, is used to describe
+ *              ConditionMapperAnnotation annotation object field and
+ *              corresponding relation between the SQL
  */
 public class ConditionMapper implements Mapperable {
 
@@ -34,21 +42,20 @@ public class ConditionMapper implements Mapperable {
 	private ConditionType conditionType;
 
 	/**
-	 * If it is a foreign key, it corresponds to the name of the primary key
-	 * field of the other table in the database. Blank means it's not a foreign
-	 * key.
+	 * If it is a foreign key, it corresponds to the name of the primary key field
+	 * of the other table in the database. Blank means it's not a foreign key.
 	 */
 	private String dbAssociationUniqueKey = "";
 
 	/**
-	 * Describes the association between this table and related table,
-	 * especially when there are other constraints other than foreign key.
+	 * Describes the association between this table and related table, especially
+	 * when there are other constraints other than foreign key.
 	 */
 	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
-	 * If it is a cross-source foreign key, the name of the primary key field
-	 * for the table of the other database.Blank means it's not a foreign key.
+	 * If it is a cross-source foreign key, the name of the primary key field for
+	 * the table of the other database.Blank means it's not a foreign key.
 	 */
 	private String dbCrossedAssociationUniqueKey = "";
 
@@ -59,9 +66,9 @@ public class ConditionMapper implements Mapperable {
 	private boolean isForeignKey;
 
 	/**
-	 * If this variable corresponds to the foreign key of the database table,
-	 * the ForeignFieldName represents the Java object field name of the related
-	 * table's primary key, it is null when not foreign key.
+	 * If this variable corresponds to the foreign key of the database table, the
+	 * ForeignFieldName represents the Java object field name of the related table's
+	 * primary key, it is null when not foreign key.
 	 */
 	private String foreignFieldName;
 
@@ -82,8 +89,8 @@ public class ConditionMapper implements Mapperable {
 	private Class<?> fieldType;
 
 	/**
-	 * Identify the condition for which (business) child objects, by default
-	 * Void, are for themselves. This property works only in Or annotation
+	 * Identify the condition for which (business) child objects, by default Void,
+	 * are for themselves. This property works only in Or annotation
 	 */
 	private Class<?> subTarget;
 
