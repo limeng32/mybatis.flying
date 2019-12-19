@@ -31,6 +31,10 @@ import indi.mybatis.flying.type.KeyHandler;
  */
 public class FlyingManager {
 
+	private FlyingManager() {
+
+	}
+
 	private static final Map<String, FlyingModel> flyingModelCache = new ConcurrentHashMap<>(128);
 
 	private static final Map<String, JSONObject> flyingModel2ndCache = new ConcurrentHashMap<>(128);
@@ -100,7 +104,7 @@ public class FlyingManager {
 			if (json.containsKey(FlyingKeyword.ID)) {
 				String innerId = json.getString(FlyingKeyword.ID);
 				if (innerId.indexOf('.') == -1 && id.indexOf('.') > -1) {
-					innerId = id.substring(0, id.lastIndexOf('.') + 1) + innerId;
+					innerId = new StringBuilder(id.substring(0, id.lastIndexOf('.') + 1)).append(innerId).toString();
 				}
 				String originalSql = configuration.getMappedStatement(innerId).getBoundSql(null).getSql();
 				JSONObject innerJson = JSONObject.parseObject(originalSql);
@@ -127,9 +131,8 @@ public class FlyingManager {
 		if (null != originalSql && originalSql.startsWith(FlyingKeyword.FLYING) && originalSql.indexOf(':') > -1) {
 			String dataSourceIdAndConnectionCatalog = null;
 			String s1 = null;
-			if ((originalSql.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
-					|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET))
-					&& originalSql.indexOf(')') > 0) {
+			if (originalSql.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
+					|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET)) {
 				String s0 = originalSql.substring(0, originalSql.indexOf(')') + 1);
 				dataSourceIdAndConnectionCatalog = s0.substring(s0.indexOf('(') + 1, s0.lastIndexOf(')'));
 				s1 = originalSql.substring(0, originalSql.indexOf(':', originalSql.indexOf(')')));
@@ -142,7 +145,7 @@ public class FlyingManager {
 				String s2 = null;
 				if (s1.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
 						|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET)) {
-					s2 = originalSql.substring(originalSql.indexOf(":", originalSql.indexOf(')')) + 1,
+					s2 = originalSql.substring(originalSql.indexOf(':', originalSql.indexOf(')')) + 1,
 							originalSql.length());
 				} else {
 					s2 = originalSql.substring(originalSql.indexOf(':') + 1, originalSql.length());
@@ -197,7 +200,7 @@ public class FlyingManager {
 	private static void dealKeyHandler(ActionType actionType, String extension, String originalSql, FlyingModel ret) {
 		if (ActionType.INSERT.equals(actionType) && extension != null) {
 			KeyGeneratorType keyGeneratorType = null;
-			if (extension.indexOf(".") == -1) {
+			if (extension.indexOf('.') == -1) {
 				try {
 					keyGeneratorType = KeyGeneratorType.forValue(extension);
 				} catch (IllegalArgumentException e) {

@@ -66,7 +66,7 @@ public @interface FieldMapperAnnotation {
 	 * @return OpLockType
 	 * @since 0.9.0
 	 */
-	OpLockType opLockType() default OpLockType.Null;
+	OpLockType opLockType() default OpLockType.NULL;
 
 	/**
 	 * 

@@ -10,7 +10,7 @@ package indi.mybatis.flying.statics;
  */
 public enum OpLockType {
 	/** Version number optimistic lock, suitable for integer fields */
-	Version,
+	VERSION,
 	/** Non-optimistic lock field */
-	Null
+	NULL
 }

@@ -172,7 +172,7 @@ public class SqlBuilder {
 			if (!b) {
 				continue;
 			}
-			if (OpLockType.Version.equals((fieldMapper.getOpLockType()))) {
+			if (OpLockType.VERSION.equals((fieldMapper.getOpLockType()))) {
 				fieldMapper.setOpVersionLock(true);
 			}
 			if (fieldMapper.isUniqueKey()) {

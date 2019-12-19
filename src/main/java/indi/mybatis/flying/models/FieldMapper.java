@@ -111,7 +111,7 @@ public class FieldMapper implements Mapperable {
 
 	private String columnFieldName;
 
-	private OpLockType opLockType = OpLockType.Null;
+	private OpLockType opLockType = OpLockType.NULL;
 
 	private String[] ignoreTag = {};
 
