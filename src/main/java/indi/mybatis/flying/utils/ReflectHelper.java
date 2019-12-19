@@ -25,6 +25,11 @@ import org.apache.ibatis.logging.LogFactory;
  * @since JDK 1.8
  */
 public class ReflectHelper {
+
+	private ReflectHelper() {
+
+	}
+
 	private static final Log logger = LogFactory.getLog(ReflectHelper.class);
 
 	public static Field getFieldByFieldName(Object obj, String fieldName) {
@@ -39,8 +44,7 @@ public class ReflectHelper {
 		return null;
 	}
 
-	public static Object getValueByFieldName(Object obj, String fieldName)
-			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+	public static Object getValueByFieldName(Object obj, String fieldName) throws IllegalAccessException {
 		Field field = getFieldByFieldName(obj, fieldName);
 		Object value = null;
 		if (field != null) {
@@ -56,7 +60,7 @@ public class ReflectHelper {
 	}
 
 	public static void setValueByFieldName(Object obj, String fieldName, Object value)
-			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+			throws NoSuchFieldException, IllegalAccessException {
 		Field field = obj.getClass().getDeclaredField(fieldName);
 		if (field.isAccessible()) {
 			field.set(obj, value);
@@ -73,8 +77,8 @@ public class ReflectHelper {
 	 * @param packageName String
 	 * @return SetOfClasses
 	 */
-	public static Set<Class<?>> getClasses(String packageName) {
-
+	public static Set<Class<?>> getClasses(String packageName2) {
+		String packageName = packageName2;
 		/* The collection of the first class. */
 		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 		/* Cyclic iteration */
@@ -105,45 +109,37 @@ public class ReflectHelper {
 					break;
 				case "jar":
 					JarFile jar;
-					try {
-						jar = ((JarURLConnection) url.openConnection()).getJarFile();
-						/* The jar package gets an enumeration class. */
-						Enumeration<JarEntry> entries = jar.entries();
-						while (entries.hasMoreElements()) {
-							/*
-							 * Getting an entity in the jar can be a directory and other files in a jar
-							 * package such as meta-inf.
-							 */
-							JarEntry entry = entries.nextElement();
-							String name = entry.getName();
-							if (name.charAt(0) == '/') {
-								name = name.substring(1);
+					jar = ((JarURLConnection) url.openConnection()).getJarFile();
+					/* The jar package gets an enumeration class. */
+					Enumeration<JarEntry> entries = jar.entries();
+					while (entries.hasMoreElements()) {
+						/*
+						 * Getting an entity in the jar can be a directory and other files in a jar
+						 * package such as meta-inf.
+						 */
+						JarEntry entry = entries.nextElement();
+						String name = entry.getName();
+						if (name.charAt(0) == '/') {
+							name = name.substring(1);
+						}
+						if (name.startsWith(packageDirName)) {
+							int idx = name.lastIndexOf('/');
+							if (idx != -1) {
+								packageName = name.substring(0, idx).replace('/', '.');
 							}
-							if (name.startsWith(packageDirName)) {
-								int idx = name.lastIndexOf('/');
-								if (idx != -1) {
-									packageName = name.substring(0, idx).replace('/', '.');
-								}
-								/* If it can iterate and is a package. */
-								if ((idx != -1) || recursive) {
-									if (name.endsWith(".class") && !entry.isDirectory()) {
-										/* Gets the real class name. */
-										String className = name.substring(packageName.length() + 1, name.length() - 6);
-										try {
-											classes.add(Class.forName(packageName + '.' + className));
-										} catch (ClassNotFoundException e) {
-											logger.error(new StringBuffer(
-													"Add user mapper class error, find no such.class file: ").append(e)
-															.toString());
-										}
-									}
+							/* If it can iterate and is a package. */
+							if (((idx != -1) || recursive) && name.endsWith(".class") && !entry.isDirectory()) {
+								/* Gets the real class name. */
+								String className = name.substring(packageName.length() + 1, name.length() - 6);
+								try {
+									classes.add(Class.forName(packageName + '.' + className));
+								} catch (ClassNotFoundException e) {
+									logger.error(
+											new StringBuffer("Add user mapper class error, find no such.class file: ")
+													.append(e).toString());
 								}
 							}
 						}
-					} catch (IOException e) {
-						logger.error(new StringBuffer(
-								"Error accessing file from jar package when scanning user mapper class: ").append(e)
-										.toString());
 					}
 					break;
 				default:
