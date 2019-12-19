@@ -26,12 +26,13 @@ import org.apache.ibatis.type.TypeHandler;
 public class ConditionHeadLikeHandler extends BaseTypeHandler<String> implements TypeHandler<String> {
 
 	@Override
-	public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
+	public void setNonNullParameter(PreparedStatement ps, int i, String parameter2, JdbcType jdbcType)
 			throws SQLException {
-		if (parameter.indexOf("%") > -1) {
+		String parameter = parameter2;
+		if (parameter.indexOf('%') > -1) {
 			parameter = parameter.replaceAll("%", "\\\\%");
 		}
-		if (parameter.indexOf("_") > -1) {
+		if (parameter.indexOf('_') > -1) {
 			parameter = parameter.replaceAll("_", "\\\\_");
 		}
 		ps.setString(i, parameter + "%");

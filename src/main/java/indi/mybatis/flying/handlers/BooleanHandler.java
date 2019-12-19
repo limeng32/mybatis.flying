@@ -24,29 +24,17 @@ public class BooleanHandler extends BaseTypeHandler<Boolean> implements TypeHand
 
 	@Override
 	public Boolean getNullableResult(ResultSet arg0, String arg1) throws SQLException {
-		if (arg0.getInt(arg1) > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return arg0.getInt(arg1) > 0;
 	}
 
 	@Override
 	public Boolean getNullableResult(ResultSet arg0, int arg1) throws SQLException {
-		if (arg0.getInt(arg1) > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return arg0.getInt(arg1) > 0;
 	}
 
 	@Override
 	public Boolean getNullableResult(CallableStatement arg0, int arg1) throws SQLException {
-		if (arg0.getInt(arg1) > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return arg0.getInt(arg1) > 0;
 	}
 
 	@Override
