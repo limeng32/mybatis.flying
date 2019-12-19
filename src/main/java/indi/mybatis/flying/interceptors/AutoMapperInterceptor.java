@@ -65,7 +65,7 @@ import indi.mybatis.flying.utils.ReflectHelper;
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
-	private String dialect = "";
+	private String dialectValue = "";
 	private LogLevel logLevel;
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
@@ -86,7 +86,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String DELEGATE_CONFIGURATION = "delegate.configuration";
 	private static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
 
-	private static final String _LIMIT_1 = " limit 1";
+	private static final String LIMIT_1 = " limit 1";
 
 	private static final String MYSQL = "mysql";
 
@@ -243,8 +243,8 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	@Override
 	public void setProperties(Properties properties) {
-		dialect = properties.getProperty(DIALECT);
-		if (dialect == null || "".equals(dialect)) {
+		dialectValue = properties.getProperty(DIALECT);
+		if (dialectValue == null || "".equals(dialectValue)) {
 			logger.error(AutoMapperExceptionEnum.DIALECT_PROPERTY_CANNOT_FOUND.description());
 		}
 		String temp = properties.getProperty(LOG_LEVEL);
@@ -306,17 +306,17 @@ public class AutoMapperInterceptor implements Interceptor {
 	}
 
 	private String generatePageSql(String sql, Conditionable condition) {
-		if ((condition != null) && (dialect != null) && (!dialect.equals(""))) {
+		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
 			StringBuffer pageSql = new StringBuffer();
-			switch (dialect) {
+			switch (dialectValue) {
 			case MYSQL:
 				if (condition.getSorter() == null) {
 					pageSql.append(sql);
 				} else {
-					if (sql.endsWith(_LIMIT_1)) {
+					if (sql.endsWith(LIMIT_1)) {
 						pageSql.append(sql.substring(0, sql.length() - 8));
 						pageSql.append(condition.getSorter().toSql());
-						pageSql.append(_LIMIT_1);
+						pageSql.append(LIMIT_1);
 					} else {
 						pageSql.append(sql);
 						pageSql.append(condition.getSorter().toSql());
