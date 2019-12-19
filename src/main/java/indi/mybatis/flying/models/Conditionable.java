@@ -18,10 +18,8 @@ public interface Conditionable {
 
 	public void setSorter(Sortable sorter);
 
-	public String dot = ".";
-
 	public enum Sequence {
-		asc, desc
+		ASC, DESC
 	}
 
 }

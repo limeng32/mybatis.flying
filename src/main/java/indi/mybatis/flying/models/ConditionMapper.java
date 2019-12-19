@@ -1,6 +1,7 @@
 package indi.mybatis.flying.models;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.ibatis.type.JdbcType;
 
@@ -74,7 +75,7 @@ public class ConditionMapper implements Mapperable {
 	/**
 	 * The ignoreTag set for this variable,
 	 */
-	private HashSet<String> ignoreTagSet;
+	private Set<String> ignoreTagSet;
 
 	/**
 	 * This variable specifies the access path for the custom typeHandler, the
@@ -169,14 +170,14 @@ public class ConditionMapper implements Mapperable {
 	}
 
 	@Override
-	public HashSet<String> getIgnoreTagSet() {
+	public Set<String> getIgnoreTagSet() {
 		if (ignoreTagSet == null) {
 			ignoreTagSet = new HashSet<>();
 		}
 		return ignoreTagSet;
 	}
 
-	public void setIgnoreTagSet(HashSet<String> ignoreTagSet) {
+	public void setIgnoreTagSet(Set<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 

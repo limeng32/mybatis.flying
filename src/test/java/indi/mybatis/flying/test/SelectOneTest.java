@@ -57,7 +57,7 @@ public class SelectOneTest {
 		a2.setName("bob");
 		a2.setEmail("bob@live.cn");
 		accountService.insert(a2);
-		
+
 		accountService.update(a2);
 		accountService.updatePersistent(a2);
 		Account_ account_ = accountService.select(a2.getId());
@@ -86,7 +86,7 @@ public class SelectOneTest {
 
 		Account_Condition ac = new Account_Condition();
 		ac.setLimiter(new PageParam(1, 2));
-		ac.setSorter(new SortParam(new Order("id", Sequence.asc)));
+		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
 		ac.setName("ann");
 		Account_ account = accountService.selectOne(ac);
 		Assert.assertEquals("ann@live.cn", account.getEmail());

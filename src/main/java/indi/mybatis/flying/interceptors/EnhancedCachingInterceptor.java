@@ -146,8 +146,6 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			/* Handle paging */
 			ResultHandler resultHandler = (ResultHandler) args[3];
 			Executor executorProxy = (Executor) invocation.getTarget();
-			MetaObject metaParameter = MetaObject.forObject(parameter, DEFAULT_OBJECT_FACTORY,
-					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 			MetaObject metaExecutor = MetaObject.forObject(executorProxy, DEFAULT_OBJECT_FACTORY,
 					DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
 			/*
@@ -252,7 +250,7 @@ public class EnhancedCachingInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 			cacheKey.update(boundSql.getSql());
 
-			if (parameterMappings.size() > 0 && parameter != null) {
+			if (!parameterMappings.isEmpty() && parameter != null) {
 				TypeHandlerRegistry typeHandlerRegistry = mappedStatement.getConfiguration().getTypeHandlerRegistry();
 				if (typeHandlerRegistry.hasTypeHandler(parameter.getClass())) {
 					cacheKey.update(parameter);

@@ -946,7 +946,7 @@ public class CacheTest {
 
 		Role_Condition rc = new Role_Condition();
 		rc.setLimiter(new PageParam(1, 2));
-		rc.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		rc.setSorter(new SortParam(new Order("name", Conditionable.Sequence.ASC)));
 		Collection<Role_> c1 = roleService.selectAll(rc);
 		Assert.assertEquals(2, c1.size());
 		Role_[] roles = c1.toArray(new Role_[c1.size()]);
@@ -959,7 +959,7 @@ public class CacheTest {
 
 		Role_Condition rc2 = new Role_Condition();
 		rc2.setLimiter(new PageParam(1, 2));
-		rc2.setSorter(new SortParam(new Order("name", Conditionable.Sequence.asc)));
+		rc2.setSorter(new SortParam(new Order("name", Conditionable.Sequence.ASC)));
 		Collection<Role_> c2 = roleService.selectAll(rc2);
 		Assert.assertEquals(2, c2.size());
 		Role_[] roles2 = c2.toArray(new Role_[c2.size()]);

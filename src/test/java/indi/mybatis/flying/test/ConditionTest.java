@@ -232,7 +232,7 @@ public class ConditionTest {
 		Account_Condition ac = new Account_Condition();
 		ac.setRole(rc1);
 		ac.setRoleDeputy(rc2);
-		ac.setSorter(new SortParam(new Order("name", Sequence.asc)));
+		ac.setSorter(new SortParam(new Order("name", Sequence.ASC)));
 		Collection<Account_> accountC = accountService.selectAll(ac);
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertEquals(3, accounts.length);

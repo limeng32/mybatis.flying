@@ -13,13 +13,15 @@ import indi.mybatis.flying.models.Queryable;
  */
 public class Order {
 
+	public static final String DOT = ".";
+
 	public Order(String field, Conditionable.Sequence sequence) {
 		this.field = field;
 		this.sequence = sequence.toString();
 	}
 
 	public Order(Queryable queryable, Conditionable.Sequence sequence) {
-		this.field = queryable.getTableName() + Conditionable.dot + queryable.value();
+		this.field = queryable.getTableName() + DOT + queryable.value();
 		this.sequence = sequence.toString();
 	}
 

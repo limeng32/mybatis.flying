@@ -239,17 +239,17 @@ public class AccountTest {
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
 	public void testSorter() {
 		Account_Condition ac = new Account_Condition();
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.desc)));
+		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC)));
 		Collection<Account_> c = accountService.selectAll(ac);
 		Account_[] accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals("ann", accounts[3].getName());
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.desc),
-				new Order(Account_Condition.field_password, Conditionable.Sequence.desc)));
+		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC),
+				new Order(Account_Condition.field_password, Conditionable.Sequence.DESC)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals(new Long(4), accounts[0].getId());
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.desc),
-				new Order(Account_Condition.field_name, Conditionable.Sequence.asc)));
+		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC),
+				new Order(Account_Condition.field_name, Conditionable.Sequence.ASC)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals("ann", accounts[3].getName());
@@ -268,7 +268,7 @@ public class AccountTest {
 		Assert.assertEquals(1, accounts[0].getId().intValue());
 		Assert.assertEquals(2, accounts[1].getId().intValue());
 		Assert.assertEquals(2, ac.getLimiter().getMaxPageNum());
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_id, Conditionable.Sequence.desc)));
+		ac.setSorter(new SortParam(new Order(Account_Condition.field_id, Conditionable.Sequence.DESC)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals(2, accounts.length);
