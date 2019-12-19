@@ -16,7 +16,7 @@ public class QueryMapper {
 
 	private Map<String, ConditionMapper> conditionMapperCache;
 
-	private Map<String, OrMapper> OrMapperCache;
+	private Map<String, OrMapper> orMapperCache;
 
 	public Map<String, ConditionMapper> getConditionMapperCache() {
 		return conditionMapperCache;
@@ -27,11 +27,11 @@ public class QueryMapper {
 	}
 
 	public Map<String, OrMapper> getOrMapperCache() {
-		return OrMapperCache;
+		return orMapperCache;
 	}
 
 	public void setOrMapperCache(Map<String, OrMapper> orMapperCache) {
-		OrMapperCache = orMapperCache;
+		this.orMapperCache = orMapperCache;
 	}
 
 }

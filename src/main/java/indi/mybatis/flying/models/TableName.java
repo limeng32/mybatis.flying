@@ -1,5 +1,6 @@
 package indi.mybatis.flying.models;
 
+import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
@@ -12,7 +13,7 @@ import java.util.WeakHashMap;
  */
 public class TableName {
 
-	public TableName(TableMapper tableMapper, int index, WeakHashMap<Class<?>, TableName> map) {
+	public TableName(TableMapper tableMapper, int index, Map<Class<?>, TableName> map) {
 		this.tableMapper = tableMapper;
 		this.index = index;
 		if (map == null) {
@@ -26,13 +27,13 @@ public class TableName {
 
 	private int index = 0;
 
-	private WeakHashMap<Class<?>, TableName> map;
+	private Map<Class<?>, TableName> map;
 
-	public WeakHashMap<Class<?>, TableName> getMap() {
+	public Map<Class<?>, TableName> getMap() {
 		return map;
 	}
 
-	public void setMap(WeakHashMap<Class<?>, TableName> map) {
+	public void setMap(Map<Class<?>, TableName> map) {
 		this.map = map;
 	}
 
@@ -52,12 +53,12 @@ public class TableName {
 		this.index = index;
 	}
 
-	public StringBuffer sqlSelect() {
-		return new StringBuffer(tableMapper.getTableName()).append(" as ").append(tableMapper.getTableName())
+	public StringBuilder sqlSelect() {
+		return new StringBuilder(tableMapper.getTableName()).append(" as ").append(tableMapper.getTableName())
 				.append("_").append(index);
 	}
 
-	public StringBuffer sqlWhere() {
-		return new StringBuffer(tableMapper.getTableName()).append("_").append(index).append(".");
+	public StringBuilder sqlWhere() {
+		return new StringBuilder(tableMapper.getTableName()).append("_").append(index).append(".");
 	}
 }

@@ -20,9 +20,9 @@ public class PageParam implements Limitable, Serializable {
 
 	}
 
-	public PageParam(int _pageNo, int _pageSize) {
-		this.pageNo = _pageNo;
-		this.pageSize = _pageSize;
+	public PageParam(int pageNo, int pageSize) {
+		this.pageNo = pageNo;
+		this.pageSize = pageSize;
 	}
 
 	private int pageNo;
@@ -80,6 +80,10 @@ public class PageParam implements Limitable, Serializable {
 	public int getMaxPageNum() {
 		maxPageNum = ((totalCount - 1) / pageSize) + 1;
 		return maxPageNum;
+	}
+
+	public void setMaxPageNum(int maxPageNum) {
+		this.maxPageNum = maxPageNum;
 	}
 
 }

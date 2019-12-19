@@ -16,7 +16,11 @@ import org.apache.ibatis.type.JdbcType;
  */
 public class TypeJdbcTypeConverter {
 
-	protected final static Map<Class<?>, JdbcType> map = new HashMap<>(8);
+	private TypeJdbcTypeConverter() {
+
+	}
+
+	protected static final Map<Class<?>, JdbcType> map = new HashMap<>(8);
 
 	static {
 		map.put(String.class, JdbcType.VARCHAR);
