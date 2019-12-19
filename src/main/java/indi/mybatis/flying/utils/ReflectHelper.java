@@ -3,6 +3,7 @@ package indi.mybatis.flying.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -89,65 +90,73 @@ public class ReflectHelper {
 		 * Define a collection of enumerations and loop through the files in this
 		 * directory.
 		 */
-		Enumeration<URL> dirs;
+		Enumeration<URL> dirs = null;
 		try {
 			dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
-			/* Loop iteration */
-			while (dirs.hasMoreElements()) {
-				/* Gets the next element. */
-				URL url = dirs.nextElement();
+		} catch (IOException e1) {
+			logger.error(e1.toString());
+		}
+		/* Loop iteration */
+		while (dirs.hasMoreElements()) {
+			/* Gets the next element. */
+			URL url = dirs.nextElement();
 
-				switch (url.getProtocol()) {
-				/* If it is stored on the server as a file. */
-				case "file":
-					/* Gets the physical path of the package. */
-					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-					/*
-					 * Scan the entire package of files in a file and add them to the collection.
-					 */
-					findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
-					break;
-				case "jar":
-					JarFile jar;
+			switch (url.getProtocol()) {
+			/* If it is stored on the server as a file. */
+			case "file":
+				/* Gets the physical path of the package. */
+				String filePath = null;
+				try {
+					filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+				} catch (UnsupportedEncodingException e1) {
+					logger.error(e1.toString());
+				}
+				/*
+				 * Scan the entire package of files in a file and add them to the collection.
+				 */
+				findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
+				break;
+			case "jar":
+				JarFile jar = null;
+				try {
 					jar = ((JarURLConnection) url.openConnection()).getJarFile();
-					/* The jar package gets an enumeration class. */
-					Enumeration<JarEntry> entries = jar.entries();
-					while (entries.hasMoreElements()) {
-						/*
-						 * Getting an entity in the jar can be a directory and other files in a jar
-						 * package such as meta-inf.
-						 */
-						JarEntry entry = entries.nextElement();
-						String name = entry.getName();
-						if (name.charAt(0) == '/') {
-							name = name.substring(1);
+				} catch (IOException e1) {
+					logger.error(e1.toString());
+				}
+				/* The jar package gets an enumeration class. */
+				Enumeration<JarEntry> entries = jar.entries();
+				while (entries.hasMoreElements()) {
+					/*
+					 * Getting an entity in the jar can be a directory and other files in a jar
+					 * package such as meta-inf.
+					 */
+					JarEntry entry = entries.nextElement();
+					String name = entry.getName();
+					if (name.charAt(0) == '/') {
+						name = name.substring(1);
+					}
+					if (name.startsWith(packageDirName)) {
+						int idx = name.lastIndexOf('/');
+						if (idx != -1) {
+							packageName = name.substring(0, idx).replace('/', '.');
 						}
-						if (name.startsWith(packageDirName)) {
-							int idx = name.lastIndexOf('/');
-							if (idx != -1) {
-								packageName = name.substring(0, idx).replace('/', '.');
-							}
-							/* If it can iterate and is a package. */
-							if (((idx != -1) || recursive) && name.endsWith(".class") && !entry.isDirectory()) {
-								/* Gets the real class name. */
-								String className = name.substring(packageName.length() + 1, name.length() - 6);
-								try {
-									classes.add(Class.forName(packageName + '.' + className));
-								} catch (ClassNotFoundException e) {
-									logger.error(
-											new StringBuffer("Add user mapper class error, find no such.class file: ")
-													.append(e).toString());
-								}
+						/* If it can iterate and is a package. */
+						if (((idx != -1) || recursive) && name.endsWith(".class") && !entry.isDirectory()) {
+							/* Gets the real class name. */
+							String className = name.substring(packageName.length() + 1, name.length() - 6);
+							try {
+								classes.add(Class.forName(packageName + '.' + className));
+							} catch (ClassNotFoundException e) {
+								logger.error(new StringBuffer("Add user mapper class error, find no such.class file: ")
+										.append(e).toString());
 							}
 						}
 					}
-					break;
-				default:
-					break;
 				}
+				break;
+			default:
+				break;
 			}
-		} catch (IOException e) {
-			logger.error(new StringBuffer().append(e).toString());
 		}
 
 		return classes;
