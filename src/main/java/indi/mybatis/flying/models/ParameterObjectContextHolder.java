@@ -10,8 +10,11 @@ package indi.mybatis.flying.models;
  */
 public class ParameterObjectContextHolder {
 
-	private static final ThreadLocal<Object> contextHolder = new ThreadLocal<Object>() {
+	private ParameterObjectContextHolder() {
 
+	}
+
+	private static final ThreadLocal<Object> contextHolder = new ThreadLocal<Object>() {
 		@Override
 		protected Object initialValue() {
 			return null;

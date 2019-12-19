@@ -3,6 +3,7 @@ package indi.mybatis.flying.models;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -98,7 +99,7 @@ public class FieldMapper implements Mapperable {
 	/**
 	 * IgnoreTag's set for this variable, the default is empty.
 	 */
-	private HashSet<String> ignoreTagSet;
+	private Set<String> ignoreTagSet;
 
 	/**
 	 * The access path of the custom typeHandler for this variable, the default is
@@ -210,10 +211,10 @@ public class FieldMapper implements Mapperable {
 
 	public static JdbcType getColumnType(Column column, Field field) {
 		if (!"".equals(column.columnDefinition().trim())) {
-			String columnDefinition_ = column.columnDefinition().indexOf(" ") > -1
+			String columnDefinition = column.columnDefinition().indexOf(" ") > -1
 					? column.columnDefinition().substring(0, column.columnDefinition().indexOf(" "))
 					: column.columnDefinition();
-			JdbcType jdbcType = JdbcTypeEnum.forName(columnDefinition_);
+			JdbcType jdbcType = JdbcTypeEnum.forName(columnDefinition);
 			if (jdbcType != null) {
 				return jdbcType;
 			}
@@ -305,14 +306,14 @@ public class FieldMapper implements Mapperable {
 	}
 
 	@Override
-	public HashSet<String> getIgnoreTagSet() {
+	public Set<String> getIgnoreTagSet() {
 		if (ignoreTagSet == null) {
 			ignoreTagSet = new HashSet<>();
 		}
 		return ignoreTagSet;
 	}
 
-	public void setIgnoreTagSet(HashSet<String> ignoreTagSet) {
+	public void setIgnoreTagSet(Set<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
 	}
 

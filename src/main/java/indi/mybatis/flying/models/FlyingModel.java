@@ -26,7 +26,7 @@ public class FlyingModel {
 	private String dataSourceId;
 	private String connectionCatalog;
 	private String prefix;
-	private transient String unstablePrefix;
+	private String unstablePrefix;
 	private Map<String, FlyingModel> properties = new HashMap<>(2);
 
 	public String getId() {
