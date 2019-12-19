@@ -170,13 +170,16 @@ public class AutoMapperInterceptor implements Interceptor {
 							boundSql.getParameterMappings(), parameterObject);
 					setParameters(countStmt, mappedStatement, countBS, parameterObject);
 					ResultSet rs = countStmt.executeQuery();
-					int count = 0;
-					if (rs.next()) {
-						count = rs.getInt(1);
+					try {
+						int count = 0;
+						if (rs.next()) {
+							count = rs.getInt(1);
+						}
+						condition.getLimiter().setTotalCount(count);
+					} finally {
+						rs.close();
+						countStmt.close();
 					}
-					rs.close();
-					countStmt.close();
-					condition.getLimiter().setTotalCount(count);
 				}
 				String pageSql = generatePageSql(sql, condition);
 				ReflectHelper.setValueByFieldName(boundSql, SQL, pageSql);
@@ -307,9 +310,8 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private String generatePageSql(String sql, Conditionable condition) {
 		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
-			StringBuffer pageSql = new StringBuffer();
-			switch (dialectValue) {
-			case MYSQL:
+			StringBuilder pageSql = new StringBuilder();
+			if (MYSQL.equals(dialectValue)) {
 				if (condition.getSorter() == null) {
 					pageSql.append(sql);
 				} else {
@@ -326,9 +328,6 @@ public class AutoMapperInterceptor implements Interceptor {
 					pageSql.append(" limit " + condition.getLimiter().getLimitFrom() + ","
 							+ condition.getLimiter().getPageSize());
 				}
-				break;
-			default:
-				break;
 			}
 			return pageSql.toString();
 		} else {
