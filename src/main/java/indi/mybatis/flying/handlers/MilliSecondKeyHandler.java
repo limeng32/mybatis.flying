@@ -16,6 +16,11 @@ public class MilliSecondKeyHandler implements KeyHandler {
 	}
 
 	private static class InnerInstance {
+
+		private InnerInstance() {
+
+		}
+
 		private static final MilliSecondKeyHandler instance = new MilliSecondKeyHandler();
 	}
 
@@ -25,7 +30,7 @@ public class MilliSecondKeyHandler implements KeyHandler {
 
 	@Override
 	public String getKey() {
-		return new Long(System.currentTimeMillis()).toString();
+		return Long.toString(System.currentTimeMillis());
 	}
 
 }

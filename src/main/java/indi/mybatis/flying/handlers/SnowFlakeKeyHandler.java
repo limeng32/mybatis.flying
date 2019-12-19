@@ -17,6 +17,11 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 	}
 
 	private static class InnerInstance {
+
+		private InnerInstance() {
+
+		}
+
 		private static final SnowFlakeKeyHandler instance = new SnowFlakeKeyHandler(0, 0);
 	}
 
