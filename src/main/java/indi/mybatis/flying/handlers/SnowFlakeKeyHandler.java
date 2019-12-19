@@ -29,40 +29,40 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 		return InnerInstance.instance;
 	}
 
-	private final long twepoch = 1420041600000L;
+	private static final long twepoch = 1420041600000L;
 
 	/* The number of digits in the machine id. */
-	private final long workerIdBits = 5L;
+	private static final long workerIdBits = 5L;
 
 	/* The number of digits in the data id. */
-	private final long datacenterIdBits = 5L;
+	private static final long datacenterIdBits = 5L;
 
 	/*
 	 * The maximum machine id supported, the result is 31 (this shift algorithm can
 	 * quickly calculate the maximum decimal number that can be represented by
 	 * several binary digits)
 	 */
-	private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+	private static final long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
 	/* The maximum supported data id id, the result is 31. */
-	private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+	private static final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
 	/* The number of digits in the id. */
-	private final long sequenceBits = 12L;
+	private static final long sequenceBits = 12L;
 
 	/* The machine ID moves to the left 12 places. */
-	private final long workerIdShift = sequenceBits;
+	private static final long workerIdShift = sequenceBits;
 
 	/* The data id id is moved to the left 17 bits (12+5) */
-	private final long datacenterIdShift = sequenceBits + workerIdBits;
+	private static final long datacenterIdShift = sequenceBits + workerIdBits;
 
 	/* Time truncation to the left 22 bits (5+5+12) */
-	private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+	private static final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
 
 	/*
 	 * The mask of the generated sequence, which is 4095 (0b111111111111=0xfff=4095)
 	 */
-	private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+	private static final long sequenceMask = -1L ^ (-1L << sequenceBits);
 
 	/* Working machine ID(0~31) */
 	private long workerId;
@@ -161,7 +161,7 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 
 	@Override
 	public String getKey() {
-		return new Long(SnowFlakeKeyHandler.getInstance().nextId()).toString();
+		return Long.toString(SnowFlakeKeyHandler.getInstance().nextId());
 	}
 
 }
