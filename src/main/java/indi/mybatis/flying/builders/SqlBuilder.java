@@ -379,7 +379,7 @@ public class SqlBuilder {
 			c = c.getSuperclass();
 		}
 		if (c.equals(Object.class)) {
-			throw new BuildSqlException(new StringBuilder(BuildSqlExceptionEnum.noTableMapperAnnotation.toString())
+			throw new BuildSqlException(new StringBuilder(BuildSqlExceptionEnum.NO_TABLE_MAPPER_ANNOTATION.toString())
 					.append(clazz.getName()).toString());
 		}
 		return c;
@@ -433,7 +433,7 @@ public class SqlBuilder {
 			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
 			break;
 		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
+			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 		if (isOr) {
 			whereSql.append(CLOSEBRACE_OR_BLANK);
@@ -445,7 +445,7 @@ public class SqlBuilder {
 	private static void dealConditionInOrNot(Object value, StringBuilder whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		if (isOr) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+			throw new BuildSqlException(BuildSqlExceptionEnum.THIS_CONDITION_NOT_SUPPORT_OR);
 		}
 		handleWhereSql(whereSql, conditionMapper, tableName);
 		switch (type) {
@@ -455,7 +455,7 @@ public class SqlBuilder {
 			whereSql.append(BLANK_NOT);
 			break;
 		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
+			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 		whereSql.append(BLANK_IN_OPENPAREN);
 		dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix);
@@ -465,7 +465,7 @@ public class SqlBuilder {
 	private static void dealConditionMultiLike(Object value, StringBuilder whereSql, ConditionMapper conditionMapper,
 			ConditionType type, TableName tableName, String fieldNamePrefix, boolean isOr) {
 		if (isOr) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.ThisConditionNotSupportOr);
+			throw new BuildSqlException(BuildSqlExceptionEnum.THIS_CONDITION_NOT_SUPPORT_OR);
 		}
 		List<String> multiConditionList = (List<String>) value;
 		if (!multiConditionList.isEmpty()) {
@@ -504,7 +504,7 @@ public class SqlBuilder {
 						tempWhereSql.append(CLOSEBRACE_OR_BLANK);
 						break;
 					default:
-						throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
+						throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 					}
 				}
 			}
@@ -574,7 +574,7 @@ public class SqlBuilder {
 			whereSql.append(BLANK_LESS_GREATER_BLANK);
 			break;
 		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.ambiguousCondition);
+			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 		whereSql.append(POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -692,7 +692,7 @@ public class SqlBuilder {
 			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled);
 		}
 		if (allFieldNull) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
@@ -723,7 +723,7 @@ public class SqlBuilder {
 	public static String buildUpdateSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
@@ -762,7 +762,7 @@ public class SqlBuilder {
 			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
 		}
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 
@@ -781,7 +781,7 @@ public class SqlBuilder {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 				if (value == null) {
 					throw new BuildSqlException(
-							new StringBuilder(BuildSqlExceptionEnum.updateUniqueKeyIsNull.toString())
+							new StringBuilder(BuildSqlExceptionEnum.UPDATE_UNIQUE_KEY_IS_NULL.toString())
 									.append(fieldMapper.getDbFieldName()).toString());
 				} else {
 					whereSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
@@ -867,7 +867,7 @@ public class SqlBuilder {
 			break;
 		default:
 			throw new BuildSqlException(
-					new StringBuilder(BuildSqlExceptionEnum.unkownConditionForBatchProcess.toString())
+					new StringBuilder(BuildSqlExceptionEnum.UNKOWN_CONDITION_FOR_BATCH_PROCESS.toString())
 							.append(conditionMapper.getDbFieldName()).toString());
 		}
 	}
@@ -917,7 +917,7 @@ public class SqlBuilder {
 	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 		String ignoreTag = flyingModel.getIgnoreTag();
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
@@ -956,7 +956,7 @@ public class SqlBuilder {
 			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullField);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
@@ -965,7 +965,7 @@ public class SqlBuilder {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
 				throw new BuildSqlException(
-						new StringBuilder(BuildSqlExceptionEnum.updatePersistentUniqueKeyIsNull.toString())
+						new StringBuilder(BuildSqlExceptionEnum.UPDATE_PERSISTENT_UNIQUE_KEY_IS_NULL.toString())
 								.append(fieldMapper.getDbFieldName()).toString());
 			}
 			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA_JDBCTYPE_EQUAL)
@@ -992,7 +992,7 @@ public class SqlBuilder {
 	public static String buildDeleteSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
@@ -1017,7 +1017,7 @@ public class SqlBuilder {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 				if (value == null) {
 					throw new BuildSqlException(
-							new StringBuilder(BuildSqlExceptionEnum.deleteUniqueKeyIsNull.toString())
+							new StringBuilder(BuildSqlExceptionEnum.DELETE_UNIQUE_KEY_IS_NULL.toString())
 									.append(fieldMapper.getDbFieldName()).toString());
 				}
 				sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
@@ -1075,7 +1075,7 @@ public class SqlBuilder {
 	public static String buildSelectAllSql(Object object, FlyingModel flyingModel) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 		StringBuilder selectSql = new StringBuilder(SELECT_BLANK);
 		StringBuilder fromSql = new StringBuilder(FROM);
@@ -1105,7 +1105,7 @@ public class SqlBuilder {
 	public static String buildSelectOneSql(Object object, FlyingModel flyingModel) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 		if (object instanceof Conditionable) {
 			((Conditionable) object).setLimiter(null);
@@ -1141,7 +1141,7 @@ public class SqlBuilder {
 	public static String buildCountSql(Object object)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.nullObject);
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));

@@ -135,7 +135,8 @@ public class FieldMapper implements Mapperable {
 
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.noFieldMapperAnnotationOrColumnAnnotation.toString());
+			throw new BuildSqlException(
+					BuildSqlExceptionEnum.NO_FIELD_MAPPER_ANNOTATION_OR_COLUMN_ANNOTATION.toString());
 		}
 		setFieldName(field.getName());
 		setFieldType(field.getType());
