@@ -49,8 +49,10 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 	}
 
 	public static EnhancedCachingManagerImpl getInstance() {
-		return enhancedCacheManager == null ? (enhancedCacheManager = new EnhancedCachingManagerImpl())
-				: enhancedCacheManager;
+		if (enhancedCacheManager == null) {
+			enhancedCacheManager = new EnhancedCachingManagerImpl();
+		}
+		return enhancedCacheManager;
 	}
 
 	@Override
@@ -84,8 +86,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 	@Override
 	public void initialize(Properties properties) {
 		initialized = true;
-		String cacheEnabled = properties.getProperty("cacheEnabled", "true");
-		if ("true".equals(cacheEnabled)) {
+		if ("true".equals(properties.getProperty("cacheEnabled", "true"))) {
 			this.cacheEnabled = true;
 		}
 		String annotationPackages = properties.getProperty("annotationPackage");
@@ -99,12 +100,12 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 		}
 
 		dealPackageInit(classes);
-		dealObserverClasses(observerClasses);
+		dealObserverClasses();
 		dealPackageInit2(classes);
 	}
 
 	/* expand the value in observerClasses */
-	private void dealObserverClasses(Map<Class<?>, Set<Class<?>>> m) {
+	private void dealObserverClasses() {
 		for (Entry<Class<?>, Set<Class<?>>> e : observerClasses.entrySet()) {
 			Set<Class<?>> set = new HashSet<Class<?>>();
 			observerClassesFission(e.getKey(), set);
@@ -114,12 +115,12 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private void observerClassesFission(Class<?> clazz, Set<Class<?>> set) {
 		if (observerClasses.containsKey(clazz)) {
-			Set<Class<?>> _set = observerClasses.get(clazz);
-			for (Class<?> e : _set) {
-				Class<?> _e = getKeyFormValue(e);
+			Set<Class<?>> set2 = observerClasses.get(clazz);
+			for (Class<?> e : set2) {
+				Class<?> e2 = getKeyFormValue(e);
 				set.add(e);
-				if (observerClasses.get(_e) != null && observerClasses.get(_e).size() > 0) {
-					observerClassesFission(_e, set);
+				if (observerClasses.get(e2) != null && !observerClasses.get(e2).isEmpty()) {
+					observerClassesFission(e2, set);
 				}
 			}
 		}
@@ -195,8 +196,9 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 	}
 
 	private void observerMethodsFission(ConcurrentSkipListMap<Class<?>, Set<Method>> observerMethodMap,
-			Entry<Class<?>, Set<Method>> currentE, ConcurrentSkipListMap<Class<?>, Set<Method>> observerMethodMapNew) {
-		if (observerMethodMap.size() != 0) {
+			Entry<Class<?>, Set<Method>> currentE2, ConcurrentSkipListMap<Class<?>, Set<Method>> observerMethodMapNew) {
+		Entry<Class<?>, Set<Method>> currentE = currentE2;
+		if (!observerMethodMap.isEmpty()) {
 			if (currentE == null) {
 				currentE = observerMethodMap.firstEntry();
 			}
@@ -244,16 +246,16 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private void buildObservers(Map<Class<?>, Set<Method>> triggerMethodMap,
 			Map<Class<?>, Set<Method>> observerMethodMap) {
-		for (Class<?> clazz : triggerMethodMap.keySet()) {
-			Set<Method> observerMethods = observerMethodMap.get(clazz);
-			if (observerMethods != null) {
-				for (Method triggerMethod : triggerMethodMap.get(clazz)) {
+		for (Map.Entry<Class<?>, Set<Method>> e : triggerMethodMap.entrySet()) {
+			Set<Method> observerMethods2 = observerMethodMap.get(e.getKey());
+			if (observerMethods2 != null) {
+				for (Method triggerMethod : triggerMethodMap.get(e.getKey())) {
 					String triggerFullName = triggerMethod.getDeclaringClass().getName() + "."
 							+ triggerMethod.getName();
 					if (!observers.containsKey(triggerFullName)) {
 						observers.put(triggerFullName, new HashSet<String>());
 					}
-					for (Method observerMethod : observerMethods) {
+					for (Method observerMethod : observerMethods2) {
 						String observerFullName = observerMethod.getDeclaringClass().getName() + "."
 								+ observerMethod.getName();
 						observers.get(triggerFullName).add(observerFullName);
