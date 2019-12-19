@@ -16,17 +16,17 @@ public class Role_Condition extends Role_ implements Conditionable {
 
 	private Sortable sorter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.Account_.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL, subTarget = indi.mybatis.flying.pojo.Account_.class) })
 	private Object[] nameEqualsOrAccountNameEquals;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.Account_.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL, subTarget = indi.mybatis.flying.pojo.Account_.class) })
 	private Object[] accountNameEquals;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL) })
 	private Object[] nameEquals;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NotEqual) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NOT_EQUAL) })
 	private Object[] nameNotEquals;
 
 	@Override

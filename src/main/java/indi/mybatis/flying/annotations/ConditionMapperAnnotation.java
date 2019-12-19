@@ -39,7 +39,7 @@ public @interface ConditionMapperAnnotation {
 	 * @return ConditionType
 	 * @since 0.9.0
 	 */
-	ConditionType conditionType() default ConditionType.Equal;
+	ConditionType conditionType() default ConditionType.EQUAL;
 
 	/**
 	 * 

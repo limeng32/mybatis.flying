@@ -60,96 +60,96 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	private Sortable sorter;
 
-	@ConditionMapperAnnotation(dbFieldName = "Email", conditionType = ConditionType.Like)
+	@ConditionMapperAnnotation(dbFieldName = "Email", conditionType = ConditionType.LIKE)
 	private String emailLike;
 
-	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.HeadLike)
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.HEAD_LIKE)
 	private String emailHeadLike;
 
-	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.TailLike)
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.TAIL_LIKE)
 	private String emailTailLike;
 
-	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MultiLikeAND)
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MULTI_LIKE_AND)
 	private List<String> multiLike;
 
-	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MultiLikeOR)
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MULTI_LIKE_OR)
 	private List<String> multiLikeOR;
 
-	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.In, customTypeHandler = StringTypeHandler.class)
+	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.IN, customTypeHandler = StringTypeHandler.class)
 	private Collection<String> nameIn;
 
-	@ConditionMapperAnnotation(dbFieldName = field_opLock, conditionType = ConditionType.In)
+	@ConditionMapperAnnotation(dbFieldName = field_opLock, conditionType = ConditionType.IN)
 	private Collection<Integer> opLockIn;
 
-	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.NotIn)
+	@ConditionMapperAnnotation(dbFieldName = field_name, conditionType = ConditionType.NOT_IN)
 	private Collection<String> nameNotIn;
 
-	@ConditionMapperAnnotation(dbFieldName = field_opLock, conditionType = ConditionType.NotIn)
+	@ConditionMapperAnnotation(dbFieldName = field_opLock, conditionType = ConditionType.NOT_IN)
 	private Collection<Integer> opLockNotIn;
 
-	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.NullOrNot)
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.NULL_OR_NOT)
 	private Boolean emailIsNull;
 
-	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NullOrNot)
+	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NULL_OR_NOT)
 	private Boolean roleIsNull;
 
-	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.In, customTypeHandler = IntegerTypeHandler.class)
+	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.IN, customTypeHandler = IntegerTypeHandler.class)
 	private List<Integer> roleIdIn;
 
-	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NotIn)
+	@ConditionMapperAnnotation(dbFieldName = "role_ID", conditionType = ConditionType.NOT_IN)
 	private List<Integer> roleIdNotIn;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL)
 	private String nameEqual;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "activateValue", conditionType = ConditionType.Equal)
+	@ConditionMapperAnnotation(dbFieldName = "activateValue", conditionType = ConditionType.EQUAL)
 	private String activateValueEqual;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LessOrEqual)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LESS_OR_EQUAL)
 	private String nameLessOrEqual;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LessThan)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LESS_THAN)
 	private String nameLessThan;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GreaterOrEqual)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GREATER_OR_EQUAL)
 	private String nameGreaterOrEqual;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GreaterThan)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.GREATER_THAN)
 	private String nameGreaterThan;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Like)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.LIKE)
 	private String nameLike;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.HeadLike)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.HEAD_LIKE)
 	private String nameHeadLike;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.TailLike)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.TAIL_LIKE)
 	private String nameTailLike;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NotEqual)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NOT_EQUAL)
 	private String nameNotEqual;
 
 	// Conditions designed for batch update
-	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NullOrNot)
+	@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.NULL_OR_NOT)
 	private Boolean nameIsNull;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal, subTarget = indi.mybatis.flying.pojo.LoginLog_.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL, subTarget = indi.mybatis.flying.pojo.LoginLog_.class) })
 	private Object[] nameEqualsOrLoginlogIpEquals;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.EQUAL) })
 	private Object[] idEqualsOr;
 
 	@Override

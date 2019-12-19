@@ -16,11 +16,11 @@ public class Account_Condition3 extends Account_ implements Conditionable {
 	private Sortable sorter;
 
 	// 为测试多个condition是否会冲突，故意将变量命名为与实际行为相反
-	@ConditionMapperAnnotation(dbFieldName = "email", conditionType = ConditionType.TailLike)
+	@ConditionMapperAnnotation(dbFieldName = "email", conditionType = ConditionType.TAIL_LIKE)
 	private String emailHeadLike;
 
 	// 为测试多个condition是否会冲突，故意将变量命名为与实际行为相反
-	@ConditionMapperAnnotation(dbFieldName = "email", conditionType = ConditionType.HeadLike)
+	@ConditionMapperAnnotation(dbFieldName = "email", conditionType = ConditionType.HEAD_LIKE)
 	private String emailTailLike;
 
 	@Override

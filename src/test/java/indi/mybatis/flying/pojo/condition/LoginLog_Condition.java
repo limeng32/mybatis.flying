@@ -19,107 +19,107 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	private Sortable sorter;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.GreaterThan)
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.GREATER_THAN)
 	private Date loginTimeGreaterThan;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.GreaterOrEqual)
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.GREATER_OR_EQUAL)
 	private Date loginTimeGreaterOrEqual;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotEqual)
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NOT_EQUAL)
 	private Date loginTimeNotEqual;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.LessThan)
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.LESS_THAN)
 	private Date loginTimeLessThan;
 
-	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.GreaterThan)
+	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.GREATER_THAN)
 	private Integer idGreaterThan;
 
-	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.GreaterOrEqual)
+	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.GREATER_OR_EQUAL)
 	private Integer idGreaterOrEqual;
 
-	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.LessThan)
+	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.LESS_THAN)
 	private Integer idLessThan;
 
-	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.LessOrEqual)
+	@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.LESS_OR_EQUAL)
 	private Integer idLessOrEqual;
 
-	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.NotEqual)
+	@ConditionMapperAnnotation(dbFieldName = "ID", conditionType = ConditionType.NOT_EQUAL)
 	private Integer idNotEqual;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.In)
+	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.IN)
 	private Collection<String> loginIPIn;
 
-	@ConditionMapperAnnotation(dbFieldName = "lOginTime", conditionType = ConditionType.In)
+	@ConditionMapperAnnotation(dbFieldName = "lOginTime", conditionType = ConditionType.IN)
 	private Collection<Date> loginTimeIn;
 
-	@ConditionMapperAnnotation(dbFieldName = "logINIP", conditionType = ConditionType.NotIn)
+	@ConditionMapperAnnotation(dbFieldName = "logINIP", conditionType = ConditionType.NOT_IN)
 	private Collection<String> loginIPNotIn;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NotIn)
+	@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.NOT_IN)
 	private Collection<Date> loginTimeNotIn;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HEAD_LIKE),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HEAD_LIKE) })
 	private Object[] loginIPHeadLikeOr;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike)
+	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TAIL_LIKE)
 	private String ipLikeFilter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.LIKE),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.LIKE) })
 	private Object[] loginIPLikeOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TailLike) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HEAD_LIKE),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.TAIL_LIKE) })
 	private Object[] loginIPHeadLikeOrTailLike;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL) })
 	private Object[] loginIPEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.EQUAL) })
 	private Object[] numEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Like) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.LIKE) })
 	private Object[] numEqualsOrLoginIPLike;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginTime", conditionType = ConditionType.EQUAL) })
 	private Object[] loginTimeEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.EQUAL) })
 	private Object[] statusEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NotEqual) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NOT_EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.NOT_EQUAL) })
 	private Object[] loginIPNotEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
-			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GREATER_THAN),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LESS_THAN) })
 	private Object[] numGtOrLt;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
-			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GREATER_OR_EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LESS_OR_EQUAL) })
 	private Object[] numGeOrLe;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterThan),
-			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessOrEqual) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GREATER_THAN),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LESS_OR_EQUAL) })
 	private Object[] numGtOrLe;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GreaterOrEqual),
-			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LessThan) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.GREATER_OR_EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "num", conditionType = ConditionType.LESS_THAN) })
 	private Object[] numGeOrLt;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
-			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NULL_OR_NOT),
+			@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NULL_OR_NOT) })
 	private Object[] statusIsNullOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NullOrNot),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.NULL_OR_NOT),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL) })
 	private Object[] statusIsNullOrLoginIPEquals;
 
 	@Override

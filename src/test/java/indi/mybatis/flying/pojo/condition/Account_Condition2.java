@@ -8,8 +8,8 @@ public class Account_Condition2 extends Account_Condition {
 
 	private static final long serialVersionUID = 1L;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.Equal) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "name", conditionType = ConditionType.EQUAL) })
 	private Object[] nameEqualsOr;
 
 	public Object[] getNameEqualsOr() {

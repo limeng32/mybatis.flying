@@ -10,37 +10,37 @@ package indi.mybatis.flying.statics;
  */
 public enum ConditionType {
 	/** Equal */
-	Equal,
+	EQUAL,
 	/** Like matching */
-	Like,
+	LIKE,
 	/** Start like match */
-	HeadLike,
+	HEAD_LIKE,
 	/** End like match */
-	TailLike,
+	TAIL_LIKE,
 	/**
 	 * Multiple like condition matching, and relationship, this operation cannot be
 	 * used under Or annotation.
 	 */
-	MultiLikeAND,
+	MULTI_LIKE_AND,
 	/**
 	 * Multiple like condition matching, or relationship, cannot be used under Or
 	 * annotation.
 	 */
-	MultiLikeOR,
+	MULTI_LIKE_OR,
 	/** Is greater than */
-	GreaterThan,
+	GREATER_THAN,
 	/** Greater than or equal to */
-	GreaterOrEqual,
+	GREATER_OR_EQUAL,
 	/** Less than */
-	LessThan,
+	LESS_THAN,
 	/** Less than or equal to */
-	LessOrEqual,
+	LESS_OR_EQUAL,
 	/** Is not equal to */
-	NotEqual,
+	NOT_EQUAL,
 	/** Belong, this condition cannot be used under Or annotation. */
-	In,
+	IN,
 	/** Nor belong, this condition cannot be used under Or annotation. */
-	NotIn,
+	NOT_IN,
 	/** Null or not null */
-	NullOrNot
+	NULL_OR_NOT
 }

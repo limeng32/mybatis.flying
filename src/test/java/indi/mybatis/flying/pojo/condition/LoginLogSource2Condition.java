@@ -19,22 +19,22 @@ public class LoginLogSource2Condition extends LoginLogSource2 implements Conditi
 
 	private Sortable sorter;
 
-	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HeadLike)
+	@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.HEAD_LIKE)
 	private String ipLikeFilter;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class) })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class) })
 	private Object[] accountEqualsOr;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal), })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.EQUAL), })
 	private Object[] accountEqualsOr2;
 
-	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.Equal, customTypeHandler = LongTypeHandler.class),
-			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.Equal),
-			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.Equal, subTarget = Detail2_.class), })
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class),
+			@ConditionMapperAnnotation(dbFieldName = "LOGINIP", conditionType = ConditionType.EQUAL),
+			@ConditionMapperAnnotation(dbFieldName = "NAME", conditionType = ConditionType.EQUAL, subTarget = Detail2_.class), })
 	private Object[] accountEqualsOr3;
 
 	@Override
