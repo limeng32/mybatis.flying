@@ -18,6 +18,11 @@ public class UuidKeyHandler implements KeyHandler {
 	}
 
 	private static class InnerInstance {
+
+		private InnerInstance() {
+
+		}
+
 		private static final UuidKeyHandler instance = new UuidKeyHandler();
 	}
 

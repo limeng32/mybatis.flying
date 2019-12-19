@@ -29,40 +29,40 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 		return InnerInstance.instance;
 	}
 
-	private static final long twepoch = 1420041600000L;
+	private static final long TWEPOCH = 1420041600000L;
 
 	/* The number of digits in the machine id. */
-	private static final long workerIdBits = 5L;
+	private static final long WORKER_ID_BITS = 5L;
 
 	/* The number of digits in the data id. */
-	private static final long datacenterIdBits = 5L;
+	private static final long DATACENTER_ID_BITS = 5L;
 
 	/*
 	 * The maximum machine id supported, the result is 31 (this shift algorithm can
 	 * quickly calculate the maximum decimal number that can be represented by
 	 * several binary digits)
 	 */
-	private static final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+	private static final long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
 
 	/* The maximum supported data id id, the result is 31. */
-	private static final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+	private static final long MAX_DATACENTER_ID = -1L ^ (-1L << DATACENTER_ID_BITS);
 
 	/* The number of digits in the id. */
-	private static final long sequenceBits = 12L;
+	private static final long SEQUENCE_BITS = 12L;
 
 	/* The machine ID moves to the left 12 places. */
-	private static final long workerIdShift = sequenceBits;
+	private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
 
 	/* The data id id is moved to the left 17 bits (12+5) */
-	private static final long datacenterIdShift = sequenceBits + workerIdBits;
+	private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
 
 	/* Time truncation to the left 22 bits (5+5+12) */
-	private static final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+	private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS;
 
 	/*
 	 * The mask of the generated sequence, which is 4095 (0b111111111111=0xfff=4095)
 	 */
-	private static final long sequenceMask = -1L ^ (-1L << sequenceBits);
+	private static final long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
 
 	/* Working machine ID(0~31) */
 	private long workerId;
@@ -82,13 +82,13 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 	 * @param datacenterId
 	 */
 	private SnowFlakeKeyHandler(long workerId, long datacenterId) {
-		if (workerId > maxWorkerId || workerId < 0) {
+		if (workerId > MAX_WORKER_ID || workerId < 0) {
 			throw new IllegalArgumentException(
-					String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
+					String.format("worker Id can't be greater than %d or less than 0", MAX_WORKER_ID));
 		}
-		if (datacenterId > maxDatacenterId || datacenterId < 0) {
+		if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
 			throw new IllegalArgumentException(
-					String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+					String.format("datacenter Id can't be greater than %d or less than 0", MAX_DATACENTER_ID));
 		}
 		this.workerId = workerId;
 		this.datacenterId = datacenterId;
@@ -114,7 +114,7 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 		 * If it is generated at the same time, the sequence is in milliseconds.
 		 */
 		if (lastTimestamp == timestamp) {
-			sequence = (sequence + 1) & sequenceMask;
+			sequence = (sequence + 1) & SEQUENCE_MASK;
 			/* The sequence overflows in milliseconds. */
 			if (sequence == 0) {
 				/* Block to the next millisecond and get a new timestamp. */
@@ -130,9 +130,9 @@ public class SnowFlakeKeyHandler implements KeyHandler {
 		lastTimestamp = timestamp;
 
 		/* To form a 64 bit ID with or through a shift. */
-		return ((timestamp - twepoch) << timestampLeftShift) //
-				| (datacenterId << datacenterIdShift) //
-				| (workerId << workerIdShift) //
+		return ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT) //
+				| (datacenterId << DATACENTER_ID_SHIFT) //
+				| (workerId << WORKER_ID_SHIFT) //
 				| sequence;
 	}
 
