@@ -128,13 +128,13 @@ public class EnhancedCachingInterceptor implements Interceptor {
 
 			if (flyingModel.isHasFlyingFeature()) {
 				switch (flyingModel.getActionType()) {
-				case count:
+				case COUNT:
 					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
 					break;
-				case selectAll:
+				case SELECT_ALL:
 					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
 					break;
-				case selectOne:
+				case SELECT_ONE:
 					cacheKey.update(DigestUtils.md5Hex(JSON.toJSONString(parameter)));
 					break;
 				default:

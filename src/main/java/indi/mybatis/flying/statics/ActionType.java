@@ -1,5 +1,8 @@
 package indi.mybatis.flying.statics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
  * @date 2019年12月18日 11:56:08
@@ -10,25 +13,48 @@ package indi.mybatis.flying.statics;
  */
 public enum ActionType {
 	/** Number of queries, accept Pojo type parameters. */
-	count,
+	COUNT("count"),
 	/** Delete a record, accept Pojo type parameters. */
-	delete,
+	DELETE("delete"),
 	/** Add a record, accept Pojo type parameters. */
-	insert,
+	INSERT("insert"),
 	/** Query a record, accept the primary key parameter. */
-	select,
+	SELECT("select"),
 	/** Query multiple records, accept Pojo type parameters. */
-	selectAll,
+	SELECT_ALL("selectAll"),
 	/** Query a record, accept Pojo type parameters. */
-	selectOne,
+	SELECT_ONE("selectOne"),
 	/**
 	 * Update a record, accept Pojo type parameters (ignoring attributes that are
 	 * null in pojos)
 	 */
-	update,
+	UPDATE("update"),
 	/**
 	 * Completely updating a record, accept Pojo type parameters (does not ignore
 	 * the null attribute in the Pojo, which is updated to null in the database.)
 	 */
-	updatePersistent
+	UPDATE_PERSISTENT("updatePersistent");
+
+	private final String value;
+
+	private ActionType(String value) {
+		this.value = value;
+	}
+
+	public String value() {
+		return value;
+	}
+
+	private static final Map<String, ActionType> mapForValue = new HashMap<>(8);
+
+	static {
+		ActionType[] values = ActionType.values();
+		for (ActionType e : values) {
+			mapForValue.put(e.value(), e);
+		}
+	}
+
+	public static ActionType forValue(String value) {
+		return mapForValue.get(value);
+	}
 }

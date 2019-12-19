@@ -68,7 +68,7 @@ public class FlyingManager {
 			if (temp.endsWith("?")) {
 				temp = temp.substring(0, temp.length() - 1);
 			}
-			ActionType actionType = ActionType.valueOf(temp);
+			ActionType actionType = ActionType.forValue(temp);
 			flyingModel.setActionType(actionType);
 			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR), originalSql, flyingModel);
 		}
@@ -157,7 +157,7 @@ public class FlyingManager {
 					extension = actionTypeStr.substring(actionTypeStr.lastIndexOf('(') + 1, actionTypeStr.length() - 1);
 					actionTypeStr = actionTypeStr.substring(0, actionTypeStr.lastIndexOf('('));
 				}
-				ActionType actionType = ActionType.valueOf(actionTypeStr);
+				ActionType actionType = ActionType.forValue(actionTypeStr);
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
 					if (dataSourceIdAndConnectionCatalog != null
@@ -195,7 +195,7 @@ public class FlyingManager {
 	}
 
 	private static void dealKeyHandler(ActionType actionType, String extension, String originalSql, FlyingModel ret) {
-		if (ActionType.insert.equals(actionType) && extension != null) {
+		if (ActionType.INSERT.equals(actionType) && extension != null) {
 			KeyGeneratorType keyGeneratorType = null;
 			if (extension.indexOf(".") == -1) {
 				try {

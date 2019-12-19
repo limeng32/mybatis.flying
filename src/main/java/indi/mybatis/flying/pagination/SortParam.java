@@ -26,12 +26,12 @@ public class SortParam implements Sortable {
 
 	@Override
 	public void addOrder() {
-
+		// make sonar happy
 	}
 
 	@Override
 	public String toSql() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		if (list != null) {
 			ret.append(" order by");
 			for (Order order : list) {

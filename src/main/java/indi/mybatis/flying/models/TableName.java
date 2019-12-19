@@ -13,7 +13,8 @@ import java.util.WeakHashMap;
  */
 public class TableName {
 
-	public TableName(TableMapper tableMapper, int index, Map<Class<?>, TableName> map) {
+	public TableName(TableMapper tableMapper, int index, Map<Class<?>, TableName> map2) {
+		Map<Class<?>, TableName> map = map2;
 		this.tableMapper = tableMapper;
 		this.index = index;
 		if (map == null) {
