@@ -10,7 +10,7 @@ package indi.mybatis.flying.statics;
  */
 public enum AssociationType {
 
-	LeftJoin(" left join "), RightJoin(" right join ");
+	LEFT_JOIN(" left join "), RIGHT_JOIN(" right join ");
 
 	private final String value;
 

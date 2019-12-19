@@ -174,7 +174,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 
 	private void dealPackageInit21(Class<?> clazz, Method method, CacheAnnotation cacheAnnotation) {
 		switch (cacheAnnotation.role()) {
-		case Observer:
+		case OBSERVER:
 			for (Class<?> clazz1 : observersClassesNew.get(clazz)) {
 				if (!observerMethods.containsKey(clazz1)) {
 					observerMethods.put(clazz1, new HashSet<Method>());
@@ -182,7 +182,7 @@ public class EnhancedCachingManagerImpl implements EnhancedCachingManager {
 				observerMethods.get(clazz1).add(method);
 			}
 			break;
-		case Trigger:
+		case TRIGGER:
 			for (Class<?> clazz1 : triggerClasses.get(clazz)) {
 				if (!triggerMethods.containsKey(clazz1)) {
 					triggerMethods.put(clazz1, new HashSet<Method>());

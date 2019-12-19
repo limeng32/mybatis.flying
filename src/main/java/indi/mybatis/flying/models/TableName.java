@@ -14,13 +14,13 @@ import java.util.WeakHashMap;
 public class TableName {
 
 	public TableName(TableMapper tableMapper, int index, Map<Class<?>, TableName> map2) {
-		Map<Class<?>, TableName> map = map2;
 		this.tableMapper = tableMapper;
 		this.index = index;
-		if (map == null) {
-			map = new WeakHashMap<Class<?>, TableName>(1);
+		if (map2 == null) {
+			this.map = new WeakHashMap<Class<?>, TableName>(1);
+		} else {
+			this.map = map2;
 		}
-		this.map = map;
 		this.map.put(this.tableMapper.getClazz(), this);
 	}
 

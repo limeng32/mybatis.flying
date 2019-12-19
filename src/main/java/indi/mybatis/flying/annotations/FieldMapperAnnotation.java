@@ -137,5 +137,5 @@ public @interface FieldMapperAnnotation {
 	 * @return AssociationType
 	 * @since 0.9.7
 	 */
-	AssociationType associationType() default AssociationType.LeftJoin;
+	AssociationType associationType() default AssociationType.LEFT_JOIN;
 }

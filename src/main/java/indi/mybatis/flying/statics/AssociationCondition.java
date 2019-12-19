@@ -10,7 +10,7 @@ package indi.mybatis.flying.statics;
  */
 public enum AssociationCondition {
 
-	Equal("="), GreaterThan(">"), GreaterOrEqual(">="), LessThan("<"), LessOrEqual("<="), NotEqual("<>");
+	EQUAL("="), GREATER_THAN(">"), GREATER_OR_EQUAL(">="), LESS_THAN("<"), LESS_OR_EQUAL("<="), NOT_EQUAL("<>");
 
 	private final String value;
 

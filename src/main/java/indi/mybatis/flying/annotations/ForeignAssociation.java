@@ -43,5 +43,5 @@ public @interface ForeignAssociation {
 	 * NotEqual
 	 * 
 	 */
-	AssociationCondition condition() default AssociationCondition.Equal;
+	AssociationCondition condition() default AssociationCondition.EQUAL;
 }

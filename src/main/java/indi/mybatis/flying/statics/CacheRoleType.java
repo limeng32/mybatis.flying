@@ -9,5 +9,5 @@ package indi.mybatis.flying.statics;
  * @since JDK 1.8
  */
 public enum CacheRoleType {
-	Trigger, Observer
+	TRIGGER, OBSERVER
 }
