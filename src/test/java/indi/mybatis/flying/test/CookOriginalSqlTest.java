@@ -37,7 +37,7 @@ public class CookOriginalSqlTest {
 		Assert.assertTrue(flyingModel.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.INSERT, flyingModel.getActionType());
 		Assert.assertEquals("noPassword", flyingModel.getIgnoreTag());
-		Assert.assertEquals(KeyGeneratorType.uuid, flyingModel.getKeyGeneratorType());
+		Assert.assertEquals(KeyGeneratorType.UUID, flyingModel.getKeyGeneratorType());
 
 		String sql2 = "flying:insert():";
 		FlyingModel flyingModel2 = fetchFlyingFeature(sql2);
@@ -51,7 +51,7 @@ public class CookOriginalSqlTest {
 		Assert.assertTrue(flyingModel3.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.INSERT, flyingModel3.getActionType());
 		Assert.assertNull(flyingModel3.getIgnoreTag());
-		Assert.assertEquals(KeyGeneratorType.millisecond, flyingModel3.getKeyGeneratorType());
+		Assert.assertEquals(KeyGeneratorType.MILLISECOND, flyingModel3.getKeyGeneratorType());
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class CookOriginalSqlTest {
 		Assert.assertTrue(flyingModel.isHasFlyingFeature());
 		Assert.assertEquals(ActionType.INSERT, flyingModel.getActionType());
 		Assert.assertEquals("noPassword", flyingModel.getIgnoreTag());
-		Assert.assertEquals(KeyGeneratorType.uuid, flyingModel.getKeyGeneratorType());
+		Assert.assertEquals(KeyGeneratorType.UUID, flyingModel.getKeyGeneratorType());
 
 		String sql2 = "flying?(datasource2):select:noPassword";
 		FlyingModel flyingModel2 = fetchFlyingFeature(sql2);

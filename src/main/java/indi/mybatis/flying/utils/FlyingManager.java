@@ -199,7 +199,7 @@ public class FlyingManager {
 			KeyGeneratorType keyGeneratorType = null;
 			if (extension.indexOf(".") == -1) {
 				try {
-					keyGeneratorType = KeyGeneratorType.valueOf(extension);
+					keyGeneratorType = KeyGeneratorType.forValue(extension);
 				} catch (IllegalArgumentException e) {
 					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_KEY_GENERATOR_TYPE.description())
 							.append(originalSql).append(" because of ").append(e).toString());
@@ -208,16 +208,16 @@ public class FlyingManager {
 				if (keyGeneratorType != null) {
 					KeyHandler keyHandler;
 					switch (keyGeneratorType) {
-					case uuid:
+					case UUID:
 						keyHandler = UuidKeyHandler.getInstance();
 						break;
-					case uuid_no_line:
+					case UUID_NO_LINE:
 						keyHandler = UuidWithoutLineKeyHandler.getInstance();
 						break;
-					case millisecond:
+					case MILLISECOND:
 						keyHandler = MilliSecondKeyHandler.getInstance();
 						break;
-					case snowflake:
+					case SNOWFLAKE:
 						keyHandler = SnowFlakeKeyHandler.getInstance();
 						break;
 					default:
@@ -230,7 +230,7 @@ public class FlyingManager {
 				try {
 					@SuppressWarnings("unchecked")
 					Class<? extends KeyHandler> clazz = (Class<? extends KeyHandler>) Class.forName(extension);
-					ret.setKeyGeneratorType(KeyGeneratorType.custom);
+					ret.setKeyGeneratorType(KeyGeneratorType.CUSTOM);
 					ret.setKeyHandler(clazz.newInstance());
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_CUSTOM_KEY_GENERATOR.description())

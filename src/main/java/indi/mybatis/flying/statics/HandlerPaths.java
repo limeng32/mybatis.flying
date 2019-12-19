@@ -10,6 +10,10 @@ package indi.mybatis.flying.statics;
  */
 public class HandlerPaths {
 
+	private HandlerPaths() {
+
+	}
+
 	public static final String CONDITION_LIKE_HANDLER_PATH = "indi.mybatis.flying.handlers.ConditionLikeHandler";
 
 	public static final String CONDITION_HEAD_LIKE_HANDLER_PATH = "indi.mybatis.flying.handlers.ConditionHeadLikeHandler";

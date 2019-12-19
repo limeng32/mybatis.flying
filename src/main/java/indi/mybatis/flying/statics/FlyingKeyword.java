@@ -10,6 +10,10 @@ package indi.mybatis.flying.statics;
  */
 public class FlyingKeyword {
 
+	private FlyingKeyword() {
+
+	}
+
 	public static final String FLYING = "flying";
 
 	public static final String FLYING_LEFTBRACKET = "flying(";
