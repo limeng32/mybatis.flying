@@ -22,7 +22,6 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.ErrorContext;
-import org.apache.ibatis.executor.statement.BaseStatementHandler;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
@@ -60,7 +59,6 @@ import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.LogLevel;
-import indi.mybatis.flying.utils.ReflectHelper;
 
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
@@ -155,10 +153,7 @@ public class AutoMapperInterceptor implements Interceptor {
 			/* Start dealing with paging */
 			if ((parameterObject instanceof Conditionable)
 					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
-				BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper
-						.getValueByFieldName(statementHandler, DELEGATE);
-				mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate, MAPPEDSTATEMENT);
-				BoundSql boundSql = delegate.getBoundSql();
+				BoundSql boundSql = statementHandler.getBoundSql();
 				Conditionable condition = (Conditionable) parameterObject;
 				String sql = boundSql.getSql();
 				if (condition.getLimiter() != null) {
@@ -182,7 +177,7 @@ public class AutoMapperInterceptor implements Interceptor {
 					}
 				}
 				String pageSql = generatePageSql(sql, condition);
-				ReflectHelper.setValueByFieldName(boundSql, SQL, pageSql);
+				metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 			}
 		}
 

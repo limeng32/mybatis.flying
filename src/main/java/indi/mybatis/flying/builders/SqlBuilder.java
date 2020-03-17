@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
@@ -36,7 +37,6 @@ import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.type.KeyHandler;
-import indi.mybatis.flying.utils.ReflectHelper;
 
 /**
  * 
@@ -662,29 +662,31 @@ public class SqlBuilder {
 			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
 					|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
 				continue;
-			} else if (((FieldMapper) fieldMapper).isOpVersionLock()) {
-				value = 0;
-				ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), value);
 			}
 			allFieldNull = false;
 			tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
-			valueSql.append(POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
-				valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+			if (((FieldMapper) fieldMapper).isOpVersionLock()) {
+				value = 0;
+				valueSql.append("'0',");
 			} else {
-				valueSql.append(fieldMapper.getFieldName());
-			}
-			valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
-			if (fieldMapper.getTypeHandlerPath() != null) {
-				valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
-			}
-			if (fieldMapper.isUniqueKey()) {
-				uniqueKeyHandled = true;
-				if (keyHandler != null) {
-					handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
+				valueSql.append(POUND_OPENBRACE);
+				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+					valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+				} else {
+					valueSql.append(fieldMapper.getFieldName());
 				}
+				valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				if (fieldMapper.getTypeHandlerPath() != null) {
+					valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+				}
+				if (fieldMapper.isUniqueKey()) {
+					uniqueKeyHandled = true;
+					if (keyHandler != null) {
+						handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
+					}
+				}
+				valueSql.append(CLOSEBRACE_COMMA);
 			}
-			valueSql.append(CLOSEBRACE_COMMA);
 		}
 		if (keyHandler != null && !uniqueKeyHandled) {
 			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
@@ -701,12 +703,13 @@ public class SqlBuilder {
 	}
 
 	private static void handleInsertSql(KeyHandler keyHandler, StringBuilder valueSql, FieldMapper fieldMapper,
-			Object object, boolean uniqueKeyHandled) throws IllegalAccessException, NoSuchFieldException {
+			Object object, boolean uniqueKeyHandled)
+			throws IllegalAccessException, NoSuchFieldException, InvocationTargetException {
 		if (!uniqueKeyHandled) {
 			valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_COMMA);
+					.append(fieldMapper.getJdbcType()).append(CLOSEBRACE_COMMA);
 		}
-		ReflectHelper.setValueByFieldName(object, fieldMapper.getFieldName(), keyHandler.getKey());
+		BeanUtils.setProperty(object, fieldMapper.getFieldName(), keyHandler.getKey());
 	}
 
 	/**
@@ -1352,10 +1355,12 @@ public class SqlBuilder {
 			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NOT_EQUAL, tableName, temp, isOr, i);
 			break;
 		case MULTI_LIKE_AND:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_AND, tableName, temp, isOr);
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_AND, tableName, temp,
+					isOr);
 			break;
 		case MULTI_LIKE_OR:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_OR, tableName, temp, isOr);
+			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_OR, tableName, temp,
+					isOr);
 			break;
 		case IN:
 			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.IN, tableName, temp, isOr);
