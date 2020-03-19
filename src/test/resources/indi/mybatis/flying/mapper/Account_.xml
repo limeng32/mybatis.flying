@@ -5,8 +5,7 @@
 
 	<select id="selectWithoutCache" resultMap="result"
 		useCache="false">
-		{"action":"select#{?}", "ignore":"noPassword",
-		"dataSource":"smartDataSource1", "connectionCatalog":"testdb"}
+		{"action":"select#{?}", "ignore":"noPassword"}
 	</select>
 
 	<select id="select" resultMap="result">

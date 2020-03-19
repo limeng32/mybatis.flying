@@ -61,7 +61,7 @@ public class AccountTypeHandlerTest {
 	}
 
 	/* 测试AccountTypeHandler的功能 */
-	@Test
+//	@Test
 	@DatabaseSetups({
 			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTypeHandlerTest/testAccountTypeHandler.datasource.xml"),
 			@DatabaseSetup(connection = "dataSource2", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTypeHandlerTest/testAccountTypeHandler.datasource2.xml") })

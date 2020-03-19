@@ -4,11 +4,11 @@
 	<cache ${mybatis.cache}/>
 
 	<select id="selectWithoutCache" resultMap="result" useCache="false">
-		{"action":"select#{?}", "dataSource":"smartDataSource2", "connectionCatalog":"testdb2"}
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="select" resultMap="result">
-		{"action":"select#{?}", "dataSource":"smartDataSource2", "connectionCatalog":"testdb2"}
+		{"action":"select#{?}"}
 	</select>
 
 	<select id="selectWithoutAccount" resultMap="result">

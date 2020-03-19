@@ -56,7 +56,7 @@ import indi.mybatis.flying.service2.Role2Service;
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = FlatXmlDataSetLoader.class, databaseConnection = { "dataSource1", "dataSource2" })
 @ContextConfiguration("classpath:spring-test.xml")
-public class CacheTest {
+public class CacheTest1 {
 
 	@Autowired
 	private AccountService accountService;

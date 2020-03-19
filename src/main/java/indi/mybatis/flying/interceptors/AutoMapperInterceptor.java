@@ -98,23 +98,23 @@ public class AutoMapperInterceptor implements Interceptor {
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
-			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
-					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
-				ApplicationContext applicationContext = FlyingContextProvider.getApplicationContext();
-				if (applicationContext != null) {
-					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
-					if (dataSource == null) {
-						throw new AutoMapperException(
-								AutoMapperExceptionEnum.CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT.description());
-					}
-					Connection connection = ((SmartDataSource) (applicationContext
-							.getBean(flyingModel.getDataSourceId()))).getConnection();
-					invocation.getArgs()[0] = connection;
-				} else {
-					throw new AutoMapperException(
-							AutoMapperExceptionEnum.CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER.description());
-				}
-			}
+//			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
+//					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
+//				ApplicationContext applicationContext = FlyingContextProvider.getApplicationContext();
+//				if (applicationContext != null) {
+//					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
+//					if (dataSource == null) {
+//						throw new AutoMapperException(
+//								AutoMapperExceptionEnum.CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT.description());
+//					}
+//					Connection connection = ((SmartDataSource) (applicationContext
+//							.getBean(flyingModel.getDataSourceId()))).getConnection();
+//					invocation.getArgs()[0] = connection;
+//				} else {
+//					throw new AutoMapperException(
+//							AutoMapperExceptionEnum.CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER.description());
+//				}
+//			}
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case COUNT:
