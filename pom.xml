@@ -1,10 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.rjyjy.backend</groupId>
-	<artifactId>mysqlAdapter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	
+	<groupId>com.github.limeng32</groupId>
+	<artifactId>mybatis.flying</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	
+	<name>mybatis.flying</name>
+	<description>A powerful set of plugins of Mybatis.</description>
+	<url>http://flying-doc.limeng32.com/</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>limeng32</name>
+			<email>limeng32@live.cn</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:limeng32/mybatis.flying.git</connection>
+		<developerConnection>scm:git:git@github.com:limeng32/mybatis.flying.git</developerConnection>
+		<url>git@github.com:limeng32/mybatis.flying.git</url>
+	</scm>
+	
 	<properties>
 		<mybatis.bootstarter.version>1.0.0</mybatis.bootstarter.version>
 		<mybatis.version>3.4.5</mybatis.version>
@@ -248,9 +275,8 @@
 				</includes>
 			</testResource>
 		</testResources>
-		<finalName>mysqlAdapter</finalName>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
@@ -274,22 +300,181 @@
 						<com.sun.management.jmxremote.port>4000</com.sun.management.jmxremote.port>
 					</systemProperties>
 				</configuration>
+			</plugin> -->
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<!-- Javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+					<check />
+				</configuration>
+			</plugin>
+			<!-- jacoco for codecov -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
 	<packaging>jar</packaging>
 	<profiles>
 		<profile>
-			<id>dev</id>
+			<id>always</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<mybatis.cacheEnabled>false</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
+			</properties>
+		</profile>
+		<profile>
 			<activation>
 				<property>
-					<name>DEV</name>
+					<name>CACHE</name>
 					<value>true</value>
 				</property>
 			</activation>
+			<id>cache</id>
 			<properties>
-				<activatedProperties>dev</activatedProperties>
+				<mybatis.cacheEnabled>true</mybatis.cacheEnabled>
+				<mybatis.cache></mybatis.cache>
 			</properties>
+		</profile>
+		<profile>
+			<activation>
+				<property>
+					<name>REDIS</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<id>redis</id>
+			<properties>
+				<mybatis.cache>type="org.mybatis.caches.redis.RedisCache"</mybatis.cache>
+			</properties>
+		</profile>
+		<profile>
+			<id>gpg</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<gpg.executable>gpg</gpg.executable>
+				<gpg.passphrase>${flying.gpg.passphrase}</gpg.passphrase>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>RELEASE</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${plugin.gpg.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>oss</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
 		</profile>
 	</profiles>
 </project>
