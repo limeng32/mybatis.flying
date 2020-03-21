@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
@@ -48,10 +46,7 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.datasource.SmartDataSource;
 
-import indi.mybatis.flying.FlyingContextProvider;
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -98,23 +93,6 @@ public class AutoMapperInterceptor implements Interceptor {
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
-//			if ((flyingModel.getDataSourceId() != null) && !((Connection) invocation.getArgs()[0]).getCatalog()
-//					.equalsIgnoreCase(flyingModel.getConnectionCatalog())) {
-//				ApplicationContext applicationContext = FlyingContextProvider.getApplicationContext();
-//				if (applicationContext != null) {
-//					DataSource dataSource = (DataSource) applicationContext.getBean(flyingModel.getDataSourceId());
-//					if (dataSource == null) {
-//						throw new AutoMapperException(
-//								AutoMapperExceptionEnum.CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT.description());
-//					}
-//					Connection connection = ((SmartDataSource) (applicationContext
-//							.getBean(flyingModel.getDataSourceId()))).getConnection();
-//					invocation.getArgs()[0] = connection;
-//				} else {
-//					throw new AutoMapperException(
-//							AutoMapperExceptionEnum.CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER.description());
-//				}
-//			}
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case COUNT:

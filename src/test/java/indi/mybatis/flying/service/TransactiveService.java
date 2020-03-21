@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import indi.mybatis.flying.exceptions.Configurer2Exception;
 import indi.mybatis.flying.exceptions.ConfigurerException;
 import indi.mybatis.flying.pojo.Role_;
 
