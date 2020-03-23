@@ -34,7 +34,7 @@ import indi.mybatis.flying.service.AccountService;
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
 		"dataSource2" })
-public class NewNullOrNotTest {
+public class NullOrNotTest {
 
 	@Autowired
 	private AccountService accountService;
