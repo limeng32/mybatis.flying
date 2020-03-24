@@ -41,7 +41,6 @@ public class InitialConfig {
 
 	@PostConstruct
 	private void init1() throws IOException {
-		System.out.println(":::::::::::::::::::::::::::::::::::::::::::::::初始化用户数据库");
 		initCustomerDataSource1();
 		initCustomerDataSource2();
 	}

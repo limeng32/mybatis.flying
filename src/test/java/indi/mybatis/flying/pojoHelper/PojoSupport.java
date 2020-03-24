@@ -1,10 +1,5 @@
 package indi.mybatis.flying.pojoHelper;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.annotation.JSONField;
-
 public abstract class PojoSupport<T extends PojoSupport<T>> implements PojoFace<T> {
 
 	@Override

@@ -67,10 +67,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
 	private static final String SETTING_PARAMETERS = "setting parameters";
-	private static final String DELEGATE = "delegate";
-	private static final String MAPPEDSTATEMENT = "mappedStatement";
 	private static final String DIALECT = "dialect";
-	private static final String SQL = "sql";
 	private static final String LOG_LEVEL = "logLevel";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
