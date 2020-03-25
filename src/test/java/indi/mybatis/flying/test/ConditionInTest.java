@@ -65,11 +65,22 @@ public class ConditionInTest {
 		nameC.add("bob");
 		Collection<Account_> c2 = accountService.selectAll(ac);
 		Assert.assertEquals(2, c2.size());
+		
+		ac.setNameIn(null);
+		ac.setNameNotIn(nameC);
+		c2 = accountService.selectAll(ac);
+		Assert.assertEquals(1, c2.size());
 
 		List<String> nameC2 = new ArrayList<>();
 		ac.setNameIn(nameC2);
+		ac.setNameNotIn(null);
 		Collection<Account_> c3 = accountService.selectAll(ac);
 		Assert.assertEquals(0, c3.size());
+
+		ac.setNameIn(null);
+		ac.setNameNotIn(nameC2);
+		c3 = accountService.selectAll(ac);
+		Assert.assertEquals(3, c3.size());
 	}
 
 	/** 测试有外键情况下condition:in功能 */

@@ -88,7 +88,7 @@ public class SqlBuilder {
 	private static final String CONDITIONLIKEHANDLER = "ConditionLikeHandler";
 	private static final String VALUES_OPENPAREN = "values(";
 	private static final String UPDATE_BLANK = "update ";
-
+	private static final String NULL = "null";
 	private static final String BLANK_AND_BLANK = " and ";
 	private static final String BLANK_EQUAL_BLANK = " = ";
 	private static final String BLANK_GREATER_BLANK = " > ";
@@ -447,18 +447,16 @@ public class SqlBuilder {
 		if (isOr) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.THIS_CONDITION_NOT_SUPPORT_OR);
 		}
-		handleWhereSql(whereSql, conditionMapper, tableName);
 		switch (type) {
 		case IN:
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, false, tableName);
 			break;
 		case NOT_IN:
-			whereSql.append(BLANK_NOT);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, true, tableName);
 			break;
 		default:
 			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
-		whereSql.append(BLANK_IN_OPENPAREN);
-		dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -861,12 +859,10 @@ public class SqlBuilder {
 			whereSql.append(BLANK_NULL).append(BLANK_AND_BLANK);
 			break;
 		case IN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_IN_OPENPAREN);
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null, false, null);
 			break;
 		case NOT_IN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_IN_OPENPAREN);
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, null);
+			dealWhereSqlOfIn(value, whereSql, conditionMapper, null, true, null);
 			break;
 		default:
 			throw new BuildSqlException(
@@ -877,30 +873,51 @@ public class SqlBuilder {
 
 	@SuppressWarnings("unchecked")
 	private static void dealWhereSqlOfIn(Object value, StringBuilder whereSql, ConditionMapper conditionMapper,
-			String fieldNamePrefix) {
-		int j = -1;
-		boolean allNull = true;
+			String fieldNamePrefix, boolean notIn, TableName tableName) {
 		List<Object> multiConditionC = (List<Object>) value;
-		for (Object s : multiConditionC) {
-			j++;
-			if (s != null) {
-				if (allNull) {
-					allNull = false;
-				}
-				whereSql.append(POUND_OPENBRACE);
-				if (fieldNamePrefix != null) {
-					whereSql.append(fieldNamePrefix).append(DOT);
-				}
-				whereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j).append(CLOSEBRACKET)
-						.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString());
-				if (conditionMapper.getTypeHandlerPath() != null) {
-					whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
-				}
-				whereSql.append(CLOSEBRACE_COMMA);
+		if (multiConditionC.isEmpty() && notIn) {
+			return;
+		} else {
+			int j = -1;
+			boolean allNull = true;
+			if (tableName != null) {
+				handleWhereSql(whereSql, conditionMapper, tableName);
+			} else {
+				whereSql.append(conditionMapper.getDbFieldName());
 			}
-		}
-		if (!allNull) {
-			whereSql.delete(whereSql.lastIndexOf(COMMA), whereSql.lastIndexOf(COMMA) + 1);
+			if (notIn) {
+				whereSql.append(BLANK_NOT).append(BLANK_IN_OPENPAREN);
+			} else {
+				whereSql.append(BLANK_IN_OPENPAREN);
+			}
+			if (multiConditionC.isEmpty()) {
+				// use "in (null)" on this condition
+				whereSql.append(NULL);
+			} else {
+				for (Object s : multiConditionC) {
+					j++;
+					if (s != null) {
+						if (allNull) {
+							allNull = false;
+						}
+						whereSql.append(POUND_OPENBRACE);
+						if (fieldNamePrefix != null) {
+							whereSql.append(fieldNamePrefix).append(DOT);
+						}
+						whereSql.append(conditionMapper.getFieldName()).append(OPENBRACKET).append(j)
+								.append(CLOSEBRACKET).append(COMMA).append(JDBCTYPE_EQUAL)
+								.append(conditionMapper.getJdbcType().toString());
+						if (conditionMapper.getTypeHandlerPath() != null) {
+							whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
+						}
+						whereSql.append(CLOSEBRACE_COMMA);
+					}
+				}
+				if (!allNull) {
+					whereSql.delete(whereSql.lastIndexOf(COMMA), whereSql.lastIndexOf(COMMA) + 1);
+				}
+			}
+
 		}
 		whereSql.append(CLOSEPAREN_BLANK_AND_BLANK);
 	}
