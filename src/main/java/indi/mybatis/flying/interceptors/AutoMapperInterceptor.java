@@ -101,6 +101,9 @@ public class AutoMapperInterceptor implements Interceptor {
 			case INSERT:
 				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
 				break;
+			case INSERT_BATCH:
+				newSql = SqlBuilder.buildInsertBatchSql(parameterObject, flyingModel);
+				break;
 			case SELECT:
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;

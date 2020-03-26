@@ -16,9 +16,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DatabaseTearDowns;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.annotation.ExpectedDatabases;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
@@ -279,5 +282,23 @@ public class BatchPcocessTest {
 		ac.setOpLock(a.getOpLock());
 		ac.setNameIn(nameC);
 		accountService.delete(ac);
+	}
+
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchInsert.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchInsert.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchPcocessTest/testBatchInsert.datasource.result.xml") })
+	public void testBatchInsert() {
+		Account_ a = new Account_();
+		a.setId(1L);
+		a.setName("ann");
+		a.setEmail("ann@live.cn");
+		a.setPassword("5a690d842935c51f26f473e025c1b97a");
+		a.setActivated(true);
+		a.setActivateValue("");
+		accountService.insert(a);
 	}
 }

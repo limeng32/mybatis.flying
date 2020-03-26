@@ -65,6 +65,10 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		{"action":"insert"}
 	</insert>
+	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
 
 	<insert id="insertSnowFlake">
 		{"action":"insert",

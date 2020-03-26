@@ -198,7 +198,7 @@ public class FlyingManager {
 	}
 
 	private static void dealKeyHandler(ActionType actionType, String extension, String originalSql, FlyingModel ret) {
-		if (ActionType.INSERT.equals(actionType) && extension != null) {
+		if ((ActionType.INSERT.equals(actionType) || ActionType.INSERT_BATCH.equals(actionType)) && extension != null) {
 			KeyGeneratorType keyGeneratorType = null;
 			if (extension.indexOf('.') == -1) {
 				try {

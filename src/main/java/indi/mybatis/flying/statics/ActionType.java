@@ -18,6 +18,8 @@ public enum ActionType {
 	DELETE("delete"),
 	/** Add a record, accept Pojo type parameters. */
 	INSERT("insert"),
+	/** Add record collection, accept Collection<Pojo> type parameters. */
+	INSERT_BATCH("insertBatch"),
 	/** Query a record, accept the primary key parameter. */
 	SELECT("select"),
 	/** Query multiple records, accept Pojo type parameters. */
