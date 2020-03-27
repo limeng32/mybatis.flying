@@ -48,7 +48,7 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
-	public void insertBatch(Account_ t) {
+	public void insertBatch(Collection<Account_> t) {
 		mapper.insertBatch(t);
 	}
 
@@ -57,6 +57,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		mapper.insertSnowFlake(t);
 	}
 
+	@Override
+	public void insertSnowFlakeBatch(Collection<Account_> t) {
+		mapper.insertSnowFlakeBatch(t);
+	}
+	
 	@Override
 	public int update(Account_ t) {
 		return supportUpdate(mapper, t);

@@ -3,6 +3,7 @@ package indi.mybatis.flying.builders;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
@@ -680,7 +682,7 @@ public class SqlBuilder {
 				if (fieldMapper.isUniqueKey()) {
 					uniqueKeyHandled = true;
 					if (keyHandler != null) {
-						handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
+						handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled, null);
 					}
 				}
 				valueSql.append(CLOSEBRACE_COMMA);
@@ -689,7 +691,7 @@ public class SqlBuilder {
 		if (keyHandler != null && !uniqueKeyHandled) {
 			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
 			tableSql.append(temp.getDbFieldName()).append(COMMA);
-			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled);
+			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled, null);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
@@ -701,10 +703,14 @@ public class SqlBuilder {
 	}
 
 	private static void handleInsertSql(KeyHandler keyHandler, StringBuilder valueSql, FieldMapper fieldMapper,
-			Object object, boolean uniqueKeyHandled)
+			Object object, boolean uniqueKeyHandled, Integer batchIndex)
 			throws IllegalAccessException, NoSuchFieldException, InvocationTargetException {
 		if (!uniqueKeyHandled) {
-			valueSql.append(POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+			valueSql.append(POUND_OPENBRACE);
+			if (batchIndex != null) {
+				valueSql.append("collection[" + batchIndex + "].");
+			}
+			valueSql.append(fieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 					.append(fieldMapper.getJdbcType()).append(CLOSEBRACE_COMMA);
 		}
 		BeanUtils.setProperty(object, fieldMapper.getFieldName(), keyHandler.getKey());
@@ -721,65 +727,83 @@ public class SqlBuilder {
 	 * @throws InvocationTargetException Exception
 	 * @throws NoSuchMethodException     Exception
 	 */
-	public static String buildInsertBatchSql(Object object, FlyingModel flyingModel)
+	@SuppressWarnings("unchecked")
+	public static String buildInsertBatchSql(Object objectC, FlyingModel flyingModel)
 			throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		String ignoreTag = flyingModel.getIgnoreTag();
-		KeyHandler keyHandler = flyingModel.getKeyHandler();
-		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
-		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-
-		String tableName = tableMapper.getTableName();
+		DefaultSqlSession.StrictMap<Object> valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
 		StringBuilder tableSql = new StringBuilder();
 		StringBuilder valueSql = new StringBuilder();
-
-		tableSql.append(INSERT_INTO_BLANK).append(tableName).append(BLANK_OPENPAREN);
-		valueSql.append(VALUES_OPENPAREN);
-
+		TableMapper tableMapper = null;
+		Map<?, ?> dtoFieldMap = null;
 		boolean allFieldNull = true;
-		boolean uniqueKeyHandled = false;
-		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
-					|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
-				continue;
+		int i = 0;
+		for (Object object : (Collection<Object>) (valueC.get("collection"))) {
+
+			String ignoreTag = flyingModel.getIgnoreTag();
+			KeyHandler keyHandler = flyingModel.getKeyHandler();
+			if (i == 0) {
+				dtoFieldMap = PropertyUtils.describe(object);
+				tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+				String tableName = tableMapper.getTableName();
+				tableSql.append(INSERT_INTO_BLANK).append(tableName).append(BLANK_OPENPAREN);
+				valueSql.append("values");
 			}
-			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
-			if (((FieldMapper) fieldMapper).isOpVersionLock()) {
-				value = 0;
-				valueSql.append("'0',");
-			} else {
-				valueSql.append(POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
-					valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+			valueSql.append("(");
+			boolean uniqueKeyHandled = false;
+			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (!fieldMapper.isInsertAble() || ((value == null && !fieldMapper.isOpVersionLock())
+						|| (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
+					continue;
+				}
+				allFieldNull = false;
+				if (i == 0) {
+					tableSql.append(fieldMapper.getDbFieldName()).append(COMMA);
+				}
+				if (((FieldMapper) fieldMapper).isOpVersionLock()) {
+					value = 0;
+					valueSql.append("'0',");
 				} else {
-					valueSql.append(fieldMapper.getFieldName());
-				}
-				valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
-				if (fieldMapper.getTypeHandlerPath() != null) {
-					valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
-				}
-				if (fieldMapper.isUniqueKey()) {
-					uniqueKeyHandled = true;
-					if (keyHandler != null) {
-						handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled);
+					valueSql.append(POUND_OPENBRACE);
+					valueSql.append("collection[" + i + "].");
+					if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+						valueSql.append(fieldMapper.getFieldName()).append(DOT)
+								.append(fieldMapper.getForeignFieldName());
+					} else {
+						valueSql.append(fieldMapper.getFieldName());
 					}
+					valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+					if (fieldMapper.getTypeHandlerPath() != null) {
+						valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+					}
+					if (fieldMapper.isUniqueKey()) {
+						uniqueKeyHandled = true;
+						if (keyHandler != null) {
+
+							handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled, i);
+						}
+					}
+					valueSql.append(CLOSEBRACE_COMMA);
 				}
-				valueSql.append(CLOSEBRACE_COMMA);
 			}
-		}
-		if (keyHandler != null && !uniqueKeyHandled) {
-			FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
-			tableSql.append(temp.getDbFieldName()).append(COMMA);
-			handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled);
-		}
-		if (allFieldNull) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
+			if (keyHandler != null && !uniqueKeyHandled) {
+				FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
+				if (i == 0) {
+					tableSql.append(temp.getDbFieldName()).append(COMMA);
+				}
+				handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled, i);
+			}
+			if (allFieldNull) {
+				throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
+			}
+			valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
+			valueSql.append(CLOSEPAREN).append(COMMA);
+			i++;
 		}
 
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
-		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).append(CLOSEPAREN).toString();
+		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).toString();
 	}
 
 	/**
@@ -946,7 +970,7 @@ public class SqlBuilder {
 	@SuppressWarnings("unchecked")
 	private static void dealWhereSqlOfIn(Object value, StringBuilder whereSql, ConditionMapper conditionMapper,
 			String fieldNamePrefix, boolean notIn, TableName tableName) {
-		List<Object> multiConditionC = (List<Object>) value;
+		Collection<Object> multiConditionC = (Collection<Object>) value;
 		if (multiConditionC.isEmpty() && notIn) {
 			return;
 		} else {

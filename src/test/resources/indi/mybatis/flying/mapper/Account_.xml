@@ -74,6 +74,11 @@
 		{"action":"insert",
 		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
+	
+	<insert id="insertSnowFlakeBatch">
+		{"action":"insertBatch",
+		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
+	</insert>
 
 	<update id="update">
 		{"action":"update"}
