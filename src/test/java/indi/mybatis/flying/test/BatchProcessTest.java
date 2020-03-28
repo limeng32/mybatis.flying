@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -373,9 +374,8 @@ public class BatchProcessTest {
 		a3.setRole(r3);
 		ac.add(a3);
 		accountService.insertSnowFlakeBatch(ac);
-		System.out.println(JSONObject.toJSONString(ac));
-
-		Collection<Account_> c = accountService.selectAll(new Account_());
-		System.out.println("2:" + JSONObject.toJSONString(c));
+		for (Account_ e : ac) {
+			Assert.assertNotNull(e.getId());
+		}
 	}
 }
