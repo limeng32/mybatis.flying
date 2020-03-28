@@ -51,11 +51,9 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate.xml")
 	public void testBatchUpdate() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
 		ac.setActivated(false);
-		ac.setOpLock(a.getOpLock());
 
 		ac.setNameEqual("ann");
 		ac.setActivateValueEqual("aaa");
@@ -68,10 +66,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate2.xml")
 	public void testBatchUpdate2() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameLessOrEqual("c");
 		accountService.update(ac);
 	}
@@ -81,10 +77,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate3.xml")
 	public void testBatchUpdate3() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameLessThan("c");
 		accountService.update(ac);
 	}
@@ -94,10 +88,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate4.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate4.xml")
 	public void testBatchUpdate4() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameGreaterOrEqual("b");
 		accountService.update(ac);
 	}
@@ -107,10 +99,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate5.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate5.xml")
 	public void testBatchUpdate5() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameGreaterThan("b");
 		accountService.update(ac);
 	}
@@ -120,10 +110,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate6.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate6.xml")
 	public void testBatchUpdate6() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameLike("a");
 		accountService.update(ac);
 	}
@@ -133,10 +121,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate7.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate7.xml")
 	public void testBatchUpdate7() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameHeadLike("a");
 		accountService.update(ac);
 	}
@@ -146,10 +132,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate8.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate8.xml")
 	public void testBatchUpdate8() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameTailLike("a");
 		accountService.update(ac);
 	}
@@ -159,10 +143,8 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate9.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate9.xml")
 	public void testBatchUpdate9() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameNotEqual("2a");
 		accountService.update(ac);
 	}
@@ -172,16 +154,13 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate10.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdate10.xml")
 	public void testBatchUpdate10() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameIsNull(true);
 		accountService.update(ac);
 
 		Account_Condition ac2 = new Account_Condition();
 		ac2.setEmail("bob@tom.com");
-		ac2.setOpLock(a.getOpLock());
 		ac2.setNameIsNull(false);
 		ac2.setActivateValueEqual("aaa");
 		accountService.update(ac2);
@@ -195,16 +174,13 @@ public class BatchProcessTest {
 		List<String> nameC = new ArrayList<>();
 		nameC.add("a2");
 		nameC.add("b");
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameIn(nameC);
 		accountService.update(ac);
 
 		Account_Condition ac2 = new Account_Condition();
 		ac2.setEmail("bob@tom.com");
-		ac2.setOpLock(a.getOpLock());
 		ac2.setNameIn(new ArrayList<String>());
 		accountService.update(ac2);
 	}
@@ -217,12 +193,32 @@ public class BatchProcessTest {
 		List<String> nameC = new ArrayList<>();
 		nameC.add("a2");
 		nameC.add("b");
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
-		ac.setOpLock(a.getOpLock());
 		ac.setNameNotIn(nameC);
 		accountService.update(ac);
+
+		Account_ a2 = new Account_();
+		a2.setId(2L);
+		a2.setPassword("aaa");
+		// wrong opLock
+		a2.setOpLock(10);
+		accountService.update(a2);
+	}
+
+//	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.xml")
+	public void testBatchUpdatePersistent() {
+		List<String> nameC = new ArrayList<>();
+		nameC.add("a2");
+		nameC.add("b");
+		Account_Condition ac = new Account_Condition();
+		ac.setEmail("ann@tom.com");
+		ac.setNameNotIn(nameC);
+		ac.setOpLock(1);
+		accountService.updatePersistent(ac);
 	}
 
 	@Test
@@ -230,9 +226,7 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete.xml")
 	public void testBatchDelete() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
-		ac.setOpLock(a.getOpLock());
 		ac.setNameEqual("a2a");
 		accountService.delete(ac);
 	}
@@ -242,9 +236,7 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete2.xml")
 	public void testBatchDelete2() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
-		ac.setOpLock(a.getOpLock());
 		ac.setNameGreaterThan("b");
 		accountService.delete(ac);
 	}
@@ -254,9 +246,7 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete3.xml")
 	public void testBatchDelete3() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
-		ac.setOpLock(a.getOpLock());
 		ac.setNameLike("a");
 		accountService.delete(ac);
 	}
@@ -266,9 +256,7 @@ public class BatchProcessTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete4.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchDelete4.xml")
 	public void testBatchDelete4() {
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
-		ac.setOpLock(a.getOpLock());
 		ac.setNameIsNull(true);
 		accountService.delete(ac);
 	}
@@ -281,9 +269,7 @@ public class BatchProcessTest {
 		List<String> nameC = new ArrayList<>();
 		nameC.add("a2");
 		nameC.add("b");
-		Account_ a = accountService.select(1);
 		Account_Condition ac = new Account_Condition();
-		ac.setOpLock(a.getOpLock());
 		ac.setNameIn(nameC);
 		accountService.delete(ac);
 	}
@@ -332,6 +318,16 @@ public class BatchProcessTest {
 		ac.add(a3);
 		accountService.insertBatch(ac);
 		System.out.println(JSONObject.toJSONString(ac));
+
+		Collection<Account_> ac2 = new ArrayList<>();
+		try {
+			accountService.insertBatch(ac2);
+			// below code should never reach
+			Assert.assertTrue(false);
+		} catch (Exception e) {
+
+		}
+		System.out.println(JSONObject.toJSONString(ac2));
 	}
 
 	@Test

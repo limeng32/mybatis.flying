@@ -84,8 +84,6 @@ public class FlyingManager {
 			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE));
 		}
 		flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX));
-		flyingModel.setDataSourceId(json.getString(FlyingKeyword.DATA_SOURCE));
-		flyingModel.setConnectionCatalog(json.getString(FlyingKeyword.CONNECTION_CATALOG));
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
 				: (outerPrefix + flyingModel.getUnstablePrefix()));
 	}
@@ -129,12 +127,9 @@ public class FlyingManager {
 		FlyingModel ret = new FlyingModel();
 		String extension = null;
 		if (null != originalSql && originalSql.startsWith(FlyingKeyword.FLYING) && originalSql.indexOf(':') > -1) {
-			String dataSourceIdAndConnectionCatalog = null;
 			String s1 = null;
 			if (originalSql.startsWith(FlyingKeyword.FLYING_LEFTBRACKET)
 					|| originalSql.startsWith(FlyingKeyword.FLYING_QUESTIONMARK_LEFTBRACKET)) {
-				String s0 = originalSql.substring(0, originalSql.indexOf(')') + 1);
-				dataSourceIdAndConnectionCatalog = s0.substring(s0.indexOf('(') + 1, s0.lastIndexOf(')'));
 				s1 = originalSql.substring(0, originalSql.indexOf(':', originalSql.indexOf(')')));
 			} else {
 				s1 = originalSql.substring(0, originalSql.indexOf(':'));
@@ -163,14 +158,6 @@ public class FlyingManager {
 				ActionType actionType = ActionType.forValue(actionTypeStr);
 				if (actionType != null) {
 					ret.setHasFlyingFeature(true);
-					if (dataSourceIdAndConnectionCatalog != null
-							&& dataSourceIdAndConnectionCatalog.indexOf(':') != -1) {
-						ret.setDataSourceId(dataSourceIdAndConnectionCatalog.substring(0,
-								dataSourceIdAndConnectionCatalog.indexOf(':')));
-						ret.setConnectionCatalog(dataSourceIdAndConnectionCatalog.substring(
-								dataSourceIdAndConnectionCatalog.indexOf(':') + 1,
-								dataSourceIdAndConnectionCatalog.length()));
-					}
 					ret.setActionType(actionType);
 					if (s2.indexOf(':') > -1) {
 						String s3 = s2.substring(s2.indexOf(':') + 1, s2.length());

@@ -11,6 +11,7 @@ package indi.mybatis.flying.exception;
 public enum AutoMapperExceptionEnum {
 
 	PARAMETER_OBJECT_IS_NULL("ParameterObject is null"), DIALECT_PROPERTY_CANNOT_FOUND("Dialect property is not found"),
+	INSERT_BATCH_PARAMETER_OBJECT_IS_EMPTY("Insert batch parameterObject is empty"),
 	NO_TYPE_HANDLER_SUITABLE("There was no TypeHandler found for parameter "),
 	WRONG_KEY_GENERATOR_TYPE("Find an error KeyGeneratorType in "),
 	WRONG_CUSTOM_KEY_GENERATOR("Find an error custom key generator in "),

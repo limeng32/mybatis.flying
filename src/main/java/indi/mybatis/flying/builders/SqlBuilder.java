@@ -23,6 +23,8 @@ import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
+import indi.mybatis.flying.exception.AutoMapperException;
+import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.models.ConditionMapper;
@@ -82,6 +84,7 @@ public class SqlBuilder {
 	private static final String SELECT_BLANK = "select ";
 	private static final String SELECT_COUNT_OPENPAREN = "select count(";
 	private static final String EQUAL_POUND_OPENBRACE = "=#{";
+	private static final String EQUAL = "=";
 	private static final String DELETE_FROM_BLANK = "delete from ";
 	private static final String COMMA_JAVATYPE_EQUAL = ",javaType=";
 	private static final String COMMA_JDBCTYPE_EQUAL = ",jdbcType=";
@@ -737,8 +740,13 @@ public class SqlBuilder {
 		Map<?, ?> dtoFieldMap = null;
 		boolean allFieldNull = true;
 		int i = 0;
-		for (Object object : (Collection<Object>) (valueC.get("collection"))) {
-
+		Collection<Object> c = (Collection<Object>) (valueC.get("collection"));
+		if (c.isEmpty()) {
+			throw new AutoMapperException(
+					new StringBuffer(AutoMapperExceptionEnum.INSERT_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
+							.append(" of ").append(flyingModel.getId()).toString());
+		}
+		for (Object object : c) {
 			String ignoreTag = flyingModel.getIgnoreTag();
 			KeyHandler keyHandler = flyingModel.getKeyHandler();
 			if (i == 0) {
@@ -838,23 +846,26 @@ public class SqlBuilder {
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (!fieldMapper.isUpdateAble() || (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag)))) {
+			if (!fieldMapper.isUpdateAble() || (!fieldMapper.isOpVersionLock()
+					&& (value == null || (fieldMapper.getIgnoreTagSet().contains(ignoreTag))))) {
 				continue;
 			}
-			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
-				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-			} else {
-				tableSql.append(fieldMapper.getFieldName());
-			}
-			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
-			if (fieldMapper.getTypeHandlerPath() != null) {
-				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
-			}
-			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
-				tableSql.append(PLUS_1);
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
+						.append(PLUS_1);
+			} else {
+				allFieldNull = false;
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+				} else {
+					tableSql.append(fieldMapper.getFieldName());
+				}
+				tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				if (fieldMapper.getTypeHandlerPath() != null) {
+					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+				}
+				tableSql.append(CLOSEBRACE);
 			}
 			tableSql.append(COMMA);
 		}
@@ -886,6 +897,83 @@ public class SqlBuilder {
 							.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
 				}
 			}
+			for (FieldMapper f : tableMapper.getOpVersionLocks()) {
+				whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
+						.append(CLOSEBRACE_AND_BLANK);
+			}
+		}
+		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
+		return tableSql.append(whereSql).toString();
+	}
+
+	/**
+	 * Generate the SQL statement for the update persistent state object from the
+	 * incoming object
+	 * 
+	 * @param object      pojo
+	 * @param flyingModel FlyingModel
+	 * @return sql
+	 * @throws NoSuchMethodException     Exception
+	 * @throws InvocationTargetException Exception
+	 * @throws IllegalAccessException    Exception
+	 * @throws RuntimeException          Exception
+	 */
+	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		if (null == object) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
+		}
+		String ignoreTag = flyingModel.getIgnoreTag();
+		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
+		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+
+		// updatePersistent causes features that do not require batch update
+
+		String tableName = tableMapper.getTableName();
+
+		StringBuilder tableSql = new StringBuilder();
+		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
+
+		tableSql.append(UPDATE_BLANK).append(tableName).append(BLANK_SET_BLANK);
+
+		boolean allFieldNull = true;
+
+		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			if (!fieldMapper.isUpdateAble() || (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+				continue;
+			}
+			allFieldNull = false;
+			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+			} else {
+				tableSql.append(fieldMapper.getFieldName());
+			}
+			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+			if (fieldMapper.getTypeHandlerPath() != null) {
+				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+			}
+			tableSql.append(CLOSEBRACE);
+			if (fieldMapper.isOpVersionLock()) {
+				tableSql.append(PLUS_1);
+			}
+			tableSql.append(COMMA);
+		}
+		if (allFieldNull) {
+			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
+		}
+
+		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
+		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
+			whereSql.append(fieldMapper.getDbFieldName());
+			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+			if (value == null) {
+				throw new BuildSqlException(
+						new StringBuilder(BuildSqlExceptionEnum.UPDATE_PERSISTENT_UNIQUE_KEY_IS_NULL.toString())
+								.append(fieldMapper.getDbFieldName()).toString());
+			}
+			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA_JDBCTYPE_EQUAL)
+					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
 		}
 		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
 			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
@@ -1019,83 +1107,6 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * Generate the SQL statement for the update persistent state object from the
-	 * incoming object
-	 * 
-	 * @param object      pojo
-	 * @param flyingModel FlyingModel
-	 * @return sql
-	 * @throws NoSuchMethodException     Exception
-	 * @throws InvocationTargetException Exception
-	 * @throws IllegalAccessException    Exception
-	 * @throws RuntimeException          Exception
-	 */
-	public static String buildUpdatePersistentSql(Object object, FlyingModel flyingModel)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if (null == object) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
-		}
-		String ignoreTag = flyingModel.getIgnoreTag();
-		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
-		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-
-		// updatePersistent causes features that do not require batch update
-
-		String tableName = tableMapper.getTableName();
-
-		StringBuilder tableSql = new StringBuilder();
-		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
-
-		tableSql.append(UPDATE_BLANK).append(tableName).append(BLANK_SET_BLANK);
-
-		boolean allFieldNull = true;
-
-		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			if (!fieldMapper.isUpdateAble() || (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-				continue;
-			}
-			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
-				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-			} else {
-				tableSql.append(fieldMapper.getFieldName());
-			}
-			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
-			if (fieldMapper.getTypeHandlerPath() != null) {
-				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
-			}
-			tableSql.append(CLOSEBRACE);
-			if (fieldMapper.isOpVersionLock()) {
-				tableSql.append(PLUS_1);
-			}
-			tableSql.append(COMMA);
-		}
-		if (allFieldNull) {
-			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
-		}
-
-		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
-		for (FieldMapper fieldMapper : tableMapper.getUniqueKeyNames()) {
-			whereSql.append(fieldMapper.getDbFieldName());
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (value == null) {
-				throw new BuildSqlException(
-						new StringBuilder(BuildSqlExceptionEnum.UPDATE_PERSISTENT_UNIQUE_KEY_IS_NULL.toString())
-								.append(fieldMapper.getDbFieldName()).toString());
-			}
-			whereSql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA_JDBCTYPE_EQUAL)
-					.append(fieldMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
-		}
-		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
-			whereSql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
-					.append(CLOSEBRACE_AND_BLANK);
-		}
-		whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
-		return tableSql.append(whereSql).toString();
-	}
-
-	/**
 	 * The delete SQL statement is generated from the incoming object
 	 * 
 	 * @param object Object
@@ -1140,10 +1151,10 @@ public class SqlBuilder {
 						.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
 						.append(CLOSEBRACE_AND_BLANK);
 			}
-		}
-		for (FieldMapper f : tableMapper.getOpVersionLocks()) {
-			sql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
-					.append(CLOSEBRACE_AND_BLANK);
+			for (FieldMapper f : tableMapper.getOpVersionLocks()) {
+				sql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
+						.append(CLOSEBRACE_AND_BLANK);
+			}
 		}
 		sql.delete(sql.lastIndexOf(AND), sql.lastIndexOf(AND) + 3);
 		return sql.toString();
