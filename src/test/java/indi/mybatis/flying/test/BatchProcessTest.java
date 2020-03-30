@@ -206,18 +206,16 @@ public class BatchProcessTest {
 		accountService.update(a2);
 	}
 
-//	@Test
+	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchUpdatePersistent.xml")
 	public void testBatchUpdatePersistent() {
-		List<String> nameC = new ArrayList<>();
-		nameC.add("a2");
-		nameC.add("b");
 		Account_Condition ac = new Account_Condition();
-		ac.setEmail("ann@tom.com");
-		ac.setNameNotIn(nameC);
+		ac.setId(1L);
+		ac.setName("a2");
 		ac.setOpLock(1);
+		ac.setActivated(false);
 		accountService.updatePersistent(ac);
 	}
 

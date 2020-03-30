@@ -942,20 +942,22 @@ public class SqlBuilder {
 			if (!fieldMapper.isUpdateAble() || (fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 				continue;
 			}
-			allFieldNull = false;
-			tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-			if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
-				tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-			} else {
-				tableSql.append(fieldMapper.getFieldName());
-			}
-			tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
-			if (fieldMapper.getTypeHandlerPath() != null) {
-				tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
-			}
-			tableSql.append(CLOSEBRACE);
 			if (fieldMapper.isOpVersionLock()) {
-				tableSql.append(PLUS_1);
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
+						.append(PLUS_1);
+			} else {
+				allFieldNull = false;
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+				} else {
+					tableSql.append(fieldMapper.getFieldName());
+				}
+				tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				if (fieldMapper.getTypeHandlerPath() != null) {
+					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+				}
+				tableSql.append(CLOSEBRACE);
 			}
 			tableSql.append(COMMA);
 		}
