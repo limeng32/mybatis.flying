@@ -24,9 +24,7 @@ public class FlyingKeyword {
 
 	public static final String ACTION = "action";
 
-	public static final String CONNECTION_CATALOG = "connectionCatalog";
-
-	public static final String DATA_SOURCE = "dataSource";
+	public static final String INDEX = "index";
 
 	public static final String ID = "id";
 

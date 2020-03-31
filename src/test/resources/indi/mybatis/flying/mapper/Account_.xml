@@ -10,7 +10,7 @@
 
 	<select id="select" resultMap="result">
 		{"action":"select#{?}",
-		"ignore":"noPassword"}
+		"ignore":"noPassword", "index":"use index(index1)"}
 	</select>
 
 	<select id="selectAsd" resultMap="resultPrefix">
@@ -32,13 +32,18 @@
 		"ignore":"noPassword"}
 	</select>
 
-	<!-- 此处ignore:cccc实际上是无效的  -->
+	<!-- here 'ignore:cccc' in fact is useless  -->
 	<select id="selectAllPrefix" resultMap="resultPrefix">
-		{"action":"selectAll", "ignore":"noPassword", "properties":{
+		{"action":"selectAll", "ignore":"noPassword", "index":"use index(index1)", "properties":{
 			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.select", "prefix":"permission__", "ignore":"cccc"},
 			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"},
 			"roleDeputy":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"roleDeputy__"}
 		}}
+	</select>
+	
+	<!-- deal whith index -->
+	<select id="selectWithIndex" resultMap="result">
+		{"action":"select#{?}", "index":"use index(index1)"}
 	</select>
 	
 	<select id="selectAllPrefixIgnore" resultMap="resultPrefix">
@@ -98,8 +103,7 @@
 	</select>
 
 	<select id="selectAllDirect" resultMap="result">
-		select * from account_
-		where name = #{name} and email = #{email}
+		select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}
 	</select>
 
 	<select id="selectAccountByRole" resultMap="result">

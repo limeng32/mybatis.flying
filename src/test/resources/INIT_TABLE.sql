@@ -15,6 +15,7 @@ CREATE TABLE account_ (
   KEY role1 (role_id) USING BTREE,
   KEY role2 (deputy_id) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=456 DEFAULT CHARSET=utf8;
+CREATE INDEX index1 ON account_(name);
 DROP TABLE IF EXISTS detail_;
 CREATE TABLE detail_ (
   id int(11) NOT NULL AUTO_INCREMENT,

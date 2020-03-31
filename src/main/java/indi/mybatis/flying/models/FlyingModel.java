@@ -20,6 +20,7 @@ public class FlyingModel {
 	private String id;
 	private boolean hasFlyingFeature;
 	private ActionType actionType;
+	private String index;
 	private String ignoreTag;
 	private KeyGeneratorType keyGeneratorType;
 	private KeyHandler keyHandler;
@@ -49,6 +50,14 @@ public class FlyingModel {
 
 	public void setActionType(ActionType actionType) {
 		this.actionType = actionType;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
 	}
 
 	public String getIgnoreTag() {

@@ -1317,9 +1317,11 @@ public class SqlBuilder {
 		Map<Mapperable, Integer> m = pw.map2;
 		String ignoreTag = null;
 		String prefix = null;
+		String indexStr = null;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();
 			prefix = flyingModel.getPrefix();
+			indexStr = flyingModel.getIndex();
 		}
 		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>(4) : PropertyUtils.describe(pw.object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
@@ -1340,6 +1342,9 @@ public class SqlBuilder {
 		 */
 		if (pw.originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
+			if (indexStr != null) {
+				fromSql.append(" ").append(indexStr);
+			}
 		}
 
 		if (flyingModel != null) {

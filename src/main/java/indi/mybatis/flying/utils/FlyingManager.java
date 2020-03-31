@@ -80,6 +80,7 @@ public class FlyingManager {
 		flyingModel.setHasFlyingFeature(true);
 		if (innerJson == null) {
 			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE));
+			flyingModel.setIndex(json.getString(FlyingKeyword.INDEX));
 		} else {
 			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE));
 		}

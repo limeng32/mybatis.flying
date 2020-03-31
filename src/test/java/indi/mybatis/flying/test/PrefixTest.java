@@ -117,18 +117,22 @@ public class PrefixTest {
 		System.out.println("fm::" + JSONObject.toJSONString(fm));
 
 		Assert.assertEquals("noPassword", fm.getIgnoreTag());
+		Assert.assertEquals("use index(index1)", fm.getIndex());
 		Assert.assertNull(fm.getPrefix());
 
 		FlyingModel fm1 = fm.getProperties().get("permission");
 		Assert.assertNull(fm1.getIgnoreTag());
+		Assert.assertNull(fm1.getIndex());
 		Assert.assertEquals("permission__", fm1.getPrefix());
 		Assert.assertEquals("indi.mybatis.flying.mapper.PermissionMapper.select", fm1.getId());
 
 		FlyingModel fm2 = fm.getProperties().get("role");
+		Assert.assertNull(fm2.getIndex());
 		Assert.assertEquals("indi.mybatis.flying.mapper.RoleMapper.select", fm2.getId());
 		Assert.assertEquals("role__", fm2.getPrefix());
 
 		FlyingModel fm3 = fm.getProperties().get("roleDeputy");
+		Assert.assertNull(fm3.getIndex());
 		Assert.assertEquals("roleDeputy__", fm3.getPrefix());
 	}
 
