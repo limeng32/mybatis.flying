@@ -1267,7 +1267,7 @@ public class SqlBuilder {
 	 * @throws IllegalAccessException    Exception
 	 * @throws RuntimeException          Exception
 	 */
-	public static String buildCountSql(Object object)
+	public static String buildCountSql(Object object, FlyingModel flyingModel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
@@ -1295,7 +1295,8 @@ public class SqlBuilder {
 		StringBuilder[] sqlBuilders = new StringBuilder[] { new StringBuilder(FROM), new StringBuilder(WHERE_BLANK) };
 		StringBuilder fromSql = sqlBuilders[0];
 		StringBuilder whereSql = sqlBuilders[1];
-		dealMapperAnnotationIterationForCount(object, sqlBuilders, null, null, null, ai, tableName);
+		dealMapperAnnotationIterationForCount(object, sqlBuilders, null, null, null, ai, tableName,
+				flyingModel.getIndex());
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1509,7 +1510,8 @@ public class SqlBuilder {
 
 	private static void dealMapperAnnotationIterationForCount(Object object, StringBuilder[] sqlBuilders,
 			TableName originTableName, Mapperable originFieldMapper, String fieldPerfix, AtomicInteger index,
-			TableName lastTableName) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			TableName lastTableName, String indexStr)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
@@ -1523,6 +1525,9 @@ public class SqlBuilder {
 		 */
 		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
+			if (indexStr != null) {
+				fromSql.append(" ").append(indexStr);
+			}
 		}
 
 		/*
@@ -1561,7 +1566,7 @@ public class SqlBuilder {
 			}
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForCount(value, sqlBuilders, tableName, fieldMapper, temp, index,
-						tableName);
+						tableName, indexStr);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}

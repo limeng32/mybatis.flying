@@ -93,7 +93,7 @@ public class AutoMapperInterceptor implements Interceptor {
 			String newSql = "";
 			switch (flyingModel.getActionType()) {
 			case COUNT:
-				newSql = SqlBuilder.buildCountSql(parameterObject);
+				newSql = SqlBuilder.buildCountSql(parameterObject, flyingModel);
 				break;
 			case DELETE:
 				newSql = SqlBuilder.buildDeleteSql(parameterObject);

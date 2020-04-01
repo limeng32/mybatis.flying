@@ -18,6 +18,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ select(Object id);
 
 	public Account_ selectAsd(Object id);
+	
+	public Account_ selectWithIndex(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.OBSERVER)
 	public Account_ selectWithoutCache(Object id);

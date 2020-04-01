@@ -23,6 +23,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public Account_ selectWithIndex(Object id) {
+		return mapper.selectWithIndex(id);
+	}
+
+	@Override
 	public Account_ selectAsd(Object id) {
 		return mapper.selectAsd(id);
 	}
@@ -61,7 +66,7 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	public void insertSnowFlakeBatch(Collection<Account_> t) {
 		mapper.insertSnowFlakeBatch(t);
 	}
-	
+
 	@Override
 	public int update(Account_ t) {
 		return supportUpdate(mapper, t);
