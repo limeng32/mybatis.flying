@@ -15,13 +15,13 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true)
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.INTEGER, isUniqueKey = true, whiteListTag = "simple2")
 	private Integer id;
 
 	@FieldMapperAnnotation(dbFieldName = "fake_id", jdbcType = JdbcType.INTEGER)
 	private Integer fakeId;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple2", ignoreTag = "noName")
 	private java.lang.String name;
 
 	private java.util.Collection<Account_> account;

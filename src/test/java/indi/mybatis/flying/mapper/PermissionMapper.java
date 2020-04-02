@@ -6,4 +6,6 @@ public interface PermissionMapper {
 
 	public Permission select(Object id);
 
+	public Permission selectSimple2(Object id);
+
 }

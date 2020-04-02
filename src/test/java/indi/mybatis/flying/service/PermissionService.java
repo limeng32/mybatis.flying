@@ -17,4 +17,9 @@ public class PermissionService implements PermissionMapper {
 		return mapper.select(id);
 	}
 
+	@Override
+	public Permission selectSimple2(Object id) {
+		return mapper.selectSimple2(id);
+	}
+
 }

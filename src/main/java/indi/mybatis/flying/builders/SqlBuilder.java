@@ -190,6 +190,12 @@ public class SqlBuilder {
 				}
 			}
 
+			if (fieldMapper.getWhiteListTag().length > 0) {
+				for (String t : fieldMapper.getWhiteListTag()) {
+					fieldMapper.getWhiteListTagSet().add(t);
+				}
+			}
+
 			if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 				fieldMapper.setForeignKey(true);
 			}
@@ -1288,10 +1294,12 @@ public class SqlBuilder {
 		String ignoreTag = null;
 		String prefix = null;
 		String indexStr = null;
+		String whiteListTag = null;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();
 			prefix = flyingModel.getPrefix();
 			indexStr = flyingModel.getIndex();
+			whiteListTag = flyingModel.getWhiteListTag();
 		}
 		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>(4) : PropertyUtils.describe(pw.object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
@@ -1318,33 +1326,48 @@ public class SqlBuilder {
 		}
 
 		if (flyingModel != null) {
-			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-				FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
-				if (inner != null) {
-					if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
-						dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
-					}
-					TableMapper innerTableMapper = buildTableMapper(fieldMapper.getFieldType());
-					int indexValue2 = index.getAndIncrement();
-					if (m == null) {
-						m = new HashMap<Mapperable, Integer>(2);
-					}
-					m.put(fieldMapper, indexValue2);
-					for (Map.Entry<String, FieldMapper> e : innerTableMapper.getFieldMapperCache().entrySet()) {
-						if (fieldMapper.getFieldName().equals(e.getValue().getFieldName())
-								&& (!e.getValue().getIgnoreTagSet().contains(inner.getIgnoreTag()))) {
-							selectSql.append(innerTableMapper.getTableName()).append("_").append(indexValue2)
-									.append(DOT).append(e.getValue().getDbFieldName()).append(" as ")
-									.append(inner.getPrefix()).append(e.getValue().getDbFieldName()).append(COMMA);
+			if (whiteListTag == null) {
+				for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+					FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
+					if (inner != null) {
+						if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
+							dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
 						}
+						int indexValue2 = index.getAndIncrement();
+						if (m == null) {
+							m = new HashMap<Mapperable, Integer>(2);
+						}
+						m.put(fieldMapper, indexValue2);
+					}
+					if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+						selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+						if (prefix != null) {
+							selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+						}
+						selectSql.append(COMMA);
 					}
 				}
-				if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-					selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
-					if (prefix != null) {
-						selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+			} else {
+				for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+					FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
+					if (inner != null) {
+						if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
+							dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
+						}
+						int indexValue2 = index.getAndIncrement();
+						if (m == null) {
+							m = new HashMap<Mapperable, Integer>(2);
+						}
+						m.put(fieldMapper, indexValue2);
 					}
-					selectSql.append(COMMA);
+					if ((fieldMapper.getWhiteListTagSet().contains(whiteListTag))
+							&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+						selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+						if (prefix != null) {
+							selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+						}
+						selectSql.append(COMMA);
+					}
 				}
 			}
 		}

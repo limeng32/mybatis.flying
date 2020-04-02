@@ -77,9 +77,9 @@ public @interface FieldMapperAnnotation {
 
 	/**
 	 * 
-	 * Whether or not to have the ignore sign, the default is not.When the flag
-	 * "foo" is appeared, the flying expression ends with ":foo" to ignore this
-	 * field in the addition, query, or modification statement.
+	 * Belong to whitch ignore lists. When the flag "foo" is appeared, the flying
+	 * json "ignore" property equals "foo" will block this field in the addition,
+	 * query, or modification statement.
 	 * 
 	 * @return String[]
 	 * @since 0.9.0
@@ -120,4 +120,16 @@ public @interface FieldMapperAnnotation {
 	 * @since 0.9.7
 	 */
 	AssociationType associationType() default AssociationType.LEFT_JOIN;
+
+	/**
+	 * 
+	 * Belong to whitch white lists. When the flying json "whiteList" property
+	 * equals "foo" (also active white list mode), only the field with "foo"
+	 * appeared in this tag will be put into the white list, then only field in the
+	 * list can appear in the addition, query, or modification statement.
+	 * 
+	 * @return String[]
+	 * @since 1.0.0
+	 */
+	String[] whiteListTag() default {};
 }

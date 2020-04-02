@@ -7,8 +7,6 @@ import javax.persistence.Id;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
@@ -22,16 +20,18 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.BIGINT)
+	@FieldMapperAnnotation(dbFieldName = "id", jdbcType = JdbcType.BIGINT, whiteListTag = { "simple" })
 	private Long id;
 
-	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" })
+	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" }, whiteListTag = {
+			"simple" })
 	private java.lang.String name;
 
 	@Column
 	private java.lang.String email;
 
-	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noPassword" })
+	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = {
+			"noPassword" }, whiteListTag = { "simple" })
 	private java.lang.String password;
 
 	@FieldMapperAnnotation(dbFieldName = "opLock", jdbcType = JdbcType.INTEGER, opLockType = OpLockType.VERSION)
@@ -50,8 +50,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	 * 激活码
 	 * 
 	 */
-	@JSONField(serialize = false)
-	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR, whiteListTag = { "simple" })
 	private java.lang.String activateValue;
 
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {

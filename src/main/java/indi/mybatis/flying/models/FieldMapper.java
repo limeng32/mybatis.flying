@@ -84,23 +84,26 @@ public class FieldMapper implements Mapperable {
 	private boolean isOpVersionLock;
 
 	/**
-	 * IgnoreTag's set for this variable, the default is empty.
-	 */
-	private Set<String> ignoreTagSet;
-
-	/**
 	 * The access path of the custom typeHandler for this variable, the default is
 	 * null.
 	 */
 	private String typeHandlerPath;
 
-	private String fmaDbFieldName;
-
-	private String columnFieldName;
-
 	private OpLockType opLockType = OpLockType.NULL;
 
 	private String[] ignoreTag = {};
+
+	private String[] whiteListTag = {};
+
+	/**
+	 * IgnoreTag's set for this variable, the default is empty.
+	 */
+	private Set<String> ignoreTagSet = new HashSet<>();
+
+	/**
+	 * WhiteListTag's set for this variable, the default is empty.
+	 */
+	private Set<String> whiteListTagSet = new HashSet<>();
 
 	private FieldMapperAnnotation fieldMapperAnnotation;
 
@@ -144,6 +147,7 @@ public class FieldMapper implements Mapperable {
 			setOpLockType(fieldMapperAnnotation.opLockType());
 			setUniqueKey(fieldMapperAnnotation.isUniqueKey());
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
+			setWhiteListTag(fieldMapperAnnotation.whiteListTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 			setAssociationType(fieldMapperAnnotation.associationType());
 			if (fieldMapperAnnotation.associationExtra().length > 0) {
@@ -293,14 +297,20 @@ public class FieldMapper implements Mapperable {
 
 	@Override
 	public Set<String> getIgnoreTagSet() {
-		if (ignoreTagSet == null) {
-			ignoreTagSet = new HashSet<>();
-		}
 		return ignoreTagSet;
 	}
 
 	public void setIgnoreTagSet(Set<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
+	}
+
+	@Override
+	public Set<String> getWhiteListTagSet() {
+		return whiteListTagSet;
+	}
+
+	public void setWhiteListTagSet(Set<String> whiteListTagSet) {
+		this.whiteListTagSet = whiteListTagSet;
 	}
 
 	@Override
@@ -312,22 +322,6 @@ public class FieldMapper implements Mapperable {
 		if (!Void.class.equals(typeHandler)) {
 			this.typeHandlerPath = typeHandler.getName();
 		}
-	}
-
-	public String getFmaDbFieldName() {
-		return fmaDbFieldName;
-	}
-
-	public void setFmaDbFieldName(String fmaDbFieldName) {
-		this.fmaDbFieldName = fmaDbFieldName;
-	}
-
-	public String getColumnFieldName() {
-		return columnFieldName;
-	}
-
-	public void setColumnFieldName(String columnFieldName) {
-		this.columnFieldName = columnFieldName;
 	}
 
 	public FieldMapperAnnotation getFieldMapperAnnotation() {
@@ -368,6 +362,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setIgnoreTag(String[] ignoreTag) {
 		this.ignoreTag = ignoreTag;
+	}
+
+	public String[] getWhiteListTag() {
+		return whiteListTag;
+	}
+
+	public void setWhiteListTag(String[] whiteListTag) {
+		this.whiteListTag = whiteListTag;
 	}
 
 	public Field getField() {

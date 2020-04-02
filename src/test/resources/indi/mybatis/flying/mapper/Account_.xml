@@ -12,6 +12,12 @@
 		{"action":"select#{?}",
 		"ignore":"noPassword", "index":"use index(index1)"}
 	</select>
+	
+	<select id="selectSimple" resultMap="resultPrefix">
+		{"action":"select#{?}", "ignore":"noPassword", "whiteList":"simple", "properties":{
+			"permission":{"id":"indi.mybatis.flying.mapper.PermissionMapper.selectSimple2", "prefix":"permission__"}
+		}}
+	</select>
 
 	<select id="selectAsd" resultMap="resultPrefix">
 		{

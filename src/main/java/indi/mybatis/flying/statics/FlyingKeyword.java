@@ -30,6 +30,8 @@ public class FlyingKeyword {
 
 	public static final String IGNORE = "ignore";
 
+	public static final String WHITE_LIST = "whiteList";
+
 	public static final String KEY_GENERATOR = "keyGenerator";
 
 	public static final String PREFIX = "prefix";

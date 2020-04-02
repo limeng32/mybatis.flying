@@ -67,9 +67,14 @@ public class ConditionMapper implements Mapperable {
 	private String foreignFieldName;
 
 	/**
-	 * The ignoreTag set for this variable,
+	 * IgnoreTag's set for this variable, the default is empty.
 	 */
-	private Set<String> ignoreTagSet;
+	private Set<String> ignoreTagSet = new HashSet<>();
+
+	/**
+	 * WhiteListTag's set for this variable, the default is empty.
+	 */
+	private Set<String> whiteListTagSet = new HashSet<>();
 
 	/**
 	 * This variable specifies the access path for the custom typeHandler, the
@@ -163,14 +168,20 @@ public class ConditionMapper implements Mapperable {
 
 	@Override
 	public Set<String> getIgnoreTagSet() {
-		if (ignoreTagSet == null) {
-			ignoreTagSet = new HashSet<>();
-		}
 		return ignoreTagSet;
 	}
 
 	public void setIgnoreTagSet(Set<String> ignoreTagSet) {
 		this.ignoreTagSet = ignoreTagSet;
+	}
+
+	@Override
+	public Set<String> getWhiteListTagSet() {
+		return whiteListTagSet;
+	}
+
+	public void setWhiteListTagSet(Set<String> whiteListTagSet) {
+		this.whiteListTagSet = whiteListTagSet;
 	}
 
 	@Override

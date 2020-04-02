@@ -22,6 +22,7 @@ public class FlyingModel {
 	private ActionType actionType;
 	private String index;
 	private String ignoreTag;
+	private String whiteListTag;
 	private KeyGeneratorType keyGeneratorType;
 	private KeyHandler keyHandler;
 	private String prefix;
@@ -66,6 +67,14 @@ public class FlyingModel {
 
 	public void setIgnoreTag(String ignoreTag) {
 		this.ignoreTag = ignoreTag;
+	}
+
+	public String getWhiteListTag() {
+		return whiteListTag;
+	}
+
+	public void setWhiteListTag(String whiteListTag) {
+		this.whiteListTag = whiteListTag;
 	}
 
 	public KeyGeneratorType getKeyGeneratorType() {

@@ -18,8 +18,10 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ select(Object id);
 
 	public Account_ selectAsd(Object id);
-	
+
 	public Account_ selectWithIndex(Object id);
+
+	public Account_ selectSimple(Object id);
 
 	@CacheAnnotation(role = CacheRoleType.OBSERVER)
 	public Account_ selectWithoutCache(Object id);
@@ -51,7 +53,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public void insertBatch(Collection<Account_> t);
 
 	public void insertSnowFlake(Account_ t);
-	
+
 	public void insertSnowFlakeBatch(Collection<Account_> t);
 
 	@Override

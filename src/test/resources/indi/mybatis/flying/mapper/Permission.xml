@@ -6,6 +6,10 @@
 	<select id="select" resultMap="result" useCache="false">
 		{"action":"select#{?}"}
 	</select>
+	
+	<select id="selectSimple2" resultMap="result" useCache="false">
+		{"action":"select#{?}", "whiteList":"simple2", "ignore":"noName"}
+	</select>
 
 	<resultMap id="result" type="Permission" autoMapping="true">
 		<id property="id" column="id" />

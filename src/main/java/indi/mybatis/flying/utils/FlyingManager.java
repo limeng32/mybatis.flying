@@ -80,9 +80,13 @@ public class FlyingManager {
 		flyingModel.setHasFlyingFeature(true);
 		if (innerJson == null) {
 			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE));
+			flyingModel.setWhiteListTag(json.getString(FlyingKeyword.WHITE_LIST));
 			flyingModel.setIndex(json.getString(FlyingKeyword.INDEX));
 		} else {
+			// inner json need ignore tag and white list tag
 			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE));
+			flyingModel.setWhiteListTag(innerJson.getString(FlyingKeyword.WHITE_LIST));
+			// but not need index
 		}
 		flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX));
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
