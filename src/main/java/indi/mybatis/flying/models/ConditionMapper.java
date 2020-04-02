@@ -54,12 +54,6 @@ public class ConditionMapper implements Mapperable {
 	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
-	 * If it is a cross-source foreign key, the name of the primary key field for
-	 * the table of the other database.Blank means it's not a foreign key.
-	 */
-	private String dbCrossedAssociationUniqueKey = "";
-
-	/**
 	 * This variable corresponds to the foreign key of the database table, the
 	 * default value is no.
 	 */
@@ -93,8 +87,6 @@ public class ConditionMapper implements Mapperable {
 	 * are for themselves. This property works only in Or annotation
 	 */
 	private Class<?> subTarget;
-
-	private boolean isCrossDbForeignKey;
 
 	private AssociationType associationType;
 
@@ -208,24 +200,6 @@ public class ConditionMapper implements Mapperable {
 
 	public void setSubTarget(Class<?> subTarget) {
 		this.subTarget = subTarget;
-	}
-
-	@Override
-	public String getDbCrossedAssociationUniqueKey() {
-		return dbCrossedAssociationUniqueKey;
-	}
-
-	public void setDbCrossedAssociationUniqueKey(String dbCrossedAssociationUniqueKey) {
-		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
-	}
-
-	@Override
-	public boolean isCrossDbForeignKey() {
-		return isCrossDbForeignKey;
-	}
-
-	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
-		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
 
 	public AssociationType getAssociationType() {

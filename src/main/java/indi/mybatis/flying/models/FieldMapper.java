@@ -60,13 +60,6 @@ public class FieldMapper implements Mapperable {
 	private ForeignAssociationMapper[] foreignAssociationMappers;
 
 	/**
-	 * If it is a cross-source foreign key, it corresponds to the name of the
-	 * primary key field for the table of the other database. Blank means it's not
-	 * foreign key.
-	 */
-	private String dbCrossedAssociationUniqueKey = "";
-
-	/**
 	 * This variable corresponds to the primary key of the database table. The
 	 * default is false.
 	 */
@@ -77,12 +70,6 @@ public class FieldMapper implements Mapperable {
 	 * default is false.
 	 */
 	private boolean isForeignKey;
-
-	/**
-	 * This variable corresponds to the foreign key of the cross-source database
-	 * table. The default is false.
-	 */
-	private boolean isCrossDbForeignKey;
 
 	/**
 	 * If this variable corresponds to the foreign key of the database table, the
@@ -159,7 +146,6 @@ public class FieldMapper implements Mapperable {
 			setIgnoreTag(fieldMapperAnnotation.ignoreTag());
 			setDbAssociationUniqueKey(fieldMapperAnnotation.dbAssociationUniqueKey());
 			setAssociationType(fieldMapperAnnotation.associationType());
-			setDbCrossedAssociationUniqueKey(fieldMapperAnnotation.dbCrossedAssociationUniqueKey());
 			if (fieldMapperAnnotation.associationExtra().length > 0) {
 				ForeignAssociation[] fas = fieldMapperAnnotation.associationExtra();
 				ForeignAssociationMapper[] fams = new ForeignAssociationMapper[fieldMapperAnnotation
@@ -420,24 +406,6 @@ public class FieldMapper implements Mapperable {
 	@Override
 	public Class<?> getSubTarget() {
 		return subTarget;
-	}
-
-	@Override
-	public String getDbCrossedAssociationUniqueKey() {
-		return dbCrossedAssociationUniqueKey;
-	}
-
-	public void setDbCrossedAssociationUniqueKey(String dbCrossedAssociationUniqueKey) {
-		this.dbCrossedAssociationUniqueKey = dbCrossedAssociationUniqueKey;
-	}
-
-	@Override
-	public boolean isCrossDbForeignKey() {
-		return isCrossDbForeignKey;
-	}
-
-	public void setCrossDbForeignKey(boolean isCrossDbForeignKey) {
-		this.isCrossDbForeignKey = isCrossDbForeignKey;
 	}
 
 	public AssociationType getAssociationType() {

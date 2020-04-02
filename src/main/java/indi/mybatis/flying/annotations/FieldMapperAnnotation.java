@@ -40,10 +40,6 @@ public @interface FieldMapperAnnotation {
 	 * of the other table in the database (Case is identical), the default is blank
 	 * meaning not foreign key.
 	 * 
-	 * This property is used to solve the table association problem in the same
-	 * database, so it should not appear at the same time as the
-	 * dbCrossedAssociationUniqueKey.
-	 * 
 	 * @return String
 	 * @since 0.9.0
 	 */
@@ -99,20 +95,6 @@ public @interface FieldMapperAnnotation {
 	 * @since 0.9.4
 	 */
 	Class<?> customTypeHandler() default Void.class;
-
-	/**
-	 * 
-	 * If it is a cross-source foreign key, the name of the primary key field for
-	 * the table of the other database(Case is identical), the default is blank
-	 * meaning not foreign key.
-	 * 
-	 * This property is used to solve the cross-source association problem, so it
-	 * should not appear at the same time as dbAssociationUniqueKey.
-	 * 
-	 * @return String
-	 * @since 0.9.1
-	 */
-	String dbCrossedAssociationUniqueKey() default "";
 
 	/**
 	 * 

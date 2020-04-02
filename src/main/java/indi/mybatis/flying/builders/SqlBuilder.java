@@ -204,20 +204,6 @@ public class SqlBuilder {
 				fieldMapper.setForeignFieldName(foreignFieldName);
 			}
 
-			if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
-				fieldMapper.setCrossDbForeignKey(true);
-			}
-
-			if (fieldMapper.isCrossDbForeignKey()) {
-				if (!tableMapperCache.containsKey(field.getType())) {
-					buildTableMapper(field.getType());
-				}
-				TableMapper tm = tableMapperCache.get(field.getType());
-				String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
-						fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
-				fieldMapper.setForeignFieldName(foreignFieldName);
-			}
-
 			if (fieldMapper.isOpVersionLock()) {
 				opVersionLockList.add(fieldMapper);
 			}
@@ -345,23 +331,6 @@ public class SqlBuilder {
 						TableMapper tm = tableMapperCache.get(pojoField.getType());
 						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
 								fieldMapper.getDbAssociationUniqueKey()).getFieldName();
-						conditionMapper.setForeignFieldName(foreignFieldName);
-					}
-
-					if (!"".equals(fieldMapper.getDbCrossedAssociationUniqueKey())) {
-						conditionMapper
-								.setDbCrossedAssociationUniqueKey(fieldMapper.getDbCrossedAssociationUniqueKey());
-						fieldMapper.setCrossDbForeignKey(true);
-					}
-
-					if (fieldMapper.isCrossDbForeignKey()) {
-						if (!tableMapperCache.containsKey(pojoField.getType())) {
-							buildTableMapper(pojoField.getType());
-						}
-						TableMapper tm = tableMapperCache.get(pojoField.getType());
-						String foreignFieldName = getFieldMapperByDbFieldName(tm.getFieldMapperCache(),
-								fieldMapper.getDbCrossedAssociationUniqueKey()).getFieldName();
-
 						conditionMapper.setForeignFieldName(foreignFieldName);
 					}
 				}
@@ -536,7 +505,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (mapper.isForeignKey() || mapper.isCrossDbForeignKey()) {
+		if (mapper.isForeignKey()) {
 			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
@@ -673,7 +642,7 @@ public class SqlBuilder {
 				valueSql.append("'0',");
 			} else {
 				valueSql.append(POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+				if (fieldMapper.isForeignKey()) {
 					valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 				} else {
 					valueSql.append(fieldMapper.getFieldName());
@@ -774,7 +743,7 @@ public class SqlBuilder {
 				} else {
 					valueSql.append(POUND_OPENBRACE);
 					valueSql.append("collection[" + i + "].");
-					if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+					if (fieldMapper.isForeignKey()) {
 						valueSql.append(fieldMapper.getFieldName()).append(DOT)
 								.append(fieldMapper.getForeignFieldName());
 					} else {
@@ -856,7 +825,7 @@ public class SqlBuilder {
 			} else {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+				if (fieldMapper.isForeignKey()) {
 					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 				} else {
 					tableSql.append(fieldMapper.getFieldName());
@@ -948,7 +917,7 @@ public class SqlBuilder {
 			} else {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey() || fieldMapper.isCrossDbForeignKey()) {
+				if (fieldMapper.isForeignKey()) {
 					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
 				} else {
 					tableSql.append(fieldMapper.getFieldName());

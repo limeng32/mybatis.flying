@@ -31,8 +31,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String loginIP;
 
-	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, ignoreTag = {
-			"noAccount" }, dbCrossedAssociationUniqueKey = "id")
+	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, ignoreTag = { "noAccount" })
 	private Account_ account;
 
 	private java.util.Collection<Detail2_> detail2;

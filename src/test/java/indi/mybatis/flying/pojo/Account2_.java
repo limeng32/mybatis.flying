@@ -55,7 +55,7 @@ public class Account2_ extends PojoSupport<Account2_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "nickname", jdbcType = JdbcType.VARCHAR)
 	private String nickname;
 
-	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbCrossedAssociationUniqueKey = "id")
+	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
 	private Role2_ role;
 
 	@Override

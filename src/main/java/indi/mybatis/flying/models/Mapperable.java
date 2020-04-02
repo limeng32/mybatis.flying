@@ -38,9 +38,5 @@ public interface Mapperable {
 
 	Class<?> getSubTarget();
 
-	String getDbCrossedAssociationUniqueKey();
-
-	boolean isCrossDbForeignKey();
-
 	AssociationType getAssociationType();
 }
