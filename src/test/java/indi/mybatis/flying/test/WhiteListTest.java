@@ -11,7 +11,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,7 +22,9 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.service.AccountService;
+import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -36,6 +37,9 @@ public class WhiteListTest {
 
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private LoginLogService loginLogService;
 
 	@Test
 	public void test1() {
@@ -50,8 +54,16 @@ public class WhiteListTest {
 		Account_ account = accountService.selectSimple(1);
 		Assert.assertNull(account.getEmail());
 		Assert.assertNull(account.getPassword());
-		System.out.println(JSONObject.toJSONString(account));
 		Assert.assertNull(account.getPermission().getName());
 		Assert.assertNull(account.getPermission().getFakeId());
+
+		LoginLog_ l = new LoginLog_();
+		l.setLoginIP("ip1");
+		LoginLog_ loginLog = loginLogService.selectOneSimple(l);
+		Assert.assertNull(loginLog.getLoginIP2());
+		Assert.assertNull(loginLog.getAccount().getEmail());
+		Assert.assertNull(loginLog.getAccount().getPassword());
+		Assert.assertNull(loginLog.getAccount().getPermission().getName());
+		Assert.assertNull(loginLog.getAccount().getPermission().getFakeId());
 	}
 }

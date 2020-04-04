@@ -27,6 +27,11 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	}
 
 	@Override
+	public LoginLog_ selectOneSimple(LoginLog_ t) {
+		return mapper.selectOneSimple(t);
+	}
+
+	@Override
 	public void insert(LoginLog_ t) {
 		supportInsert(mapper, t);
 	}
@@ -45,12 +50,12 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	public Collection<LoginLog_> selectAllPrefix(LoginLog_ t) {
 		return mapper.selectAllPrefix(t);
 	}
-	
+
 	@Override
 	public Collection<LoginLog_> selectAllPrefixIgnore(LoginLog_ t) {
 		return mapper.selectAllPrefixIgnore(t);
 	}
-	
+
 	@Override
 	public Collection<LoginLog_> selectAllPrefixIgnore2(LoginLog_ t) {
 		return mapper.selectAllPrefixIgnore2(t);
@@ -82,4 +87,5 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	public LoginLog_ selectWithoutCache(Object id) {
 		return mapper.selectWithoutCache(id);
 	}
+
 }

@@ -15,13 +15,14 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@FieldMapperAnnotation(dbFieldName = "iD", jdbcType = JdbcType.INTEGER, isUniqueKey = true, ignoreTag = { "noId" })
+	@FieldMapperAnnotation(dbFieldName = "iD", jdbcType = JdbcType.INTEGER, isUniqueKey = true, ignoreTag = {
+			"noId" }, whiteListTag = "simple0")
 	private Integer id;
 
 	@Column
 	private java.util.Date loginTime;
 
-	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "logiNIP", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple0")
 	private java.lang.String loginIP;
 
 	@FieldMapperAnnotation(dbFieldName = "num", jdbcType = JdbcType.INTEGER)

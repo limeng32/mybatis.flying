@@ -27,7 +27,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 			"simple" })
 	private java.lang.String name;
 
-	@Column
+	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple0")
 	private java.lang.String email;
 
 	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = {
