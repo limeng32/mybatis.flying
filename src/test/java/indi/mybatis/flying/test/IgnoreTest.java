@@ -85,7 +85,7 @@ public class IgnoreTest {
 
 		Collection<Detail_> detailC2 = detailService.selectAllPrefixIgnore2(dc);
 		Detail_[] details2 = detailC2.toArray(new Detail_[detailC2.size()]);
-		Assert.assertNotNull(details2[0].getLoginLog());
+		Assert.assertNull(details2[0].getLoginLog());
 
 		Collection<Detail_> detailC3 = detailService.selectAllPrefixIgnore3(dc);
 		Detail_[] details3 = detailC3.toArray(new Detail_[detailC3.size()]);

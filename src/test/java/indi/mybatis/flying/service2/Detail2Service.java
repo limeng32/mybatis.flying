@@ -74,6 +74,11 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 	}
 
 	@Override
+	public void insertBatchWithoutName(Collection<Detail2_> t) {
+		mapper.insertBatchWithoutName(t);
+	}
+
+	@Override
 	public int updateWithoutName(Detail2_ t) {
 		return mapper.updateWithoutName(t);
 	}
@@ -87,4 +92,5 @@ public class Detail2Service extends ServiceSupport<Detail2_> implements Detail2M
 	public Detail2_ selectWithoutCache(Object id) {
 		return mapper.selectWithoutCache(id);
 	}
+
 }

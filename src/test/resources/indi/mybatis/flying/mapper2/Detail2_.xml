@@ -32,6 +32,11 @@
 		{"action":"insert", "ignore":"noName"}
 	</insert>
 
+	<insert id="insertBatchWithoutName" useGeneratedKeys="true"
+		keyProperty="id">
+		{"action":"insertBatch", "ignore":"noName"}
+	</insert>
+
 	<insert id="insertWithoutFoo" useGeneratedKeys="true"
 		keyProperty="id">
 		{"action":"insert", "ignore":"noFoo"}

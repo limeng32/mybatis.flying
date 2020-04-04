@@ -40,7 +40,7 @@
 		}}
 	</select>
 	
-	<!-- 证明加在类上的ignoreTag对property不起作用 -->
+	<!-- 证明加在类上的ignoreTag对property也会起作用 -->
 	<select id="selectAllPrefixIgnore2" resultMap="resultPrefix">
 		{"action":"selectAll", "ignore":"noLoginLog", "properties":{
 			"loginLog":{"id":"indi.mybatis.flying.mapper.LoginLogMapper.selectAllPrefixIgnore", "prefix":"loginLog__"},

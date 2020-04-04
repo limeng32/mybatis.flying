@@ -26,6 +26,8 @@ public interface Detail2Mapper extends MapperFace<Detail2_> {
 
 	public void insertWithoutFoo(Detail2_ t);
 
+	public void insertBatchWithoutName(Collection<Detail2_> t);
+
 	@Override
 	public int update(Detail2_ t);
 

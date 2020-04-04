@@ -28,14 +28,14 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	@Column
 	private java.lang.String detail;
 
-	@Column(insertable = false)
+	@Column(insertable = false, updatable = false)
 	private Date createtime;
 
 	@Column(name = "number_")
 	private Integer number;
 
-	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD")
-	@Column(updatable = false)
+	@FieldMapperAnnotation(dbFieldName = "loginlog_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "iD", ignoreTag = {
+			"noFoo", "noName" })
 	private LoginLogSource2 loginLogSource2;
 
 	@Override

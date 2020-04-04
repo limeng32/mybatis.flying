@@ -34,7 +34,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "status", jdbcType = JdbcType.VARCHAR)
 	private LogStatus status;
 
-	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
+	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", whiteListTag = "simple0")
 	private Account_ account;
 
 	private java.util.Collection<Detail_> detail;

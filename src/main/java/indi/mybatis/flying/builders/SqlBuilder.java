@@ -1295,11 +1295,15 @@ public class SqlBuilder {
 		String prefix = null;
 		String indexStr = null;
 		String whiteListTag = null;
+		boolean useWhiteList = false;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();
 			prefix = flyingModel.getPrefix();
 			indexStr = flyingModel.getIndex();
 			whiteListTag = flyingModel.getWhiteListTag();
+			if (whiteListTag != null) {
+				useWhiteList = true;
+			}
 		}
 		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>(4) : PropertyUtils.describe(pw.object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
@@ -1326,48 +1330,10 @@ public class SqlBuilder {
 		}
 
 		if (flyingModel != null) {
-			if (whiteListTag == null) {
-				for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-					FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
-					if (inner != null) {
-						if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
-							dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
-						}
-						int indexValue2 = index.getAndIncrement();
-						if (m == null) {
-							m = new HashMap<Mapperable, Integer>(2);
-						}
-						m.put(fieldMapper, indexValue2);
-					}
-					if ((!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-						selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
-						if (prefix != null) {
-							selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
-						}
-						selectSql.append(COMMA);
-					}
-				}
-			} else {
-				for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
-					FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
-					if (inner != null) {
-						if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
-							dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
-						}
-						int indexValue2 = index.getAndIncrement();
-						if (m == null) {
-							m = new HashMap<Mapperable, Integer>(2);
-						}
-						m.put(fieldMapper, indexValue2);
-					}
-					if ((fieldMapper.getWhiteListTagSet().contains(whiteListTag))
-							&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-						selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
-						if (prefix != null) {
-							selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
-						}
-						selectSql.append(COMMA);
-					}
+			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
+						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, m, selectSql, tableName, prefix);
 				}
 			}
 		}
@@ -1432,6 +1398,27 @@ public class SqlBuilder {
 			}
 			dealConditionOrMapper(orMapper, value, whereSql, tableName, temp);
 		}
+	}
+
+	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<Object, Object> dtoFieldMap,
+			AtomicInteger index, Map<Mapperable, Integer> m, StringBuilder selectSql, TableName tableName,
+			String prefix) throws InstantiationException, IllegalAccessException {
+		FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
+		if (inner != null) {
+			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
+				dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
+			}
+			int indexValue2 = index.getAndIncrement();
+			if (m == null) {
+				m = new HashMap<Mapperable, Integer>(2);
+			}
+			m.put(fieldMapper, indexValue2);
+		}
+		selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+		if (prefix != null) {
+			selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+		}
+		selectSql.append(COMMA);
 	}
 
 	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuilder whereSql,
