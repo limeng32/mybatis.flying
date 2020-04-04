@@ -91,12 +91,28 @@
 		"keyGenerator":"indi.mybatis.flying.keyHandler.DistributedSnowflakeKeyGenerator"}
 	</insert>
 
+	<insert id="insertSimpleNoName" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insert", "whiteList":"simple", "ignore":"noName"}
+	</insert>
+	
+	<insert id="insertBatchSimpleNoName" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insertBatch", "whiteList":"simple", "ignore":"noName"}
+	</insert>
+
 	<update id="update">
 		{"action":"update"}
+	</update>
+	
+	<update id="updateSimpleNoName">
+		{"action":"update", "whiteList":"simple", "ignore":"noName"}
 	</update>
 
 	<update id="updatePersistent">
 		{"action":"updatePersistent"}
+	</update>
+	
+	<update id="updatePersistentSimpleNoName">
+		{"action":"updatePersistent", "whiteList":"simple", "ignore":"noName"}
 	</update>
 
 	<delete id="delete">

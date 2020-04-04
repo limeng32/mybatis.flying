@@ -45,11 +45,19 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	public void insertSnowFlakeBatch(Collection<Account_> t);
 
+	public void insertSimpleNoName(Account_ t);
+
+	public void insertBatchSimpleNoName(Collection<Account_> t);
+
 	@Override
 	public int update(Account_ t);
+	
+	public int updateSimpleNoName(Account_ t);
 
 	@Override
 	public int updatePersistent(Account_ t);
+	
+	public int updatePersistentSimpleNoName(Account_ t);
 
 	@Override
 	public int delete(Account_ t);

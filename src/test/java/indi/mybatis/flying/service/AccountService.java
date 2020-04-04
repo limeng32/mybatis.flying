@@ -73,8 +73,23 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	}
 
 	@Override
+	public void insertSimpleNoName(Account_ t) {
+		mapper.insertSimpleNoName(t);
+	}
+
+	@Override
+	public void insertBatchSimpleNoName(Collection<Account_> t) {
+		mapper.insertBatchSimpleNoName(t);
+	}
+
+	@Override
 	public int update(Account_ t) {
 		return supportUpdate(mapper, t);
+	}
+
+	@Override
+	public int updateSimpleNoName(Account_ t) {
+		return mapper.updateSimpleNoName(t);
 	}
 
 	@Override
@@ -100,6 +115,11 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 	@Override
 	public int updatePersistent(Account_ t) {
 		return supportUpdatePersistent(mapper, t);
+	}
+
+	@Override
+	public int updatePersistentSimpleNoName(Account_ t) {
+		return mapper.updatePersistentSimpleNoName(t);
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package indi.mybatis.flying.test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +26,9 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import indi.mybatis.flying.Application;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.Permission;
+import indi.mybatis.flying.pojo.Role_;
+import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 
@@ -65,5 +71,81 @@ public class WhiteListTest {
 		Assert.assertNull(loginLog.getAccount().getPassword());
 		Assert.assertNull(loginLog.getAccount().getPermission().getName());
 		Assert.assertNull(loginLog.getAccount().getPermission().getFakeId());
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsert.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsert.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsert.result.xml")
+	public void testWhiteListInsert() {
+		Account_ account = new Account_();
+		account.setName("name");
+		account.setEmail("email");
+		account.setPassword("aaa");
+		Role_ role = new Role_();
+		role.setId(11);
+		account.setRole(role);
+		Permission permission = new Permission();
+		permission.setId(22);
+		account.setPermission(permission);
+		accountService.insertSimpleNoName(account);
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsertBatch.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsertBatch.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListInsertBatch.result.xml")
+	public void testWhiteListInsertBatch() {
+		Account_ account = new Account_();
+		account.setName("name");
+		account.setEmail("email");
+		account.setPassword("aaa");
+		Role_ role = new Role_();
+		role.setId(11);
+		account.setRole(role);
+		Permission permission = new Permission();
+		permission.setId(22);
+		account.setPermission(permission);
+
+		Collection<Account_> ac = new ArrayList<>();
+		ac.add(account);
+		accountService.insertBatchSimpleNoName(ac);
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdate.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdate.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdate.result.xml")
+	public void testWhiteListUpdate() {
+		Account_ account = accountService.select(1);
+		account.setName("bob");
+		account.setEmail("bob@live.cn");
+		account.setPassword("bbb");
+		account.setStatus(StoryStatus_.p);
+		account.setActivateValue("bv");
+		Role_ role = new Role_();
+		role.setId(2);
+		account.setRole(role);
+		Permission permission = new Permission();
+		permission.setId(22);
+		account.setPermission(permission);
+		accountService.updateSimpleNoName(account);
+	}
+
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdatePersistent.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdatePersistent.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/whiteListTest/testWhiteListUpdatePersistent.result.xml")
+	public void testWhiteListUpdatePersistent() {
+		Account_ account = accountService.select(1);
+		account.setName("bob");
+		account.setEmail("bob@live.cn");
+		account.setPassword("bbb");
+		account.setStatus(StoryStatus_.p);
+		account.setActivateValue(null);
+		Role_ role = new Role_();
+		role.setId(33);
+		account.setRole(role);
+		accountService.updatePersistentSimpleNoName(account);
 	}
 }
