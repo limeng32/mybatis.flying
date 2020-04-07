@@ -61,6 +61,8 @@ public class SqlBuilder {
 	private static Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
 	/* Cache QueryMapper */
 	private static Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
+	/* Cache inner class */
+	private static Map<Class<?>, Object> innerMapperCache = new ConcurrentHashMap<Class<?>, Object>(128);
 
 	private static final String DOT = ".";
 	private static final String COMMA = ",";
@@ -1328,7 +1330,8 @@ public class SqlBuilder {
 				useWhiteList = true;
 			}
 		}
-		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>(4) : PropertyUtils.describe(pw.object);
+		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>() : PropertyUtils.describe(pw.object);
+
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
 		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
 		TableName tableName = null;
@@ -1370,9 +1373,11 @@ public class SqlBuilder {
 		String temp = null;
 		if (pw.originFieldMapper != null && pw.tableName != null) {
 			/* Processing fieldPerfix */
-			temp = pw.originFieldMapper.getFieldName();
-			if (pw.fieldPerfix != null) {
-				temp = pw.fieldPerfix + DOT + temp;
+			if (pw.fieldPerfix == null) {
+				temp = pw.originFieldMapper.getFieldName();
+			} else {
+				temp = new StringBuilder(pw.fieldPerfix).append(DOT).append(pw.originFieldMapper.getFieldName())
+						.toString();
 			}
 			/* Processing fromSql */
 			fromSql.append(pw.originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())
@@ -1425,11 +1430,17 @@ public class SqlBuilder {
 
 	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<Object, Object> dtoFieldMap,
 			AtomicInteger index, Map<Mapperable, Integer> m, StringBuilder selectSql, TableName tableName,
-			String prefix) throws InstantiationException, IllegalAccessException {
+			String prefix) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 		if (inner != null) {
 			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
-				dtoFieldMap.put(fieldMapper.getFieldName(), fieldMapper.getFieldType().newInstance());
+				Object o = innerMapperCache.get(fieldMapper.getFieldType());
+				if (o == null) {
+					o = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
+					innerMapperCache.put(fieldMapper.getFieldType(), o);
+				}
+				dtoFieldMap.put(fieldMapper.getFieldName(), o);
 			}
 			int indexValue2 = index.getAndIncrement();
 			if (m == null) {
