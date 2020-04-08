@@ -124,13 +124,12 @@ public class SqlBuilder {
 		}
 
 		private ParameterWrapper(Object object, TableName tableName, Mapperable originFieldMapper, String fieldPerfix,
-				TableName lastTableName, Map<Mapperable, Integer> map2) {
+				TableName lastTableName) {
 			this.object = object;
 			this.tableName = tableName;
 			this.originFieldMapper = originFieldMapper;
 			this.fieldPerfix = fieldPerfix;
 			this.lastTableName = lastTableName;
-			this.map2 = map2;
 		}
 
 		private Object object;
@@ -138,7 +137,6 @@ public class SqlBuilder {
 		private Mapperable originFieldMapper;
 		private String fieldPerfix;
 		private TableName lastTableName;
-		Map<Mapperable, Integer> map2;
 	}
 
 	/**
@@ -1315,7 +1313,6 @@ public class SqlBuilder {
 			StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index, FlyingModel flyingModel,
 			ParameterWrapper pw) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
 			NoSuchFieldException, InstantiationException {
-		Map<Mapperable, Integer> m = pw.map2;
 		String ignoreTag = null;
 		String prefix = null;
 		String indexStr = null;
@@ -1336,8 +1333,7 @@ public class SqlBuilder {
 		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
 		TableName tableName = null;
 
-		int indexValue = (m == null || m.get(pw.originFieldMapper) == null) ? (index.getAndIncrement())
-				: (m.get(pw.originFieldMapper));
+		int indexValue = index.getAndIncrement();
 		if (pw.lastTableName == null) {
 			tableName = new TableName(tableMapper, indexValue, null);
 		} else {
@@ -1359,7 +1355,7 @@ public class SqlBuilder {
 			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, m, selectSql, tableName, prefix);
+					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName, prefix);
 				}
 			}
 		}
@@ -1403,7 +1399,7 @@ public class SqlBuilder {
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value.getClass(), selectSql, fromSql, whereSql, index,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
-						new ParameterWrapper(value, tableName, fieldMapper, temp, tableName, m));
+						new ParameterWrapper(value, tableName, fieldMapper, temp, tableName));
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
@@ -1429,9 +1425,9 @@ public class SqlBuilder {
 	}
 
 	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<Object, Object> dtoFieldMap,
-			AtomicInteger index, Map<Mapperable, Integer> m, StringBuilder selectSql, TableName tableName,
-			String prefix) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
+			AtomicInteger index, StringBuilder selectSql, TableName tableName, String prefix)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
 		FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 		if (inner != null) {
 			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
@@ -1442,11 +1438,6 @@ public class SqlBuilder {
 				}
 				dtoFieldMap.put(fieldMapper.getFieldName(), o);
 			}
-			int indexValue2 = index.getAndIncrement();
-			if (m == null) {
-				m = new HashMap<Mapperable, Integer>(2);
-			}
-			m.put(fieldMapper, indexValue2);
 		}
 		selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
 		if (prefix != null) {
