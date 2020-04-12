@@ -10,6 +10,12 @@
 	<select id="select" resultMap="result">
 		{"action":"select#{?}"}
 	</select>
+	
+	<select id="selectPrefix" resultMap="resultPrefix">
+		{"action":"select#{?}", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix", "prefix":"account__"},
+		}}
+	</select>
 
 	<select id="selectAll" resultMap="result">
 		{"action":"selectAll"}
@@ -35,6 +41,12 @@
 
 	<select id="selectOne" resultMap="result">
 		{"action":"selectOne"}
+	</select>
+	
+	<select id="selectOnePrefix" resultMap="resultPrefix">
+		{"action":"selectOne", "properties":{
+			"account":{"id":"indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix", "prefix":"account__"},
+		}}
 	</select>
 	
 	<select id="selectOneSimple" resultMap="resultPrefix">
@@ -72,6 +84,7 @@
 	
 	<resultMap id="resultPrefix" type="LoginLog_" autoMapping="true">
 		<id property="id" column="id" />
+		<result column="accountId" property="accountId" />
 		<association property="account"
 			resultMap="indi.mybatis.flying.mapper.AccountMapper.resultPrefix"
 			columnPrefix="account__" />

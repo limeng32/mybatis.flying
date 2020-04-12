@@ -13,6 +13,8 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	@Override
 	public LoginLog_ select(Object id);
 
+	public LoginLog_ selectPrefix(Object id);
+
 	@Override
 	public Collection<LoginLog_> selectAll(LoginLog_ t);
 
@@ -24,7 +26,9 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 
 	@Override
 	public LoginLog_ selectOne(LoginLog_ t);
-	
+
+	public LoginLog_ selectOnePrefix(LoginLog_ t);
+
 	public LoginLog_ selectOneSimple(LoginLog_ t);
 
 	@Override

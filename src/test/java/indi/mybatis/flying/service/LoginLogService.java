@@ -22,8 +22,18 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	}
 
 	@Override
+	public LoginLog_ selectPrefix(Object id) {
+		return mapper.selectPrefix(id);
+	}
+
+	@Override
 	public LoginLog_ selectOne(LoginLog_ t) {
 		return supportSelectOne(mapper, t);
+	}
+
+	@Override
+	public LoginLog_ selectOnePrefix(LoginLog_ t) {
+		return mapper.selectOnePrefix(t);
 	}
 
 	@Override

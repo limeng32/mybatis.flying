@@ -132,4 +132,6 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.0
 	 */
 	String[] whiteListTag() default {};
+
+	boolean delegate() default false;
 }

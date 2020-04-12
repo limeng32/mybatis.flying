@@ -37,6 +37,9 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", whiteListTag = "simple0")
 	private Account_ account;
 
+	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, delegate = true)
+	private Long accountId;
+
 	private java.util.Collection<Detail_> detail;
 
 	@Override
@@ -90,6 +93,14 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 
 	public Account_ getAccount() {
 		return account;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
 	}
 
 	public void setAccount(Account_ newAccount) {

@@ -19,6 +19,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
+import com.alibaba.fastjson.JSON;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -170,7 +172,7 @@ public class SqlBuilder {
 				tableMapper.setTable((Table) an);
 			}
 		}
-		fieldMapperCache = new WeakHashMap<String, FieldMapper>(16);
+		fieldMapperCache = new ConcurrentHashMap<String, FieldMapper>(16);
 		for (Field field : fields) {
 			fieldMapper = new FieldMapper();
 			boolean b = fieldMapper.buildMapper(field);
@@ -213,12 +215,30 @@ public class SqlBuilder {
 			if (fieldMapper.isOpVersionLock()) {
 				opVersionLockList.add(fieldMapper);
 			}
-			fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
+			// 需考虑delegate情况
+			if (fieldMapperCache.containsKey(fieldMapper.getDbFieldName())) {
+				FieldMapper temp = fieldMapperCache.get(fieldMapper.getDbFieldName());
+				if (!temp.isDelegate() && fieldMapper.isDelegate()) {
+					temp.setDelegate(fieldMapper);
+					temp.setHasDelegate(true);
+					
+					fieldMapperCache.put("c:d", temp);
+				} else if (temp.isDelegate() && !fieldMapper.isDelegate()) {
+					fieldMapper.setDelegate(temp);
+					fieldMapper.setHasDelegate(true);
+					fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
+					//TODO
+					fieldMapperCache.put("a:b", temp);
+				}
+			} else {
+				fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
+			}
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
+		System.out.println("3::::::::::::::"+JSON.toJSONString(tableMapper));
 		tableMapperCache.put(dtoClass, tableMapper);
 		return tableMapper;
 	}
@@ -1391,7 +1411,12 @@ public class SqlBuilder {
 		}
 
 		/* Handle the conditions in the fieldMapper */
-		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			//TODO
+			System.out.println(":" + fieldMapper.getDbFieldName());
+			if (fieldMapper.isHasDelegate() && dtoFieldMap.get(fieldMapper.getDelegate().getFieldName()) != null) {
+				dealConditionEqual(whereSql, fieldMapper.getDelegate(), tableName, temp, false, 0);
+			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
 				continue;

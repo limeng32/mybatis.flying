@@ -119,10 +119,16 @@ public class FieldMapper implements Mapperable {
 
 	private Class<?> subTarget;
 
+	private boolean isDelegate = false;
+
 	/**
 	 * How the tables are related (e.g. left join or right join)
 	 */
 	private AssociationType associationType;
+
+	private FieldMapper delegate;
+
+	private boolean hasDelegate = false;
 
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
@@ -162,6 +168,8 @@ public class FieldMapper implements Mapperable {
 				}
 				setForeignAssociationMappers(fams);
 			}
+			// is in delegate mode or not
+			setDelegate(fieldMapperAnnotation.delegate());
 		}
 		/* The Id has the highest priority, so it's written at the end. */
 		if (id != null) {
@@ -416,6 +424,30 @@ public class FieldMapper implements Mapperable {
 
 	public void setAssociationType(AssociationType associationType) {
 		this.associationType = associationType;
+	}
+
+	public boolean isDelegate() {
+		return isDelegate;
+	}
+
+	public void setDelegate(boolean isDelegate) {
+		this.isDelegate = isDelegate;
+	}
+
+	public FieldMapper getDelegate() {
+		return delegate;
+	}
+
+	public void setDelegate(FieldMapper delegate) {
+		this.delegate = delegate;
+	}
+
+	public boolean isHasDelegate() {
+		return hasDelegate;
+	}
+
+	public void setHasDelegate(boolean hasDelegate) {
+		this.hasDelegate = hasDelegate;
 	}
 
 }
