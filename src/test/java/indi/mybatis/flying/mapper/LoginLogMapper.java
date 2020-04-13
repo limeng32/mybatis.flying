@@ -34,6 +34,8 @@ public interface LoginLogMapper extends MapperFace<LoginLog_> {
 	@Override
 	public void insert(LoginLog_ t);
 
+	public void insertBatch(Collection<LoginLog_> t);
+
 	@Override
 	public int update(LoginLog_ t);
 

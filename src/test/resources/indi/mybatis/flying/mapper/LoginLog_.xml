@@ -62,6 +62,10 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		{"action":"insert"}
 	</insert>
+	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
 
 	<update id="update">
 		{"action":"update"}
@@ -84,7 +88,6 @@
 	
 	<resultMap id="resultPrefix" type="LoginLog_" autoMapping="true">
 		<id property="id" column="id" />
-		<result column="accountId" property="accountId" />
 		<association property="account"
 			resultMap="indi.mybatis.flying.mapper.AccountMapper.resultPrefix"
 			columnPrefix="account__" />

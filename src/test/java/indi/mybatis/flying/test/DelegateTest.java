@@ -1,5 +1,8 @@
 package indi.mybatis.flying.test;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 import javax.sql.DataSource;
 
 import org.junit.Assert;
@@ -24,7 +27,10 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
+import indi.mybatis.flying.pagination.Page;
+import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,12 +59,79 @@ public class DelegateTest {
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegate.xml")
 	public void testDelegate() {
 		LoginLog_ l = new LoginLog_();
-		l.setAccountId(11L);
+		l.setDelegateAccountId(11L);
 		LoginLog_ loginLog = loginLogService.selectOnePrefix(l);
-		System.out.println(":" + JSONObject.toJSONString(loginLog));
 		Assert.assertNull(loginLog);
 
 		int c = loginLogService.count(l);
 		Assert.assertEquals(0, c);
+
+		LoginLog_ loginLog2 = loginLogService.selectPrefix(1);
+		LoginLog_Condition l2 = new LoginLog_Condition();
+		l2.setDelegateAccountId(loginLog2.getDelegateAccountId());
+		l2.setAccount(loginLog2.getAccount());
+		l2.setLimiter(new PageParam(1, 2));
+		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(l2);
+		Page<LoginLog_> page2 = new Page<>(loginLogC, l2.getLimiter());
+		System.out.println("::" + JSONObject.toJSONString(page2));
+
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdate.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdate.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdate.xml")
+	public void testDelegateUpdate() {
+		LoginLog_ loginLog = loginLogService.select(1);
+		loginLog.setAccount(null);
+		loginLog.setDelegateAccountId(2L);
+		loginLogService.update(loginLog);
+
+		// 当login.getAccount()不为null时，修改accountId不起作用
+		LoginLog_ loginLog2 = loginLogService.select(1);
+		loginLog2.setDelegateAccountId(11L);
+		loginLogService.update(loginLog2);
+
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdatePersistent.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdatePersistent.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegateUpdatePersistent.xml")
+	public void testDelegateUpdatePersistent() {
+		LoginLog_ loginLog = loginLogService.select(1);
+		loginLog.setAccount(null);
+		loginLog.setDelegateAccountId(2L);
+		loginLog.setLoginIP(null);
+		loginLogService.updatePersistent(loginLog);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsert.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsert.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsert.xml")
+	public void testDelegateInsert() {
+		LoginLog_ loginLog = new LoginLog_();
+		loginLog.setId(1);
+		loginLog.setLoginIP("0.0.0.1");
+		loginLog.setDelegateAccountId(1L);
+		loginLogService.insert(loginLog);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsertBatch.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsertBatch.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegateInsertBatch.xml")
+	public void testDelegateInsertBatch() {
+		Collection<LoginLog_> c = new LinkedList<>();
+		LoginLog_ l1 = new LoginLog_();
+		l1.setLoginIP("0.0.0.1");
+		l1.setDelegateAccountId(1L);
+		c.add(l1);
+		LoginLog_ l2 = new LoginLog_();
+		l2.setLoginIP("0.0.0.2");
+		l2.setDelegateAccountId(2L);
+		c.add(l2);
+		loginLogService.insertBatch(c);
 	}
 }

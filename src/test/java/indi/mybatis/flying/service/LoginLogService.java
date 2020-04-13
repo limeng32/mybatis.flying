@@ -47,6 +47,11 @@ public class LoginLogService extends ServiceSupport<LoginLog_> implements LoginL
 	}
 
 	@Override
+	public void insertBatch(Collection<LoginLog_> t) {
+		mapper.insertBatch(t);
+	}
+
+	@Override
 	public int update(LoginLog_ t) {
 		return supportUpdate(mapper, t);
 	}

@@ -38,7 +38,7 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	private Account_ account;
 
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, delegate = true)
-	private Long accountId;
+	private Long delegateAccountId;
 
 	private java.util.Collection<Detail_> detail;
 
@@ -95,12 +95,12 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 		return account;
 	}
 
-	public Long getAccountId() {
-		return accountId;
+	public Long getDelegateAccountId() {
+		return delegateAccountId;
 	}
 
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
+	public void setDelegateAccountId(Long delegateAccountId) {
+		this.delegateAccountId = delegateAccountId;
 	}
 
 	public void setAccount(Account_ newAccount) {

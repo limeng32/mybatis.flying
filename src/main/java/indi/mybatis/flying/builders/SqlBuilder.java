@@ -652,6 +652,12 @@ public class SqlBuilder {
 		boolean uniqueKeyHandled = false;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+			
+			if (value == null && fieldMapper.isHasDelegate()) {
+				value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
+				fieldMapper = fieldMapper.getDelegate();
+			}
+			
 			if (!isAble(fieldMapper.isInsertAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
 					ignoreTag)) {
 				continue;
@@ -752,6 +758,12 @@ public class SqlBuilder {
 			boolean uniqueKeyHandled = false;
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				
+				if (value == null && fieldMapper.isHasDelegate()) {
+					value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
+					fieldMapper = fieldMapper.getDelegate();
+				}
+				
 				if (!isAble(fieldMapper.isInsertAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
 						ignoreTag)) {
 					continue;
@@ -850,7 +862,13 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+			if (value == null && fieldMapper.isHasDelegate()) {
+				value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
+				fieldMapper = fieldMapper.getDelegate();
+			}
 
 			if (!isAble(fieldMapper.isUpdateAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
 					ignoreTag)) {
@@ -948,6 +966,13 @@ public class SqlBuilder {
 		boolean allFieldNull = true;
 
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+
+			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+			if (value == null && fieldMapper.isHasDelegate()) {
+				value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
+				fieldMapper = fieldMapper.getDelegate();
+			}
 
 			if (!isAble(fieldMapper.isUpdateAble(), false, useWhiteList, fieldMapper, whiteListTag, ignoreTag)) {
 				continue;
