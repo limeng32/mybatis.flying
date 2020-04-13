@@ -216,20 +216,8 @@ public class SqlBuilder {
 				opVersionLockList.add(fieldMapper);
 			}
 			// 需考虑delegate情况
-			if (fieldMapperCache.containsKey(fieldMapper.getDbFieldName())) {
-				FieldMapper temp = fieldMapperCache.get(fieldMapper.getDbFieldName());
-				if (!temp.isDelegate() && fieldMapper.isDelegate()) {
-					temp.setDelegate(fieldMapper);
-					temp.setHasDelegate(true);
-					
-					fieldMapperCache.put("c:d", temp);
-				} else if (temp.isDelegate() && !fieldMapper.isDelegate()) {
-					fieldMapper.setDelegate(temp);
-					fieldMapper.setHasDelegate(true);
-					fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
-					//TODO
-					fieldMapperCache.put("a:b", temp);
-				}
+			if (fieldMapper.isDelegate()) {
+				fieldMapperCache.put("delegate:" + fieldMapper.getDbFieldName(), fieldMapper);
 			} else {
 				fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
 			}
@@ -238,7 +226,6 @@ public class SqlBuilder {
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
-		System.out.println("3::::::::::::::"+JSON.toJSONString(tableMapper));
 		tableMapperCache.put(dtoClass, tableMapper);
 		return tableMapper;
 	}
@@ -815,7 +802,7 @@ public class SqlBuilder {
 
 	private static boolean isAble(boolean excuteAble, boolean valueIsNull, boolean useWhiteList,
 			FieldMapper fieldMapper, String whiteListTag, String ignoreTag) {
-		if (!excuteAble
+		if (!excuteAble || fieldMapper.isDelegate()
 				|| (!fieldMapper.isOpVersionLock()
 						&& (valueIsNull || (useWhiteList && !fieldMapper.getWhiteListTagSet().contains(whiteListTag))))
 				|| fieldMapper.getIgnoreTagSet().contains(ignoreTag)) {
@@ -1372,9 +1359,9 @@ public class SqlBuilder {
 		}
 
 		if (flyingModel != null) {
-			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
-						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag)) && !fieldMapper.isDelegate()) {
 					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName, prefix);
 				}
 			}
@@ -1412,21 +1399,25 @@ public class SqlBuilder {
 
 		/* Handle the conditions in the fieldMapper */
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-			//TODO
-			System.out.println(":" + fieldMapper.getDbFieldName());
-			if (fieldMapper.isHasDelegate() && dtoFieldMap.get(fieldMapper.getDelegate().getFieldName()) != null) {
-				dealConditionEqual(whereSql, fieldMapper.getDelegate(), tableName, temp, false, 0);
-			}
-			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (value == null) {
-				continue;
-			}
-			if (fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForSelectAll(value.getClass(), selectSql, fromSql, whereSql, index,
-						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
-						new ParameterWrapper(value, tableName, fieldMapper, temp, tableName));
-			} else {
+			if (fieldMapper.isDelegate()) {
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (value == null) {
+					continue;
+				}
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
+			} else {
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+				if (value == null) {
+					continue;
+				}
+				if (fieldMapper.isForeignKey()) {
+					dealMapperAnnotationIterationForSelectAll(value.getClass(), selectSql, fromSql, whereSql, index,
+							flyingModel == null ? (null)
+									: (flyingModel.getProperties().get(fieldMapper.getFieldName())),
+							new ParameterWrapper(value, tableName, fieldMapper, temp, tableName));
+				} else {
+					dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
+				}
 			}
 		}
 
@@ -1449,7 +1440,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<Object, Object> dtoFieldMap,
+	private static void dealSelectSql(FlyingModel flyingModel, FieldMapper fieldMapper, Map<Object, Object> dtoFieldMap,
 			AtomicInteger index, StringBuilder selectSql, TableName tableName, String prefix)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
