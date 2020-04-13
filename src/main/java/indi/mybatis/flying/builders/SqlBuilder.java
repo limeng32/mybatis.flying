@@ -19,8 +19,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
-import com.alibaba.fastjson.JSON;
-
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -1581,7 +1579,10 @@ public class SqlBuilder {
 		}
 
 		/* Handle the conditions in the fieldMapper */
-		for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			if (fieldMapper.isHasDelegate() && dtoFieldMap.get(fieldMapper.getDelegate().getFieldName()) != null) {
+				dealConditionEqual(whereSql, fieldMapper.getDelegate(), tableName, temp, false, 0);
+			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
 				continue;

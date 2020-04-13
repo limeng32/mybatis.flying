@@ -57,5 +57,8 @@ public class DelegateTest {
 		LoginLog_ loginLog = loginLogService.selectOnePrefix(l);
 		System.out.println(":" + JSONObject.toJSONString(loginLog));
 		Assert.assertNull(loginLog);
+
+		int c = loginLogService.count(l);
+		Assert.assertEquals(0, c);
 	}
 }
