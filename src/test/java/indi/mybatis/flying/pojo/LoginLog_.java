@@ -7,8 +7,11 @@ import javax.persistence.Column;
 import org.apache.ibatis.type.JdbcType;
 
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
+import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
+import indi.mybatis.flying.statics.AssociationType;
+import indi.mybatis.flying.statics.OpLockType;
 
 @TableMapperAnnotation(tableName = "LoginLog_")
 public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
@@ -37,7 +40,9 @@ public class LoginLog_ extends PojoSupport<LoginLog_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", whiteListTag = "simple0")
 	private Account_ account;
 
-	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, delegate = true)
+	// 下面注解中的dbAssociationUniqueKey、isUniqueKey、opLockType、associationType、associationExtra都不会真正起作用
+	@FieldMapperAnnotation(dbFieldName = "accountId", jdbcType = JdbcType.INTEGER, delegate = true, dbAssociationUniqueKey = "id", isUniqueKey = true, opLockType = OpLockType.VERSION, associationType = AssociationType.LEFT_JOIN, associationExtra = {
+			@ForeignAssociation(dbFieldName = "MODEL_REV", dbAssociationFieldName = "LATEST_DEPLOY_REV") })
 	private Long delegateAccountId;
 
 	private java.util.Collection<Detail_> detail;

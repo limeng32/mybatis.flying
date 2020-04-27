@@ -177,10 +177,10 @@ public class SqlBuilder {
 			if (!b) {
 				continue;
 			}
-			if (OpLockType.VERSION.equals((fieldMapper.getOpLockType()))) {
+			if (OpLockType.VERSION.equals(fieldMapper.getOpLockType()) && !fieldMapper.isDelegate()) {
 				fieldMapper.setOpVersionLock(true);
 			}
-			if (fieldMapper.isUniqueKey()) {
+			if (fieldMapper.isUniqueKey() && !fieldMapper.isDelegate()) {
 				uniqueKeyList.add(fieldMapper);
 			}
 
@@ -196,7 +196,7 @@ public class SqlBuilder {
 				}
 			}
 
-			if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
+			if (!"".equals(fieldMapper.getDbAssociationUniqueKey()) && !fieldMapper.isDelegate()) {
 				fieldMapper.setForeignKey(true);
 			}
 
@@ -343,7 +343,8 @@ public class SqlBuilder {
 						conditionMapper.setForeignKey(true);
 					}
 					if (conditionMapper.isForeignKey()
-							&& (!ConditionType.NULL_OR_NOT.equals(conditionMapper.getConditionType()))) {
+							&& (!ConditionType.NULL_OR_NOT.equals(conditionMapper.getConditionType()))
+							&& !fieldMapper.isDelegate()) {
 						if (!tableMapperCache.containsKey(pojoField.getType())) {
 							buildTableMapper(pojoField.getType());
 						}
@@ -652,12 +653,12 @@ public class SqlBuilder {
 		boolean uniqueKeyHandled = false;
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			
+
 			if (value == null && fieldMapper.isHasDelegate()) {
 				value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
 				fieldMapper = fieldMapper.getDelegate();
 			}
-			
+
 			if (!isAble(fieldMapper.isInsertAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
 					ignoreTag)) {
 				continue;
@@ -758,12 +759,12 @@ public class SqlBuilder {
 			boolean uniqueKeyHandled = false;
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-				
+
 				if (value == null && fieldMapper.isHasDelegate()) {
 					value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
 					fieldMapper = fieldMapper.getDelegate();
 				}
-				
+
 				if (!isAble(fieldMapper.isInsertAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
 						ignoreTag)) {
 					continue;
@@ -1432,6 +1433,7 @@ public class SqlBuilder {
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if (fieldMapper.isHasDelegate() && dtoFieldMap.get(fieldMapper.getDelegate().getFieldName()) != null) {
 				dealConditionEqual(whereSql, fieldMapper.getDelegate(), tableName, temp, false, 0);
+				continue;
 			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
@@ -1607,6 +1609,7 @@ public class SqlBuilder {
 		for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 			if (fieldMapper.isHasDelegate() && dtoFieldMap.get(fieldMapper.getDelegate().getFieldName()) != null) {
 				dealConditionEqual(whereSql, fieldMapper.getDelegate(), tableName, temp, false, 0);
+				continue;
 			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (value == null) {
