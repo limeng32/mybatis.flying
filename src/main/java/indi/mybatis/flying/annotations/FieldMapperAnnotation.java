@@ -133,5 +133,15 @@ public @interface FieldMapperAnnotation {
 	 */
 	String[] whiteListTag() default {};
 
+	/**
+	 * 
+	 * Is a delegate mode or not. In delegate mode you can get the primary key of
+	 * the associated objects treated as a normal attributes. For example, primary
+	 * key id of the associated object account becomes simple property accountId.
+	 * The default is false meaning delegate mode if off.
+	 * 
+	 * @return boolean
+	 * @since 1.0.0
+	 */
 	boolean delegate() default false;
 }
