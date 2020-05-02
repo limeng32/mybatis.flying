@@ -29,6 +29,7 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import indi.mybatis.flying.Application;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
+import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
 import indi.mybatis.flying.service.LoginLogService;
@@ -133,5 +134,25 @@ public class DelegateTest {
 		l2.setDelegateAccountId(2L);
 		c.add(l2);
 		loginLogService.insertBatch(c);
+	}
+
+	// 测试delegate出现在CinditionMapper时的情况
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegateCondition.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/delegateTest/testDelegateCondition.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegateCondition.xml")
+	public void testDelegateCondition() {
+		LoginLog_Condition lc = new LoginLog_Condition();
+		lc.setIpLikeFilter("0.1");
+		Account_ a = new Account_();
+		a.setName("ann");
+		a.setDelegateRoleId(3L);
+		lc.setAccount(a);
+		LoginLog_ loginLog = loginLogService.selectOne(lc);
+		Assert.assertEquals("0.0.0.1", loginLog.getLoginIP());
+
+		a.setDelegateRoleId(4L);
+		loginLog = loginLogService.selectOne(lc);
+		Assert.assertNull(loginLog);
 	}
 }

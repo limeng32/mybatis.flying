@@ -53,8 +53,8 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR, whiteListTag = { "simple" })
 	private java.lang.String activateValue;
 
-	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true)
-	private Integer roleId;
+	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true, dbAssociationUniqueKey = "id")
+	private Long delegateRoleId;
 
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
 			"noRole" })
@@ -137,12 +137,12 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		this.status = status;
 	}
 
-	public Integer getRoleId() {
-		return roleId;
+	public Long getDelegateRoleId() {
+		return delegateRoleId;
 	}
 
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
+	public void setDelegateRoleId(Long delegateRoleId) {
+		this.delegateRoleId = delegateRoleId;
 	}
 
 	public java.util.Collection<LoginLogSource2> getLoginLogSource2() {
