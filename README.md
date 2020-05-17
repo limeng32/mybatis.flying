@@ -18,23 +18,23 @@ flying 是一个可以极大增加 mybatis 开发速度的插件组，它提供�
 
 ```xml
     <select id="select" resultMap="result">
-        flying#{?}:select
+        {"action":"select#{?}"}
     </select>
 
     <select id="selectOne" resultMap="result">
-        flying:selectOne
+        {"action":"selectOne"}
     </select>
 
     <insert id="insert">
-        flying:insert
+        {"action":"insert"}
     </insert>
 
     <update id="update">
-        flying:update
+        {"action":"update"}
     </update>
 
     <delete id="delete">
-        flying:delete
+        {"action":"delete"}
     </delete>
 ```
 再在您的实体类上加上这样一些标注：
@@ -100,44 +100,43 @@ public class Account {
     accountService.delete(newAccount);
 ```
 
-由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountById、getAccountByName、getAccountByAge” 这样重复性强的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。以上只是 flying 功能的冰山一角，其它的功能如多表联查、分页、乐观锁、或逻辑查询、复杂外键关系等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com) 中进行查看。
+由于 flying 掌握了您全部的数据结构和实体关系，所以操作数据变得非常简单，您再也不需要定义 “getAccountById、getAccountByName、getAccountByAge” 这样重复性强的方法了，由此带来更大的好处是您的 service 层只需要关注事务方面的逻辑即可，它从低级代码中完全解放了出来。以上只是 flying 功能的冰山一角，其它的功能如多表联查、分页、乐观锁、或逻辑查询、索引、复杂外键关系、批量执行等 flying 都有简单的解决方案，您可以在 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)（国外）[https://flyingdoc.gitee.io](https://flyingdoc.gitee.io)（国内）中进行查看。
 
 flying 特点总结如下：
 
-- 数据操作入参和返回类型都是自定义的实体类，完全 no sql 杜绝各种‘’手滑‘’，项目可随意重构。
-
-- 支持跨表操作和跨数据源操作。
+- 数据操作入参和返回类型都是自定义的实体类，完全 no sql，杜绝各种‘’手滑‘’，项目可随意重构。
 
 - 非侵占工作机制，可以和您已有的 mybatis 方法协同工作。
 
-- 加入了优化过的缓存插件，可以对多数据源环境下 flying 方法和传统 mybatis 方法同时进行缓存管理。
+- 灵活定制查询字段黑名单和白名单，方便您管理敏感数据。
 
 - 可以自定义主键生成器，全面支持或逻辑查询。（初雪版新增特性）
 
 - 支持复杂的外键关联方式。（清明版新增特性）
 
+- 支持使用索引查询，支持批量执行增删改。（极光版新增特性）
+
 #### flying 获取方式：
 
-  flying 的 maven 坐标为：
+  flying 最新版的 maven 坐标为：
 
 ```xml
     <groupId>com.github.limeng32</groupId>
     <artifactId>mybatis.flying</artifactId>
-    <version>0.9.9</version>
+    <version>1.0.0</version>
 ```
 
-mybatis 版本与 flying 最新版本的对应关系见下：
+mybatis 版本与 flying 版本的对应关系见下：
 
- |mybatis 版本|初雪 |阳春 |清明 |
- |---|---|---|---|
- |3.3.0、3.3.1|0.8.3|不再支持|不再支持|
- |3.4.0、3.4.1、3.4.2、3.4.3、3.4.4、3.4.5、3.4.6|0.9.3|0.9.4|0.9.9|
+| mybatis 版本     | flying 版本   |  英文标题   |
+|:--------|:-------:|-------:|
+| `3.4.x` | `0.9.4 阳春` | `sunny-spring` |
+| `3.4.x` | `0.9.9 清明` | `qing-ming` |
+| `3.4.x` | `1.0.0 极光` | `Aurora` |
  
-之所以采用分版本发布的方式是因为我们对 mybatis 每个版本的用户都认真负责，力求使您得到 flying 最大的好处。
-
 #### flying 代码示例：
 我们还为您提供了一个快速上手的示例：
 
-1. 最新版本demo：[https://gitee.com/limeng32/flying-demo-use-springboot](https://gitee.com/limeng32/flying-demo-use-springboot)
+1. 最新版本demo：[https://gitee.com/limeng32/flying-aurora-demo](https://gitee.com/limeng32/flying-aurora-demo)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)（国外）[https://flyingdoc.gitee.io](https://flyingdoc.gitee.io)（国内）。

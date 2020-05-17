@@ -53,7 +53,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR, whiteListTag = { "simple" })
 	private java.lang.String activateValue;
 
-	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true, dbAssociationUniqueKey = "id")
+	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true)
 	private Long delegateRoleId;
 
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
