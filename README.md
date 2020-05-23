@@ -1,4 +1,4 @@
-# mybatis.flying - 清明 （Qing-Ming）
+# mybatis.flying - 极光 （Aurora）
 
 [![Build Status](https://travis-ci.org/limeng32/mybatis.flying.svg?branch=master)](https://travis-ci.org/limeng32/mybatis.flying)
 [![Codecov](https://codecov.io/gh/limeng32/mybatis.flying/branch/master/graph/badge.svg)](https://codecov.io/gh/limeng32/mybatis.flying/branch/master)
