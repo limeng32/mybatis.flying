@@ -137,6 +137,6 @@ mybatis 版本与 flying 版本的对应关系见下：
 #### flying 代码示例：
 我们还为您提供了一个快速上手的示例：
 
-1. 最新版本demo：[https://gitee.com/limeng32/flying-aurora-demo](https://gitee.com/limeng32/flying-aurora-demo)
+1. 最新版本demo：[https://gitee.com/limeng32/flying-demo-use-springboot](https://gitee.com/limeng32/flying-demo-use-springboot)
 
 更多内容请您参见软件文档 [flying-doc.limeng32.com](http://flying-doc.limeng32.com)（国外）[https://flyingdoc.gitee.io](https://flyingdoc.gitee.io)（国内）。
