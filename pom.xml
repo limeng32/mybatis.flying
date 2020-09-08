@@ -6,7 +6,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -49,12 +49,12 @@
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
 		<druid.version>1.1.9</druid.version>
 		<spring-boot.version>1.5.7.RELEASE</spring-boot.version>
-		<commons-beanutils.version>1.8.3</commons-beanutils.version>
+		<commons-beanutils.version>1.9.2</commons-beanutils.version>
 		<javax.persistence.version>1.0</javax.persistence.version>
 		<cglib.version>3.2.5</cglib.version>
 		<jta.version>1.1</jta.version>
 		<atomikos.version>3.9.3</atomikos.version>
-		<fastjson.version>1.2.44</fastjson.version>
+		<fastjson.version>1.2.69</fastjson.version>
 	</properties>
 	<dependencies>
 		<dependency>

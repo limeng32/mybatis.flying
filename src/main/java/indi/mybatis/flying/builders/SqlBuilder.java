@@ -1347,7 +1347,6 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	private static void dealMapperAnnotationIterationForSelectAll(Class<?> objectType, StringBuilder selectSql,
 			StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index, FlyingModel flyingModel,
 			ParameterWrapper pw) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
@@ -1366,7 +1365,7 @@ public class SqlBuilder {
 				useWhiteList = true;
 			}
 		}
-		Map<Object, Object> dtoFieldMap = pw.object == null ? new HashMap<>() : PropertyUtils.describe(pw.object);
+		Map<String, Object> dtoFieldMap = pw.object == null ? new HashMap<>() : PropertyUtils.describe(pw.object);
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
 		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
@@ -1467,7 +1466,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<Object, Object> dtoFieldMap,
+	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<String, Object> dtoFieldMap,
 			AtomicInteger index, StringBuilder selectSql, TableName tableName, String prefix)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
