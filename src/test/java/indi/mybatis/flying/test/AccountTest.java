@@ -289,12 +289,12 @@ public class AccountTest {
 		Account_ a = accountService.select(1);
 		Assert.assertEquals("发布", a.getStatus().text());
 		Account_ ac = new Account_();
-		ac.setStatus(StoryStatus_.p);
+		ac.setStatus(StoryStatus_.PUBLISH);
 		Collection<Account_> c = accountService.selectAll(ac);
 		Assert.assertEquals(1, c.size());
 		Account_ a2 = accountService.select(2);
-		Assert.assertEquals(StoryStatus_.s, a2.getStatus());
-		a2.setStatus(StoryStatus_.c);
+		Assert.assertEquals(StoryStatus_.SKETCH, a2.getStatus());
+		a2.setStatus(StoryStatus_.CANCEL);
 		accountService.update(a2);
 		Account_ a3 = accountService.select(3);
 		Assert.assertNull(a3.getStatus());

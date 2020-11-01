@@ -26,6 +26,8 @@ public class TableMapper {
 
 	private FieldMapper[] uniqueKeyNames;
 
+	private FieldMapper uniqueKey;
+
 	private FieldMapper[] opVersionLocks;
 
 	private Class<?> clazz;
@@ -54,6 +56,14 @@ public class TableMapper {
 
 	public void setUniqueKeyNames(FieldMapper[] uniqueKeyNames) {
 		this.uniqueKeyNames = uniqueKeyNames;
+	}
+
+	public FieldMapper getUniqueKey() {
+		return uniqueKey;
+	}
+
+	public void setUniqueKey(FieldMapper uniqueKey) {
+		this.uniqueKey = uniqueKey;
 	}
 
 	public FieldMapper[] getOpVersionLocks() {

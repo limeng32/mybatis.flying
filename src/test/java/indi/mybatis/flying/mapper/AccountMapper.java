@@ -78,4 +78,6 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
 
 	public int selectCheckHealth();
+	
+	public int updateBatch(Collection<Account_> t);
 }

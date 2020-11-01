@@ -176,4 +176,9 @@ public class AccountService extends ServiceSupport<Account_> implements AccountM
 		return mapper.selectCheckHealth();
 	}
 
+	@Override
+	public int updateBatch(Collection<Account_> t) {
+		return mapper.updateBatch(t);
+	}
+
 }

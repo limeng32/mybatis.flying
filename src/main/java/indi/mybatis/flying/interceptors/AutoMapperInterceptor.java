@@ -80,6 +80,8 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static final String MYSQL = "mysql";
 
+	private SqlSourceBuilder builder;
+
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
@@ -90,7 +92,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
-			String newSql = "";
+			String newSql = null;
 			switch (flyingModel.getActionType()) {
 			case COUNT:
 				newSql = SqlBuilder.buildCountSql(parameterObject, flyingModel);
@@ -116,13 +118,18 @@ public class AutoMapperInterceptor implements Interceptor {
 			case UPDATE:
 				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
 				break;
+			case UPDATE_BATCH:
+				newSql = SqlBuilder.buildUpdateBatchSql(parameterObject, flyingModel);
+				break;
 			case UPDATE_PERSISTENT:
 				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
 				break;
 			default:
 				break;
 			}
-			log(logger, logLevel, new StringBuffer("Auto generated sql:").append(newSql).toString());
+			if (!LogLevel.NONE.equals(logLevel)) {
+				log(logger, logLevel, new StringBuilder("Auto generated sql:").append(newSql).toString());
+			}
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
@@ -233,7 +240,9 @@ public class AutoMapperInterceptor implements Interceptor {
 	}
 
 	private SqlSource buildSqlSource(Configuration configuration, String originalSql, Class<?> parameterType) {
-		SqlSourceBuilder builder = new SqlSourceBuilder(configuration);
+		if (builder == null) {
+			builder = new SqlSourceBuilder(configuration);
+		}
 		return builder.parse(originalSql, parameterType, null);
 	}
 

@@ -137,9 +137,14 @@
 	<select id="selectCheckHealth" resultType="int">
 		select 1;
 	</select>
+	
+	<update id="updateBatch">
+		{"action":"updateBatch"}
+	</update>
 
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
+		<result property="status" column="status" typeHandler="indi.mybatis.flying.handler.StoryStatusHandler"/>
 		<association property="role" javaType="Role_"
 			select="indi.mybatis.flying.mapper.RoleMapper.selectWithoutCache"
 			column="role_id" />
@@ -153,6 +158,7 @@
 
 	<resultMap type="Account_" id="resultPrefix" autoMapping="true">
 		<id property="id" column="id" />
+		<result property="status" column="status" typeHandler="indi.mybatis.flying.handler.StoryStatusHandler"/>
 		<association property="permission"
 			resultMap="indi.mybatis.flying.mapper.PermissionMapper.result"
 			columnPrefix="permission__" />

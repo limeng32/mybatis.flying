@@ -121,7 +121,7 @@ public class WhiteListTest {
 		account.setName("bob");
 		account.setEmail("bob@live.cn");
 		account.setPassword("bbb");
-		account.setStatus(StoryStatus_.p);
+		account.setStatus(StoryStatus_.PUBLISH);
 		account.setActivateValue("bv");
 		Role_ role = new Role_();
 		role.setId(2);
@@ -141,7 +141,7 @@ public class WhiteListTest {
 		account.setName("bob");
 		account.setEmail("bob@live.cn");
 		account.setPassword("bbb");
-		account.setStatus(StoryStatus_.p);
+		account.setStatus(StoryStatus_.PUBLISH);
 		account.setActivateValue(null);
 		Role_ role = new Role_();
 		role.setId(33);

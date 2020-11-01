@@ -31,6 +31,8 @@ public enum ActionType {
 	 * null in pojos)
 	 */
 	UPDATE("update"),
+	/** Update record collection, accept Collection<Pojo> type parameters. */
+	UPDATE_BATCH("updateBatch"),
 	/**
 	 * Completely updating a record, accept Pojo type parameters (does not ignore
 	 * the null attribute in the Pojo, which is updated to null in the database.)

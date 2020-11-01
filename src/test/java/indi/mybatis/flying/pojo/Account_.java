@@ -10,6 +10,7 @@ import org.apache.ibatis.type.JdbcType;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
+import indi.mybatis.flying.handler.StoryStatusHandler;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
 import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
@@ -37,7 +38,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "opLock", jdbcType = JdbcType.INTEGER, opLockType = OpLockType.VERSION)
 	private Integer opLock;
 
-	@FieldMapperAnnotation(dbFieldName = "status", jdbcType = JdbcType.CHAR)
+	@FieldMapperAnnotation(dbFieldName = "status", jdbcType = JdbcType.CHAR, customTypeHandler = StoryStatusHandler.class)
 	private StoryStatus_ status;
 
 	/**

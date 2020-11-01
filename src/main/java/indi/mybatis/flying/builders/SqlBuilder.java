@@ -230,6 +230,7 @@ public class SqlBuilder {
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
+		tableMapper.setUniqueKey(uniqueKeyList.get(0));
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
 		tableMapperCache.put(dtoClass, tableMapper);
@@ -817,6 +818,143 @@ public class SqlBuilder {
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
 		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).toString();
+	}
+
+	/**
+	 * The insert SQL statement is generated from the incoming object
+	 * 
+	 * @param object      Object
+	 * @param flyingModel FlyingModel
+	 * @return String
+	 * @throws NoSuchFieldException      Exception
+	 * @throws IllegalAccessException    Exception
+	 * @throws InvocationTargetException Exception
+	 * @throws NoSuchMethodException     Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static String buildUpdateBatchSql(Object objectC, FlyingModel flyingModel)
+			throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		DefaultSqlSession.StrictMap<Object> valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
+		StringBuilder tableSql = new StringBuilder();
+		StringBuilder whereSql = new StringBuilder();
+		String ignoreTag = flyingModel.getIgnoreTag();
+		String whiteListTag = flyingModel.getWhiteListTag();
+		boolean useWhiteList = whiteListTag == null ? false : true;
+		TableMapper tableMapper = null;
+		Map<?, ?> dtoFieldMap = null;
+		boolean allFieldNull = true;
+		int i = 0;
+		Collection<Object> c = (Collection<Object>) (valueC.get("collection"));
+		if (c.isEmpty()) {
+			throw new AutoMapperException(
+					new StringBuffer(AutoMapperExceptionEnum.UPDATE_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
+							.append(" of ").append(flyingModel.getId()).toString());
+		}
+		Map<FieldMapper, StringBuilder> m = null;
+		FieldMapper uniqueFieldMapper = null;
+
+		for (Object object : c) {
+			dtoFieldMap = PropertyUtils.describe(object);
+			if (i == 0) {
+				tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
+				uniqueFieldMapper = tableMapper.getUniqueKey();
+				String tableName = tableMapper.getTableName();
+				tableSql.append(UPDATE_BLANK).append(tableName).append(BLANK_SET_BLANK);
+				whereSql.append(" where ").append(uniqueFieldMapper.getDbFieldName()).append(" IN (");
+			}
+			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+
+				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
+
+				if (value == null && fieldMapper.isHasDelegate()) {
+					value = dtoFieldMap.get(fieldMapper.getDelegate().getFieldName());
+					fieldMapper = fieldMapper.getDelegate();
+				}
+
+				if (!isAble(fieldMapper.isUpdateAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
+						ignoreTag)) {
+					continue;
+				}
+				if (m == null) {
+					m = new HashMap<>();
+				}
+				if (fieldMapper.isOpVersionLock()) {
+					if (!m.containsKey(fieldMapper)) {
+
+						StringBuilder temp = new StringBuilder(fieldMapper.getDbFieldName()).append(EQUAL)
+								.append(fieldMapper.getDbFieldName()).append(PLUS_1);
+						m.put(fieldMapper, temp);
+					}
+				} else if (fieldMapper != tableMapper.getUniqueKey()) {
+					allFieldNull = false;
+
+					if (!m.containsKey(fieldMapper)) {
+						StringBuilder temp = new StringBuilder(fieldMapper.getDbFieldName()).append(" = CASE ")
+								.append(uniqueFieldMapper.getDbFieldName());
+						handlerUpdateBatch(temp, uniqueFieldMapper, fieldMapper, i);
+						m.put(fieldMapper, temp);
+					} else {
+						handlerUpdateBatch(m.get(fieldMapper), uniqueFieldMapper, fieldMapper, i);
+					}
+
+				} else {
+					whereSql.append(POUND_OPENBRACE).append("collection[").append(i).append("].")
+							.append(uniqueFieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+							.append(uniqueFieldMapper.getJdbcType().toString()).append(CLOSEBRACE).append(COMMA);
+				}
+//				tableSql.append(COMMA);
+
+			}
+			if (allFieldNull) {
+				throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
+			}
+//			valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
+//			valueSql.append(CLOSEPAREN).append(COMMA);
+			i++;
+		}
+		for (Map.Entry<FieldMapper, StringBuilder> e : m.entrySet()) {
+			tableSql.append(e.getValue());
+			if (!e.getKey().isOpVersionLock()) {
+				tableSql.append(" ELSE ").append(e.getKey().getDbFieldName()).append(" end");
+			}
+			tableSql.append(COMMA);
+		}
+
+		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
+		whereSql.delete(whereSql.lastIndexOf(COMMA), whereSql.lastIndexOf(COMMA) + 1);
+		whereSql.append(")");
+		return tableSql.append(whereSql).toString();
+	}
+
+//	tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+//	if (fieldMapper.isForeignKey()) {
+//		tableSql.append(fieldMapper.getFieldName()).append(DOT)
+//				.append(fieldMapper.getForeignFieldName());
+//	} else {
+//		tableSql.append(fieldMapper.getFieldName());
+//	}
+//	tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+//	if (fieldMapper.getTypeHandlerPath() != null) {
+//		tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+//	}
+//	tableSql.append(CLOSEBRACE);
+
+	private static void handlerUpdateBatch(StringBuilder stringBuilder, FieldMapper uniqueFieldMapper,
+			FieldMapper fieldMapper, int i) {
+		stringBuilder.append(" WHEN ").append(POUND_OPENBRACE).append("collection[").append(i).append("].")
+				.append(uniqueFieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+				.append(uniqueFieldMapper.getJdbcType().toString()).append(CLOSEBRACE).append(" THEN ")
+				.append(POUND_OPENBRACE).append("collection[").append(i).append("].");
+		if (fieldMapper.isForeignKey()) {
+			stringBuilder.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+		} else {
+			stringBuilder.append(fieldMapper.getFieldName());
+		}
+		stringBuilder.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+		if (fieldMapper.getTypeHandlerPath() != null) {
+			stringBuilder.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+		}
+		stringBuilder.append(CLOSEBRACE);
 	}
 
 	private static boolean isAble(boolean excuteAble, boolean valueIsNull, boolean useWhiteList,
