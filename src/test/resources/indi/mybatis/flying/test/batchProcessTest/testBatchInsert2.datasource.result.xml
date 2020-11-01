@@ -1,7 +1,7 @@
 <dataset>
-	<account_ NAME="ann" EMAIL="ann@live.cn"
+	<account_ NAME="[null]" EMAIL="ann@live.cn"
 		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
-		ACTIVATEVALUE="" OPLOCK="0" ROLE_ID="1" />
+		ACTIVATEVALUE="" OPLOCK="0" ROLE_ID="[null]" />
 	<account_ NAME="bob" EMAIL="bob@live.cn"
 		PASSWORD="6a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
 		ACTIVATEVALUE="" OPLOCK="0" ROLE_ID="2" />

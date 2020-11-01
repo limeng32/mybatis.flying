@@ -289,12 +289,12 @@ public class BatchProcessTest {
 		r3.setId(3);
 		Account_ a = new Account_();
 		a.setId(1L);
-		a.setName("ann");
+//		a.setName("ann");
 		a.setEmail("ann@live.cn");
 		a.setPassword("5a690d842935c51f26f473e025c1b97a");
 		a.setActivated(true);
 		a.setActivateValue("");
-		a.setRole(r1);
+//		a.setRole(r1);
 		ac.add(a);
 
 		Account_ a2 = new Account_();
@@ -344,12 +344,12 @@ public class BatchProcessTest {
 		r2.setId(2);
 		r3.setId(3);
 		Account_ a = new Account_();
-		a.setName("ann");
+//		a.setName("ann");
 		a.setEmail("ann@live.cn");
 		a.setPassword("5a690d842935c51f26f473e025c1b97a");
 		a.setActivated(true);
 		a.setActivateValue("");
-		a.setRole(r1);
+//		a.setRole(r1);
 		ac.add(a);
 
 		Account_ a2 = new Account_();

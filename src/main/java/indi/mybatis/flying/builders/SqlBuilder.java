@@ -88,6 +88,7 @@ public class SqlBuilder {
 	private static final String ELSE = " else ";
 	private static final String END = " end ";
 	private static final String CLOSEPAREN = ")";
+	private static final String DEFAULT_COMMA = " default,";
 	private static final String ASTERISK = "*";
 	private static final String INSERT_INTO_BLANK = "insert into ";
 	private static final String SELECT_BLANK = "select ";
@@ -678,12 +679,8 @@ public class SqlBuilder {
 				valueSql.append("'0',");
 			} else {
 				valueSql.append(POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey()) {
-					valueSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-				} else {
-					valueSql.append(fieldMapper.getFieldName());
-				}
-				valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				dealForeignKey(valueSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(fieldMapper.getJdbcType().toString());
 				if (fieldMapper.getTypeHandlerPath() != null) {
 					valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 				}
@@ -724,6 +721,15 @@ public class SqlBuilder {
 		BeanUtils.setProperty(object, fieldMapper.getFieldName(), keyHandler.getKey());
 	}
 
+	private static StringBuilder dealForeignKey(StringBuilder stringBuilder, FieldMapper fieldMapper) {
+		if (fieldMapper.isForeignKey()) {
+			stringBuilder.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
+		} else {
+			stringBuilder.append(fieldMapper.getFieldName());
+		}
+		return stringBuilder;
+	}
+
 	/**
 	 * The insert SQL statement is generated from the incoming object
 	 * 
@@ -756,15 +762,14 @@ public class SqlBuilder {
 		}
 		for (Object object : c) {
 			KeyHandler keyHandler = flyingModel.getKeyHandler();
+			dtoFieldMap = PropertyUtils.describe(object);
 			if (i == 0) {
-				dtoFieldMap = PropertyUtils.describe(object);
 				tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 				String tableName = tableMapper.getTableName();
 				tableSql.append(INSERT_INTO_BLANK).append(tableName).append(BLANK_OPENPAREN);
 				valueSql.append("values");
 			}
 			valueSql.append("(");
-			boolean uniqueKeyHandled = false;
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 
@@ -773,8 +778,7 @@ public class SqlBuilder {
 					fieldMapper = fieldMapper.getDelegate();
 				}
 
-				if (!isAble(fieldMapper.isInsertAble(), value == null, useWhiteList, fieldMapper, whiteListTag,
-						ignoreTag)) {
+				if (!isAble(fieldMapper.isInsertAble(), false, useWhiteList, fieldMapper, whiteListTag, ignoreTag)) {
 					continue;
 				}
 				allFieldNull = false;
@@ -784,35 +788,28 @@ public class SqlBuilder {
 				if (((FieldMapper) fieldMapper).isOpVersionLock()) {
 					value = 0;
 					valueSql.append("'0',");
+				} else if (value == null) {
+					if (fieldMapper.isUniqueKey() && keyHandler != null) {
+						handleInsertSql(keyHandler, valueSql, fieldMapper, object, false, i);
+					} else {
+						valueSql.append(DEFAULT_COMMA);
+					}
 				} else {
 					valueSql.append(POUND_OPENBRACE);
 					valueSql.append(COLLECTION_OPENBRACKET + i + CLOSEBRACKET_DOT);
-					if (fieldMapper.isForeignKey()) {
-						valueSql.append(fieldMapper.getFieldName()).append(DOT)
-								.append(fieldMapper.getForeignFieldName());
-					} else {
-						valueSql.append(fieldMapper.getFieldName());
-					}
+					dealForeignKey(valueSql, fieldMapper);
 					valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
 					if (fieldMapper.getTypeHandlerPath() != null) {
 						valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 					}
 					if (fieldMapper.isUniqueKey()) {
-						uniqueKeyHandled = true;
 						if (keyHandler != null) {
 
-							handleInsertSql(keyHandler, valueSql, fieldMapper, object, uniqueKeyHandled, i);
+							handleInsertSql(keyHandler, valueSql, fieldMapper, object, false, i);
 						}
 					}
 					valueSql.append(CLOSEBRACE_COMMA);
 				}
-			}
-			if (keyHandler != null && !uniqueKeyHandled) {
-				FieldMapper temp = tableMapper.getUniqueKeyNames()[0];
-				if (i == 0) {
-					tableSql.append(temp.getDbFieldName()).append(COMMA);
-				}
-				handleInsertSql(keyHandler, valueSql, temp, object, uniqueKeyHandled, i);
 			}
 			if (allFieldNull) {
 				throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
@@ -825,6 +822,7 @@ public class SqlBuilder {
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
 		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).toString();
+
 	}
 
 	/**
@@ -867,7 +865,7 @@ public class SqlBuilder {
 				uniqueFieldMapper = tableMapper.getUniqueKey();
 				String tableName = tableMapper.getTableName();
 				tableSql.append(UPDATE_BLANK).append(tableName).append(BLANK_SET_BLANK);
-				whereSql.append(" where ").append(uniqueFieldMapper.getDbFieldName()).append(" IN (");
+				whereSql.append(WHERE_BLANK).append(uniqueFieldMapper.getDbFieldName()).append(BLANK_IN_OPENPAREN);
 			}
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 
@@ -935,12 +933,8 @@ public class SqlBuilder {
 				.append(CLOSEBRACKET_DOT).append(uniqueFieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 				.append(uniqueFieldMapper.getJdbcType().toString()).append(CLOSEBRACE).append(THEN)
 				.append(POUND_OPENBRACE).append(COLLECTION_OPENBRACKET).append(i).append(CLOSEBRACKET_DOT);
-		if (fieldMapper.isForeignKey()) {
-			stringBuilder.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-		} else {
-			stringBuilder.append(fieldMapper.getFieldName());
-		}
-		stringBuilder.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+		dealForeignKey(stringBuilder, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
+				.append(fieldMapper.getJdbcType().toString());
 		if (fieldMapper.getTypeHandlerPath() != null) {
 			stringBuilder.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 		}
@@ -1010,12 +1004,8 @@ public class SqlBuilder {
 			} else {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey()) {
-					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-				} else {
-					tableSql.append(fieldMapper.getFieldName());
-				}
-				tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(fieldMapper.getJdbcType().toString());
 				if (fieldMapper.getTypeHandlerPath() != null) {
 					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 				}
@@ -1113,12 +1103,8 @@ public class SqlBuilder {
 			} else {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
-				if (fieldMapper.isForeignKey()) {
-					tableSql.append(fieldMapper.getFieldName()).append(DOT).append(fieldMapper.getForeignFieldName());
-				} else {
-					tableSql.append(fieldMapper.getFieldName());
-				}
-				tableSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(fieldMapper.getJdbcType().toString());
 				if (fieldMapper.getTypeHandlerPath() != null) {
 					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 				}
