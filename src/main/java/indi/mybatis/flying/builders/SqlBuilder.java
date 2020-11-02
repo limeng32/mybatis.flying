@@ -883,23 +883,24 @@ public class SqlBuilder {
 				if (m == null) {
 					m = new HashMap<>();
 				}
+				FieldMapper maybeDelegate = fieldMapper.isHasDelegate() ? fieldMapper.getDelegate() : fieldMapper;
 				if (fieldMapper.isOpVersionLock()) {
-					if (!m.containsKey(fieldMapper)) {
+					if (!m.containsKey(maybeDelegate)) {
 
 						StringBuilder temp = new StringBuilder(fieldMapper.getDbFieldName()).append(EQUAL)
 								.append(fieldMapper.getDbFieldName()).append(PLUS_1);
-						m.put(fieldMapper, temp);
+						m.put(maybeDelegate, temp);
 					}
 				} else if (fieldMapper != tableMapper.getUniqueKey()) {
 					allFieldNull = false;
 
-					if (!m.containsKey(fieldMapper)) {
+					if (!m.containsKey(maybeDelegate)) {
 						StringBuilder temp = new StringBuilder(fieldMapper.getDbFieldName()).append(" = CASE ")
 								.append(uniqueFieldMapper.getDbFieldName());
 						handlerUpdateBatch(temp, uniqueFieldMapper, fieldMapper, i);
-						m.put(fieldMapper, temp);
+						m.put(maybeDelegate, temp);
 					} else {
-						handlerUpdateBatch(m.get(fieldMapper), uniqueFieldMapper, fieldMapper, i);
+						handlerUpdateBatch(m.get(maybeDelegate), uniqueFieldMapper, fieldMapper, i);
 					}
 
 				} else {

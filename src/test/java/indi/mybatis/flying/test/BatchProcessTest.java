@@ -304,7 +304,7 @@ public class BatchProcessTest {
 		a2.setPassword("6a690d842935c51f26f473e025c1b97a");
 		a2.setActivated(true);
 		a2.setActivateValue("");
-		a2.setRole(r2);
+		a2.setDelegateRoleId(23L);
 		ac.add(a2);
 
 		Account_ a3 = new Account_();
@@ -358,7 +358,7 @@ public class BatchProcessTest {
 		a2.setPassword("6a690d842935c51f26f473e025c1b97a");
 		a2.setActivated(true);
 		a2.setActivateValue("");
-		a2.setRole(r2);
+		a2.setDelegateRoleId(22L);
 		ac.add(a2);
 
 		Account_ a3 = new Account_();
@@ -400,6 +400,117 @@ public class BatchProcessTest {
 		a2.setRole(r1);
 
 		l.add(a2);
+		a3.setId(3L);
+		a3.setName("carl3");
+		a3.setDelegateRoleId(24L);
+		l.add(a3);
+		int i = accountService.updateBatch(l);
+		System.out.println("::" + i);
+	}
+
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch2.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.result.xml") })
+	public void testUpdateBatch2() {
+		List<Account_> l = new LinkedList<>();
+		Account_ a1 = new Account_();
+		Account_ a2 = new Account_();
+		Account_ a3 = new Account_();
+		a1.setId(1L);
+		a1.setName("ann1");
+		l.add(a1);
+		a2.setId(2L);
+		a2.setName("bob2");
+		a2.setPassword("b");
+		a2.setStatus(StoryStatus_.CANCEL);
+
+		Role_ r1 = new Role_();
+		r1.setId(11);
+		a2.setRole(r1);
+
+		l.add(a2);
+		a3.setId(3L);
+		a3.setName("carl3");
+		a3.setDelegateRoleId(24L);
+		l.add(a3);
+		int i = accountService.updateBatch(l);
+		System.out.println("::" + i);
+
+		List<Account_> l2 = new LinkedList<>();
+		Account_ a4 = new Account_();
+		Account_ a5 = new Account_();
+		a4.setId(4L);
+		a4.setRole(r1);
+		l2.add(a4);
+
+		a5.setId(5L);
+		a5.setDelegateRoleId(24L);
+		l2.add(a5);
+		i = accountService.updateBatch(l2);
+		System.out.println("::" + i);
+	}
+
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch3.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.result.xml") })
+	public void testUpdateBatch3() {
+		List<Account_> l = new LinkedList<>();
+		Account_ a1 = new Account_();
+		Account_ a2 = new Account_();
+		Account_ a3 = new Account_();
+		a1.setId(1L);
+		a1.setName("ann1");
+		l.add(a1);
+
+		a2.setId(2L);
+		a2.setName("bob2");
+		a2.setPassword("b");
+		a2.setStatus(StoryStatus_.CANCEL);
+		Role_ r1 = new Role_();
+		r1.setId(11);
+		a2.setRole(r1);
+		l.add(a2);
+
+		a3.setId(3L);
+		a3.setName("carl3");
+		Role_ r2 = new Role_();
+		r2.setId(24);
+		a3.setRole(r2);
+		l.add(a3);
+		int i = accountService.updateBatch(l);
+		System.out.println("::" + i);
+	}
+
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch4.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testUpdateBatch.datasource.result.xml") })
+	public void testUpdateBatch4() {
+		List<Account_> l = new LinkedList<>();
+		Account_ a1 = new Account_();
+		Account_ a2 = new Account_();
+		Account_ a3 = new Account_();
+		a1.setId(1L);
+		a1.setName("ann1");
+		l.add(a1);
+
+		a2.setId(2L);
+		a2.setName("bob2");
+		a2.setPassword("b");
+		a2.setStatus(StoryStatus_.CANCEL);
+		l.add(a2);
+
 		a3.setId(3L);
 		a3.setName("carl3");
 		l.add(a3);
