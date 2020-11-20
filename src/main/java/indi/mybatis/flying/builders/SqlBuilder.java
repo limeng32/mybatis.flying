@@ -238,7 +238,11 @@ public class SqlBuilder {
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
 		tableMapper.setUniqueKeyNames(uniqueKeyList.toArray(new FieldMapper[uniqueKeyList.size()]));
-		tableMapper.setUniqueKey(uniqueKeyList.get(0));
+		if (!uniqueKeyList.isEmpty()) {
+			tableMapper.setUniqueKey(uniqueKeyList.get(0));
+		} else {
+			tableMapper.setUniqueKey(new FieldMapper());
+		}
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
 		tableMapperCache.put(dtoClass, tableMapper);
