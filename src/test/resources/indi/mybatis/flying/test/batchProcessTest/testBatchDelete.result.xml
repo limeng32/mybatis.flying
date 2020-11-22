@@ -1,11 +1,11 @@
 <dataset>
 	<account_ ID="1" NAME="a2" EMAIL="ann@live.cn"
 		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
-		ACTIVATEVALUE="aaa" OPLOCK="1" />
+		ACTIVATEVALUE="aaa" OPLOCK="1" status="s" />
 	<account_ ID="2" NAME="2a" EMAIL="ann2@live.cn"
 		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
-		ACTIVATEVALUE="aaa" OPLOCK="1" />
+		ACTIVATEVALUE="aaa" OPLOCK="1" status="s" />
 	<account_ ID="3" NAME="b" EMAIL="ann3@live.cn"
 		PASSWORD="5a690d842935c51f26f473e025c1b97a" ACTIVATED="1"
-		ACTIVATEVALUE="bbb" OPLOCK="1" />
+		ACTIVATEVALUE="bbb" OPLOCK="1" status="s" />
 </dataset>

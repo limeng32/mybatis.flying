@@ -8,11 +8,13 @@ import org.apache.ibatis.type.StringTypeHandler;
 
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
+import indi.mybatis.flying.handler.StoryStatusHandler;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.Limitable;
 import indi.mybatis.flying.models.Queryable;
 import indi.mybatis.flying.models.Sortable;
 import indi.mybatis.flying.pojo.Account_;
+import indi.mybatis.flying.pojo.StoryStatus_;
 import indi.mybatis.flying.statics.ConditionType;
 
 public class Account_Condition extends Account_ implements Conditionable {
@@ -151,6 +153,9 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@Or({ @ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.EQUAL),
 			@ConditionMapperAnnotation(dbFieldName = "id", conditionType = ConditionType.EQUAL) })
 	private Object[] idEqualsOr;
+
+	@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.EQUAL, customTypeHandler = StoryStatusHandler.class)
+	private StoryStatus_ statusEquals;
 
 	@Override
 	public Limitable getLimiter() {
@@ -378,6 +383,14 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setNameIsNull(Boolean nameIsNull) {
 		this.nameIsNull = nameIsNull;
+	}
+
+	public StoryStatus_ getStatusEquals() {
+		return statusEquals;
+	}
+
+	public void setStatusEquals(StoryStatus_ statusEquals) {
+		this.statusEquals = statusEquals;
 	}
 
 }

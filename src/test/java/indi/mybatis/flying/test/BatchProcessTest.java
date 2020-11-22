@@ -56,9 +56,9 @@ public class BatchProcessTest {
 		Account_Condition ac = new Account_Condition();
 		ac.setEmail("ann@tom.com");
 		ac.setActivated(false);
-
 		ac.setNameEqual("ann");
 		ac.setActivateValueEqual("aaa");
+		ac.setStatusEquals(StoryStatus_.SKETCH);
 
 		accountService.update(ac);
 	}
@@ -228,6 +228,7 @@ public class BatchProcessTest {
 	public void testBatchDelete() {
 		Account_Condition ac = new Account_Condition();
 		ac.setNameEqual("a2a");
+		ac.setStatusEquals(StoryStatus_.SKETCH);
 		accountService.delete(ac);
 	}
 

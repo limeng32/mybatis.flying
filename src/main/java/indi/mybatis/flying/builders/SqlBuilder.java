@@ -1141,33 +1141,40 @@ public class SqlBuilder {
 		return tableSql.append(whereSql).toString();
 	}
 
+	private static void dealBatchWhere(StringBuilder whereSql, ConditionMapper conditionMapper) {
+		whereSql.append(POUND_OPENBRACE).append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString());
+		if (conditionMapper.getTypeHandlerPath() != null) {
+			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
+		}
+		whereSql.append(CLOSEBRACE_AND_BLANK);
+	}
+
 	private static void dealBatchCondition(ConditionType conditionType, StringBuilder whereSql,
 			ConditionMapper conditionMapper, Object value) {
 		switch (conditionType) {
 		case EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
+			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL);
+			dealBatchWhere(whereSql, conditionMapper);
 			break;
 		case LESS_OR_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_EQUAL_BLANK).append(POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_EQUAL_BLANK);
+			dealBatchWhere(whereSql, conditionMapper);
 			break;
 		case LESS_THAN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_BLANK).append(POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_BLANK);
+			dealBatchWhere(whereSql, conditionMapper);
 			break;
 		case GREATER_OR_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_EQUAL_BLANK).append(POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_EQUAL_BLANK);
+			dealBatchWhere(whereSql, conditionMapper);
 			break;
 		case GREATER_THAN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_BLANK).append(POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_BLANK);
+			dealBatchWhere(whereSql, conditionMapper);
+			break;
+		case NOT_EQUAL:
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_GREATER_BLANK);
+			dealBatchWhere(whereSql, conditionMapper);
 			break;
 		case LIKE:
 			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
@@ -1186,11 +1193,6 @@ public class SqlBuilder {
 					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
 					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
 					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case NOT_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_GREATER_BLANK).append(POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(CLOSEBRACE_AND_BLANK);
 			break;
 		case NULL_OR_NOT:
 			Boolean isNull = (Boolean) value;
@@ -1306,8 +1308,12 @@ public class SqlBuilder {
 									.append(fieldMapper.getDbFieldName()).toString());
 				}
 				sql.append(EQUAL_POUND_OPENBRACE).append(fieldMapper.getFieldName()).append(COMMA)
-						.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString())
-						.append(CLOSEBRACE_AND_BLANK);
+						.append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
+
+				if (fieldMapper.getTypeHandlerPath() != null) {
+					sql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+				}
+				sql.append(CLOSEBRACE_AND_BLANK);
 			}
 			for (FieldMapper f : tableMapper.getOpVersionLocks()) {
 				sql.append(f.getDbFieldName()).append(EQUAL_POUND_OPENBRACE).append(f.getFieldName())
