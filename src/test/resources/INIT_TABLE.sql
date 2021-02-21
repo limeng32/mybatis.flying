@@ -67,5 +67,7 @@ CREATE TABLE permission (
   id int(11) NOT NULL AUTO_INCREMENT,
   fake_id int(11) DEFAULT NULL,
   name varchar(50) DEFAULT NULL,
+  secret varchar(100) DEFAULT NULL,
+  salt varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

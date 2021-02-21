@@ -8,4 +8,7 @@ public interface PermissionMapper {
 
 	public Permission selectSimple2(Object id);
 
+	public int insert(Permission t);
+
+	public int update(Permission t);
 }

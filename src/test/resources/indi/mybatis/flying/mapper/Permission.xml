@@ -10,9 +10,20 @@
 	<select id="selectSimple2" resultMap="result" useCache="false">
 		{"action":"select#{?}", "whiteList":"simple2", "ignore":"noName"}
 	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insert"}
+	</insert>
+	
+	<update id="update">
+		{"action":"update"}
+	</update>
 
 	<resultMap id="result" type="Permission" autoMapping="true">
 		<id property="id" column="id" />
 		<result property="fakeId" column="fake_id" />
+		<result property="name" column="name" />
+		<result property="secret" column="secret" />
+		<result property="salt" column="salt" />
 	</resultMap>
 </mapper>

@@ -130,6 +130,8 @@ public class FieldMapper implements Mapperable {
 
 	private boolean hasDelegate = false;
 
+	private String useAsSalt;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(
@@ -170,6 +172,9 @@ public class FieldMapper implements Mapperable {
 			}
 			// is in delegate mode or not
 			setDelegate(fieldMapperAnnotation.delegate());
+			if (!"".equals(fieldMapperAnnotation.useAsSalt())) {
+				setUseAsSalt(fieldMapperAnnotation.useAsSalt());
+			}
 		}
 		/* The Id has the highest priority, so it's written at the end. */
 		if (id != null) {
@@ -448,6 +453,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setHasDelegate(boolean hasDelegate) {
 		this.hasDelegate = hasDelegate;
+	}
+
+	public String getUseAsSalt() {
+		return useAsSalt;
+	}
+
+	public void setUseAsSalt(String useAsSalt) {
+		this.useAsSalt = useAsSalt;
 	}
 
 }

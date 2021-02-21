@@ -76,4 +76,24 @@ public class PermissionTest {
 		int c = accountService.count(a);
 		Assert.assertEquals(2, c);
 	}
+
+	// 测试saltFor属性
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/permissionTest/testSalt.datasource.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/permissionTest/testSalt.datasource.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/permissionTest/testSalt.datasource.result.xml")
+	public void testSalt() {
+		Permission p = new Permission();
+		p.setName("ann");
+		p.setSalt("ss");
+		p.setSecret("se");
+		permissionService.insert(p);
+
+		Permission p2 = new Permission();
+		p2.setName("bob");
+		permissionService.insert(p2);
+		p2.setSecret("a");
+		p2.setSalt("b");
+		permissionService.update(p2);
+	}
 }

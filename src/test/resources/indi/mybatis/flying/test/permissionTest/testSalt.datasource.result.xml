@@ -1,0 +1,4 @@
+<dataset>
+	<permission NAME="ann" SALT="ss" SECRET="sess" />
+	<permission NAME="bob" SALT="b" SECRET="ab" />
+</dataset>

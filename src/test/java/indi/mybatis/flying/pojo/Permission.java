@@ -1,6 +1,7 @@
 package indi.mybatis.flying.pojo;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Table;
 
@@ -22,9 +23,15 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 	private Integer fakeId;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple2", ignoreTag = "noName")
-	private java.lang.String name;
+	private String name;
 
-	private java.util.Collection<Account_> account;
+	@FieldMapperAnnotation(dbFieldName = "secret", jdbcType = JdbcType.VARCHAR, useAsSalt = "salt")
+	private String secret;
+
+	@FieldMapperAnnotation(dbFieldName = "salt", jdbcType = JdbcType.VARCHAR)
+	private String salt;
+
+	private Collection<Account_> account;
 
 	@Override
 	public Integer getId() {
@@ -45,6 +52,22 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 
 	public void setName(java.lang.String name) {
 		this.name = name;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	public void setId(Integer id) {

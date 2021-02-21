@@ -682,6 +682,9 @@ public class SqlBuilder {
 				value = 0;
 				valueSql.append("'0',");
 			} else {
+				if (fieldMapper.getUseAsSalt() != null) {
+					handleSalt(fieldMapper, tableMapper, object, value);
+				}
 				valueSql.append(POUND_OPENBRACE);
 				dealForeignKey(valueSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
@@ -709,6 +712,18 @@ public class SqlBuilder {
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
 		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).append(CLOSEPAREN).toString();
+	}
+
+	private static void handleSalt(FieldMapper fieldMapper, TableMapper tableMapper, Object object, Object value)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		FieldMapper fm = tableMapper.getFieldMapperCache().get(fieldMapper.getUseAsSalt());
+		if (fm != null) {
+			String salt = BeanUtils.getProperty(object, fm.getFieldName());
+			if (salt != null) {
+				BeanUtils.setProperty(object, fieldMapper.getFieldName(), value + salt);
+			}
+
+		}
 	}
 
 	private static void handleInsertSql(KeyHandler keyHandler, StringBuilder valueSql, FieldMapper fieldMapper,
@@ -799,6 +814,9 @@ public class SqlBuilder {
 						valueSql.append(DEFAULT_COMMA);
 					}
 				} else {
+					if (fieldMapper.getUseAsSalt() != null) {
+						handleSalt(fieldMapper, tableMapper, object, value);
+					}
 					valueSql.append(POUND_OPENBRACE);
 					valueSql.append(COLLECTION_OPENBRACKET + i + CLOSEBRACKET_DOT);
 					dealForeignKey(valueSql, fieldMapper);
@@ -897,7 +915,9 @@ public class SqlBuilder {
 					}
 				} else if (fieldMapper != tableMapper.getUniqueKey()) {
 					allFieldNull = false;
-
+					if (fieldMapper.getUseAsSalt() != null) {
+						handleSalt(fieldMapper, tableMapper, object, value);
+					}
 					if (!m.containsKey(maybeDelegate)) {
 						StringBuilder temp = new StringBuilder(fieldMapper.getDbFieldName()).append(" = CASE ")
 								.append(uniqueFieldMapper.getDbFieldName());
@@ -1008,6 +1028,11 @@ public class SqlBuilder {
 						.append(PLUS_1);
 			} else {
 				allFieldNull = false;
+
+				if (fieldMapper.getUseAsSalt() != null) {
+					handleSalt(fieldMapper, tableMapper, object, value);
+				}
+
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
@@ -1107,6 +1132,9 @@ public class SqlBuilder {
 						.append(PLUS_1);
 			} else {
 				allFieldNull = false;
+				if (fieldMapper.getUseAsSalt() != null) {
+					handleSalt(fieldMapper, tableMapper, object, value);
+				}
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
 				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
@@ -1142,7 +1170,8 @@ public class SqlBuilder {
 	}
 
 	private static void dealBatchWhere(StringBuilder whereSql, ConditionMapper conditionMapper) {
-		whereSql.append(POUND_OPENBRACE).append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString());
+		whereSql.append(POUND_OPENBRACE).append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+				.append(conditionMapper.getJdbcType().toString());
 		if (conditionMapper.getTypeHandlerPath() != null) {
 			whereSql.append(COMMA_TYPEHANDLER_EQUAL).append(conditionMapper.getTypeHandlerPath());
 		}

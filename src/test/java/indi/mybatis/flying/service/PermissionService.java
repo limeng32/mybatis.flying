@@ -22,4 +22,14 @@ public class PermissionService implements PermissionMapper {
 		return mapper.selectSimple2(id);
 	}
 
+	@Override
+	public int insert(Permission t) {
+		return mapper.insert(t);
+	}
+
+	@Override
+	public int update(Permission t) {
+		return mapper.update(t);
+	}
+
 }
