@@ -92,6 +92,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
+			boolean needHandleLimiterAndSorter = false;
 			String newSql = null;
 			switch (flyingModel.getActionType()) {
 			case COUNT:
@@ -108,12 +109,15 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			case SELECT:
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
+				needHandleLimiterAndSorter = true;
 				break;
 			case SELECT_ALL:
 				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+				needHandleLimiterAndSorter = true;
 				break;
 			case SELECT_ONE:
 				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
+				needHandleLimiterAndSorter = true;
 				break;
 			case UPDATE:
 				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
@@ -134,14 +138,14 @@ public class AutoMapperInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
-
+			// TODO 此处对加盐的内容进行恢复
 			/* Start dealing with paging */
-			if ((parameterObject instanceof Conditionable)
+			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
 					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
-				BoundSql boundSql = statementHandler.getBoundSql();
 				Conditionable condition = (Conditionable) parameterObject;
-				String sql = boundSql.getSql();
 				if (condition.getLimiter() != null) {
+					BoundSql boundSql = statementHandler.getBoundSql();
+					String sql = boundSql.getSql();
 					Connection connection = (Connection) invocation.getArgs()[0];
 					String countSql = new StringBuffer("select count(0) from (").append(sql).append(") myCount")
 							.toString();
@@ -160,9 +164,14 @@ public class AutoMapperInterceptor implements Interceptor {
 						rs.close();
 						countStmt.close();
 					}
+					String pageSql = generatePageSql(sql, condition);
+					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
+				} else if (condition.getSorter() != null) {
+					BoundSql boundSql = statementHandler.getBoundSql();
+					String sql = boundSql.getSql();
+					String pageSql = generatePageSql(sql, condition);
+					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 				}
-				String pageSql = generatePageSql(sql, condition);
-				metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 			}
 		}
 
