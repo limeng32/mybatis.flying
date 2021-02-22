@@ -138,7 +138,6 @@ public class AutoMapperInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
-			// TODO 此处对加盐的内容进行恢复
 			/* Start dealing with paging */
 			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
 					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
@@ -179,8 +178,8 @@ public class AutoMapperInterceptor implements Interceptor {
 		 * Call the original statementHandler's prepare method to complete the original
 		 * logic.
 		 */
-		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
-		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
+//		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
+//		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
 		/* Pass to the next interceptor. */
 		return invocation.proceed();
 	}
