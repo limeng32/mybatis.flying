@@ -18,6 +18,18 @@
 	<update id="update">
 		{"action":"update"}
 	</update>
+	
+	<update id="updatePersistent">
+		{"action":"updatePersistent"}
+	</update>
+	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
+	
+	<update id="updateBatch">
+		{"action":"updateBatch"}
+	</update>
 
 	<resultMap id="result" type="Permission" autoMapping="true">
 		<id property="id" column="id" />
