@@ -144,16 +144,4 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.0
 	 */
 	boolean delegate() default false;
-
-	/**
-	 * 
-	 * Set the other fields to the salt of the current field, effective when insert
-	 * and update operations are performed
-	 * 
-	 * 设置其它字段为当前字段的盐，在insert和update操作时生效
-	 * 
-	 * @return String
-	 * @since 1.0.4
-	 */
-	String useAsSalt() default "";
 }

@@ -25,7 +25,7 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple2", ignoreTag = "noName")
 	private String name;
 
-	@FieldMapperAnnotation(dbFieldName = "secret", jdbcType = JdbcType.VARCHAR, useAsSalt = "salt")
+	@FieldMapperAnnotation(dbFieldName = "secret", jdbcType = JdbcType.VARCHAR)
 	private String secret;
 
 	@FieldMapperAnnotation(dbFieldName = "salt", jdbcType = JdbcType.VARCHAR)
