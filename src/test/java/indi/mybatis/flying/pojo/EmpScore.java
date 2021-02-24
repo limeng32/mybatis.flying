@@ -133,7 +133,7 @@ public class EmpScore {
 	@FieldMapperAnnotation(dbFieldName = "rank_encrypt", jdbcType = JdbcType.VARCHAR)
 	private String rankEncrypt;
 
-	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class)
+	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = "staff_id")
 	private String secret2;
 
 	public Date getUpdateTime() {

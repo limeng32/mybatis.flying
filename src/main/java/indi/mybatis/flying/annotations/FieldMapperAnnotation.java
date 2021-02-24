@@ -144,4 +144,15 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.0
 	 */
 	boolean delegate() default false;
+
+	/**
+	 * 
+	 * The data store is encrypted with the specified field as key.
+	 * 
+	 * 数据存储时使用指定字段作为key进行加密
+	 * 
+	 * @return String
+	 * @since 1.0.5
+	 */
+	String cryptKeyColumn() default "";
 }

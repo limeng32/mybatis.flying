@@ -49,29 +49,33 @@ public class AesCryptTest {
 	@ExpectedDatabase(connection = "dataSourceExamine", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 //	@DatabaseTearDown(connection = "dataSourceExamine", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 	public void test2() {
-		EmpScore es = empScoreDao.select(1L);
-		Assert.assertEquals("111", es.getStaffId());
+		EmpScore es = new EmpScore();
+		es.setId(1L);
+		es.setStaffId("111");
+		es.setStaffName("test1");
+		es.setSecret2("l");
+		empScoreDao.insert(es);
 
 		EmpScore es2 = new EmpScore();
 		es2.setId(2L);
 		es2.setStaffId("222");
 		es2.setStaffName("test2");
 		es2.setSecret2("luffy");
-		empScoreDao.insertAes(es2);
+		empScoreDao.insert(es2);
 
 		EmpScore es4 = new EmpScore();
 		es4.setId(4L);
 		es4.setStaffId("444");
 		es4.setStaffName("test2");
 		es4.setSecret2("luffy2");
-		empScoreDao.insertAes(es4);
+		empScoreDao.insert(es4);
 
 		EmpScore es5 = new EmpScore();
 		es5.setId(5L);
 		es5.setStaffId("555");
 		es5.setStaffName("test3");
 		es5.setSecret2("luffy");
-		empScoreDao.insertAes(es5);
+		empScoreDao.insert(es5);
 
 		EmpScore es3 = new EmpScore();
 		es3.setStaffName("test2");

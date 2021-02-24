@@ -682,6 +682,15 @@ public class SqlBuilder {
 				value = 0;
 				valueSql.append("'0',");
 			} else {
+				System.out.println("::::::::::::::::::" + fieldMapper.getCryptKeyColumn());
+				String cryptKey = null;
+				if (fieldMapper.getCryptKeyColumn() != null
+						&& tableMapper.getFieldMapperCache().get(fieldMapper.getCryptKeyColumn()) != null) {
+					cryptKey = tableMapper.getFieldMapperCache().get(fieldMapper.getCryptKeyColumn()).getFieldName();
+				}
+				if (cryptKey != null) {
+					valueSql.append("aes_encrypt(");
+				}
 				valueSql.append(POUND_OPENBRACE);
 				dealForeignKey(valueSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
@@ -695,6 +704,9 @@ public class SqlBuilder {
 					}
 				}
 				valueSql.append(CLOSEBRACE_COMMA);
+				if (cryptKey != null) {
+					valueSql.append("#{").append(cryptKey).append("}),");
+				}
 			}
 		}
 		if (keyHandler != null && !uniqueKeyHandled) {
