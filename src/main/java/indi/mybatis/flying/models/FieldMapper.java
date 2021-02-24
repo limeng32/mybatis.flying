@@ -132,6 +132,8 @@ public class FieldMapper implements Mapperable {
 
 	private String cryptKeyColumn;
 
+	private String cryptKeyField;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(
@@ -461,6 +463,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setCryptKeyColumn(String cryptKeyColumn) {
 		this.cryptKeyColumn = cryptKeyColumn;
+	}
+
+	public String getCryptKeyField() {
+		return cryptKeyField;
+	}
+
+	public void setCryptKeyField(String cryptKeyField) {
+		this.cryptKeyField = cryptKeyField;
 	}
 
 }

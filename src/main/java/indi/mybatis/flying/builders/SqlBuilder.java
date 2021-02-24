@@ -121,6 +121,8 @@ public class SqlBuilder {
 	private static final String BLANK_OPENPAREN = " (";
 	private static final String BLANK_OR_BLANK = " or ";
 	private static final String BLANK_SET_BLANK = " set ";
+	private static final String AES_ENCRYPT_OPENPAREN = "aes_encrypt(";
+	private static final String CLOSEBRACE_CLOSEPAREN_COMMA = "}),";
 
 	private static class ParameterWrapper {
 		public ParameterWrapper() {
@@ -234,6 +236,18 @@ public class SqlBuilder {
 				}
 			} else {
 				fieldMapperCache.put(fieldMapper.getDbFieldName(), fieldMapper);
+			}
+		}
+		// 处理cryptKeyField
+		for (Map.Entry<String, FieldMapper> e : fieldMapperCache.entrySet()) {
+			String cryptKeyColumn = e.getValue().getCryptKeyColumn();
+			if (cryptKeyColumn != null) {
+				if (fieldMapperCache.containsKey(cryptKeyColumn)) {
+					FieldMapper cryptKeyFieldMapper = fieldMapperCache.get(cryptKeyColumn);
+					if (cryptKeyFieldMapper != null) {
+						e.getValue().setCryptKeyField(cryptKeyFieldMapper.getFieldName());
+					}
+				}
 			}
 		}
 		tableMapper.setFieldMapperCache(fieldMapperCache);
@@ -682,14 +696,8 @@ public class SqlBuilder {
 				value = 0;
 				valueSql.append("'0',");
 			} else {
-				System.out.println("::::::::::::::::::" + fieldMapper.getCryptKeyColumn());
-				String cryptKey = null;
-				if (fieldMapper.getCryptKeyColumn() != null
-						&& tableMapper.getFieldMapperCache().get(fieldMapper.getCryptKeyColumn()) != null) {
-					cryptKey = tableMapper.getFieldMapperCache().get(fieldMapper.getCryptKeyColumn()).getFieldName();
-				}
-				if (cryptKey != null) {
-					valueSql.append("aes_encrypt(");
+				if (fieldMapper.getCryptKeyField() != null) {
+					valueSql.append(AES_ENCRYPT_OPENPAREN);
 				}
 				valueSql.append(POUND_OPENBRACE);
 				dealForeignKey(valueSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
@@ -704,8 +712,9 @@ public class SqlBuilder {
 					}
 				}
 				valueSql.append(CLOSEBRACE_COMMA);
-				if (cryptKey != null) {
-					valueSql.append("#{").append(cryptKey).append("}),");
+				if (fieldMapper.getCryptKeyField() != null) {
+					valueSql.append(POUND_OPENBRACE).append(fieldMapper.getCryptKeyField())
+							.append(CLOSEBRACE_CLOSEPAREN_COMMA);
 				}
 			}
 		}
