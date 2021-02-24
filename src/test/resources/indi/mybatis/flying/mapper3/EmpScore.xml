@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="indi.mybatis.flying.mapper3.EmpScoreDao">
+	<cache />
+	<select id="select" resultMap="result">
+		{"action":"select#{?}"}
+	</select>
+
+	<select id="selectAll" resultMap="result">
+		{"action":"selectAll"}
+	</select>
+
+	<select id="selectOne" resultMap="result">
+		{"action":"selectOne"}
+	</select>
+	<select id="count" resultType="int">
+		{"action":"count"}
+	</select>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insert"}
+	</insert>
+	<update id="update">
+		{"action":"update"}
+	</update>
+	<update id="updatePersistent">
+		{"action":"updatePersistent"}
+	</update>
+	<delete id="delete">
+		{"action":"delete"}
+	</delete>
+	<insert id="insertBatch" useGeneratedKeys="true"
+		keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
+	<update id="updateBatch">
+		{"action":"updateBatch"}
+	</update>
+
+	<insert id="insertAes" useGeneratedKeys="true" keyProperty="id">
+		insert into t_emp_score (id,secret2,staff_id,staff_name) values (#{id},aes_encrypt(#{secret2},#{staffId}),#{staffId},#{staffName});
+	</insert>
+	
+	<select id="selectAes" resultMap="result">
+		select id,aes_decrypt(secret2,staff_id) as secret2,staff_id,staff_name from t_emp_score where aes_decrypt(secret2,staff_id) = #{secret2} and staff_name = #{staffName};
+	</select>
+
+	<resultMap id="result"
+		type="indi.mybatis.flying.pojo.EmpScore" autoMapping="true">
+		<id property="id" column="id" />
+		<result property="deptName" column="dept_name" />
+		<result property="staffId" column="staff_id" />
+		<result property="staffName" column="staff_name" />
+		<result property="scoreCoefficient" column="score_coefficient" />
+		<result property="scoreType" column="score_type" />
+		<result property="empType" column="emp_type" />
+		<result property="postName" column="post_name" />
+		<result property="projId" column="proj_id" />
+		<result property="projName" column="proj_name" />
+		<result property="checkerId" column="checker_id" />
+		<result property="checkerName" column="checker_name" />
+		<result property="createTime" column="create_time" />
+		<result property="contDegree" column="cont_degree" />
+		<result property="adjustReason" column="adjust_reason" />
+		<result property="unpassReason" column="unpass_reason" />
+		<result property="updateTime" column="update_time" />
+		<result property="rankEncrypt" column="rank_encrypt" />
+		<result property="secret2" column="secret2" typeHandler="indi.mybatis.flying.handler.ByteArrayHandler"/>
+	</resultMap>
+
+</mapper>

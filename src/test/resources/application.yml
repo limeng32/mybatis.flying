@@ -1,1 +1,22 @@
 spring:
+  data-source-examine:
+    name: dataSourceExamine
+    #url: jdbc:h2:mem:testdb4;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MV_STORE=FALSE;MVCC=FALSE;FILE_LOCK=NO
+    url: jdbc:mysql://10.245.47.1:3307/testdb4
+    useSSL: false
+    username: sa1
+    password: "sa1"
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters:
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
