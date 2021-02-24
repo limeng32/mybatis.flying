@@ -43,6 +43,10 @@
 	<select id="selectAes" resultMap="result">
 		select id,aes_decrypt(secret2,staff_id) as secret2,staff_id,staff_name from t_emp_score where aes_decrypt(secret2,staff_id) = #{secret2} and staff_name = #{staffName};
 	</select>
+	
+	<select id="countAes" resultType="int">
+		select count(*) as count from t_emp_score where aes_decrypt(secret2,staff_id) = #{secret2};
+	</select>
 
 	<resultMap id="result"
 		type="indi.mybatis.flying.pojo.EmpScore" autoMapping="true">

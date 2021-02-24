@@ -37,4 +37,6 @@ public interface EmpScoreDao {
 	public int insertAes(EmpScore score);
 	
 	public EmpScore selectAes(EmpScore score);
+	
+	public int countAes(EmpScore score);
 }

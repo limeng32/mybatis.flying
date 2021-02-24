@@ -66,12 +66,22 @@ public class AesCryptTest {
 		es4.setSecret2("luffy2");
 		empScoreDao.insertAes(es4);
 
+		EmpScore es5 = new EmpScore();
+		es5.setId(5L);
+		es5.setStaffId("555");
+		es5.setStaffName("test3");
+		es5.setSecret2("luffy");
+		empScoreDao.insertAes(es5);
+
 		EmpScore es3 = new EmpScore();
 		es3.setStaffName("test2");
 		es3.setSecret2("luffy");
 		EmpScore empScore2 = empScoreDao.selectAes(es2);
-		System.out.println("::" + empScore2.getSecret2());
 		Assert.assertEquals("luffy", empScore2.getSecret2());
 		Assert.assertEquals("222", empScore2.getStaffId());
+
+		es2.setStaffName(null);
+		int c = empScoreDao.countAes(es2);
+		Assert.assertEquals(2, c);
 	}
 }
