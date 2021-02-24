@@ -76,4 +76,29 @@ public class PermissionTest {
 		int c = accountService.count(a);
 		Assert.assertEquals(2, c);
 	}
+	
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/permissionTest/testSecret.datasource.xml")
+	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/permissionTest/testSecret.datasource.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/permissionTest/testSecret.datasource.result.xml")
+	public void testSecret() {
+		Permission permission = new Permission();
+		permission.setId(1);
+		permission.setSalt("sa");
+		permission.setSecret2("asd".getBytes());
+		permissionService.insert(permission);
+		
+		Permission permission2 = permissionService.select(1);
+		System.out.println(new String(permission2.getSecret2()));
+		
+		Permission p3 = new Permission();
+		p3.setId(3);
+		p3.setSalt("sa2");
+		permissionService.insertAes(p3);
+		
+		Permission p4 = new Permission();
+		p4.setSalt("sa2");
+		Permission permission3 = permissionService.selectAes(p4);
+		System.out.println(new String(permission3.getSecret2()));
+	}
 }

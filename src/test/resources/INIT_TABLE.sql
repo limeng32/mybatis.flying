@@ -60,7 +60,7 @@ CREATE TABLE account22 (
   status char(1) DEFAULT NULL,
   nickname varchar(32) DEFAULT NULL,
   role_id int(11) DEFAULT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 DROP TABLE IF EXISTS permission;
 CREATE TABLE permission (
@@ -69,5 +69,6 @@ CREATE TABLE permission (
   name varchar(50) DEFAULT NULL,
   secret varchar(100) DEFAULT NULL,
   salt varchar(100) DEFAULT NULL,
+  secret2 blob DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

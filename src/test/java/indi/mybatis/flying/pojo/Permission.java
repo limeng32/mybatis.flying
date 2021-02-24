@@ -31,6 +31,9 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 	@FieldMapperAnnotation(dbFieldName = "salt", jdbcType = JdbcType.VARCHAR)
 	private String salt;
 
+	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.BLOB)
+	private byte[] secret2;
+
 	private Collection<Account_> account;
 
 	@Override
@@ -68,6 +71,14 @@ public class Permission extends PojoSupport<Permission> implements Serializable 
 
 	public void setSalt(String salt) {
 		this.salt = salt;
+	}
+
+	public byte[] getSecret2() {
+		return secret2;
+	}
+
+	public void setSecret2(byte[] secret2) {
+		this.secret2 = secret2;
 	}
 
 	public void setId(Integer id) {

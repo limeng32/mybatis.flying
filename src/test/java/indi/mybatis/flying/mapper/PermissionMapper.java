@@ -19,4 +19,8 @@ public interface PermissionMapper {
 	public int updatePersistent(Permission t);
 
 	public int updateBatch(List<Permission> l);
+	
+	public int insertAes(Permission t);
+	
+	public Permission selectAes(Permission t);
 }

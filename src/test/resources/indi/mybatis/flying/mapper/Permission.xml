@@ -30,6 +30,14 @@
 	<update id="updateBatch">
 		{"action":"updateBatch"}
 	</update>
+	
+	<insert id="insertAes" useGeneratedKeys="true" keyProperty="id">
+		insert into permission (id, secret2, salt) values (#{id}, ENCRYPT('AES', HASH('SHA256', STRINGTOUTF8('sa'), 1), STRINGTOUTF8('qwe')), #{salt});
+	</insert>
+
+	<select id="selectAes" resultMap="result">
+		select id, DECRYPT('AES', HASH('SHA256', STRINGTOUTF8('sa2'), 1), secret2) as secret2  from permission where id = 3;
+	</select>
 
 	<resultMap id="result" type="Permission" autoMapping="true">
 		<id property="id" column="id" />
