@@ -713,8 +713,7 @@ public class SqlBuilder {
 				}
 				valueSql.append(CLOSEBRACE_COMMA);
 				if (fieldMapper.getCryptKeyField() != null) {
-					valueSql.append(POUND_OPENBRACE).append(fieldMapper.getCryptKeyField())
-							.append(CLOSEBRACE_CLOSEPAREN_COMMA);
+					handleCryptKey(valueSql, fieldMapper, null);
 				}
 			}
 		}
@@ -730,6 +729,18 @@ public class SqlBuilder {
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 		valueSql.delete(valueSql.lastIndexOf(COMMA), valueSql.lastIndexOf(COMMA) + 1);
 		return tableSql.append(CLOSEPAREN_BLANK).append(valueSql).append(CLOSEPAREN).toString();
+	}
+
+	private static void handleCryptKey(StringBuilder valueSql, FieldMapper fieldMapper, Integer batchIndex) {
+		valueSql.append(POUND_OPENBRACE);
+		if (batchIndex != null) {
+			valueSql.append(COLLECTION_OPENBRACKET).append(batchIndex).append(CLOSEBRACKET_DOT);
+		}
+		valueSql.append(fieldMapper.getCryptKeyField()).append(COMMA_JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType());
+		if (fieldMapper.getTypeHandlerPath() != null) {
+			valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
+		}
+		valueSql.append(CLOSEBRACE_CLOSEPAREN_COMMA);
 	}
 
 	private static void handleInsertSql(KeyHandler keyHandler, StringBuilder valueSql, FieldMapper fieldMapper,
@@ -820,6 +831,9 @@ public class SqlBuilder {
 						valueSql.append(DEFAULT_COMMA);
 					}
 				} else {
+					if (fieldMapper.getCryptKeyField() != null) {
+						valueSql.append(AES_ENCRYPT_OPENPAREN);
+					}
 					valueSql.append(POUND_OPENBRACE);
 					valueSql.append(COLLECTION_OPENBRACKET + i + CLOSEBRACKET_DOT);
 					dealForeignKey(valueSql, fieldMapper);
@@ -829,11 +843,13 @@ public class SqlBuilder {
 					}
 					if (fieldMapper.isUniqueKey()) {
 						if (keyHandler != null) {
-
 							handleInsertSql(keyHandler, valueSql, fieldMapper, object, false, i);
 						}
 					}
 					valueSql.append(CLOSEBRACE_COMMA);
+					if (fieldMapper.getCryptKeyField() != null) {
+						handleCryptKey(valueSql, fieldMapper, i);
+					}
 				}
 			}
 			if (allFieldNull) {
@@ -956,14 +972,20 @@ public class SqlBuilder {
 			FieldMapper fieldMapper, int i) {
 		stringBuilder.append(WHEN).append(POUND_OPENBRACE).append(COLLECTION_OPENBRACKET).append(i)
 				.append(CLOSEBRACKET_DOT).append(uniqueFieldMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-				.append(uniqueFieldMapper.getJdbcType().toString()).append(CLOSEBRACE).append(THEN)
-				.append(POUND_OPENBRACE).append(COLLECTION_OPENBRACKET).append(i).append(CLOSEBRACKET_DOT);
+				.append(uniqueFieldMapper.getJdbcType().toString()).append(CLOSEBRACE).append(THEN);
+		if (fieldMapper.getCryptKeyField() != null) {
+			stringBuilder.append(AES_ENCRYPT_OPENPAREN);
+		}
+		stringBuilder.append(POUND_OPENBRACE).append(COLLECTION_OPENBRACKET).append(i).append(CLOSEBRACKET_DOT);
 		dealForeignKey(stringBuilder, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 				.append(fieldMapper.getJdbcType().toString());
 		if (fieldMapper.getTypeHandlerPath() != null) {
 			stringBuilder.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 		}
 		stringBuilder.append(CLOSEBRACE);
+		if (fieldMapper.getCryptKeyField() != null) {
+			stringBuilder.append(COMMA).append(fieldMapper.getCryptKeyColumn()).append(CLOSEPAREN);
+		}
 	}
 
 	private static boolean isAble(boolean excuteAble, boolean valueIsNull, boolean useWhiteList,
@@ -1025,18 +1047,26 @@ public class SqlBuilder {
 
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
-						.append(PLUS_1);
+						.append(PLUS_1).append(COMMA);
 			} else {
 				allFieldNull = false;
-				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL);
+				if (fieldMapper.getCryptKeyField() != null) {
+					tableSql.append(AES_ENCRYPT_OPENPAREN);
+				}
+				tableSql.append(POUND_OPENBRACE);
 				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
 				if (fieldMapper.getTypeHandlerPath() != null) {
 					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 				}
-				tableSql.append(CLOSEBRACE);
+				tableSql.append(CLOSEBRACE).append(COMMA);
+
+				if (fieldMapper.getCryptKeyField() != null) {
+					tableSql.append(fieldMapper.getCryptKeyColumn()).append(CLOSEPAREN_BLANK).append(COMMA);
+				}
 			}
-			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);
@@ -1124,18 +1154,24 @@ public class SqlBuilder {
 
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
-						.append(PLUS_1);
+						.append(PLUS_1).append(COMMA);
 			} else {
 				allFieldNull = false;
-				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL_POUND_OPENBRACE);
+				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL);
+				if (fieldMapper.getCryptKeyField() != null) {
+					tableSql.append(AES_ENCRYPT_OPENPAREN);
+				}
+				tableSql.append(POUND_OPENBRACE);
 				dealForeignKey(tableSql, fieldMapper).append(COMMA).append(JDBCTYPE_EQUAL)
 						.append(fieldMapper.getJdbcType().toString());
 				if (fieldMapper.getTypeHandlerPath() != null) {
 					tableSql.append(COMMA_TYPEHANDLER_EQUAL).append(fieldMapper.getTypeHandlerPath());
 				}
-				tableSql.append(CLOSEBRACE);
+				tableSql.append(CLOSEBRACE).append(COMMA);
+				if (fieldMapper.getCryptKeyField() != null) {
+					tableSql.append(fieldMapper.getCryptKeyColumn()).append(CLOSEPAREN_BLANK).append(COMMA);
+				}
 			}
-			tableSql.append(COMMA);
 		}
 		if (allFieldNull) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_FIELD);

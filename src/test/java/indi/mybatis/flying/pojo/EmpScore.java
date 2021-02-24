@@ -9,6 +9,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.handler.ByteArrayHandler;
+import indi.mybatis.flying.handlers.AdvancedStringTypeHandler;
 
 /**
  * 个人考核结果
@@ -30,7 +31,7 @@ public class EmpScore {
 	/**
 	 * 员工编码
 	 */
-	@FieldMapperAnnotation(dbFieldName = "staff_id", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "staff_id", jdbcType = JdbcType.VARCHAR, customTypeHandler = AdvancedStringTypeHandler.class)
 	private String staffId;
 	/**
 	 * 员工姓名
