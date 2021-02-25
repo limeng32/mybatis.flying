@@ -36,7 +36,4 @@ public interface EmpScoreDao {
 
 	public int updateBatch(Collection<EmpScore> collection);
 
-	public EmpScore selectAes(EmpScore score);
-
-	public int countAes(EmpScore score);
 }

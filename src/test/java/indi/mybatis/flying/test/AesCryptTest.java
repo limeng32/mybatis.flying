@@ -10,13 +10,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -54,17 +54,11 @@ public class AesCryptTest {
 	}
 
 	@Test
+	@IfProfileValue(name = "MYSQL", value = "true")
 	@DatabaseSetup(connection = "dataSourceExamine", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/aesCryptTest/test2.xml")
 	@ExpectedDatabase(connection = "dataSourceExamine", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 //	@DatabaseTearDown(connection = "dataSourceExamine", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 	public void test2() {
-		Account3 a = new Account3();
-		a.setId(1);
-		a.setName("ann");
-		account3Dao.insert(a);
-
-		Account3 account = account3Dao.select(1);
-		Assert.assertEquals("ann", account.getName());
 
 		EmpScore es = new EmpScore();
 		es.setId(1L);
@@ -97,12 +91,14 @@ public class AesCryptTest {
 		EmpScore es3 = new EmpScore();
 		es3.setStaffName("test2");
 		es3.setSecret2("luffy");
-		EmpScore empScore2 = empScoreDao.selectAes(es2);
+		EmpScore empScore2 = empScoreDao.selectOne(es2);
 		Assert.assertEquals("luffy", empScore2.getSecret2());
 		Assert.assertEquals("222", empScore2.getStaffId());
 
+		es2.setId(null);
 		es2.setStaffName(null);
-		int c = empScoreDao.countAes(es2);
+		es2.setStaffId(null);
+		int c = empScoreDao.count(es2);
 		Assert.assertEquals(2, c);
 
 		List<EmpScore> l = new ArrayList<>();
@@ -129,12 +125,12 @@ public class AesCryptTest {
 		EmpScore es131 = new EmpScore();
 		es131.setStaffName("test13");
 		es131.setSecret2("luffy2");
-		EmpScore empScore = empScoreDao.selectAes(es131);
+		EmpScore empScore = empScoreDao.selectOne(es131);
 		empScore.setStaffId(null);
 		empScore.setSecret2("luffy3");
 		empScoreDao.update(empScore);
 		es131.setSecret2("luffy3");
-		empScore = empScoreDao.selectAes(es131);
+		empScore = empScoreDao.selectOne(es131);
 		Assert.assertEquals("luffy3", empScore.getSecret2());
 		empScore.setSecret2(null);
 		empScoreDao.updatePersistent(empScore);
@@ -142,7 +138,7 @@ public class AesCryptTest {
 		EmpScore es121 = new EmpScore();
 		es121.setStaffName("test12");
 		es121.setSecret2("luffy2");
-		EmpScore empScore3 = empScoreDao.selectAes(es121);
+		EmpScore empScore3 = empScoreDao.selectOne(es121);
 		empScore3.setStaffName(null);
 		empScoreDao.updatePersistent(empScore3);
 
@@ -174,7 +170,29 @@ public class AesCryptTest {
 		empScoreDao.updateBatch(l2);
 
 		EmpScore empScore4 = empScoreDao.select(16L);
-		System.out.println("::" + JSONObject.toJSONString(empScore4));
 		Assert.assertEquals("luffy4", empScore4.getSecret2());
+
+		Account3 a = new Account3();
+		a.setId(1);
+		a.setName("ann");
+		a.setEmpScore(es);
+		account3Dao.insert(a);
+
+		Account3 account = account3Dao.select(1);
+		Assert.assertEquals("ann", account.getName());
+		Assert.assertEquals("l", account.getEmpScore().getSecret2());
+
+		Account3 a2 = new Account3();
+		a2.setName("ann");
+		EmpScore es100 = new EmpScore();
+		es100.setSecret2("l");
+		a2.setEmpScore(es100);
+		Account3 account2 = account3Dao.selectOne(a2);
+		Assert.assertNotNull(account2);
+		List<Account3> list = account3Dao.selectAll(a2);
+		Assert.assertEquals(1, list.size());
+
+		int c2 = account3Dao.count(a2);
+		Assert.assertEquals(1, c2);
 	}
 }

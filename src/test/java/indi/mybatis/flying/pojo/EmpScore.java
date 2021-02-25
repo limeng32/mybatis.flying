@@ -101,7 +101,7 @@ public class EmpScore {
 	 * 员工季度工时
 	 */
 	@FieldMapperAnnotation(dbFieldName = "hours", jdbcType = JdbcType.DOUBLE)
-	private Double hours = 1.0;
+	private Double hours;
 	/**
 	 * 正态分布结果调整人id
 	 */
@@ -136,6 +136,8 @@ public class EmpScore {
 
 	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = "staff_id")
 	private String secret2;
+
+	private java.util.Collection<Account3> account3;
 
 	public Date getUpdateTime() {
 		return updateTime;
@@ -364,4 +366,80 @@ public class EmpScore {
 		this.secret2 = secret2;
 	}
 
+	public java.util.Collection<Account3> getAccount3() {
+		if (account3 == null) {
+			account3 = new java.util.LinkedHashSet<Account3>();
+		}
+		return account3;
+	}
+
+	public java.util.Iterator<Account3> getIteratorAccount3() {
+		if (account3 == null) {
+			account3 = new java.util.LinkedHashSet<Account3>();
+		}
+		return account3.iterator();
+	}
+
+	public void setAccount3(java.util.Collection<Account3> newAccount) {
+		removeAllAccount3();
+		for (java.util.Iterator<Account3> iter = newAccount.iterator(); iter.hasNext();) {
+			addAccount3((Account3) iter.next());
+		}
+	}
+
+	public void addAccount3(Account3 newAccount) {
+		if (newAccount == null) {
+			return;
+		}
+		if (this.account3 == null) {
+			this.account3 = new java.util.LinkedHashSet<Account3>();
+		}
+		if (!this.account3.contains(newAccount)) {
+			this.account3.add(newAccount);
+			newAccount.setEmpScore(this);
+		} else {
+			for (Account3 temp : this.account3) {
+				if (newAccount.equals(temp)) {
+					if (temp != newAccount) {
+						removeAccount3(temp);
+						this.account3.add(newAccount);
+						newAccount.setEmpScore(this);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public void removeAccount3(Account3 oldAccount) {
+		if (oldAccount == null) {
+			return;
+		}
+		if (this.account3 != null) {
+			if (this.account3.contains(oldAccount)) {
+				for (Account3 temp : this.account3) {
+					if (oldAccount.equals(temp)) {
+						if (temp != oldAccount) {
+							temp.setEmpScore((EmpScore) null);
+						}
+						break;
+					}
+				}
+				this.account3.remove(oldAccount);
+				oldAccount.setEmpScore((EmpScore) null);
+			}
+		}
+	}
+
+	public void removeAllAccount3() {
+		if (account3 != null) {
+			Account3 oldAccount;
+			for (java.util.Iterator<Account3> iter = getIteratorAccount3(); iter.hasNext();) {
+				oldAccount = (Account3) iter.next();
+				iter.remove();
+				oldAccount.setEmpScore((EmpScore) null);
+			}
+			account3.clear();
+		}
+	}
 }

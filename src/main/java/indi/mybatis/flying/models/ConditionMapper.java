@@ -95,6 +95,10 @@ public class ConditionMapper implements Mapperable {
 
 	private AssociationType associationType;
 
+	private String cryptKeyField;
+
+	private String cryptKeyColumn;
+
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -219,6 +223,24 @@ public class ConditionMapper implements Mapperable {
 
 	public void setAssociationType(AssociationType associationType) {
 		this.associationType = associationType;
+	}
+
+	@Override
+	public String getCryptKeyField() {
+		return cryptKeyField;
+	}
+
+	public void setCryptKeyField(String cryptKeyField) {
+		this.cryptKeyField = cryptKeyField;
+	}
+
+	@Override
+	public String getCryptKeyColumn() {
+		return cryptKeyColumn;
+	}
+
+	public void setCryptKeyColumn(String cryptKeyColumn) {
+		this.cryptKeyColumn = cryptKeyColumn;
 	}
 
 }

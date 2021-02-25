@@ -3,15 +3,21 @@
 <mapper namespace="indi.mybatis.flying.mapper3.Account3Dao">
 	<cache />
 	<select id="select" resultMap="result">
-		{"action":"select#{?}"}
+		{"action":"select#{?}","properties":{
+			"empScore":{"id":"indi.mybatis.flying.mapper3.EmpScoreDao.select","prefix":"score__"}
+		}}
 	</select>
 
 	<select id="selectAll" resultMap="result">
-		{"action":"selectAll"}
+		{"action":"selectAll","properties":{
+			"empScore":{"id":"indi.mybatis.flying.mapper3.EmpScoreDao.select","prefix":"score__"}
+		}}
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		{"action":"selectOne"}
+		{"action":"selectOne","properties":{
+			"empScore":{"id":"indi.mybatis.flying.mapper3.EmpScoreDao.select","prefix":"score__"}
+		}}
 	</select>
 	<select id="count" resultType="int">
 		{"action":"count"}
@@ -41,7 +47,9 @@
 		<id property="id" column="id" />
 		<result property="status" column="status"
 			typeHandler="indi.mybatis.flying.handler.StoryStatusHandler" />
-		
+		<association property="empScore"
+			resultMap="indi.mybatis.flying.mapper3.EmpScoreDao.result"
+			columnPrefix="score__" />
 	</resultMap>
 
 </mapper>

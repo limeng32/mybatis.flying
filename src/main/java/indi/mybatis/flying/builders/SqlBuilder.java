@@ -366,6 +366,8 @@ public class SqlBuilder {
 					}
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
+					conditionMapper.setCryptKeyColumn(fieldMapper.getCryptKeyColumn());
+					conditionMapper.setCryptKeyField(fieldMapper.getCryptKeyField());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
@@ -638,6 +640,23 @@ public class SqlBuilder {
 	}
 
 	private static void handleWhereSql(StringBuilder whereSql, Mapperable mapper, TableName tableName) {
+
+//		if (mapper.getCryptKeyField() != null) {
+//			whereSql.append(COMMA).append(tableName.sqlWhere()).append(mapper.getCryptKeyColumn()).append(CLOSEPAREN);
+//		}
+		if (mapper.getCryptKeyField() != null) {
+			whereSql.append(AES_DECRYPT_OPENPAREN);
+		}
+		handleWhereSqlTableName(whereSql, mapper, tableName);
+		whereSql.append(mapper.getDbFieldName());
+		if (mapper.getCryptKeyField() != null) {
+			whereSql.append(COMMA);
+			handleWhereSqlTableName(whereSql, mapper, tableName);
+			whereSql.append(mapper.getCryptKeyColumn()).append(CLOSEPAREN);
+		}
+	}
+
+	private static void handleWhereSqlTableName(StringBuilder whereSql, Mapperable mapper, TableName tableName) {
 		if (tableName != null) {
 			if (mapper.getSubTarget() == null || Void.class.equals(mapper.getSubTarget())) {
 				whereSql.append(tableName.sqlWhere());
@@ -647,7 +666,6 @@ public class SqlBuilder {
 						.append(temp.getIndex()).append("."));
 			}
 		}
-		whereSql.append(mapper.getDbFieldName());
 	}
 
 	/**

@@ -55,6 +55,9 @@ public class Account3 extends PojoSupport<Account3> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "nickname", jdbcType = JdbcType.VARCHAR)
 	private String nickname;
 
+	@FieldMapperAnnotation(dbFieldName = "score_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
+	private EmpScore empScore;
+
 	@Override
 	public Integer getId() {
 		return id;
@@ -128,4 +131,21 @@ public class Account3 extends PojoSupport<Account3> implements Serializable {
 		this.id = id;
 	}
 
+	public EmpScore getEmpScore() {
+		return empScore;
+	}
+
+	public void setEmpScore(EmpScore newEmpScore) {
+		if (this.empScore == null || this.empScore != newEmpScore) {
+			if (this.empScore != null) {
+				EmpScore oldEmpScore = this.empScore;
+				this.empScore = null;
+				oldEmpScore.removeAccount3(this);
+			}
+			if (newEmpScore != null) {
+				this.empScore = newEmpScore;
+				this.empScore.addAccount3(this);
+			}
+		}
+	}
 }

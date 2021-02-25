@@ -41,4 +41,8 @@ public interface Mapperable {
 	Class<?> getSubTarget();
 
 	AssociationType getAssociationType();
+
+	String getCryptKeyColumn();
+
+	String getCryptKeyField();
 }
