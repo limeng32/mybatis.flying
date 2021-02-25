@@ -26,7 +26,9 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
+import indi.mybatis.flying.mapper3.Account3Dao;
 import indi.mybatis.flying.mapper3.EmpScoreDao;
+import indi.mybatis.flying.pojo.Account3;
 import indi.mybatis.flying.pojo.EmpScore;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,6 +43,9 @@ public class AesCryptTest {
 	private DataSource dataSourceExamine;
 
 	@Autowired
+	private Account3Dao account3Dao;
+
+	@Autowired
 	private EmpScoreDao empScoreDao;
 
 	@Test
@@ -53,6 +58,14 @@ public class AesCryptTest {
 	@ExpectedDatabase(connection = "dataSourceExamine", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 //	@DatabaseTearDown(connection = "dataSourceExamine", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 	public void test2() {
+		Account3 a = new Account3();
+		a.setId(1);
+		a.setName("ann");
+		account3Dao.insert(a);
+
+		Account3 account = account3Dao.select(1);
+		Assert.assertEquals("ann", account.getName());
+
 		EmpScore es = new EmpScore();
 		es.setId(1L);
 		es.setStaffId("111");
@@ -153,12 +166,15 @@ public class AesCryptTest {
 		es16.setSecret2("luffy4");
 		l2.add(es16);
 		empScoreDao.insertBatch(l2);
-		System.out.println("::"+JSONObject.toJSONString(l2));
 		es14.setId(14L);
 		es14.setSecret2("luffy5");
 		es15.setId(15L);
 		es15.setSecret2("luffy5");
 		es16.setId(16L);
 		empScoreDao.updateBatch(l2);
+
+		EmpScore empScore4 = empScoreDao.select(16L);
+		System.out.println("::" + JSONObject.toJSONString(empScore4));
+		Assert.assertEquals("luffy4", empScore4.getSecret2());
 	}
 }

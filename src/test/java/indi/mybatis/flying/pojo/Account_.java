@@ -305,7 +305,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public void setRole(Role_ newRole) {
-		if (this.role == null || !this.role.equals(newRole)) {
+		if (this.role == null || this.role != newRole) {
 			if (this.role != null) {
 				Role_ oldRole = this.role;
 				this.role = null;
@@ -323,7 +323,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public void setRoleDeputy(Role_ newRoleDeputy) {
-		if (this.roleDeputy == null || !this.roleDeputy.equals(newRoleDeputy)) {
+		if (this.roleDeputy == null || this.roleDeputy != newRoleDeputy) {
 			if (this.roleDeputy != null) {
 				Role_ oldRoleDeputy = this.roleDeputy;
 				this.roleDeputy = null;
@@ -341,7 +341,7 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	}
 
 	public void setPermission(Permission newPermission) {
-		if (this.permission == null || !this.permission.equals(newPermission)) {
+		if (this.permission == null || this.permission != newPermission) {
 			if (this.permission != null) {
 				Permission oldPermission = this.permission;
 				this.permission = null;

@@ -46,7 +46,7 @@ public class Detail_ extends PojoSupport<Detail_> implements Serializable {
 	}
 
 	public void setLoginLog(LoginLog_ newLoginLog) {
-		if (this.loginLog == null || !this.loginLog.equals(newLoginLog)) {
+		if (this.loginLog == null || this.loginLog != newLoginLog) {
 			if (this.loginLog != null) {
 				LoginLog_ oldLoginLog = this.loginLog;
 				this.loginLog = null;

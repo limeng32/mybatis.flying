@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="indi.mybatis.flying.mapper3.Account3Dao">
+	<cache />
+	<select id="select" resultMap="result">
+		{"action":"select#{?}"}
+	</select>
+
+	<select id="selectAll" resultMap="result">
+		{"action":"selectAll"}
+	</select>
+
+	<select id="selectOne" resultMap="result">
+		{"action":"selectOne"}
+	</select>
+	<select id="count" resultType="int">
+		{"action":"count"}
+	</select>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insert"}
+	</insert>
+	<update id="update">
+		{"action":"update"}
+	</update>
+	<update id="updatePersistent">
+		{"action":"updatePersistent"}
+	</update>
+	<delete id="delete">
+		{"action":"delete"}
+	</delete>
+	<insert id="insertBatch" useGeneratedKeys="true"
+		keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
+	<update id="updateBatch">
+		{"action":"updateBatch"}
+	</update>
+
+	<resultMap id="result"
+		type="indi.mybatis.flying.pojo.Account3" autoMapping="true">
+		<id property="id" column="id" />
+		<result property="status" column="status"
+			typeHandler="indi.mybatis.flying.handler.StoryStatusHandler" />
+		
+	</resultMap>
+
+</mapper>

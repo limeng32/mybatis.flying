@@ -122,6 +122,7 @@ public class SqlBuilder {
 	private static final String BLANK_OR_BLANK = " or ";
 	private static final String BLANK_SET_BLANK = " set ";
 	private static final String AES_ENCRYPT_OPENPAREN = "aes_encrypt(";
+	private static final String AES_DECRYPT_OPENPAREN = "aes_decrypt(";
 	private static final String CLOSEBRACE_CLOSEPAREN_COMMA = "}),";
 
 	private static class ParameterWrapper {
@@ -1572,7 +1573,7 @@ public class SqlBuilder {
 		}
 
 		if (flyingModel != null) {
-			for (Mapperable fieldMapper : tableMapper.getFieldMapperCache().values()) {
+			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName, prefix);
@@ -1648,7 +1649,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealSelectSql(FlyingModel flyingModel, Mapperable fieldMapper, Map<String, Object> dtoFieldMap,
+	private static void dealSelectSql(FlyingModel flyingModel, FieldMapper fieldMapper, Map<String, Object> dtoFieldMap,
 			AtomicInteger index, StringBuilder selectSql, TableName tableName, String prefix)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
@@ -1663,9 +1664,23 @@ public class SqlBuilder {
 				dtoFieldMap.put(fieldMapper.getFieldName(), o);
 			}
 		}
+
+		// 在此处处理crypt方法
+		if (fieldMapper.getCryptKeyField() != null) {
+			selectSql.append(AES_DECRYPT_OPENPAREN);
+		}
+
 		selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+
+		if (fieldMapper.getCryptKeyField() != null) {
+			selectSql.append(COMMA).append(tableName.sqlWhere()).append(fieldMapper.getCryptKeyColumn())
+					.append(CLOSEPAREN);
+		}
+
 		if (prefix != null) {
 			selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+		} else if (fieldMapper.getCryptKeyField() != null) {
+			selectSql.append(" as ").append(fieldMapper.getDbFieldName());
 		}
 		selectSql.append(COMMA);
 	}

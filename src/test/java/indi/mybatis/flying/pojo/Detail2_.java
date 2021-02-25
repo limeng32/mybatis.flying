@@ -84,7 +84,7 @@ public class Detail2_ extends PojoSupport<Detail2_> implements Serializable {
 	}
 
 	public void setLoginLogSource2(LoginLogSource2 newLoginLogSource2) {
-		if (this.loginLogSource2 == null || !this.loginLogSource2.equals(newLoginLogSource2)) {
+		if (this.loginLogSource2 == null || this.loginLogSource2 != newLoginLogSource2) {
 			if (this.loginLogSource2 != null) {
 				LoginLogSource2 oldLoginLogSource2 = this.loginLogSource2;
 				this.loginLogSource2 = null;

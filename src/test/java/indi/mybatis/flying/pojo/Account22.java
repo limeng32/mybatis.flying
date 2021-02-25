@@ -132,7 +132,7 @@ public class Account22 extends PojoSupport<Account22> implements Serializable {
 	}
 
 	public void setRole(Role2_ newRole) {
-		if (this.role == null || !this.role.equals(newRole)) {
+		if (this.role == null || this.role != newRole) {
 			if (this.role != null) {
 				Role2_ oldRole = this.role;
 				this.role = null;

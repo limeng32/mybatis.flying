@@ -82,7 +82,7 @@ public class LoginLogSource2 extends PojoSupport<LoginLogSource2> implements Ser
 	}
 
 	public void setAccount(Account_ newAccount) {
-		if (this.account == null || !this.account.equals(newAccount)) {
+		if (this.account == null || this.account != newAccount) {
 			if (this.account != null) {
 				Account_ oldAccount = this.account;
 				this.account = null;
