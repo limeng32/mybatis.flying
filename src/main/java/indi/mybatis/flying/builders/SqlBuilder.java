@@ -307,7 +307,6 @@ public class SqlBuilder {
 					conditionMapperAnnotation = (ConditionMapperAnnotation) an;
 					conditionMapper = new ConditionMapper();
 					buildConditionMapper(conditionMapper, conditionMapperAnnotation, pojoClass, field);
-
 					conditionMapperCache.put(field.getName(), conditionMapper);
 				} else if (an instanceof Or) {
 					or = (Or) an;
@@ -325,6 +324,21 @@ public class SqlBuilder {
 				}
 			}
 		}
+
+		// 处理cryptKeyField
+		for (Map.Entry<String, ConditionMapper> e : conditionMapperCache.entrySet()) {
+			String cryptKeyColumn = e.getValue().getCryptKeyColumn();
+			if (cryptKeyColumn != null) {
+				TableMapper tableMapper = tableMapperCache.get(getTableMappedClass(dtoClass));
+				if (tableMapper.getFieldMapperCache().containsKey(cryptKeyColumn)) {
+					FieldMapper cryptKeyFieldMapper = tableMapper.getFieldMapperCache().get(cryptKeyColumn);
+					if (cryptKeyFieldMapper != null) {
+						e.getValue().setCryptKeyField(cryptKeyFieldMapper.getFieldName());
+					}
+				}
+			}
+		}
+
 		queryMapper.setConditionMapperCache(conditionMapperCache);
 		queryMapper.setOrMapperCache(orMapperCache);
 		queryMapperCache.put(dtoClass, queryMapper);
@@ -367,7 +381,6 @@ public class SqlBuilder {
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					conditionMapper.setCryptKeyColumn(fieldMapper.getCryptKeyColumn());
-					conditionMapper.setCryptKeyField(fieldMapper.getCryptKeyField());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
@@ -640,10 +653,6 @@ public class SqlBuilder {
 	}
 
 	private static void handleWhereSql(StringBuilder whereSql, Mapperable mapper, TableName tableName) {
-
-//		if (mapper.getCryptKeyField() != null) {
-//			whereSql.append(COMMA).append(tableName.sqlWhere()).append(mapper.getCryptKeyColumn()).append(CLOSEPAREN);
-//		}
 		if (mapper.getCryptKeyField() != null) {
 			whereSql.append(AES_DECRYPT_OPENPAREN);
 		}

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.interceptors.AutoMapperInterceptor;
 import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.ConditionType;
 
@@ -227,7 +228,12 @@ public class ConditionMapper implements Mapperable {
 
 	@Override
 	public String getCryptKeyField() {
-		return cryptKeyField;
+		// 当前只有数据库为mysql时才认为cryptKeyField有值从而处理加密
+		if (AutoMapperInterceptor.isMysql()) {
+			return cryptKeyField;
+		} else {
+			return null;
+		}
 	}
 
 	public void setCryptKeyField(String cryptKeyField) {

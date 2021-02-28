@@ -5,7 +5,7 @@ spring:
     #url: jdbc:mysql://10.245.47.1:3307/testdb4
     useSSL: false
     username: sa1
-    password: null
+    password: sa1
     type: com.alibaba.druid.pool.DruidDataSource
     filters:
     maxActive: 20

@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -30,6 +29,7 @@ import indi.mybatis.flying.mapper3.Account3Dao;
 import indi.mybatis.flying.mapper3.EmpScoreDao;
 import indi.mybatis.flying.pojo.Account3;
 import indi.mybatis.flying.pojo.EmpScore;
+import indi.mybatis.flying.pojo.condition.EmpScoreCondition;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -54,7 +54,6 @@ public class AesCryptTest {
 	}
 
 	@Test
-//	@IfProfileValue(name = "MYSQL", value = "true")
 	@DatabaseSetup(connection = "dataSourceExamine", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/aesCryptTest/test2.xml")
 	@ExpectedDatabase(connection = "dataSourceExamine", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 //	@DatabaseTearDown(connection = "dataSourceExamine", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
@@ -194,5 +193,15 @@ public class AesCryptTest {
 
 		int c2 = account3Dao.count(a2);
 		Assert.assertEquals(1, c2);
+
+		EmpScoreCondition esc = new EmpScoreCondition();
+		esc.setSecret2Like("luffy");
+		int c3 = empScoreDao.count(esc);
+		System.out.println("c3::" + c3);
+
+		EmpScoreCondition esc2 = new EmpScoreCondition();
+		esc2.setSecret2Equal("l");
+		EmpScore empScore5 = empScoreDao.selectOne(esc2);
+		Assert.assertEquals("111", empScore5.getStaffId());
 	}
 }
