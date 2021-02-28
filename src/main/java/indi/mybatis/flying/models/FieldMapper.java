@@ -14,6 +14,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.interceptors.AutoMapperInterceptor;
 import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 import indi.mybatis.flying.utils.JdbcTypeEnum;
@@ -466,7 +467,12 @@ public class FieldMapper implements Mapperable {
 	}
 
 	public String getCryptKeyField() {
-		return cryptKeyField;
+		// 当前只有数据库为mysql时才认为cryptKeyField有值从而处理加密
+		if (AutoMapperInterceptor.isMysql()) {
+			return cryptKeyField;
+		} else {
+			return null;
+		}
 	}
 
 	public void setCryptKeyField(String cryptKeyField) {

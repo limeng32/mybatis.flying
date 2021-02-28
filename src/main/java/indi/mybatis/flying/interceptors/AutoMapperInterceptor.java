@@ -58,7 +58,7 @@ import indi.mybatis.flying.utils.LogLevel;
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class AutoMapperInterceptor implements Interceptor {
-	private String dialectValue = "";
+	private static String dialectValue = "";
 	private LogLevel logLevel;
 
 	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
@@ -79,6 +79,12 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final String LIMIT_1 = " limit 1";
 
 	private static final String MYSQL = "mysql";
+
+	private static final String H2 = "h2";
+
+	private static boolean isMysqlOrH2;
+
+	private static boolean isMysql;
 
 	private SqlSourceBuilder builder;
 
@@ -237,6 +243,13 @@ public class AutoMapperInterceptor implements Interceptor {
 		dialectValue = properties.getProperty(DIALECT);
 		if (dialectValue == null || "".equals(dialectValue)) {
 			logger.error(AutoMapperExceptionEnum.DIALECT_PROPERTY_CANNOT_FOUND.description());
+		} else {
+			if (MYSQL.equalsIgnoreCase(dialectValue) || H2.equalsIgnoreCase(dialectValue)) {
+				isMysqlOrH2 = true;
+			}
+			if (MYSQL.equalsIgnoreCase(dialectValue)) {
+				isMysql = true;
+			}
 		}
 		String temp = properties.getProperty(LOG_LEVEL);
 		if (temp != null) {
@@ -301,7 +314,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private String generatePageSql(String sql, Conditionable condition) {
 		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
 			StringBuilder pageSql = new StringBuilder();
-			if (MYSQL.equals(dialectValue)) {
+			if (isMysqlOrH2) {
 				if (condition.getSorter() == null) {
 					pageSql.append(sql);
 				} else {
@@ -323,5 +336,9 @@ public class AutoMapperInterceptor implements Interceptor {
 		} else {
 			return sql;
 		}
+	}
+
+	public static boolean isMysql() {
+		return isMysql;
 	}
 }

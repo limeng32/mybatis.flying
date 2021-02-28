@@ -54,7 +54,7 @@ public class AesCryptTest {
 	}
 
 	@Test
-	@IfProfileValue(name = "MYSQL", value = "true")
+//	@IfProfileValue(name = "MYSQL", value = "true")
 	@DatabaseSetup(connection = "dataSourceExamine", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/aesCryptTest/test2.xml")
 	@ExpectedDatabase(connection = "dataSourceExamine", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
 //	@DatabaseTearDown(connection = "dataSourceExamine", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/aesCryptTest/test2.result.xml")
