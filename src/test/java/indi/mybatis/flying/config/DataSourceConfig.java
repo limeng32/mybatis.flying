@@ -5,6 +5,8 @@ import javax.sql.XADataSource;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -39,6 +41,12 @@ public class DataSourceConfig {
 		ds.setMaxPoolSize(3);
 		ds.setMaxIdleTime(60);
 		return ds;
+	}
+
+	@ConfigurationProperties(prefix = "spring.data-source-examine") // dataSource2
+	@Bean("dataSourceExamine")
+	public DataSource dataSourceExamine() {
+		return DataSourceBuilder.create().type(com.alibaba.druid.pool.DruidDataSource.class).build();
 	}
 
 	public XADataSource xaDataSource1() {

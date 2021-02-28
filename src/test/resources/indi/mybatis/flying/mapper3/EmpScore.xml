@@ -67,7 +67,6 @@
 		<result property="adjustReason" column="adjust_reason" />
 		<result property="unpassReason" column="unpass_reason" />
 		<result property="updateTime" column="update_time" />
-		<result property="rankEncrypt" column="rank_encrypt" />
 		<result property="secret2" column="secret2" typeHandler="indi.mybatis.flying.handler.ByteArrayHandler"/>
 	</resultMap>
 

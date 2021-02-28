@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration("initialConfig")
-@DependsOn("dataSourceConfig")
+@DependsOn({ "dataSourceConfig" })
 public class InitialConfig {
 
 	@Autowired
@@ -27,6 +27,10 @@ public class InitialConfig {
 	@Autowired
 	@Qualifier("dataSource2")
 	private DataSource dataSource2;
+
+	@Autowired
+	@Qualifier("dataSourceExamine")
+	private DataSource dataSourceExamine;
 
 	@Bean(name = "jdbcTemplate1")
 	@Primary
@@ -39,10 +43,16 @@ public class InitialConfig {
 		return new JdbcTemplate(dataSource2);
 	}
 
+	@Bean(name = "jdbcTemplate3")
+	public JdbcTemplate jdbcTemplate3() {
+		return new JdbcTemplate(dataSourceExamine);
+	}
+
 	@PostConstruct
 	private void init1() throws IOException {
 		initCustomerDataSource1();
 		initCustomerDataSource2();
+		initCustomerDataSource3();
 	}
 
 	private void initCustomerDataSource1() throws IOException {
@@ -57,6 +67,14 @@ public class InitialConfig {
 		try {
 			String s = getFileAsOneLine("/INIT_TABLE2.sql");
 			jdbcTemplate2().execute(s);
+		} catch (Exception e) {
+		}
+	}
+
+	private void initCustomerDataSource3() throws IOException {
+		try {
+			String s = getFileAsOneLine("/INIT_TABLE3.sql");
+			jdbcTemplate3().execute(s);
 		} catch (Exception e) {
 		}
 	}

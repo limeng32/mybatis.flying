@@ -128,12 +128,6 @@ public class EmpScore {
 	@FieldMapperAnnotation(dbFieldName = "update_time", jdbcType = JdbcType.TIMESTAMP)
 	private Date updateTime;
 
-	/**
-	 * 考核等级加密
-	 */
-	@FieldMapperAnnotation(dbFieldName = "rank_encrypt", jdbcType = JdbcType.VARCHAR)
-	private String rankEncrypt;
-
 	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = "staff_id")
 	private String secret2;
 
@@ -348,14 +342,6 @@ public class EmpScore {
 
 	public void setUnpassReason(String unpassReason) {
 		this.unpassReason = unpassReason;
-	}
-
-	public String getRankEncrypt() {
-		return rankEncrypt;
-	}
-
-	public void setRankEncrypt(String rankEncrypt) {
-		this.rankEncrypt = rankEncrypt;
 	}
 
 	public String getSecret2() {
