@@ -155,4 +155,15 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.5
 	 */
 	String cryptKeyColumn() default "";
+	
+	/**
+	 * 
+	 * Field for join only.
+	 * 
+	 * 只用于join的字段
+	 * 
+	 * @return String
+	 * @since 1.0.7
+	 */
+	String dbFieldNameForJoin() default "";
 }

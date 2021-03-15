@@ -100,6 +100,8 @@ public class ConditionMapper implements Mapperable {
 
 	private String cryptKeyColumn;
 
+	private String dbFieldNameForJoin;
+
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -247,6 +249,14 @@ public class ConditionMapper implements Mapperable {
 
 	public void setCryptKeyColumn(String cryptKeyColumn) {
 		this.cryptKeyColumn = cryptKeyColumn;
+	}
+
+	public String getDbFieldNameForJoin() {
+		return dbFieldNameForJoin;
+	}
+
+	public void setDbFieldNameForJoin(String dbFieldNameForJoin) {
+		this.dbFieldNameForJoin = dbFieldNameForJoin;
 	}
 
 }

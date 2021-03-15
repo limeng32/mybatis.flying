@@ -23,7 +23,7 @@ public class EmpScore2 extends PojoSupport<EmpScore2> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "staff_name", jdbcType = JdbcType.VARCHAR)
 	private String staffName;
 
-//	@FieldMapperAnnotation(dbFieldName = "staff_id", jdbcType = JdbcType.VARCHAR)
+	@FieldMapperAnnotation(dbFieldName = "staff_id", jdbcType = JdbcType.VARCHAR)
 	private String staffId;
 
 	@FieldMapperAnnotation(dbFieldName = "year", jdbcType = JdbcType.VARCHAR)
@@ -35,7 +35,7 @@ public class EmpScore2 extends PojoSupport<EmpScore2> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "state", jdbcType = JdbcType.VARCHAR)
 	private String state;
 
-	@FieldMapperAnnotation(dbFieldName = "staff_id", dbAssociationUniqueKey = "staff_id", associationExtra = {
+	@FieldMapperAnnotation(dbFieldNameForJoin = "staff_id", dbAssociationUniqueKey = "staff_id", associationExtra = {
 			@ForeignAssociation(dbFieldName = "season", dbAssociationFieldName = "season"),
 			@ForeignAssociation(dbFieldName = "year", dbAssociationFieldName = "year") })
 	private ProjRatio projRatio;

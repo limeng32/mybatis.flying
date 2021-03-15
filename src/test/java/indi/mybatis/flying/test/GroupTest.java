@@ -83,5 +83,15 @@ public class GroupTest {
 		List<EmpScore2> empScore2List2 = empScore2Mapper.selectAll(e);
 		Assert.assertEquals(1, empScore2List2.size());
 		Assert.assertEquals(2, empScore2List2.get(0).getProjRatio().getId().intValue());
+
+		EmpScore2 e2 = new EmpScore2();
+		e2.setId(3L);
+		int c = empScore2Mapper.count(e2);
+		Assert.assertEquals(2, c);
+
+		EmpScore2 e3 = new EmpScore2();
+		e3.setStaffId("111");
+		int c2 = empScore2Mapper.count(e3);
+		Assert.assertEquals(2, c2);
 	}
 }

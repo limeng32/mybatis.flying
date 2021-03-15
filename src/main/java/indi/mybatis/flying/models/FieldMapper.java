@@ -135,6 +135,8 @@ public class FieldMapper implements Mapperable {
 
 	private String cryptKeyField;
 
+	private String dbFieldNameForJoin;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(
@@ -177,6 +179,11 @@ public class FieldMapper implements Mapperable {
 			setDelegate(fieldMapperAnnotation.delegate());
 			if (!"".equals(fieldMapperAnnotation.cryptKeyColumn())) {
 				setCryptKeyColumn(fieldMapperAnnotation.cryptKeyColumn());
+			}
+			if (!"".equals(fieldMapperAnnotation.dbFieldNameForJoin())) {
+				setDbFieldNameForJoin(fieldMapperAnnotation.dbFieldNameForJoin());
+			} else {
+				setDbFieldNameForJoin(fieldMapperAnnotation.dbFieldName());
 			}
 		}
 		/* The Id has the highest priority, so it's written at the end. */
@@ -477,6 +484,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setCryptKeyField(String cryptKeyField) {
 		this.cryptKeyField = cryptKeyField;
+	}
+
+	public String getDbFieldNameForJoin() {
+		return dbFieldNameForJoin;
+	}
+
+	public void setDbFieldNameForJoin(String dbFieldNameForJoin) {
+		this.dbFieldNameForJoin = dbFieldNameForJoin;
 	}
 
 }

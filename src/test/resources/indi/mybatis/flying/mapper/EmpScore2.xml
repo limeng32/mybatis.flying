@@ -12,6 +12,10 @@
 			"projRatio":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p__"},
 		}}
 	</select>
+	
+	<select id="count" resultType="int">
+		{"action":"count"}
+	</select>
 
 	<resultMap type="EmpScore2" id="result" autoMapping="true">
 		<id property="id" column="id" />

@@ -10,4 +10,6 @@ public interface EmpScore2Mapper {
 
 	public List<EmpScore2> selectAll(EmpScore2 o);
 
+	public int count(EmpScore2 o);
+
 }

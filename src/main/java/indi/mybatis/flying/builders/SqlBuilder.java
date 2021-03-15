@@ -381,6 +381,7 @@ public class SqlBuilder {
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					conditionMapper.setCryptKeyColumn(fieldMapper.getCryptKeyColumn());
+					conditionMapper.setDbFieldNameForJoin(fieldMapper.getDbFieldNameForJoin());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
 						conditionMapper.setForeignKey(true);
@@ -1512,10 +1513,11 @@ public class SqlBuilder {
 	 * @throws NoSuchMethodException     Exception
 	 * @throws InvocationTargetException Exception
 	 * @throws IllegalAccessException    Exception
+	 * @throws InstantiationException
 	 * @throws RuntimeException          Exception
 	 */
 	public static String buildCountSql(Object object, FlyingModel flyingModel)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
@@ -1626,7 +1628,7 @@ public class SqlBuilder {
 			/* Processing fromSql */
 			fromSql.append(pw.originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())
 					.append(BLANK_ON_BLANK).append(pw.tableName.sqlWhere())
-					.append(pw.originFieldMapper.getDbFieldName()).append(BLANK_EQUAL_BLANK)
+					.append(pw.originFieldMapper.getDbFieldNameForJoin()).append(BLANK_EQUAL_BLANK)
 					.append(tableName.sqlWhere()).append(pw.originFieldMapper.getDbAssociationUniqueKey());
 			ForeignAssociationMapper[] fams = pw.originFieldMapper.getForeignAssociationMappers();
 			if (fams != null && fams.length > 0) {
@@ -1692,24 +1694,27 @@ public class SqlBuilder {
 			}
 		}
 
-		// 在此处处理crypt方法
-		if (fieldMapper.getCryptKeyField() != null) {
-			selectSql.append(AES_DECRYPT_OPENPAREN);
+		if (!"".equals(fieldMapper.getDbFieldName())) {
+			// 在此处处理crypt方法
+			if (fieldMapper.getCryptKeyField() != null) {
+				selectSql.append(AES_DECRYPT_OPENPAREN);
+			}
+
+			selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
+
+			if (fieldMapper.getCryptKeyField() != null) {
+				selectSql.append(COMMA).append(tableName.sqlWhere()).append(fieldMapper.getCryptKeyColumn())
+						.append(CLOSEPAREN);
+			}
+
+			if (prefix != null) {
+				selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
+			} else if (fieldMapper.getCryptKeyField() != null) {
+				selectSql.append(" as ").append(fieldMapper.getDbFieldName());
+			}
+			selectSql.append(COMMA);
 		}
 
-		selectSql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName());
-
-		if (fieldMapper.getCryptKeyField() != null) {
-			selectSql.append(COMMA).append(tableName.sqlWhere()).append(fieldMapper.getCryptKeyColumn())
-					.append(CLOSEPAREN);
-		}
-
-		if (prefix != null) {
-			selectSql.append(" as ").append(prefix).append(fieldMapper.getDbFieldName());
-		} else if (fieldMapper.getCryptKeyField() != null) {
-			selectSql.append(" as ").append(fieldMapper.getDbFieldName());
-		}
-		selectSql.append(COMMA);
 	}
 
 	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuilder whereSql,
@@ -1781,7 +1786,7 @@ public class SqlBuilder {
 	private static void dealMapperAnnotationIterationForCount(Object object, StringBuilder[] sqlBuilders,
 			TableName originTableName, Mapperable originFieldMapper, String fieldPerfix, AtomicInteger index,
 			TableName lastTableName, String indexStr)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
 		Map<?, ?> dtoFieldMap = PropertyUtils.describe(object);
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
 		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
@@ -1816,8 +1821,8 @@ public class SqlBuilder {
 			/* Processing fromSql */
 			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())
 					.append(BLANK_ON_BLANK).append(originTableName.sqlWhere())
-					.append(originFieldMapper.getDbFieldName()).append(BLANK_EQUAL_BLANK).append(tableName.sqlWhere())
-					.append(originFieldMapper.getDbAssociationUniqueKey());
+					.append(originFieldMapper.getDbFieldNameForJoin()).append(BLANK_EQUAL_BLANK)
+					.append(tableName.sqlWhere()).append(originFieldMapper.getDbAssociationUniqueKey());
 			ForeignAssociationMapper[] fams = originFieldMapper.getForeignAssociationMappers();
 			if (fams != null && fams.length > 0) {
 				for (ForeignAssociationMapper fam : fams) {
@@ -1835,13 +1840,16 @@ public class SqlBuilder {
 				continue;
 			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
-			if (value == null) {
-				continue;
-			}
 			if (fieldMapper.isForeignKey()) {
+				if (value == null) {
+					value = fieldMapper.getFieldType().newInstance();
+				}
 				dealMapperAnnotationIterationForCount(value, sqlBuilders, tableName, fieldMapper, temp, index,
 						tableName, indexStr);
 			} else {
+				if (value == null) {
+					continue;
+				}
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
 		}
