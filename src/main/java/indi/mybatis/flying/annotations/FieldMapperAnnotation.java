@@ -32,7 +32,7 @@ public @interface FieldMapperAnnotation {
 	 * @return String
 	 * @since 0.9.0
 	 */
-	String dbFieldName();
+	String dbFieldName() default "";
 
 	/**
 	 * 
@@ -73,7 +73,7 @@ public @interface FieldMapperAnnotation {
 	 * @return JdbcType
 	 * @since 0.9.0
 	 */
-	JdbcType jdbcType();
+	JdbcType jdbcType() default JdbcType.NULL;
 
 	/**
 	 * 

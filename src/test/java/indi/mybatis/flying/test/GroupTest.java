@@ -1,0 +1,87 @@
+package indi.mybatis.flying.test;
+
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.alibaba.fastjson.JSONObject;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DatabaseTearDowns;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.annotation.ExpectedDatabases;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
+
+import indi.mybatis.flying.Application;
+import indi.mybatis.flying.mapper.EmpScore2Mapper;
+import indi.mybatis.flying.mapper.ProjRatioMapper;
+import indi.mybatis.flying.pojo.EmpScore2;
+import indi.mybatis.flying.pojo.ProjRatio;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = Application.class)
+@WebAppConfiguration
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
+		DbUnitTestExecutionListener.class })
+@DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1" })
+public class GroupTest {
+	@Autowired
+	private DataSource dataSource1;
+
+	@Autowired
+	private EmpScore2Mapper empScore2Mapper;
+
+	@Autowired
+	private ProjRatioMapper projRatioMapper;
+
+	@Test
+	public void testDataSource() {
+		Assert.assertNotNull(dataSource1);
+		Assert.assertNotNull(projRatioMapper);
+	}
+
+	/** 测试insert功能（有乐观锁） */
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.xml") })
+	public void test1() {
+		ProjRatio projRatio = projRatioMapper.select(1);
+		System.out.println("::" + JSONObject.toJSONString(projRatio));
+		EmpScore2 empScore = empScore2Mapper.select(1L);
+		System.out.println("::" + JSONObject.toJSONString(empScore));
+		Assert.assertEquals(1, empScore.getProjRatio().getId().intValue());
+
+		EmpScore2 e = new EmpScore2();
+		e.setId(3L);
+		List<EmpScore2> empScore2List = empScore2Mapper.selectAll(e);
+		Assert.assertEquals(1, empScore2List.size());
+		Assert.assertEquals(3, empScore2List.get(0).getProjRatio().getId().intValue());
+
+		ProjRatio p = new ProjRatio();
+		p.setId(2L);
+		e.setProjRatio(p);
+		List<EmpScore2> empScore2List2 = empScore2Mapper.selectAll(e);
+		Assert.assertEquals(1, empScore2List2.size());
+		Assert.assertEquals(2, empScore2List2.get(0).getProjRatio().getId().intValue());
+	}
+}

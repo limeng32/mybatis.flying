@@ -72,3 +72,22 @@ CREATE TABLE permission (
   secret2 blob DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS emp_score;
+CREATE TABLE emp_score (
+  id bigint(11) NOT NULL,
+  staff_name varchar(20) DEFAULT NULL,
+  staff_id varchar(20) DEFAULT NULL,
+  year varchar(10) DEFAULT NULL,
+  season int(11) DEFAULT NULL,
+  state  varchar(2) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS proj_ratio;
+CREATE TABLE proj_ratio (
+  id bigint(11) NOT NULL,
+  proj_name varchar(50) DEFAULT NULL,
+  staff_id varchar(20) DEFAULT NULL,
+  year varchar(10) DEFAULT NULL,
+  season int(11) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
