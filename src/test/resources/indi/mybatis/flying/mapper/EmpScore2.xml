@@ -4,18 +4,21 @@
 	<select id="select" resultMap="result">
 		{"action":"select#{?}", "properties":{
 			"projRatio":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p__"},
+			"projRatio2":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p2__"},
 		}}
 	</select>
 	
 	<select id="selectAll" resultMap="result">
 		{"action":"selectAll", "properties":{
 			"projRatio":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p__"},
+			"projRatio2":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p2__"},
 		}}
 	</select>
 	
 	<select id="selectOne" resultMap="result">
 		{"action":"selectOne", "properties":{
 			"projRatio":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p__"},
+			"projRatio2":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p2__"},
 		}}
 	</select>
 	
@@ -48,5 +51,8 @@
 		<association property="projRatio"
 			resultMap="indi.mybatis.flying.mapper.ProjRatioMapper.result"
 			columnPrefix="p__" />
+		<association property="projRatio2"
+			resultMap="indi.mybatis.flying.mapper.ProjRatioMapper.result"
+			columnPrefix="p2__" />	
 	</resultMap>
 </mapper>

@@ -1022,7 +1022,7 @@ public class SqlBuilder {
 		if (!excuteAble
 				|| (!fieldMapper.isOpVersionLock()
 						&& (valueIsNull || (useWhiteList && !fieldMapper.getWhiteListTagSet().contains(whiteListTag))))
-				|| fieldMapper.getIgnoreTagSet().contains(ignoreTag) || "".equals(fieldMapper.getDbFieldName())) {
+				|| fieldMapper.getIgnoreTagSet().contains(ignoreTag) || fieldMapper.isOnlyForJoin()) {
 			return false;
 		}
 		return true;
@@ -1184,7 +1184,7 @@ public class SqlBuilder {
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
 						.append(PLUS_1).append(COMMA);
-			} else  {
+			} else {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL);
 				if (fieldMapper.getCryptKeyField() != null) {
@@ -1694,7 +1694,7 @@ public class SqlBuilder {
 			}
 		}
 
-		if (!"".equals(fieldMapper.getDbFieldName())) {
+		if (!fieldMapper.isOnlyForJoin()) {
 			// 在此处处理crypt方法
 			if (fieldMapper.getCryptKeyField() != null) {
 				selectSql.append(AES_DECRYPT_OPENPAREN);

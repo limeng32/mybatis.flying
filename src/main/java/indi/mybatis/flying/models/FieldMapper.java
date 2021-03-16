@@ -137,6 +137,8 @@ public class FieldMapper implements Mapperable {
 
 	private String dbFieldNameForJoin;
 
+	private boolean onlyForJoin = false;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(
@@ -180,8 +182,9 @@ public class FieldMapper implements Mapperable {
 			if (!"".equals(fieldMapperAnnotation.cryptKeyColumn())) {
 				setCryptKeyColumn(fieldMapperAnnotation.cryptKeyColumn());
 			}
-			if (!"".equals(fieldMapperAnnotation.dbFieldNameForJoin())) {
-				setDbFieldNameForJoin(fieldMapperAnnotation.dbFieldNameForJoin());
+			if (!"".equals(fieldMapperAnnotation.dbFieldNameForJoinOnly())) {
+				onlyForJoin = true;
+				setDbFieldNameForJoin(fieldMapperAnnotation.dbFieldNameForJoinOnly());
 			} else {
 				setDbFieldNameForJoin(fieldMapperAnnotation.dbFieldName());
 			}
@@ -492,6 +495,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setDbFieldNameForJoin(String dbFieldNameForJoin) {
 		this.dbFieldNameForJoin = dbFieldNameForJoin;
+	}
+
+	public boolean isOnlyForJoin() {
+		return onlyForJoin;
+	}
+
+	public void setOnlyForJoin(boolean onlyForJoin) {
+		this.onlyForJoin = onlyForJoin;
 	}
 
 }

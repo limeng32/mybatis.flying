@@ -35,7 +35,11 @@ public class EmpScore2 extends PojoSupport<EmpScore2> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "state", jdbcType = JdbcType.VARCHAR)
 	private String state;
 
-	@FieldMapperAnnotation(dbFieldNameForJoin = "staff_id", dbAssociationUniqueKey = "staff_id", associationExtra = {
+	@FieldMapperAnnotation(dbFieldName = "projRatio2", dbFieldNameForJoinOnly = "staff_id", dbAssociationUniqueKey = "staff_id", associationExtra = {
+			@ForeignAssociation(dbFieldName = "year", dbAssociationFieldName = "year") })
+	private ProjRatio projRatio2;
+
+	@FieldMapperAnnotation(dbFieldName = "projRatio", dbFieldNameForJoinOnly = "staff_id", dbAssociationUniqueKey = "staff_id", associationExtra = {
 			@ForeignAssociation(dbFieldName = "season", dbAssociationFieldName = "season"),
 			@ForeignAssociation(dbFieldName = "year", dbAssociationFieldName = "year") })
 	private ProjRatio projRatio;
@@ -59,6 +63,14 @@ public class EmpScore2 extends PojoSupport<EmpScore2> implements Serializable {
 
 	public void setProjRatio(ProjRatio projRatio) {
 		this.projRatio = projRatio;
+	}
+
+	public ProjRatio getProjRatio2() {
+		return projRatio2;
+	}
+
+	public void setProjRatio2(ProjRatio projRatio2) {
+		this.projRatio2 = projRatio2;
 	}
 
 	public String getStaffId() {

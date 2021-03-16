@@ -32,7 +32,7 @@ public @interface FieldMapperAnnotation {
 	 * @return String
 	 * @since 0.9.0
 	 */
-	String dbFieldName() default "";
+	String dbFieldName();
 
 	/**
 	 * 
@@ -158,12 +158,12 @@ public @interface FieldMapperAnnotation {
 	
 	/**
 	 * 
-	 * Field for join only.
+	 * Field for join only, do not participate in query.
 	 * 
-	 * 只用于join的字段
+	 * 只用于join的字段，不参与查询
 	 * 
 	 * @return String
-	 * @since 1.0.7
+	 * @since 1.0.8
 	 */
-	String dbFieldNameForJoin() default "";
+	String dbFieldNameForJoinOnly() default "";
 }
