@@ -1022,7 +1022,7 @@ public class SqlBuilder {
 		if (!excuteAble
 				|| (!fieldMapper.isOpVersionLock()
 						&& (valueIsNull || (useWhiteList && !fieldMapper.getWhiteListTagSet().contains(whiteListTag))))
-				|| fieldMapper.getIgnoreTagSet().contains(ignoreTag)) {
+				|| fieldMapper.getIgnoreTagSet().contains(ignoreTag) || "".equals(fieldMapper.getDbFieldName())) {
 			return false;
 		}
 		return true;
@@ -1184,7 +1184,7 @@ public class SqlBuilder {
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
 						.append(PLUS_1).append(COMMA);
-			} else if (!"".equals(fieldMapper.getDbFieldName())) {
+			} else  {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL);
 				if (fieldMapper.getCryptKeyField() != null) {

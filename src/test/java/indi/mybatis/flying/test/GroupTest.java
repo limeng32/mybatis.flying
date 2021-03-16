@@ -1,5 +1,6 @@
 package indi.mybatis.flying.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -93,7 +94,7 @@ public class GroupTest {
 		int c2 = empScore2Mapper.count(e3);
 		Assert.assertEquals(2, c2);
 	}
-	
+
 	@Test
 	@DatabaseSetups({
 			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.xml") })
@@ -107,18 +108,54 @@ public class GroupTest {
 		int c = empScore2Mapper.count(e);
 		Assert.assertEquals(3, c);
 		System.out.println("::" + JSONObject.toJSONString(e));
-		
+
 		List<EmpScore2> l = empScore2Mapper.selectAll(e);
 		Assert.assertEquals(3, l.size());
 		System.out.println("::" + JSONObject.toJSONString(e));
-		
+
 		EmpScore2 emp1 = empScore2Mapper.select(1L);
 		emp1.setState("2");
 		empScore2Mapper.update(emp1);
-		
+
 		EmpScore2 emp2 = empScore2Mapper.select(2L);
 		System.out.println("::" + JSONObject.toJSONString(emp2));
 		emp2.setState(null);
 		empScore2Mapper.updatePersistent(emp2);
+
+		EmpScore2 e2 = new EmpScore2();
+		e2.setId(8L);
+		e2.setStaffId("120");
+		e2.setStaffName("丁七");
+		e2.setYear("2020");
+		e2.setSeason(4);
+		e2.setState("1");
+		empScore2Mapper.insert(e2);
+
+		EmpScore2 e3 = new EmpScore2(), e4 = new EmpScore2();
+		e3.setId(9L);
+		e3.setStaffId("120");
+		e3.setStaffName("丁七");
+		e3.setYear("2020");
+		e3.setSeason(4);
+		e3.setState("1");
+
+		e4.setId(10L);
+		e4.setStaffId("120");
+		e4.setStaffName("丁七");
+		e4.setYear("2020");
+		e4.setSeason(4);
+		e4.setState("1");
+
+		List<EmpScore2> l2 = new ArrayList<>();
+		l2.add(e3);
+		l2.add(e4);
+		empScore2Mapper.insertBatch(l2);
+
+		List<EmpScore2> l3 = empScore2Mapper.selectAll(e);
+		Assert.assertEquals(2, l3.size());
+		for (EmpScore2 entry : l3) {
+			entry.setYear("2021");
+		}
+		empScore2Mapper.updateBatch(l3);
 	}
 }

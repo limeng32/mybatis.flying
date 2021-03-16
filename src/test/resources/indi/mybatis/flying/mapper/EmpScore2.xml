@@ -30,6 +30,18 @@
 	<update id="updatePersistent">
 		{"action":"updatePersistent"}
 	</update>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insert"}
+	</insert>
+
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+		{"action":"insertBatch"}
+	</insert>
+	
+	<update id="updateBatch">
+		{"action":"updateBatch"}
+	</update>
 
 	<resultMap type="EmpScore2" id="result" autoMapping="true">
 		<id property="id" column="id" />
