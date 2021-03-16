@@ -1184,7 +1184,7 @@ public class SqlBuilder {
 			if (fieldMapper.isOpVersionLock()) {
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL).append(fieldMapper.getDbFieldName())
 						.append(PLUS_1).append(COMMA);
-			} else {
+			} else if (!"".equals(fieldMapper.getDbFieldName())) {
 				allFieldNull = false;
 				tableSql.append(fieldMapper.getDbFieldName()).append(EQUAL);
 				if (fieldMapper.getCryptKeyField() != null) {

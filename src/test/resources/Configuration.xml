@@ -11,6 +11,7 @@
 		<setting name="proxyFactory" value="CGLIB" />
 		<setting name="lazyLoadTriggerMethods" value="" />
 		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
 	</settings>
 	<typeAliases>
 		<package name="indi.mybatis.flying.handlers" />

@@ -1,0 +1,14 @@
+<dataset>
+	<EMP_SCORE ID="1" STAFF_NAME="张三" STAFF_ID="111" YEAR="2020"
+		SEASON="1" STATE="2" />
+	<EMP_SCORE ID="2" STAFF_NAME="张三" STAFF_ID="111" YEAR="2020"
+		SEASON="1" STATE="[null]" />
+	<EMP_SCORE ID="3" STAFF_NAME="李四" STAFF_ID="112" YEAR="2020"
+		SEASON="1" STATE="0" />
+	<EMP_SCORE ID="4" STAFF_NAME="李四" STAFF_ID="112" YEAR="2020"
+		SEASON="1" STATE="1" />
+	<EMP_SCORE ID="5" STAFF_NAME="王五" STAFF_ID="[null]"
+		YEAR="[null]" SEASON="[null]" STATE="0" />
+	<EMP_SCORE ID="6" STAFF_NAME="赵六" STAFF_ID="[null]"
+		YEAR="[null]" SEASON="[null]" STATE="1" />
+</dataset>

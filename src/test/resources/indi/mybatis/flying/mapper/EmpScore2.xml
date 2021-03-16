@@ -13,9 +13,23 @@
 		}}
 	</select>
 	
+	<select id="selectOne" resultMap="result">
+		{"action":"selectOne", "properties":{
+			"projRatio":{"id":"indi.mybatis.flying.mapper.ProjRatioMapper.select", "prefix":"p__"},
+		}}
+	</select>
+	
 	<select id="count" resultType="int">
 		{"action":"count"}
 	</select>
+	
+	<update id="update">
+		{"action":"update"}
+	</update>
+	
+	<update id="updatePersistent">
+		{"action":"updatePersistent"}
+	</update>
 
 	<resultMap type="EmpScore2" id="result" autoMapping="true">
 		<id property="id" column="id" />

@@ -56,7 +56,6 @@ public class GroupTest {
 		Assert.assertNotNull(projRatioMapper);
 	}
 
-	/** 测试insert功能（有乐观锁） */
 	@Test
 	@DatabaseSetups({
 			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.xml") })
@@ -93,5 +92,33 @@ public class GroupTest {
 		e3.setStaffId("111");
 		int c2 = empScore2Mapper.count(e3);
 		Assert.assertEquals(2, c2);
+	}
+	
+	@Test
+	@DatabaseSetups({
+			@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.xml") })
+	@ExpectedDatabases({
+			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.result.xml") })
+	@DatabaseTearDowns({
+			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.xml") })
+	public void test2() {
+		EmpScore2 e = new EmpScore2();
+		e.setState("0");
+		int c = empScore2Mapper.count(e);
+		Assert.assertEquals(3, c);
+		System.out.println("::" + JSONObject.toJSONString(e));
+		
+		List<EmpScore2> l = empScore2Mapper.selectAll(e);
+		Assert.assertEquals(3, l.size());
+		System.out.println("::" + JSONObject.toJSONString(e));
+		
+		EmpScore2 emp1 = empScore2Mapper.select(1L);
+		emp1.setState("2");
+		empScore2Mapper.update(emp1);
+		
+		EmpScore2 emp2 = empScore2Mapper.select(2L);
+		System.out.println("::" + JSONObject.toJSONString(emp2));
+		emp2.setState(null);
+		empScore2Mapper.updatePersistent(emp2);
 	}
 }
