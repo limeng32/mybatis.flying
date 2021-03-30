@@ -126,31 +126,6 @@ public class SqlBuilder {
 	private static final String AES_DECRYPT_OPENPAREN = "aes_decrypt(";
 	private static final String CLOSEBRACE_CLOSEPAREN_COMMA = "}),";
 
-	private static class ParameterWrapper {
-		public ParameterWrapper() {
-
-		}
-
-		private ParameterWrapper(Object object) {
-			this.object = object;
-		}
-
-		private ParameterWrapper(Object object, TableName tableName, Mapperable originFieldMapper, String fieldPerfix,
-				TableName lastTableName) {
-			this.object = object;
-			this.tableName = tableName;
-			this.originFieldMapper = originFieldMapper;
-			this.fieldPerfix = fieldPerfix;
-			this.lastTableName = lastTableName;
-		}
-
-		private Object object;
-		private TableName tableName;
-		private Mapperable originFieldMapper;
-		private String fieldPerfix;
-		private TableName lastTableName;
-	}
-
 	/**
 	 * The class of the incoming dto object builds the TableMapper object, and the
 	 * constructed object is stored in the cache, which is retrieved directly from
@@ -1425,8 +1400,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		ParameterWrapper pw = new ParameterWrapper();
-		dealMapperAnnotationIterationForSelectAll(clazz, selectSql, fromSql, whereSql, ai, flyingModel, pw);
+		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
@@ -1459,8 +1434,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		ParameterWrapper pw = new ParameterWrapper(object);
-		dealMapperAnnotationIterationForSelectAll(object.getClass(), selectSql, fromSql, whereSql, ai, flyingModel, pw);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1492,8 +1467,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		ParameterWrapper pw = new ParameterWrapper(object);
-		dealMapperAnnotationIterationForSelectAll(object.getClass(), selectSql, fromSql, whereSql, ai, flyingModel, pw);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1560,10 +1535,12 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
-	private static void dealMapperAnnotationIterationForSelectAll(Class<?> objectType, StringBuilder selectSql,
-			StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index, FlyingModel flyingModel,
-			ParameterWrapper pw) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+	private static void dealMapperAnnotationIterationForSelectAll(boolean isSelect, Object object,
+			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index,
+			FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper, String fieldPerfix,
+			TableName lastTableName) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
 			NoSuchFieldException, InstantiationException {
+		Class<?> objectType = isSelect ? (Class<?>) object : object.getClass();
 		String ignoreTag = null;
 		String prefix = null;
 		String indexStr = null;
@@ -1578,26 +1555,24 @@ public class SqlBuilder {
 				useWhiteList = true;
 			}
 		}
-		Map<String, Object> dtoFieldMap = pw.object == null ?
-//				new HashMap<>()
-				Collections.emptyMap() : PropertyUtils.describe(pw.object);
-
-		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
-		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
+		Map<String, Object> dtoFieldMap = isSelect ? Collections.emptyMap() : PropertyUtils.describe(object);
+		Class<?> tempClass = getTableMappedClass(objectType);
+		TableMapper tableMapper = buildTableMapper(tempClass);
+		QueryMapper queryMapper = buildQueryMapper(objectType, tempClass);
 		TableName tableName = null;
 
 		int indexValue = index.getAndIncrement();
-		if (pw.lastTableName == null) {
+		if (lastTableName == null) {
 			tableName = new TableName(tableMapper, indexValue, null);
 		} else {
-			tableName = new TableName(tableMapper, indexValue, pw.lastTableName.getMap());
+			tableName = new TableName(tableMapper, indexValue, lastTableName.getMap());
 		}
 		/*
 		 * If originFieldMapper is null, it is considered to be the first traversal. In
 		 * the first iteration, handle fromSql.
 		 * 
 		 */
-		if (pw.originFieldMapper == null) {
+		if (originFieldMapper == null) {
 			fromSql.append(tableName.sqlSelect());
 			if (indexStr != null) {
 				fromSql.append(" ").append(indexStr);
@@ -1621,23 +1596,22 @@ public class SqlBuilder {
 		 * 
 		 */
 		String temp = null;
-		if (pw.originFieldMapper != null && pw.tableName != null) {
+		if (originFieldMapper != null && tn != null) {
 			/* Processing fieldPerfix */
-			if (pw.fieldPerfix == null) {
-				temp = pw.originFieldMapper.getFieldName();
+			if (fieldPerfix == null) {
+				temp = originFieldMapper.getFieldName();
 			} else {
-				temp = new StringBuilder(pw.fieldPerfix).append(DOT).append(pw.originFieldMapper.getFieldName())
-						.toString();
+				temp = new StringBuilder(fieldPerfix).append(DOT).append(originFieldMapper.getFieldName()).toString();
 			}
 			/* Processing fromSql */
-			fromSql.append(pw.originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())
-					.append(BLANK_ON_BLANK).append(pw.tableName.sqlWhere())
-					.append(pw.originFieldMapper.getDbFieldNameForJoin()).append(BLANK_EQUAL_BLANK)
-					.append(tableName.sqlWhere()).append(pw.originFieldMapper.getDbAssociationUniqueKey());
-			ForeignAssociationMapper[] fams = pw.originFieldMapper.getForeignAssociationMappers();
+			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())
+					.append(BLANK_ON_BLANK).append(tn.sqlWhere()).append(originFieldMapper.getDbFieldNameForJoin())
+					.append(BLANK_EQUAL_BLANK).append(tableName.sqlWhere())
+					.append(originFieldMapper.getDbAssociationUniqueKey());
+			ForeignAssociationMapper[] fams = originFieldMapper.getForeignAssociationMappers();
 			if (fams != null && fams.length > 0) {
 				for (ForeignAssociationMapper fam : fams) {
-					fromSql.append(BLANK_AND_BLANK).append(pw.tableName.sqlWhere()).append(fam.getDbFieldName())
+					fromSql.append(BLANK_AND_BLANK).append(tn.sqlWhere()).append(fam.getDbFieldName())
 							.append(fam.getCondition().value()).append(tableName.sqlWhere())
 							.append(fam.getDbAssociationFieldName());
 				}
@@ -1655,9 +1629,9 @@ public class SqlBuilder {
 				continue;
 			}
 			if (fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForSelectAll(value.getClass(), selectSql, fromSql, whereSql, index,
+				dealMapperAnnotationIterationForSelectAll(false, value, selectSql, fromSql, whereSql, index,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
-						new ParameterWrapper(value, tableName, fieldMapper, temp, tableName));
+						tableName, fieldMapper, temp, tableName);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
@@ -1690,7 +1664,7 @@ public class SqlBuilder {
 		if (inner != null) {
 			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
 				Object o = innerMapperCache.get(fieldMapper.getFieldType());
-				// TODO
+				// TODO 考虑将返回的dtoFieldMap包装成一个模型
 				if (o == null) {
 					o = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
 					innerMapperCache.put(fieldMapper.getFieldType(), o);
@@ -1698,7 +1672,6 @@ public class SqlBuilder {
 				if (dtoFieldMap.isEmpty()) {
 					dtoFieldMap = new HashMap<>();
 				}
-//				System.out.println("::" + o.getClass());
 				dtoFieldMap.put(fieldMapper.getFieldName(), o);
 			}
 		}
