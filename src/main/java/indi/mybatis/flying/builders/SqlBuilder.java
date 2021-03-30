@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1577,7 +1578,9 @@ public class SqlBuilder {
 				useWhiteList = true;
 			}
 		}
-		Map<String, Object> dtoFieldMap = pw.object == null ? new HashMap<>() : PropertyUtils.describe(pw.object);
+		Map<String, Object> dtoFieldMap = pw.object == null ?
+//				new HashMap<>()
+				Collections.emptyMap() : PropertyUtils.describe(pw.object);
 
 		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
 		QueryMapper queryMapper = buildQueryMapper(objectType, getTableMappedClass(objectType));
@@ -1605,7 +1608,8 @@ public class SqlBuilder {
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-					dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName, prefix);
+					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
+							prefix);
 				}
 			}
 		}
@@ -1678,18 +1682,23 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealSelectSql(FlyingModel flyingModel, FieldMapper fieldMapper, Map<String, Object> dtoFieldMap,
-			AtomicInteger index, StringBuilder selectSql, TableName tableName, String prefix)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException {
+	private static Map<String, Object> dealSelectSql(FlyingModel flyingModel, FieldMapper fieldMapper,
+			Map<String, Object> dtoFieldMap, AtomicInteger index, StringBuilder selectSql, TableName tableName,
+			String prefix) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		FlyingModel inner = flyingModel.getProperties().get(fieldMapper.getFieldName());
 		if (inner != null) {
 			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
 				Object o = innerMapperCache.get(fieldMapper.getFieldType());
+				// TODO
 				if (o == null) {
 					o = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
 					innerMapperCache.put(fieldMapper.getFieldType(), o);
 				}
+				if (dtoFieldMap.isEmpty()) {
+					dtoFieldMap = new HashMap<>();
+				}
+//				System.out.println("::" + o.getClass());
 				dtoFieldMap.put(fieldMapper.getFieldName(), o);
 			}
 		}
@@ -1714,7 +1723,7 @@ public class SqlBuilder {
 			}
 			selectSql.append(COMMA);
 		}
-
+		return dtoFieldMap;
 	}
 
 	private static void dealConditionOrMapper(OrMapper orMapper, Object value, StringBuilder whereSql,
@@ -1842,7 +1851,7 @@ public class SqlBuilder {
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (fieldMapper.isForeignKey()) {
 				if (value == null) {
-					value = fieldMapper.getFieldType().newInstance();
+					value = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
 				}
 				dealMapperAnnotationIterationForCount(value, sqlBuilders, tableName, fieldMapper, temp, index,
 						tableName, indexStr);
