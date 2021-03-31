@@ -59,11 +59,13 @@ public class SqlBuilder {
 	}
 
 	/* Cache TableMapper */
-	private static Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(128);
+	private static final Map<Class<?>, TableMapper> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper>(
+			128);
 	/* Cache QueryMapper */
-	private static Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(128);
-	/* Cache inner class */
-	private static Map<Class<?>, Object> innerMapperCache = new ConcurrentHashMap<Class<?>, Object>(128);
+	private static final Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(
+			128);
+	/* Cache inner class，其中Object只为分析注解用 */
+	private static final Map<Class<?>, Object> innerMapperCache = new ConcurrentHashMap<Class<?>, Object>(128);
 
 	private static final String DOT = ".";
 	private static final String COMMA = ",";
@@ -237,6 +239,14 @@ public class SqlBuilder {
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
 		tableMapperCache.put(dtoClass, tableMapper);
+
+		try {
+			Object o = dtoClass.getDeclaredConstructor().newInstance();
+			innerMapperCache.put(dtoClass, o);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e1) {
+		}
+
 		return tableMapper;
 	}
 
@@ -1664,11 +1674,6 @@ public class SqlBuilder {
 		if (inner != null) {
 			if (dtoFieldMap.get(fieldMapper.getFieldName()) == null) {
 				Object o = innerMapperCache.get(fieldMapper.getFieldType());
-				// TODO 考虑将返回的dtoFieldMap包装成一个模型
-				if (o == null) {
-					o = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
-					innerMapperCache.put(fieldMapper.getFieldType(), o);
-				}
 				if (dtoFieldMap.isEmpty()) {
 					dtoFieldMap = new HashMap<>();
 				}
