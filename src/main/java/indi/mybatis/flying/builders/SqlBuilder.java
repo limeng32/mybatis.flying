@@ -64,8 +64,6 @@ public class SqlBuilder {
 	/* Cache QueryMapper */
 	private static final Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(
 			128);
-	/* Cache inner class，其中Object只为分析注解用 */
-	private static final Map<Class<?>, Object> innerMapperCache = new ConcurrentHashMap<Class<?>, Object>(128);
 
 	private static final String DOT = ".";
 	private static final String COMMA = ",";
@@ -239,13 +237,6 @@ public class SqlBuilder {
 		tableMapper.setOpVersionLocks(opVersionLockList.toArray(new FieldMapper[opVersionLockList.size()]));
 		tableMapper.buildTableName();
 		tableMapperCache.put(dtoClass, tableMapper);
-
-//		try {
-//			Object o = dtoClass.getDeclaredConstructor().newInstance();
-//			innerMapperCache.put(dtoClass, dtoClass);
-//		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-//				| NoSuchMethodException | SecurityException e1) {
-//		}
 
 		return tableMapper;
 	}
@@ -1410,8 +1401,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(clazz, selectSql, fromSql, whereSql, ai, flyingModel, null, null,
-				null, null);
+		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
@@ -1444,8 +1435,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, ai, flyingModel, null, null,
-				null, null);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1477,8 +1468,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(object, selectSql, fromSql, whereSql, ai, flyingModel, null, null,
-				null, null);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
+				null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1530,7 +1521,7 @@ public class SqlBuilder {
 		StringBuilder[] sqlBuilders = new StringBuilder[] { new StringBuilder(FROM), new StringBuilder(WHERE_BLANK) };
 		StringBuilder fromSql = sqlBuilders[0];
 		StringBuilder whereSql = sqlBuilders[1];
-		dealMapperAnnotationIterationForCount(object, sqlBuilders, null, null, null, ai, tableName,
+		dealMapperAnnotationIterationForCount(false, object, sqlBuilders, null, null, null, ai, tableName,
 				flyingModel.getIndex());
 
 		if (selectSql.indexOf(COMMA) > -1) {
@@ -1545,12 +1536,12 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
-	private static void dealMapperAnnotationIterationForSelectAll(Object object, StringBuilder selectSql,
-			StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index, FlyingModel flyingModel, TableName tn,
-			Mapperable originFieldMapper, String fieldPerfix, TableName lastTableName) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
-//		Class<?> objectType = isSelect ? (Class<?>) object : object.getClass();
-		Class<?> objectType = object instanceof Class<?> ? (Class<?>) object : object.getClass();
+	private static void dealMapperAnnotationIterationForSelectAll(boolean objectIsClass, Object object,
+			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index,
+			FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper, String fieldPerfix,
+			TableName lastTableName) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+			NoSuchFieldException, InstantiationException {
+		Class<?> objectType = objectIsClass ? (Class<?>) object : object.getClass();
 		String ignoreTag = null;
 		String prefix = null;
 		String indexStr = null;
@@ -1565,8 +1556,7 @@ public class SqlBuilder {
 				useWhiteList = true;
 			}
 		}
-		Map<String, Object> dtoFieldMap = object instanceof Class<?> ? Collections.emptyMap()
-				: PropertyUtils.describe(object);
+		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
 		Class<?> tempClass = getTableMappedClass(objectType);
 		TableMapper tableMapper = buildTableMapper(tempClass);
 		QueryMapper queryMapper = buildQueryMapper(objectType, tempClass);
@@ -1641,7 +1631,8 @@ public class SqlBuilder {
 			}
 
 			if (fieldMapper.isForeignKey()) {
-				dealMapperAnnotationIterationForSelectAll(value, selectSql, fromSql, whereSql, index,
+				dealMapperAnnotationIterationForSelectAll(value instanceof Class<?>, value, selectSql, fromSql,
+						whereSql, index,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
 						tableName, fieldMapper, temp, tableName);
 			} else {
@@ -1772,13 +1763,15 @@ public class SqlBuilder {
 		}
 	}
 
-	private static void dealMapperAnnotationIterationForCount(Object object, StringBuilder[] sqlBuilders,
-			TableName originTableName, Mapperable originFieldMapper, String fieldPerfix, AtomicInteger index,
-			TableName lastTableName, String indexStr)
+	private static void dealMapperAnnotationIterationForCount(boolean objectIsClass, Object object,
+			StringBuilder[] sqlBuilders, TableName originTableName, Mapperable originFieldMapper, String fieldPerfix,
+			AtomicInteger index, TableName lastTableName, String indexStr)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
-		Map<String, Object> dtoFieldMap = PropertyUtils.describe(object);
-		TableMapper tableMapper = buildTableMapper(getTableMappedClass(object.getClass()));
-		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(object.getClass()));
+		Class<?> objectType = objectIsClass ? (Class<?>) object : object.getClass();
+		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
+
+		TableMapper tableMapper = buildTableMapper(getTableMappedClass(objectType));
+		QueryMapper queryMapper = buildQueryMapper(object.getClass(), getTableMappedClass(objectType));
 		TableName tableName = new TableName(tableMapper, index.getAndIncrement(), lastTableName.getMap());
 		StringBuilder fromSql = sqlBuilders[0];
 		StringBuilder whereSql = sqlBuilders[1];
@@ -1830,10 +1823,12 @@ public class SqlBuilder {
 			}
 			Object value = dtoFieldMap.get(fieldMapper.getFieldName());
 			if (fieldMapper.isForeignKey()) {
+				boolean b = false;
 				if (value == null) {
-					value = fieldMapper.getFieldType().getDeclaredConstructor().newInstance();
+					value = fieldMapper.getFieldType();
+					b = true;
 				}
-				dealMapperAnnotationIterationForCount(value, sqlBuilders, tableName, fieldMapper, temp, index,
+				dealMapperAnnotationIterationForCount(b, value, sqlBuilders, tableName, fieldMapper, temp, index,
 						tableName, indexStr);
 			} else {
 				if (value == null) {
