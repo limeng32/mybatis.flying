@@ -131,6 +131,7 @@ public class EmpScore {
 	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = "staff_id")
 	private String secret2;
 
+	@JSONField(serialize = false)
 	private java.util.Collection<Account3> account3;
 
 	public Date getUpdateTime() {

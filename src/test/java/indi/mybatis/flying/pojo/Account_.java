@@ -7,6 +7,8 @@ import javax.persistence.Id;
 
 import org.apache.ibatis.type.JdbcType;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
@@ -69,8 +71,10 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 					"simple" })
 	private Permission permission;
 
+	@JSONField(serialize = false)
 	private java.util.Collection<LoginLog_> loginLog;
 
+	@JSONField(serialize = false)
 	private java.util.Collection<LoginLogSource2> loginLogSource2;
 
 	@Override

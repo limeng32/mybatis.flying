@@ -200,11 +200,13 @@ public class FieldMapper implements Mapperable {
 		if (fieldAnnotations.length == 0) {
 			return false;
 		}
+		boolean b = false;
 		for (Annotation an1 : fieldAnnotations) {
 			if (an1 instanceof Id) {
 				setId((Id) an1);
 			}
 			if ((an1 instanceof FieldMapperAnnotation) || (an1 instanceof Column)) {
+				b = true;
 				setField(field);
 				if (an1 instanceof FieldMapperAnnotation) {
 					setFieldMapperAnnotation((FieldMapperAnnotation) an1);
@@ -213,8 +215,10 @@ public class FieldMapper implements Mapperable {
 				}
 			}
 		}
-		buildMapper();
-		return true;
+		if (b) {
+			buildMapper();
+		}
+		return b;
 	}
 
 	public static String getColumnName(Column column, Field field) {
