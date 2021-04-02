@@ -96,10 +96,10 @@ public class ConditionMapper implements Mapperable {
 
 	private AssociationType associationType;
 
-	private String cryptKeyField;
+	private String[] cryptKeyField;
 
-	private String cryptKeyColumn;
-
+	private String[] cryptKeyColumn;
+	
 	private String dbFieldNameForJoin;
 
 	@Override
@@ -229,7 +229,7 @@ public class ConditionMapper implements Mapperable {
 	}
 
 	@Override
-	public String getCryptKeyField() {
+	public String[] getCryptKeyField() {
 		// 当前只有数据库为mysql时才认为cryptKeyField有值从而处理加密
 		if (AutoMapperInterceptor.isMysql()) {
 			return cryptKeyField;
@@ -238,16 +238,16 @@ public class ConditionMapper implements Mapperable {
 		}
 	}
 
-	public void setCryptKeyField(String cryptKeyField) {
+	public void setCryptKeyField(String[] cryptKeyField) {
 		this.cryptKeyField = cryptKeyField;
 	}
 
 	@Override
-	public String getCryptKeyColumn() {
+	public String[] getCryptKeyColumn() {
 		return cryptKeyColumn;
 	}
 
-	public void setCryptKeyColumn(String cryptKeyColumn) {
+	public void setCryptKeyColumn(String[] cryptKeyColumn) {
 		this.cryptKeyColumn = cryptKeyColumn;
 	}
 

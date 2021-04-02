@@ -154,7 +154,7 @@ public @interface FieldMapperAnnotation {
 	 * @return String
 	 * @since 1.0.5
 	 */
-	String cryptKeyColumn() default "";
+	String[] cryptKeyColumn() default {};
 	
 	/**
 	 * 

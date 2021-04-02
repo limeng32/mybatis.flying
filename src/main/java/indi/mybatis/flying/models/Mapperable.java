@@ -42,9 +42,9 @@ public interface Mapperable {
 
 	AssociationType getAssociationType();
 
-	String getCryptKeyColumn();
+	String[] getCryptKeyColumn();
 
-	String getCryptKeyField();
+	String[] getCryptKeyField();
 	
 	String getDbFieldNameForJoin();
 }

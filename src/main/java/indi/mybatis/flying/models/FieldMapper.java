@@ -131,9 +131,9 @@ public class FieldMapper implements Mapperable {
 
 	private boolean hasDelegate = false;
 
-	private String cryptKeyColumn;
+	private String[] cryptKeyColumn;
 
-	private String cryptKeyField;
+	private String[] cryptKeyField;
 
 	private String dbFieldNameForJoin;
 
@@ -179,7 +179,7 @@ public class FieldMapper implements Mapperable {
 			}
 			// is in delegate mode or not
 			setDelegate(fieldMapperAnnotation.delegate());
-			if (!"".equals(fieldMapperAnnotation.cryptKeyColumn())) {
+			if (fieldMapperAnnotation.cryptKeyColumn().length != 0) {
 				setCryptKeyColumn(fieldMapperAnnotation.cryptKeyColumn());
 			}
 			if (!"".equals(fieldMapperAnnotation.dbFieldNameForJoinOnly())) {
@@ -472,15 +472,15 @@ public class FieldMapper implements Mapperable {
 		this.hasDelegate = hasDelegate;
 	}
 
-	public String getCryptKeyColumn() {
+	public String[] getCryptKeyColumn() {
 		return cryptKeyColumn;
 	}
 
-	public void setCryptKeyColumn(String cryptKeyColumn) {
+	public void setCryptKeyColumn(String[] cryptKeyColumn) {
 		this.cryptKeyColumn = cryptKeyColumn;
 	}
 
-	public String getCryptKeyField() {
+	public String[] getCryptKeyField() {
 		// 当前只有数据库为mysql时才认为cryptKeyField有值从而处理加密
 		if (AutoMapperInterceptor.isMysql()) {
 			return cryptKeyField;
@@ -489,7 +489,7 @@ public class FieldMapper implements Mapperable {
 		}
 	}
 
-	public void setCryptKeyField(String cryptKeyField) {
+	public void setCryptKeyField(String[] cryptKeyField) {
 		this.cryptKeyField = cryptKeyField;
 	}
 
