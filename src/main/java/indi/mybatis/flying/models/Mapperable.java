@@ -44,7 +44,7 @@ public interface Mapperable {
 
 	String[] getCryptKeyColumn();
 
-	String[] getCryptKeyField();
+	FieldMapper[] getCryptKeyField();
 	
 	String getDbFieldNameForJoin();
 }

@@ -133,7 +133,7 @@ public class FieldMapper implements Mapperable {
 
 	private String[] cryptKeyColumn;
 
-	private String[] cryptKeyField;
+	private FieldMapper[] cryptKeyField;
 
 	private String dbFieldNameForJoin;
 
@@ -480,7 +480,7 @@ public class FieldMapper implements Mapperable {
 		this.cryptKeyColumn = cryptKeyColumn;
 	}
 
-	public String[] getCryptKeyField() {
+	public FieldMapper[] getCryptKeyField() {
 		// 当前只有数据库为mysql时才认为cryptKeyField有值从而处理加密
 		if (AutoMapperInterceptor.isMysql()) {
 			return cryptKeyField;
@@ -489,7 +489,7 @@ public class FieldMapper implements Mapperable {
 		}
 	}
 
-	public void setCryptKeyField(String[] cryptKeyField) {
+	public void setCryptKeyField(FieldMapper[] cryptKeyField) {
 		this.cryptKeyField = cryptKeyField;
 	}
 

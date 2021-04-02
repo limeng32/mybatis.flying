@@ -129,7 +129,7 @@ public class EmpScore {
 	private Date updateTime;
 
 	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = {
-			"staff_id", "year" })
+			"staff_id", "year", "staff_name", "staff_id" })
 	private String secret2;
 
 	@JSONField(serialize = false)
