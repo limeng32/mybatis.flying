@@ -10,6 +10,7 @@ import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.handler.ByteArrayHandler;
 import indi.mybatis.flying.handlers.AdvancedStringTypeHandler;
+import indi.mybatis.flying.model.MyCryptKeyAddition;
 
 /**
  * 个人考核结果
@@ -129,7 +130,7 @@ public class EmpScore {
 	private Date updateTime;
 
 	@FieldMapperAnnotation(dbFieldName = "secret2", jdbcType = JdbcType.VARCHAR, customTypeHandler = ByteArrayHandler.class, cryptKeyColumn = {
-			"staff_id", "year", "staff_name", "staff_id" })
+			"staff_id", "year", "staff_name", "staff_id" }, cryptKeyAdditional = MyCryptKeyAddition.class)
 	private String secret2;
 
 	@JSONField(serialize = false)
@@ -430,4 +431,5 @@ public class EmpScore {
 			account3.clear();
 		}
 	}
+
 }

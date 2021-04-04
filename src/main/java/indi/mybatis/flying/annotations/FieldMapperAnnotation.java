@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 import org.apache.ibatis.type.JdbcType;
 
+import indi.mybatis.flying.models.CryptKeyAdditional;
 import indi.mybatis.flying.statics.AssociationType;
 import indi.mybatis.flying.statics.OpLockType;
 
@@ -155,7 +156,7 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.5
 	 */
 	String[] cryptKeyColumn() default {};
-	
+
 	/**
 	 * 
 	 * Field for join only, do not participate in query.
@@ -166,4 +167,16 @@ public @interface FieldMapperAnnotation {
 	 * @since 1.0.8
 	 */
 	String dbFieldNameForJoinOnly() default "";
+
+	/**
+	 * 
+	 * When encrypting, specify the method used to generate crypt key additional
+	 * characters.
+	 * 
+	 * 加密时指定生成crypt key附加字符所使用的方法
+	 * 
+	 * @return Class<? extends CryptKeyAdditional>
+	 * @since 1.0.10
+	 */
+	Class<? extends CryptKeyAdditional> cryptKeyAdditional() default CryptKeyAdditional.class;
 }
