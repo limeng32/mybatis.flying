@@ -16,8 +16,8 @@ public class AerialView {
 	}
 
 	/* Flying current version */
-	public static final String FLYING_VERSION = "1.0.9";
+	public static final String FLYING_VERSION = "1.0.10";
 
 	/* Current version alias */
-	public static final String FLYING_NAME = "AURORA_9";
+	public static final String FLYING_NAME = "AURORA_10";
 }
