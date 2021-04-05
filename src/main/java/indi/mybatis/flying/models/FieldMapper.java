@@ -139,6 +139,8 @@ public class FieldMapper implements Mapperable {
 
 	private boolean onlyForJoin = false;
 
+	private String cryptKeyAddition;
+
 	public void buildMapper() {
 		if (fieldMapperAnnotation == null && column == null) {
 			throw new BuildSqlException(
@@ -181,6 +183,20 @@ public class FieldMapper implements Mapperable {
 			setDelegate(fieldMapperAnnotation.delegate());
 			if (fieldMapperAnnotation.cryptKeyColumn().length != 0) {
 				setCryptKeyColumn(fieldMapperAnnotation.cryptKeyColumn());
+			}
+			if (!CryptKeyAdditional.class.equals(fieldMapperAnnotation.cryptKeyAdditional())) {
+				try {
+					CryptKeyAdditional c = fieldMapperAnnotation.cryptKeyAdditional().newInstance();
+					if (c != null && c.getCryptKeyAddition() != null && !"".equals(c.getCryptKeyAddition())) {
+						// 此处要将cryptKeyAddition封装为在sql中安全的形式
+						String temp = c.getCryptKeyAddition().replaceAll("'", "''");
+						setCryptKeyAddition("'" + temp + "'");
+					} else {
+						setCryptKeyAddition(null);
+					}
+				} catch (InstantiationException | IllegalAccessException e) {
+					setCryptKeyAddition(null);
+				}
 			}
 			if (!"".equals(fieldMapperAnnotation.dbFieldNameForJoinOnly())) {
 				onlyForJoin = true;
@@ -507,6 +523,14 @@ public class FieldMapper implements Mapperable {
 
 	public void setOnlyForJoin(boolean onlyForJoin) {
 		this.onlyForJoin = onlyForJoin;
+	}
+
+	public String getCryptKeyAddition() {
+		return cryptKeyAddition;
+	}
+
+	public void setCryptKeyAddition(String cryptKeyAddition) {
+		this.cryptKeyAddition = cryptKeyAddition;
 	}
 
 }

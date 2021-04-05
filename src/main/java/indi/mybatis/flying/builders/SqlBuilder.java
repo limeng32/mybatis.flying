@@ -368,6 +368,7 @@ public class SqlBuilder {
 					conditionMapper.setFieldType(fieldMapper.getFieldType());
 					conditionMapper.setJdbcType(fieldMapper.getJdbcType());
 					conditionMapper.setCryptKeyColumn(fieldMapper.getCryptKeyColumn());
+					conditionMapper.setCryptKeyAddition(fieldMapper.getCryptKeyAddition());
 					conditionMapper.setDbFieldNameForJoin(fieldMapper.getDbFieldNameForJoin());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
 						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
@@ -428,6 +429,15 @@ public class SqlBuilder {
 			}
 		}
 		return false;
+	}
+
+	private static void dealCryptKeyAddition(boolean b, StringBuilder stringBuilder, Mapperable mapper) {
+		if (mapper.getCryptKeyAddition() != null) {
+			if (b) {
+				stringBuilder.append(COMMA);
+			}
+			stringBuilder.append(mapper.getCryptKeyAddition());
+		}
 	}
 
 	private static void dealConditionLike(StringBuilder whereSql, ConditionMapper conditionMapper, ConditionType type,
@@ -658,6 +668,7 @@ public class SqlBuilder {
 				handleWhereSqlTableName(whereSql, mapper, tableName);
 				whereSql.append(e);
 			}
+			dealCryptKeyAddition(b, whereSql, mapper);
 			whereSql.append(CLOSEPAREN_CLOSEPAREN);
 		}
 	}
@@ -775,8 +786,8 @@ public class SqlBuilder {
 				valueSql.append(COMMA_TYPEHANDLER_EQUAL).append(e.getTypeHandlerPath());
 			}
 			valueSql.append(CLOSEBRACE);
-//			break;
 		}
+		dealCryptKeyAddition(b, valueSql, fieldMapper);
 		valueSql.append(CLOSEPAREN).append(CLOSEPAREN_COMMA);
 	}
 
@@ -1031,6 +1042,7 @@ public class SqlBuilder {
 				}
 				stringBuilder.append(e);
 			}
+			dealCryptKeyAddition(b, stringBuilder, fieldMapper);
 			stringBuilder.append(CLOSEPAREN_CLOSEPAREN);
 		}
 	}
@@ -1121,6 +1133,7 @@ public class SqlBuilder {
 						}
 						tableSql.append(e);
 					}
+					dealCryptKeyAddition(b, tableSql, fieldMapper);
 					tableSql.append(CLOSEPAREN).append(CLOSEPAREN_BLANK).append(COMMA);
 				}
 			}
@@ -1236,6 +1249,7 @@ public class SqlBuilder {
 						}
 						tableSql.append(e);
 					}
+					dealCryptKeyAddition(b, tableSql, fieldMapper);
 					tableSql.append(CLOSEPAREN).append(CLOSEPAREN_BLANK).append(COMMA);
 				}
 			}
@@ -1753,6 +1767,7 @@ public class SqlBuilder {
 					}
 					selectSql.append(tableName.sqlWhere()).append(e);
 				}
+				dealCryptKeyAddition(b, selectSql, fieldMapper);
 				selectSql.append(CLOSEPAREN_CLOSEPAREN);
 			}
 
