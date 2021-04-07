@@ -141,6 +141,16 @@
 	<update id="updateBatch">
 		{"action":"updateBatch"}
 	</update>
+		
+	<select id="selectGroupBy" resultMap="resultMap">
+		{"action":"selectAll", "ignore":"noPassword", "aggregate":{
+			"asd":{"function":"avg", "param":"opLock"}
+		}}
+	</select>
+	
+	<select id="selectGroupBy2" resultMap="resultMap">
+		select name,email,sum(opLock) as asd from account_ group by name,email;
+	</select>
 
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
@@ -169,4 +179,11 @@
 			resultMap="indi.mybatis.flying.mapper.RoleMapper.result"
 			columnPrefix="roleDeputy__" />		
 	</resultMap>
+	
+	<resultMap type="Map" id="resultMap">
+      <result column="asd" property="asd"/>
+      <result column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="email" property="email"/>
+  </resultMap>
 </mapper>

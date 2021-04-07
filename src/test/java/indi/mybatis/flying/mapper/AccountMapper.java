@@ -1,6 +1,7 @@
 package indi.mybatis.flying.mapper;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import indi.mybatis.flying.pojo.Account_;
@@ -80,4 +81,6 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public int selectCheckHealth();
 	
 	public int updateBatch(Collection<Account_> t);
+	
+	public List<Map<String,Object>> selectGroupBy2();
 }
