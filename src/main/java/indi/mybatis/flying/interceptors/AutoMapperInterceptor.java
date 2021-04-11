@@ -47,6 +47,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -144,6 +146,26 @@ public class AutoMapperInterceptor implements Interceptor {
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
+
+			BoundSql boundSqlTemp = statementHandler.getBoundSql();
+			String sqlTemp = boundSqlTemp.getSql();
+//			if (!LogLevel.NONE.equals(logLevel)) {
+//				log(logger, logLevel, new StringBuilder("sqlTemp:").append(sqlTemp).toString());
+//				MetaObject metaObject = parameterObject == null ? null : configuration.newMetaObject(parameterObject);
+//				log(logger, logLevel, new StringBuilder("parameterObject:").append(JSONObject.toJSONString(parameterObject)).toString());
+//				log(logger, logLevel, new StringBuilder("metaObject:").append(JSONObject.toJSONString(metaObject)).toString());
+//				log(logger, logLevel, new StringBuilder("parameterMappings:").append(JSONObject.toJSONString(parameterMappings)).toString());
+//				
+//				for(ParameterMapping parameterMapping:parameterMappings) {
+//					if (parameterMapping.getMode() != ParameterMode.OUT) {
+//						Object value;
+//						String propertyName = parameterMapping.getProperty();
+//						value = metaObject == null ? null : metaObject.getValue(propertyName);
+//						log(logger, logLevel, new StringBuilder("value:").append(value).toString());
+//					}
+//				}
+//				
+//			}
 			/* Start dealing with paging */
 			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
 					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
@@ -200,10 +222,18 @@ public class AutoMapperInterceptor implements Interceptor {
 		case DEBUG:
 			logger.debug(log);
 			break;
+		case INFO:
+			// info = debug
+			logger.debug(log);
+			break;
 		case WARN:
 			logger.warn(log);
 			break;
 		case ERROR:
+			logger.error(log);
+			break;
+		case FATAL:
+			// fatal = error
 			logger.error(log);
 			break;
 		default:

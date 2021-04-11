@@ -20,3 +20,8 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
+flying:
+  logger:
+    error:
+      - indi.mybatis.flying.mapper.AccountMapper.select
+      - indi.mybatis.flying.mapper.AccountMapper.insert
