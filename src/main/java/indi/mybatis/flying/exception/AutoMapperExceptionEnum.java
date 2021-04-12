@@ -16,6 +16,7 @@ public enum AutoMapperExceptionEnum {
 	NO_TYPE_HANDLER_SUITABLE("There was no TypeHandler found for parameter "),
 	WRONG_KEY_GENERATOR_TYPE("Find an error KeyGeneratorType in "),
 	WRONG_CUSTOM_KEY_GENERATOR("Find an error custom key generator in "),
+	WRONG_LOGGER_DESCRIPTION("Find an error logger description in "),
 	CANNOT_FIND_ASSIGNED_DATA_SOURCE_IN_CONTEXT("Can not find the dataSource bean assigned in the context"),
 	CANNOT_FIND_APPLICATION_CONTEXT_PROVIDER("Can not find the ApplicationContextProvider bean in the context");
 

@@ -25,3 +25,4 @@ flying:
     error:
       - indi.mybatis.flying.mapper.AccountMapper.select
       - indi.mybatis.flying.mapper.AccountMapper.insert
+      - indi.mybatis.flying.mapper.LoginLogMapper.count

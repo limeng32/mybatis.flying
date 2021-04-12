@@ -1,16 +1,17 @@
 package indi.mybatis.flying.model;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConfigurationProperties(prefix = "flying.logger")
 public class MyValue {
 
 	@Value("${cryptKeyAddition:asd}")
 	private String cryptKeyAddition;
 
-	@Value("${flying.logger.error:}")
-	private String errorLogger;
+	private String[] error;
 
 	public String getCryptKeyAddition() {
 		return cryptKeyAddition;
@@ -20,12 +21,12 @@ public class MyValue {
 		this.cryptKeyAddition = cryptKeyAddition;
 	}
 
-	public String getErrorLogger() {
-		return errorLogger;
+	public String[] getError() {
+		return error;
 	}
 
-	public void setErrorLogger(String errorLogger) {
-		this.errorLogger = errorLogger;
+	public void setError(String[] error) {
+		this.error = error;
 	}
 
 }

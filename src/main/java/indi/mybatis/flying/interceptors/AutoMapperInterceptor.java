@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.builder.SqlSourceBuilder;
-import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
@@ -47,13 +46,13 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
-import com.alibaba.fastjson.JSONObject;
-
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
+import indi.mybatis.flying.models.LoggerDescriptionable;
+import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.LogLevel;
 
@@ -68,9 +67,9 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
-	private static final String SETTING_PARAMETERS = "setting parameters";
 	private static final String DIALECT = "dialect";
 	private static final String LOG_LEVEL = "logLevel";
+	private static final String LOGGER_DESCRIPTION = "loggerDescription";
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
@@ -89,6 +88,8 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static boolean isMysql;
 
 	private SqlSourceBuilder builder;
+
+	private LoggerDescriptionable loggerDescriptionHandler;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -140,15 +141,15 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			}
 			if (!LogLevel.NONE.equals(logLevel)) {
-				log(logger, logLevel, new StringBuilder("Auto generated sql:").append(newSql).toString());
+				log(logger, logLevel, new StringBuilder("Auto generated sql: ").append(newSql).toString());
 			}
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
 
-			BoundSql boundSqlTemp = statementHandler.getBoundSql();
-			String sqlTemp = boundSqlTemp.getSql();
+//			BoundSql boundSqlTemp = statementHandler.getBoundSql();
+//			String sqlTemp = boundSqlTemp.getSql();
 //			if (!LogLevel.NONE.equals(logLevel)) {
 //				log(logger, logLevel, new StringBuilder("sqlTemp:").append(sqlTemp).toString());
 //				MetaObject metaObject = parameterObject == null ? null : configuration.newMetaObject(parameterObject);
@@ -166,6 +167,42 @@ public class AutoMapperInterceptor implements Interceptor {
 //				}
 //				
 //			}
+			if (loggerDescriptionHandler != null) {
+				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(flyingModel.getId());
+				if (!LogLevel.NONE.equals(loggerLevel)) {
+					BoundSql boundSqlTemp = statementHandler.getBoundSql();
+					String sqlTemp = boundSqlTemp.getSql();
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
+					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+
+					if (ActionType.SELECT.equals(flyingModel.getActionType())) {
+						stringBuilder.append("Bound value: ").append(parameterObject).append("; ");
+					} else {
+						MetaObject metaObject = parameterObject == null ? null
+								: configuration.newMetaObject(parameterObject);
+//							log(logger, loggerLevel, new StringBuilder("parameterObject:")
+//									.append(JSONObject.toJSONString(parameterObject)).toString());
+//							log(logger, loggerLevel, new StringBuilder("metaObject:")
+//									.append(JSONObject.toJSONString(metaObject)).toString());
+//							log(logger, loggerLevel, new StringBuilder("parameterMappings:")
+//									.append(JSONObject.toJSONString(parameterMappings)).toString());
+						stringBuilder.append("Bound value: ");
+						for (ParameterMapping parameterMapping : parameterMappings) {
+							if (parameterMapping.getMode() != ParameterMode.OUT) {
+								Object value;
+								String propertyName = parameterMapping.getProperty();
+//									System.out.println("propertyName::" + propertyName);
+//									System.out.println("parameterObject::" + parameterObject);
+//									System.out.println("metaObject::" + JSONObject.toJSONString(metaObject));
+								value = metaObject == null ? null : metaObject.getValue(propertyName);
+								stringBuilder.append(value).append("; ");
+							}
+						}
+					}
+					log(logger, loggerLevel, stringBuilder.toString());
+				}
+			}
 			/* Start dealing with paging */
 			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
 					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
@@ -268,6 +305,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setProperties(Properties properties) {
 		dialectValue = properties.getProperty(DIALECT);
@@ -281,6 +319,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				isMysql = true;
 			}
 		}
+
 		String temp = properties.getProperty(LOG_LEVEL);
 		if (temp != null) {
 			logLevel = LogLevel.forValue(temp);
@@ -288,6 +327,18 @@ public class AutoMapperInterceptor implements Interceptor {
 		if (logLevel == null) {
 			logLevel = LogLevel.NONE;
 		}
+
+		String loggerDescriptionClassPath = properties.getProperty(LOGGER_DESCRIPTION);
+		try {
+			Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
+					.forName(loggerDescriptionClassPath);
+			loggerDescriptionHandler = clazz.newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			loggerDescriptionHandler = null;
+			logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
+					.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());
+		}
+
 	}
 
 	private SqlSource buildSqlSource(Configuration configuration, String originalSql, Class<?> parameterType) {
@@ -300,7 +351,6 @@ public class AutoMapperInterceptor implements Interceptor {
 	@SuppressWarnings("unchecked")
 	private void setParameters(PreparedStatement ps, MappedStatement mappedStatement, BoundSql boundSql,
 			Object parameterObject) throws SQLException {
-		ErrorContext.instance().activity(SETTING_PARAMETERS).object(mappedStatement.getParameterMap().getId());
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 		if (parameterMappings != null) {
 			Configuration configuration = mappedStatement.getConfiguration();

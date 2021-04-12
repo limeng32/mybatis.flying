@@ -228,7 +228,7 @@ public class FlyingManager {
 					ret.setKeyGeneratorType(KeyGeneratorType.CUSTOM);
 					ret.setKeyHandler(clazz.newInstance());
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_CUSTOM_KEY_GENERATOR.description())
+					logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_CUSTOM_KEY_GENERATOR.description())
 							.append(originalSql).append(" because of ").append(e).toString());
 				}
 			}
