@@ -14,6 +14,8 @@ public class LoggerDescriptionHandler implements LoggerDescriptionable {
 
 	private static final Map<String, LogLevel> loggerMap = new ConcurrentHashMap<>();
 
+	private Set<String> fatalLoggerSet = getSet(ApplicationContextProvider.getBean(MyValue.class).getFatal());
+
 	private Set<String> errorLoggerSet = getSet(ApplicationContextProvider.getBean(MyValue.class).getError());
 
 	private Set<String> warnLoggerSet = getSet(ApplicationContextProvider.getBean(MyValue.class).getWarn());
@@ -33,7 +35,10 @@ public class LoggerDescriptionHandler implements LoggerDescriptionable {
 		if (loggerMap.containsKey(methodId)) {
 			return loggerMap.get(methodId);
 		}
-		if (errorLoggerSet.contains(methodId)) {
+		if (fatalLoggerSet.contains(methodId)) {
+			loggerMap.put(methodId, LogLevel.FATAL);
+			return LogLevel.FATAL;
+		} else if (errorLoggerSet.contains(methodId)) {
 			loggerMap.put(methodId, LogLevel.ERROR);
 			return LogLevel.ERROR;
 		} else if (warnLoggerSet.contains(methodId)) {

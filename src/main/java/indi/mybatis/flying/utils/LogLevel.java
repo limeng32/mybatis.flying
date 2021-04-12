@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public enum LogLevel {
 
-	NONE("none"), TRACE("trace"), DEBUG("debug"), INFO("info"), WARN("warn"), ERROR("error");
+	NONE("none"), TRACE("trace"), DEBUG("debug"), INFO("info"), WARN("warn"), ERROR("error"), FATAL("fatal");
 
 	private final String value;
 

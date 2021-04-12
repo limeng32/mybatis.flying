@@ -223,22 +223,23 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static void log(Logger logger, LogLevel level, String log) {
 		switch (level) {
-		case NONE:
-			break;
-		case TRACE:
-			logger.trace(log);
-			break;
-		case DEBUG:
-			logger.debug(log);
-			break;
-		case INFO:
-			logger.info(log);
+		case ERROR:
+			logger.error(log);
 			break;
 		case WARN:
 			logger.warn(log);
 			break;
-		case ERROR:
-			logger.error(log);
+		case INFO:
+			logger.info(log);
+			break;
+		case DEBUG:
+			logger.debug(log);
+			break;
+		case TRACE:
+			logger.trace(log);
+			break;
+		case FATAL:
+			logger.error(new StringBuilder("!!!FATAL!!! ").append(log).toString());
 			break;
 		default:
 			break;

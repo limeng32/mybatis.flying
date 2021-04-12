@@ -22,6 +22,8 @@ spring:
     maxOpenPreparedStatements: 20
 flying:
   logger:
+    fatal:
+      - indi.mybatis.flying.mapper.AccountMapper.select
     error:
       - indi.mybatis.flying.mapper.LoginLogMapper.count
       - indi.mybatis.flying.mapper.AccountMapper.insert
