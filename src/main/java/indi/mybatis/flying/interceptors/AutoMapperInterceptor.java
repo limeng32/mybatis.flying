@@ -87,9 +87,9 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static boolean isMysql;
 
-	private SqlSourceBuilder builder;
+	private static SqlSourceBuilder builder;
 
-	private LoggerDescriptionable loggerDescriptionHandler;
+	private static LoggerDescriptionable loggerDescriptionHandler;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -302,7 +302,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
 						.forName(loggerDescriptionClassPath);
 				loggerDescriptionHandler = clazz.newInstance();
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			} catch (Exception e) {
 				loggerDescriptionHandler = null;
 				logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
 						.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());

@@ -8,7 +8,7 @@
         </encoder>
     </appender>
 
-    <root level="warn">
+    <root level="error">
         <appender-ref ref="STDOUT" />
        <!--  <appender-ref ref="FILE-OUT" /> -->
     </root>

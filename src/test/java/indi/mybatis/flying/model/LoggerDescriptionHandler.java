@@ -30,27 +30,41 @@ public class LoggerDescriptionHandler implements LoggerDescriptionable {
 		return array == null ? Collections.emptySet() : new HashSet<>(Arrays.asList(array));
 	}
 
+	public boolean contains(Set<String> set, String methodId) {
+		boolean ret = false;
+		ret = set.contains(methodId);
+		if (!ret) {
+			for (String s : set) {
+				if (s != null && methodId.startsWith(s + ".")) {
+					ret = true;
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+
 	@Override
 	public LogLevel getLogLevel(String methodId) {
 		if (loggerMap.containsKey(methodId)) {
 			return loggerMap.get(methodId);
 		}
-		if (fatalLoggerSet.contains(methodId)) {
+		if (contains(fatalLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.FATAL);
 			return LogLevel.FATAL;
-		} else if (errorLoggerSet.contains(methodId)) {
+		} else if (contains(errorLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.ERROR);
 			return LogLevel.ERROR;
-		} else if (warnLoggerSet.contains(methodId)) {
+		} else if (contains(warnLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.WARN);
 			return LogLevel.WARN;
-		} else if (infoLoggerSet.contains(methodId)) {
+		} else if (contains(infoLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.INFO);
 			return LogLevel.INFO;
-		} else if (debugLoggerSet.contains(methodId)) {
+		} else if (contains(debugLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.DEBUG);
 			return LogLevel.DEBUG;
-		} else if (traceLoggerSet.contains(methodId)) {
+		} else if (contains(traceLoggerSet, methodId)) {
 			loggerMap.put(methodId, LogLevel.TRACE);
 			return LogLevel.TRACE;
 		}
