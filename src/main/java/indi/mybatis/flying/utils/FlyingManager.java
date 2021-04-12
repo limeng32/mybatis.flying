@@ -196,7 +196,7 @@ public class FlyingManager {
 				try {
 					keyGeneratorType = KeyGeneratorType.forValue(extension);
 				} catch (IllegalArgumentException e) {
-					logger.error(new StringBuffer(AutoMapperExceptionEnum.WRONG_KEY_GENERATOR_TYPE.description())
+					logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_KEY_GENERATOR_TYPE.description())
 							.append(originalSql).append(" because of ").append(e).toString());
 				}
 				ret.setKeyGeneratorType(keyGeneratorType);

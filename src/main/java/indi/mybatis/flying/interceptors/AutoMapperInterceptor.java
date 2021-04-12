@@ -21,8 +21,6 @@ import java.util.Properties;
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -45,6 +43,8 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
@@ -62,7 +62,7 @@ public class AutoMapperInterceptor implements Interceptor {
 	private static String dialectValue = "";
 	private LogLevel logLevel;
 
-	private static final Log logger = LogFactory.getLog(AutoMapperInterceptor.class);
+	private static final Logger logger = LoggerFactory.getLogger(AutoMapperInterceptor.class);
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 	private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
@@ -148,25 +148,6 @@ public class AutoMapperInterceptor implements Interceptor {
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
 
-//			BoundSql boundSqlTemp = statementHandler.getBoundSql();
-//			String sqlTemp = boundSqlTemp.getSql();
-//			if (!LogLevel.NONE.equals(logLevel)) {
-//				log(logger, logLevel, new StringBuilder("sqlTemp:").append(sqlTemp).toString());
-//				MetaObject metaObject = parameterObject == null ? null : configuration.newMetaObject(parameterObject);
-//				log(logger, logLevel, new StringBuilder("parameterObject:").append(JSONObject.toJSONString(parameterObject)).toString());
-//				log(logger, logLevel, new StringBuilder("metaObject:").append(JSONObject.toJSONString(metaObject)).toString());
-//				log(logger, logLevel, new StringBuilder("parameterMappings:").append(JSONObject.toJSONString(parameterMappings)).toString());
-//				
-//				for(ParameterMapping parameterMapping:parameterMappings) {
-//					if (parameterMapping.getMode() != ParameterMode.OUT) {
-//						Object value;
-//						String propertyName = parameterMapping.getProperty();
-//						value = metaObject == null ? null : metaObject.getValue(propertyName);
-//						log(logger, logLevel, new StringBuilder("value:").append(value).toString());
-//					}
-//				}
-//				
-//			}
 			if (loggerDescriptionHandler != null) {
 				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(flyingModel.getId());
 				if (!LogLevel.NONE.equals(loggerLevel)) {
@@ -181,20 +162,11 @@ public class AutoMapperInterceptor implements Interceptor {
 					} else {
 						MetaObject metaObject = parameterObject == null ? null
 								: configuration.newMetaObject(parameterObject);
-//							log(logger, loggerLevel, new StringBuilder("parameterObject:")
-//									.append(JSONObject.toJSONString(parameterObject)).toString());
-//							log(logger, loggerLevel, new StringBuilder("metaObject:")
-//									.append(JSONObject.toJSONString(metaObject)).toString());
-//							log(logger, loggerLevel, new StringBuilder("parameterMappings:")
-//									.append(JSONObject.toJSONString(parameterMappings)).toString());
 						stringBuilder.append("Bound value: ");
 						for (ParameterMapping parameterMapping : parameterMappings) {
 							if (parameterMapping.getMode() != ParameterMode.OUT) {
 								Object value;
 								String propertyName = parameterMapping.getProperty();
-//									System.out.println("propertyName::" + propertyName);
-//									System.out.println("parameterObject::" + parameterObject);
-//									System.out.println("metaObject::" + JSONObject.toJSONString(metaObject));
 								value = metaObject == null ? null : metaObject.getValue(propertyName);
 								stringBuilder.append(value).append("; ");
 							}
@@ -211,7 +183,7 @@ public class AutoMapperInterceptor implements Interceptor {
 					BoundSql boundSql = statementHandler.getBoundSql();
 					String sql = boundSql.getSql();
 					Connection connection = (Connection) invocation.getArgs()[0];
-					String countSql = new StringBuffer("select count(0) from (").append(sql).append(") myCount")
+					String countSql = new StringBuilder("select count(0) from (").append(sql).append(") myCount")
 							.toString();
 					PreparedStatement countStmt = connection.prepareStatement(countSql);
 					BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
@@ -249,7 +221,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		return invocation.proceed();
 	}
 
-	private static void log(Log logger, LogLevel level, String log) {
+	private static void log(Logger logger, LogLevel level, String log) {
 		switch (level) {
 		case NONE:
 			break;
@@ -260,17 +232,12 @@ public class AutoMapperInterceptor implements Interceptor {
 			logger.debug(log);
 			break;
 		case INFO:
-			// info = debug
-			logger.debug(log);
+			logger.info(log);
 			break;
 		case WARN:
 			logger.warn(log);
 			break;
 		case ERROR:
-			logger.error(log);
-			break;
-		case FATAL:
-			// fatal = error
 			logger.error(log);
 			break;
 		default:
@@ -329,16 +296,17 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 
 		String loggerDescriptionClassPath = properties.getProperty(LOGGER_DESCRIPTION);
-		try {
-			Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
-					.forName(loggerDescriptionClassPath);
-			loggerDescriptionHandler = clazz.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			loggerDescriptionHandler = null;
-			logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
-					.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());
+		if (loggerDescriptionClassPath != null) {
+			try {
+				Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
+						.forName(loggerDescriptionClassPath);
+				loggerDescriptionHandler = clazz.newInstance();
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+				loggerDescriptionHandler = null;
+				logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
+						.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());
+			}
 		}
-
 	}
 
 	private SqlSource buildSqlSource(Configuration configuration, String originalSql, Class<?> parameterType) {
@@ -381,7 +349,7 @@ public class AutoMapperInterceptor implements Interceptor {
 					TypeHandler<Object> typeHandler = (TypeHandler<Object>) parameterMapping.getTypeHandler();
 					if (typeHandler == null) {
 						throw new AutoMapperException(
-								new StringBuffer(AutoMapperExceptionEnum.NO_TYPE_HANDLER_SUITABLE.toString())
+								new StringBuilder(AutoMapperExceptionEnum.NO_TYPE_HANDLER_SUITABLE.toString())
 										.append(propertyName).append(" of statement ").append(mappedStatement.getId())
 										.toString());
 					}

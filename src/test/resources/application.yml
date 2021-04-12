@@ -23,6 +23,9 @@ spring:
 flying:
   logger:
     error:
-      - indi.mybatis.flying.mapper.AccountMapper.select
-      - indi.mybatis.flying.mapper.AccountMapper.insert
       - indi.mybatis.flying.mapper.LoginLogMapper.count
+      - indi.mybatis.flying.mapper.AccountMapper.insert
+    warn:
+      - indi.mybatis.flying.mapper.LoginLogMapper.selectAll
+    info:
+      - indi.mybatis.flying.mapper.AccountMapper.select

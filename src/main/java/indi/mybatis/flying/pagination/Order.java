@@ -46,6 +46,6 @@ public class Order {
 	}
 
 	public String toSql() {
-		return new StringBuffer().append(" ").append(field).append(" ").append(sequence).append(",").toString();
+		return new StringBuilder().append(" ").append(field).append(" ").append(sequence).append(",").toString();
 	}
 }

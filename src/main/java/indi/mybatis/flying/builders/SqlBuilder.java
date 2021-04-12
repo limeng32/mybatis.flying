@@ -841,7 +841,7 @@ public class SqlBuilder {
 		Collection<Object> c = (Collection<Object>) (valueC.get(COLLECTION));
 		if (c.isEmpty()) {
 			throw new AutoMapperException(
-					new StringBuffer(AutoMapperExceptionEnum.INSERT_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
+					new StringBuilder(AutoMapperExceptionEnum.INSERT_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
 							.append(" of ").append(flyingModel.getId()).toString());
 		}
 		for (Object object : c) {
@@ -941,7 +941,7 @@ public class SqlBuilder {
 		Collection<Object> c = (Collection<Object>) (valueC.get(COLLECTION));
 		if (c.isEmpty()) {
 			throw new AutoMapperException(
-					new StringBuffer(AutoMapperExceptionEnum.UPDATE_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
+					new StringBuilder(AutoMapperExceptionEnum.UPDATE_BATCH_PARAMETER_OBJECT_IS_EMPTY.toString())
 							.append(" of ").append(flyingModel.getId()).toString());
 		}
 		Map<FieldMapper, StringBuilder> m = null;
