@@ -87,9 +87,9 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static boolean isMysql;
 
-	private static SqlSourceBuilder builder;
+	private SqlSourceBuilder builder;
 
-	private static LoggerDescriptionable loggerDescriptionHandler;
+	private LoggerDescriptionable loggerDescriptionHandler;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
