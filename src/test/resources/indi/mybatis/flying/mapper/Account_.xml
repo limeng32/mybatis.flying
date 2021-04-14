@@ -25,17 +25,8 @@
 		}
 	</select>
 
-	<select id="selectEverything" resultMap="result">
-		{"action":"select#{?}"}
-	</select>
-
 	<select id="selectWithoutRole" resultMap="result">
 		{"action":"select#{?}", "ignore":"noRole"}
-	</select>
-
-	<select id="selectAll" resultMap="result">
-		{"action":"selectAll",
-		"ignore":"noPassword"}
 	</select>
 
 	<!-- here 'ignore:cccc' in fact is useless  -->
@@ -125,7 +116,8 @@
 	</select>
 
 	<select id="selectAllDirect" resultMap="result">
-		select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}
+		select * from account_ as a  use INDEX (index1)  
+		where a.name = #{name} and a.email = #{email}
 	</select>
 	
 	<select id="selectAllDirect2" resultMap="result">

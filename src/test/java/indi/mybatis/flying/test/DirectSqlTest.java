@@ -99,5 +99,10 @@ public class DirectSqlTest {
 		for (Account_ t : c5) {
 			Assert.assertEquals("5a690d842935c51f26f473e025c1b97b", t.getPassword());
 		}
+
+		Collection<Account_> c6 = accountMapper.selectAllDirect4("bob@live.cn", "bob");
+		for (Account_ t : c6) {
+			Assert.assertEquals("5a690d842935c51f26f473e025c1b97b", t.getPassword());
+		}
 	}
 }

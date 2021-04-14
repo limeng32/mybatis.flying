@@ -156,21 +156,28 @@ public class AutoMapperInterceptor implements Interceptor {
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
 					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-
 					if (ActionType.SELECT.equals(flyingModel.getActionType())) {
-						stringBuilder.append("Bound value: ").append(parameterObject).append("; ");
+						stringBuilder.append("Bound value: {").append(parameterMappings.get(0).getProperty())
+								.append("=").append(parameterObject).append("};");
 					} else {
 						MetaObject metaObject = parameterObject == null ? null
 								: configuration.newMetaObject(parameterObject);
-						stringBuilder.append("Bound value: ");
+						stringBuilder.append("Bound value: {");
+						boolean b = true;
 						for (ParameterMapping parameterMapping : parameterMappings) {
 							if (parameterMapping.getMode() != ParameterMode.OUT) {
 								Object value;
 								String propertyName = parameterMapping.getProperty();
 								value = metaObject == null ? null : metaObject.getValue(propertyName);
-								stringBuilder.append(value).append("; ");
+								if (b) {
+									b = false;
+								} else {
+									stringBuilder.append(", ");
+								}
+								stringBuilder.append(propertyName).append("=").append(value);
 							}
 						}
+						stringBuilder.append("};");
 					}
 					log(logger, loggerLevel, stringBuilder.toString());
 				}
@@ -209,18 +216,15 @@ public class AutoMapperInterceptor implements Interceptor {
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 				}
 			}
-		} else {
-			if (loggerDescriptionHandler != null) {
-				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(mappedStatement.getId());
-				if (!LogLevel.NONE.equals(loggerLevel)) {
-					BoundSql boundSqlTemp = statementHandler.getBoundSql();
-					String sqlTemp = boundSqlTemp.getSql();
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
-					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-					stringBuilder.append("Bound value: ").append(parameterObject).append("; ");
-					log(logger, loggerLevel, stringBuilder.toString());
-				}
+		} else if (loggerDescriptionHandler != null) {
+			LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(mappedStatement.getId());
+			if (!LogLevel.NONE.equals(loggerLevel)) {
+				String sqlTemp = statementHandler.getBoundSql().getSql();
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
+				stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+				stringBuilder.append("Bound value: ").append(parameterObject).append(";");
+				log(logger, loggerLevel, stringBuilder.toString());
 			}
 		}
 

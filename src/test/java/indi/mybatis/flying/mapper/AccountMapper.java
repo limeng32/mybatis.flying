@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Role_;
@@ -23,11 +25,15 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	public Account_ selectWithoutCache(Object id);
 
+	@Select("{\"action\":\"select#{?}\"}")
+	@ResultMap("result")
 	public Account_ selectEverything(Object id);
 
 	public Account_ selectWithoutRole(Object id);
 
 	@Override
+	@Select("{\"action\":\"selectAll\", \"ignore\":\"noPassword\"}")
+	@ResultMap("result")
 	public Collection<Account_> selectAll(Account_ t);
 
 	public Collection<Account_> selectAllPrefix(Account_ t);
@@ -87,6 +93,10 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public List<Map<String, Object>> selectGroupBy2();
 
 	public Collection<Account_> selectAllDirect2(@Param("name") String name, @Param("email") String email);
-	
+
 	public Collection<Account_> selectAllDirect3(Account_ t);
+
+	@Select("select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}")
+	@ResultMap("result")
+	public Collection<Account_> selectAllDirect4(@Param("email") String email, @Param("name") String name);
 }
