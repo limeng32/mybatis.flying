@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Role_;
 import indi.mybatis.flying.pojoHelper.MapperFace;
@@ -52,12 +54,12 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@Override
 	public int update(Account_ t);
-	
+
 	public int updateSimpleNoName(Account_ t);
 
 	@Override
 	public int updatePersistent(Account_ t);
-	
+
 	public int updatePersistentSimpleNoName(Account_ t);
 
 	@Override
@@ -79,8 +81,12 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
 
 	public int selectCheckHealth();
-	
+
 	public int updateBatch(Collection<Account_> t);
+
+	public List<Map<String, Object>> selectGroupBy2();
+
+	public Collection<Account_> selectAllDirect2(@Param("name") String name, @Param("email") String email);
 	
-	public List<Map<String,Object>> selectGroupBy2();
+	public Collection<Account_> selectAllDirect3(Account_ t);
 }

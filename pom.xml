@@ -6,7 +6,7 @@
 
 	<groupId>com.github.limeng32</groupId>
 	<artifactId>mybatis.flying</artifactId>
-	<version>1.0.12</version>
+	<version>1.0.13-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis.flying</name>
@@ -43,6 +43,11 @@
 		<mybatis-344.version>3.4.4</mybatis-344.version>
 		<mybatis-345.version>3.4.5</mybatis-345.version>
 		<mybatis-346.version>3.4.6</mybatis-346.version>
+		<mybatis-350.version>3.5.0</mybatis-350.version>
+		<mybatis-351.version>3.5.1</mybatis-351.version>
+		<mybatis-352.version>3.5.2</mybatis-352.version>
+		<mybatis-353.version>3.5.3</mybatis-353.version>
+		<mybatis-354.version>3.5.4</mybatis-354.version>
 		<mybatis-spring.version>1.3.0</mybatis-spring.version>
 		<logback.version>1.1.7</logback.version>
 		<unitils.version>3.4.2</unitils.version>
@@ -455,6 +460,127 @@
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 				</repository>
 			</distributionManagement>
+		</profile>
+		<profile>
+			<id>mybatis-341</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-341.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-342</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-342.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-343</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-343.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-344</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-344.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-345</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-345.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-346</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-346.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-350</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-350.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-351</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-351.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-352</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-352.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-353</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-353.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mybatis-354</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis</artifactId>
+					<version>${mybatis-354.version}</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 </project>

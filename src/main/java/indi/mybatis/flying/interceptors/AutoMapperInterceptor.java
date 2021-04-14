@@ -209,6 +209,19 @@ public class AutoMapperInterceptor implements Interceptor {
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 				}
 			}
+		} else {
+			if (loggerDescriptionHandler != null) {
+				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(mappedStatement.getId());
+				if (!LogLevel.NONE.equals(loggerLevel)) {
+					BoundSql boundSqlTemp = statementHandler.getBoundSql();
+					String sqlTemp = boundSqlTemp.getSql();
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
+					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+					stringBuilder.append("Bound value: ").append(parameterObject).append("; ");
+					log(logger, loggerLevel, stringBuilder.toString());
+				}
+			}
 		}
 
 		/*

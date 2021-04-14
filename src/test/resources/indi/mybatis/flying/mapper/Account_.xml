@@ -127,6 +127,14 @@
 	<select id="selectAllDirect" resultMap="result">
 		select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}
 	</select>
+	
+	<select id="selectAllDirect2" resultMap="result">
+		select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}
+	</select>
+	
+	<select id="selectAllDirect3" resultMap="result">
+		select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}
+	</select>
 
 	<select id="selectAccountByRole" resultMap="result">
 		select account_0.*

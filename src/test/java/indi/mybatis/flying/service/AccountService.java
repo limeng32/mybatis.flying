@@ -9,16 +9,15 @@ import org.springframework.stereotype.Service;
 import indi.mybatis.flying.mapper.AccountMapper;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Role_;
-import indi.mybatis.flying.pojoHelper.ServiceSupport;
 
 @Service
-public class AccountService extends ServiceSupport<Account_> {
+public class AccountService {
 
 	@Autowired
 	private AccountMapper mapper;
 
 	public Account_ select(Object id) {
-		return supportSelect(mapper, id);
+		return mapper.select(id);
 	}
 
 	public Account_ selectWithIndex(Object id) {
@@ -42,11 +41,11 @@ public class AccountService extends ServiceSupport<Account_> {
 	}
 
 	public Account_ selectOne(Account_ t) {
-		return supportSelectOne(mapper, t);
+		return mapper.selectOne(t);
 	}
 
 	public void insert(Account_ t) {
-		supportInsert(mapper, t);
+		mapper.insert(t);
 	}
 
 	public void insertBatch(Collection<Account_> t) {
@@ -70,7 +69,7 @@ public class AccountService extends ServiceSupport<Account_> {
 	}
 
 	public int update(Account_ t) {
-		return supportUpdate(mapper, t);
+		return mapper.update(t);
 	}
 
 	public int updateSimpleNoName(Account_ t) {
@@ -78,7 +77,7 @@ public class AccountService extends ServiceSupport<Account_> {
 	}
 
 	public Collection<Account_> selectAll(Account_ t) {
-		return supportSelectAll(mapper, t);
+		return mapper.selectAll(t);
 	}
 
 	public Collection<Account_> selectAllPrefix(Account_ t) {
@@ -94,7 +93,7 @@ public class AccountService extends ServiceSupport<Account_> {
 	}
 
 	public int updatePersistent(Account_ t) {
-		return supportUpdatePersistent(mapper, t);
+		return mapper.updatePersistent(t);
 	}
 
 	public int updatePersistentSimpleNoName(Account_ t) {
@@ -102,11 +101,11 @@ public class AccountService extends ServiceSupport<Account_> {
 	}
 
 	public int delete(Account_ t) {
-		return supportDelete(mapper, t);
+		return mapper.delete(t);
 	}
 
 	public int count(Account_ t) {
-		return supportCount(mapper, t);
+		return mapper.count(t);
 	}
 
 	public int countAsd(Account_ t) {

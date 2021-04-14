@@ -23,12 +23,15 @@ spring:
 flying:
   logger:
     fatal:
-      - indi.mybatis.flying.mapper.AccountMapper
+ #     - indi.mybatis.flying.mapper.AccountMapper.selectDirect
+ #     - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect
+ #     - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect2
+ #     - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect3
     error:
-      - indi.mybatis.flying.mapper.LoginLogMapper.count
-      - indi.mybatis.flying.mapper.AccountMapper.insert
-      - indi.mybatis.flying.mapper.AccountMapper.selectAll
+ #     - indi.mybatis.flying.mapper.LoginLogMapper.count
+ #     - indi.mybatis.flying.mapper.AccountMapper.insert
+ #     - indi.mybatis.flying.mapper.AccountMapper.selectAll
     warn:
-      - indi.mybatis.flying.mapper.LoginLogMapper.selectAll
+ #     - indi.mybatis.flying.mapper.LoginLogMapper.selectAll
     info:
-      - indi.mybatis.flying.mapper.AccountMapper.select
+ #     - indi.mybatis.flying.mapper.AccountMapper.select
