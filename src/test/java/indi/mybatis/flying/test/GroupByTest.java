@@ -30,6 +30,7 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
 import indi.mybatis.flying.mapper.AccountMapper;
+import indi.mybatis.flying.pojo.Account_;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -61,5 +62,7 @@ public class GroupByTest {
 	public void test1() {
 		List<Map<String, Object>> m = accountMapper.selectGroupBy2();
 		System.out.println("::" + m);
+		List<Map<String, Object>> m2 = accountMapper.selectGroupBy(new Account_());
+		System.out.println("::" + m2);
 	}
 }

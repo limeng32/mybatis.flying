@@ -143,13 +143,17 @@
 	</update>
 		
 	<select id="selectGroupBy" resultMap="resultMap">
-		{"action":"selectAll", "ignore":"noPassword", "aggregate":{
-			"asd":{"function":"avg", "param":"opLock"}
+		{"action":"selectAll", "ignore":"noPassword", "groupBy":["email", "email", "name"], "aggregate":{
+			"asd":{"function":"SuM", "param":"opLock"},
+			"qwe":{"function":"mIn", "param":"opLock"}
 		}}
 	</select>
 	
 	<select id="selectGroupBy2" resultMap="resultMap">
-		select name,email,sum(opLock) as asd from account_ group by name,email;
+		select 
+		name,email,
+		sum(opLock) as asd,sum(opLock) as qwe from account_ 
+		group by email,name;
 	</select>
 
 	<resultMap id="result" type="Account_" autoMapping="true">

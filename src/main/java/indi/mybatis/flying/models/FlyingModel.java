@@ -1,7 +1,9 @@
 package indi.mybatis.flying.models;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.KeyGeneratorType;
@@ -28,6 +30,8 @@ public class FlyingModel {
 	private String prefix;
 	private String unstablePrefix;
 	private Map<String, FlyingModel> properties = new HashMap<>(2);
+	private Map<String, AggregateModel> aggregate = new HashMap<>(2);
+	private Set<String> groupBy = new HashSet<>(2);
 
 	public String getId() {
 		return id;
@@ -115,6 +119,22 @@ public class FlyingModel {
 
 	public void setProperties(Map<String, FlyingModel> properties) {
 		this.properties = properties;
+	}
+
+	public Map<String, AggregateModel> getAggregate() {
+		return aggregate;
+	}
+
+	public void setAggregate(Map<String, AggregateModel> aggregate) {
+		this.aggregate = aggregate;
+	}
+
+	public Set<String> getGroupBy() {
+		return groupBy;
+	}
+
+	public void setGroupBy(Set<String> groupBy) {
+		this.groupBy = groupBy;
 	}
 
 }

@@ -90,6 +90,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	public int updateBatch(Collection<Account_> t);
 
+	public List<Map<String, Object>> selectGroupBy(Account_ t);
+
 	public List<Map<String, Object>> selectGroupBy2();
 
 	public Collection<Account_> selectAllDirect2(@Param("name") String name, @Param("email") String email);

@@ -11,6 +11,8 @@ public class MyValue {
 	@Value("${cryptKeyAddition:asd}")
 	private String cryptKeyAddition;
 
+	private String[] none;
+
 	private String[] fatal;
 
 	private String[] error;
@@ -29,6 +31,14 @@ public class MyValue {
 
 	public void setCryptKeyAddition(String cryptKeyAddition) {
 		this.cryptKeyAddition = cryptKeyAddition;
+	}
+
+	public String[] getNone() {
+		return none;
+	}
+
+	public void setNone(String[] none) {
+		this.none = none;
 	}
 
 	public String[] getFatal() {

@@ -28,6 +28,9 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
+import indi.mybatis.flying.mapper.AccountMapper;
+import indi.mybatis.flying.models.AggregateFunction;
+import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
@@ -51,6 +54,9 @@ public class PrefixTest {
 
 	@Autowired
 	private DataSource dataSource1;
+
+	@Autowired
+	private AccountMapper accountMapper;
 
 	@Autowired
 	private AccountService accountService;
@@ -109,6 +115,8 @@ public class PrefixTest {
 		Assert.assertEquals(114, accounts[1].getRoleDeputy().getId().intValue());
 		Assert.assertEquals("roleDeputy4", accounts[1].getRoleDeputy().getName());
 
+		accountMapper.selectGroupBy(new Account_());
+
 		int c = accountService.countAsd(ac);
 		Assert.assertEquals(2, c);
 
@@ -134,6 +142,15 @@ public class PrefixTest {
 		FlyingModel fm3 = fm.getProperties().get("roleDeputy");
 		Assert.assertNull(fm3.getIndex());
 		Assert.assertEquals("roleDeputy__", fm3.getPrefix());
+
+		FlyingModel fm10 = FlyingManager
+				.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectGroupBy");
+		Assert.assertNotNull(fm10);
+		System.out.println("fm10::" + JSONObject.toJSONString(fm10));
+		Assert.assertEquals(2, fm10.getGroupBy().size());
+		Assert.assertEquals(2, fm10.getAggregate().size());
+		AggregateModel am = fm10.getAggregate().get("asd");
+		Assert.assertEquals(AggregateFunction.SUM, am.getFunction());
 	}
 
 	@Test

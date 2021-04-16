@@ -1,6 +1,7 @@
 package indi.mybatis.flying.utils;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.logging.Log;
@@ -9,12 +10,14 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
 import indi.mybatis.flying.handlers.SnowFlakeKeyHandler;
 import indi.mybatis.flying.handlers.UuidKeyHandler;
 import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
+import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.FlyingKeyword;
@@ -91,6 +94,16 @@ public class FlyingManager {
 		flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX));
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
 				: (outerPrefix + flyingModel.getUnstablePrefix()));
+		if (json.getJSONObject("aggregate") != null) {
+			flyingModel.getAggregate().putAll(JSONObject.parseObject(json.getJSONObject("aggregate").toJSONString(),
+					new TypeReference<Map<String, AggregateModel>>() {
+					}));
+		}
+		if (json.getJSONArray("groupBy") != null) {
+			flyingModel.getGroupBy().addAll(JSONObject.parseObject(json.getJSONArray("groupBy").toJSONString(),
+					new TypeReference<Set<String>>() {
+					}));
+		}
 	}
 
 	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
