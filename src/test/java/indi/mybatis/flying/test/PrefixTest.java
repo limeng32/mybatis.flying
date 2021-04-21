@@ -3,6 +3,7 @@ package indi.mybatis.flying.test;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -148,9 +149,9 @@ public class PrefixTest {
 		Assert.assertNotNull(fm10);
 		System.out.println("fm10::" + JSONObject.toJSONString(fm10));
 		Assert.assertEquals(2, fm10.getGroupBy().size());
-		Assert.assertEquals(1, fm10.getAggregate().size());
-		AggregateModel am = fm10.getAggregate().get("opLock");
-		Assert.assertEquals(AggregateFunction.SUM, am.getFunction());
+		Assert.assertEquals(2, fm10.getAggregate().size());
+		Set<AggregateModel> am = fm10.getAggregate().get("opLock");
+		Assert.assertEquals(2, am.size());
 	}
 
 	@Test

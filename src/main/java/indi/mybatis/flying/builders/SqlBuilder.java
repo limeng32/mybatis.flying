@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1624,7 +1625,7 @@ public class SqlBuilder {
 		String prefix = null;
 		String indexStr = null;
 		String whiteListTag = null;
-		Map<String, AggregateModel> aggregateJson = null;
+		Map<String, Set<AggregateModel>> aggregateJson = null;
 		boolean useWhiteList = false;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();

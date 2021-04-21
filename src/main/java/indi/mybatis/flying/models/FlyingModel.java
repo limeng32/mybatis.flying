@@ -30,7 +30,7 @@ public class FlyingModel {
 	private String prefix;
 	private String unstablePrefix;
 	private Map<String, FlyingModel> properties = new HashMap<>(2);
-	private Map<String, AggregateModel> aggregate = new HashMap<>(2);
+	private Map<String, Set<AggregateModel>> aggregate = new HashMap<>(2);
 	private Set<String> groupBy = new HashSet<>(2);
 
 	public String getId() {
@@ -121,11 +121,11 @@ public class FlyingModel {
 		this.properties = properties;
 	}
 
-	public Map<String, AggregateModel> getAggregate() {
+	public Map<String, Set<AggregateModel>> getAggregate() {
 		return aggregate;
 	}
 
-	public void setAggregate(Map<String, AggregateModel> aggregate) {
+	public void setAggregate(Map<String, Set<AggregateModel>> aggregate) {
 		this.aggregate = aggregate;
 	}
 

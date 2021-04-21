@@ -6,7 +6,7 @@ public class AggregateModel {
 
 	private AggregateFunction function;
 
-	private String param;
+	private String column;
 
 	public String getAlias() {
 		return alias;
@@ -24,12 +24,12 @@ public class AggregateModel {
 		this.function = function;
 	}
 
-	public String getParam() {
-		return param;
+	public String getColumn() {
+		return column;
 	}
 
-	public void setParam(String param) {
-		this.param = param;
+	public void setColumn(String column) {
+		this.column = column;
 	}
 
 }

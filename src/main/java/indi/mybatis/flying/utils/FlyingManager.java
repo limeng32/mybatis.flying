@@ -1,5 +1,7 @@
 package indi.mybatis.flying.utils;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,11 +97,29 @@ public class FlyingManager {
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
 				: (outerPrefix + flyingModel.getUnstablePrefix()));
 		if (json.getJSONObject("aggregate") != null) {
-			flyingModel.getAggregate().putAll(JSONObject.parseObject(json.getJSONObject("aggregate").toJSONString(),
+			Map<String, AggregateModel> temp = JSONObject.parseObject(json.getJSONObject("aggregate").toJSONString(),
 					new TypeReference<Map<String, AggregateModel>>() {
-					}));
+					});
+			Map<String, Set<AggregateModel>> temp2 = new HashMap<>();
+			for (Map.Entry<String, AggregateModel> e : temp.entrySet()) {
+				if (e.getValue() != null) {
+					AggregateModel am = e.getValue();
+					if (temp2.containsKey(am.getColumn())) {
+						am.setAlias(e.getKey());
+						temp2.get(am.getColumn()).add(am);
+					} else {
+						Set<AggregateModel> set = new LinkedHashSet<>();
+						am.setAlias(e.getKey());
+						set.add(am);
+						temp2.put(am.getColumn(), set);
+					}
+				}
+			}
+			flyingModel.getAggregate().putAll(temp2);
 		}
-		if (json.getJSONArray("groupBy") != null) {
+		if (json.getJSONArray("groupBy") != null)
+
+		{
 			flyingModel.getGroupBy().addAll(JSONObject.parseObject(json.getJSONArray("groupBy").toJSONString(),
 					new TypeReference<Set<String>>() {
 					}));
