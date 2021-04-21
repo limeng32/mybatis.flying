@@ -117,9 +117,7 @@ public class FlyingManager {
 			}
 			flyingModel.getAggregate().putAll(temp2);
 		}
-		if (json.getJSONArray("groupBy") != null)
-
-		{
+		if (json.getJSONArray("groupBy") != null) {
 			flyingModel.getGroupBy().addAll(JSONObject.parseObject(json.getJSONArray("groupBy").toJSONString(),
 					new TypeReference<Set<String>>() {
 					}));

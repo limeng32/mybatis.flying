@@ -78,6 +78,7 @@ public class SqlBuilder {
 	private static final String CLOSEBRACE_AND_BLANK = "} and ";
 	private static final String CLOSEBRACE_OR_BLANK = "} or ";
 	private static final String WHERE_BLANK = " where ";
+	private static final String GROUP_BY_BLANK = " group by ";
 	private static final String POUND_OPENBRACE = "#{";
 	private static final String OPENBRACKET = "[";
 	private static final String CLOSEBRACKET = "]";
@@ -1480,8 +1481,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, ai, flyingModel, null,
-				null, null, null);
+		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, null, ai, flyingModel,
+				null, null, null, null);
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
@@ -1513,9 +1514,10 @@ public class SqlBuilder {
 		StringBuilder selectSql = new StringBuilder(SELECT_BLANK);
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
+		StringBuilder groupBySql = new StringBuilder();
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
-				null, null, null);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, groupBySql, ai,
+				flyingModel, null, null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1525,7 +1527,11 @@ public class SqlBuilder {
 		} else if (whereSql.indexOf(AND) > -1) {
 			whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		}
-		return selectSql.append(fromSql).append(whereSql).toString();
+		if (groupBySql.length() > 0 && groupBySql.indexOf(COMMA) > -1) {
+			groupBySql.delete(groupBySql.lastIndexOf(COMMA), groupBySql.lastIndexOf(COMMA) + 1);
+			System.out.println("group by::" + groupBySql);
+		}
+		return selectSql.append(fromSql).append(whereSql).append(groupBySql).toString();
 	}
 
 	/**
@@ -1547,8 +1553,8 @@ public class SqlBuilder {
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
-		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, ai, flyingModel, null,
-				null, null, null);
+		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, null, ai, flyingModel,
+				null, null, null, null);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1616,16 +1622,17 @@ public class SqlBuilder {
 	}
 
 	private static void dealMapperAnnotationIterationForSelectAll(boolean objectIsClass, Object object,
-			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, AtomicInteger index,
-			FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper, String fieldPerfix,
-			TableName lastTableName) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-			NoSuchFieldException, InstantiationException {
+			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, StringBuilder groupBySql,
+			AtomicInteger index, FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper,
+			String fieldPerfix, TableName lastTableName) throws IllegalAccessException, InvocationTargetException,
+			NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		Class<?> objectType = objectIsClass ? (Class<?>) object : object.getClass();
 		String ignoreTag = null;
 		String prefix = null;
 		String indexStr = null;
 		String whiteListTag = null;
-		Map<String, Set<AggregateModel>> aggregateJson = null;
+		Map<String, Set<AggregateModel>> aggregateMap = null;
+		Set<String> groupBySet = null;
 		boolean useWhiteList = false;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();
@@ -1635,13 +1642,19 @@ public class SqlBuilder {
 			if (whiteListTag != null) {
 				useWhiteList = true;
 			}
-			if (flyingModel.getAggregate().size() > 0) {
-				aggregateJson = flyingModel.getAggregate();
+			if (!flyingModel.getAggregate().isEmpty()) {
+				aggregateMap = flyingModel.getAggregate();
+			}
+			if (!flyingModel.getGroupBy().isEmpty()) {
+				groupBySet = flyingModel.getGroupBy();
 			}
 		}
 
-		if (aggregateJson != null) {
-			System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateJson));
+		if (aggregateMap != null) {
+			System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateMap));
+		}
+		if (groupBySet != null) {
+			System.out.println("groupBySet::" + JSONObject.toJSONString(groupBySet));
 		}
 
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
@@ -1676,14 +1689,23 @@ public class SqlBuilder {
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
 							prefix);
 				}
-				if (aggregateJson != null) {
+				if (aggregateMap != null) {
 					// TODO 在这里处理聚合函数
-					if (aggregateJson.containsKey(fieldMapper.getDbFieldName())) {
-						Set<AggregateModel> set = aggregateJson.get(fieldMapper.getDbFieldName());
+					if (aggregateMap.containsKey(fieldMapper.getDbFieldName())) {
+						Set<AggregateModel> set = aggregateMap.get(fieldMapper.getDbFieldName());
 						for (AggregateModel am : set) {
 							selectSql.append(am.getFunction()).append("(").append(tableName.sqlWhere())
 									.append(am.getColumn()).append(") as ").append(am.getAlias()).append(COMMA);
 						}
+					}
+				}
+				if (groupBySet != null) {
+					// TODO 在这里处理group by
+					if (groupBySet.contains(fieldMapper.getDbFieldName())) {
+						if (groupBySql.length() == 0) {
+							groupBySql.append(GROUP_BY_BLANK);
+						}
+						groupBySql.append(tableName.sqlWhere()).append(fieldMapper.getDbFieldName()).append(COMMA);
 					}
 				}
 			}
@@ -1731,7 +1753,7 @@ public class SqlBuilder {
 
 			if (fieldMapper.isForeignKey()) {
 				dealMapperAnnotationIterationForSelectAll(value instanceof Class<?>, value, selectSql, fromSql,
-						whereSql, index,
+						whereSql, null, index,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
 						tableName, fieldMapper, temp, tableName);
 			} else {

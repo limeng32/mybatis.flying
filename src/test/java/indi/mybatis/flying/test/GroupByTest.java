@@ -62,7 +62,9 @@ public class GroupByTest {
 	public void test1() {
 		List<Map<String, Object>> m = accountMapper.selectGroupBy2();
 		System.out.println("::" + m);
-		List<Map<String, Object>> m2 = accountMapper.selectGroupBy(new Account_());
+		Account_ a = new Account_();
+		a.setName("ann");
+		List<Map<String, Object>> m2 = accountMapper.selectGroupBy(a);
 		System.out.println("::" + m2);
 	}
 }

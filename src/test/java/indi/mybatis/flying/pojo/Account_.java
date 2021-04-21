@@ -27,10 +27,11 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	private Long id;
 
 	@FieldMapperAnnotation(dbFieldName = "name", jdbcType = JdbcType.VARCHAR, ignoreTag = { "noName" }, whiteListTag = {
-			"simple" })
+			"simple", "selectGroupBy" })
 	private java.lang.String name;
 
-	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR, whiteListTag = "simple0")
+	@FieldMapperAnnotation(dbFieldName = "email", jdbcType = JdbcType.VARCHAR, whiteListTag = { "simple0",
+			"selectGroupBy" })
 	private java.lang.String email;
 
 	@FieldMapperAnnotation(dbFieldName = "password", jdbcType = JdbcType.VARCHAR, ignoreTag = {
