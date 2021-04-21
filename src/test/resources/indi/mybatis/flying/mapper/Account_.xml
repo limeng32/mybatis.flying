@@ -144,8 +144,7 @@
 		
 	<select id="selectGroupBy" resultMap="resultMap">
 		{"action":"selectAll", "ignore":"noPassword", "groupBy":["email", "email", "name"], "aggregate":{
-			"asd":{"function":"SuM", "param":"opLock"},
-			"qwe":{"function":"mIn", "param":"opLock"}
+			"opLock":{"function":"SuM", "alias":"asd"}
 		}}
 	</select>
 	

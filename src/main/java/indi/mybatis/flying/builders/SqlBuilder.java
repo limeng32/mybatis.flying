@@ -20,6 +20,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -28,6 +30,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
+import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.ConditionMapper;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
@@ -1621,6 +1624,7 @@ public class SqlBuilder {
 		String prefix = null;
 		String indexStr = null;
 		String whiteListTag = null;
+		Map<String, AggregateModel> aggregateJson = null;
 		boolean useWhiteList = false;
 		if (flyingModel != null) {
 			ignoreTag = flyingModel.getIgnoreTag();
@@ -1630,7 +1634,15 @@ public class SqlBuilder {
 			if (whiteListTag != null) {
 				useWhiteList = true;
 			}
+			if (flyingModel.getAggregate().size() > 0) {
+				aggregateJson = flyingModel.getAggregate();
+			}
 		}
+
+		if (aggregateJson != null) {
+			System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateJson));
+		}
+
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
 		Class<?> tempClass = getTableMappedClass(objectType);
 		TableMapper tableMapper = buildTableMapper(tempClass);
@@ -1659,8 +1671,12 @@ public class SqlBuilder {
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+//					System.out.println("dbFieldName::" + fieldMapper.getDbFieldName());
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
 							prefix);
+				}
+				if(aggregateJson != null) {
+					//TODO 在这里处理聚合函数
 				}
 			}
 		}
