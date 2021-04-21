@@ -143,7 +143,7 @@
 	</update>
 		
 	<select id="selectGroupBy" resultMap="resultMap">
-		{"action":"selectAll", "ignore":"noPassword", "groupBy":["email", "email", "name"], "aggregate":{
+		{"action":"selectAll", "ignore":"noPassword", "whiteList":"selectGroupBy", "groupBy":["email", "email", "name"], "aggregate":{
 			"asd":{"function":"SuM", "column":"opLock"}, 
 			"qwe":{"function":"mIn", "column":"opLock"}, 
 			"zxc":{"function":"max", "column":"name"},

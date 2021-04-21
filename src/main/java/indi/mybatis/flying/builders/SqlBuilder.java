@@ -1676,8 +1676,15 @@ public class SqlBuilder {
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
 							prefix);
 				}
-				if(aggregateJson != null) {
-					//TODO 在这里处理聚合函数
+				if (aggregateJson != null) {
+					// TODO 在这里处理聚合函数
+					if (aggregateJson.containsKey(fieldMapper.getDbFieldName())) {
+						Set<AggregateModel> set = aggregateJson.get(fieldMapper.getDbFieldName());
+						for (AggregateModel am : set) {
+							selectSql.append(am.getFunction()).append("(").append(tableName.sqlWhere())
+									.append(am.getColumn()).append(") as ").append(am.getAlias()).append(COMMA);
+						}
+					}
 				}
 			}
 		}
