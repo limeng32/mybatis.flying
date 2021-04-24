@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum AggregateFunction {
 
-	COUNT("count"), SUM("sum"), AVG("avg"), MIN("min"), MAX("max");
+	COUNT("count"), SUM("sum"), AVG("avg"), MIN("min"), MAX("max"), NONE("none");
 
 	private final String value;
 

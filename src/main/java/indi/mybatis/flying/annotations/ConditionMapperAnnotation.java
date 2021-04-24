@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import indi.mybatis.flying.models.AggregateFunction;
 import indi.mybatis.flying.statics.ConditionType;
 
 /**
@@ -60,4 +61,17 @@ public @interface ConditionMapperAnnotation {
 	 * @since 0.9.4
 	 */
 	Class<?> customTypeHandler() default Void.class;
+
+	/**
+	 * 
+	 * 使用何种聚合操作，默认为none即不使用聚合操作。如果使用了聚合操作例如sum，此条件将会出现在having子句中。
+	 * 
+	 * What kind of aggregation operation to use, the default is none means "not use
+	 * aggregation operation". If a non-none aggregation operation such as "sum" is
+	 * used, this condition will appear in the "having" clause.
+	 * 
+	 * @return AggregateFunction
+	 * @since 1.1.0
+	 */
+	AggregateFunction aggregateFunction() default AggregateFunction.NONE;
 }

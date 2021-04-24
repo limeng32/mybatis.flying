@@ -152,9 +152,8 @@
 	
 	<select id="selectGroupBy2" resultMap="resultMap">
 		select 
-		name,email,
-		sum(opLock) as asd,sum(opLock) as qwe from account_ 
-		group by email,name;
+		name,email from account_ 
+		group by email,name having (avg(opLock) = '1' or avg(opLock) = '2');
 	</select>
 
 	<resultMap id="result" type="Account_" autoMapping="true">
