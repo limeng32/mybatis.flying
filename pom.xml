@@ -60,7 +60,9 @@
 		<jta.version>1.1</jta.version>
 		<atomikos.version>3.9.3</atomikos.version>
 		<fastjson.version>1.2.69</fastjson.version>
+		<mysql.connector.version>8.0.22</mysql.connector.version>
 		<slf4j.version>1.7.20</slf4j.version>
+		<jmh.version>1.21</jmh.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -236,7 +238,18 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.22</version>
+			<version>${mysql.connector.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>${jmh.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<version>${jmh.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
