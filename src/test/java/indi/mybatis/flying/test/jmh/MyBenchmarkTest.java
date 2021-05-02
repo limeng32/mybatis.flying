@@ -17,7 +17,7 @@ import indi.mybatis.flying.pojo2.LoginLog;
 
 public class MyBenchmarkTest {
 
-//	@Ignore
+	@Ignore
 	@Test
 	public void launchBenchmark() throws Exception {
 
@@ -27,7 +27,7 @@ public class MyBenchmarkTest {
 				.include(this.getClass().getSimpleName())
 				// Set the following options as needed
 				.mode(Mode.AverageTime).timeUnit(TimeUnit.NANOSECONDS).warmupTime(TimeValue.seconds(1))
-				.warmupIterations(5).measurementTime(TimeValue.seconds(1)).measurementIterations(5).forks(1)
+				.warmupIterations(5).measurementTime(TimeValue.seconds(1)).measurementIterations(1).forks(1)
 				// .shouldFailOnError(true).shouldDoGC(true)
 				// .jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintInlining")
 				// .addProfiler(WinPerfAsmProfiler.class)

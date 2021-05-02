@@ -47,6 +47,10 @@ public class AccountService {
 	public void insert(Account_ t) {
 		mapper.insert(t);
 	}
+	
+	public void insertDirect(Account_ t) {
+		mapper.insertDirect(t);
+	}
 
 	public void insertBatch(Collection<Account_> t) {
 		mapper.insertBatch(t);

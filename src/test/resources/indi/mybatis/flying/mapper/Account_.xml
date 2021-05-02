@@ -68,6 +68,10 @@
 		{"action":"insert"}
 	</insert>
 	
+	<insert id="insertDirect" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO account_ (id, name) VALUES (#{id},#{name})
+	</insert>
+	
 	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
 		{"action":"insertBatch"}
 	</insert>

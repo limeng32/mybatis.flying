@@ -47,6 +47,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@Override
 	public void insert(Account_ t);
+	
+	public void insertDirect(Account_ t);
 
 	public void insertBatch(Collection<Account_> t);
 
