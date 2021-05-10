@@ -85,12 +85,11 @@ public class SelectOneTest {
 		accountService.insert(a2);
 
 		Account_Condition ac = new Account_Condition();
-		ac.setLimiter(new PageParam(1, 2));
+		ac.setLimiter(new PageParam(6, 8));
 		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
 		ac.setName("ann");
 		Account_ account = accountService.selectOne(ac);
 		Assert.assertEquals("ann@live.cn", account.getEmail());
-		Assert.assertNull(ac.getLimiter());
 	}
 
 	/** 测试selectOne3，缓存测试 */

@@ -121,7 +121,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			case SELECT:
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
-				needHandleLimiterAndSorter = true;
+//				needHandleLimiterAndSorter = true;
 				break;
 			case SELECT_ALL:
 				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
@@ -129,7 +129,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			case SELECT_ONE:
 				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
-				needHandleLimiterAndSorter = true;
+//				needHandleLimiterAndSorter = true;
 				break;
 			case UPDATE:
 				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);

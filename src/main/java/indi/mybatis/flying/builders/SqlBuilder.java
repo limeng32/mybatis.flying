@@ -33,7 +33,6 @@ import indi.mybatis.flying.exception.BuildSqlException;
 import indi.mybatis.flying.exception.BuildSqlExceptionEnum;
 import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.ConditionMapper;
-import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FieldMapper;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.ForeignAssociationMapper;
@@ -888,7 +887,7 @@ public class SqlBuilder {
 						valueSql.append(AES_ENCRYPT_OPENPAREN);
 					}
 					valueSql.append(POUND_OPENBRACE);
-					valueSql.append(COLLECTION_OPENBRACKET + i + CLOSEBRACKET_DOT);
+					valueSql.append(COLLECTION_OPENBRACKET).append(i).append(CLOSEBRACKET_DOT);
 					dealForeignKey(valueSql, fieldMapper);
 					valueSql.append(COMMA).append(JDBCTYPE_EQUAL).append(fieldMapper.getJdbcType().toString());
 					if (fieldMapper.getTypeHandlerPath() != null) {
@@ -1546,9 +1545,6 @@ public class SqlBuilder {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
-		if (object instanceof Conditionable) {
-			((Conditionable) object).setLimiter(null);
-		}
 		StringBuilder selectSql = new StringBuilder(SELECT_BLANK);
 		StringBuilder fromSql = new StringBuilder(FROM);
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
@@ -1928,7 +1924,7 @@ public class SqlBuilder {
 			/* Processing fieldPerfix */
 			temp = originFieldMapper.getFieldName();
 			if (fieldPerfix != null) {
-				temp = fieldPerfix + DOT + temp;
+				temp = new StringBuilder(fieldPerfix).append(DOT).append(temp).toString();
 			}
 			/* Processing fromSql */
 			fromSql.append(originFieldMapper.getAssociationType().value()).append(tableName.sqlSelect())

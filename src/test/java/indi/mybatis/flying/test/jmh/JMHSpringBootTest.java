@@ -63,7 +63,7 @@ public class JMHSpringBootTest {
 		a.setName("a");
 		accountService.insertDirect(a);
 	}
-	
+
 	@TearDown
 	public void tearDown() {
 		Account_ a = new Account_();
@@ -99,7 +99,7 @@ public class JMHSpringBootTest {
 		p.setSecret("a");
 		a.setPermission(p);
 		Collection<Account_> account = accountService.selectAll(a);
-//		Assert.assertNotNull(account);
+		Assert.assertNotNull(account);
 	}
 
 	@Benchmark
@@ -113,11 +113,11 @@ public class JMHSpringBootTest {
 	@Benchmark
 	public void test6() {
 		Account_ a = new Account_();
-		a.setId(2L);
-		Permission p = new Permission();
-		p.setSecret("b");
-		a.setPermission(p);
+		a.setName("a");
+//		Permission p = new Permission();
+//		p.setSecret("b");
+//		a.setPermission(p);
 		Collection<Account_> account = accountService.selectAll(a);
-//		Assert.assertNotNull(account);
+		Assert.assertNotNull(account);
 	}
 }
