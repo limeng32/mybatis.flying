@@ -85,6 +85,8 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ selectDirect(Object id);
 
 	public Collection<Account_> selectAllDirect(Map<String, Object> map);
+	
+	public Collection<Account_> selectAllDirect(Account_ account);
 
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);
 

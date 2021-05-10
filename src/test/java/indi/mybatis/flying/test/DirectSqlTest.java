@@ -77,6 +77,12 @@ public class DirectSqlTest {
 		Account_ a1 = new Account_();
 		a1.setName("bob");
 		a1.setEmail("bob@live.cn");
+		
+		Collection<Account_> c = accountMapper.selectAllDirect(a1);
+		for (Account_ t : c) {
+			Assert.assertEquals("5a690d842935c51f26f473e025c1b97b", t.getPassword());
+		}
+		
 		Collection<Account_> c2 = accountService.selectAll(a1);
 		for (Account_ t : c2) {
 			Assert.assertNull(t.getPassword());

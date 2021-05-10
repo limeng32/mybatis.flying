@@ -23,7 +23,9 @@ spring:
 flying:
   logger:
     fatal:
- #     - indi.mybatis.flying.mapper.AccountMapper.selectDirect
+      - indi.mybatis.flying.mapper.AccountMapper.selectDirect
+      - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect
+      - indi.mybatis.flying.mapper.AccountMapper.insertBatchSimpleNoName
  #     - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect2
  #     - indi.mybatis.flying.mapper.AccountMapper.selectAllDirect3
     error:

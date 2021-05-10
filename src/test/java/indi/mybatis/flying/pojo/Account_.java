@@ -358,4 +358,13 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Account_ [id=").append(id).append(", name=").append(name).append(", email=")
+				.append(email).append(", password=").append(password).append(", opLock=").append(opLock)
+				.append(", status=").append(status).append(", activated=").append(activated).append(", activateValue=")
+				.append(activateValue).append("]").toString();
+	}
+
 }
