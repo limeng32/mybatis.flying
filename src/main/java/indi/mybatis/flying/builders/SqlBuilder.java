@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
 import com.alibaba.fastjson.JSONObject;
@@ -67,6 +68,8 @@ public class SqlBuilder {
 	/* Cache QueryMapper */
 	private static final Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(
 			128);
+
+	private static String collectionObjectClassName = null;
 
 	private static final String DOT = ".";
 	private static final String COMMA = ",";
@@ -818,6 +821,23 @@ public class SqlBuilder {
 		return stringBuilder;
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	private static HashMap<String, Object> getCollectionObjectMap(Object objectC) {
+		HashMap<String, Object> valueC = null;
+		if (collectionObjectClassName == null) {
+			collectionObjectClassName = objectC.getClass().getSimpleName();
+		}
+		switch (collectionObjectClassName) {
+		case "StrictMap":
+			valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
+			break;
+		default:
+			valueC = (MapperMethod.ParamMap<Object>) objectC;
+			break;
+		}
+		return valueC;
+	}
+
 	/**
 	 * The insert SQL statement is generated from the incoming object
 	 * 
@@ -832,7 +852,7 @@ public class SqlBuilder {
 	@SuppressWarnings("unchecked")
 	public static String buildInsertBatchSql(Object objectC, FlyingModel flyingModel)
 			throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		DefaultSqlSession.StrictMap<Object> valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
+		HashMap<String, Object> valueC = getCollectionObjectMap(objectC);
 		StringBuilder tableSql = new StringBuilder();
 		StringBuilder valueSql = new StringBuilder();
 		String ignoreTag = flyingModel.getIgnoreTag();
@@ -932,7 +952,7 @@ public class SqlBuilder {
 	@SuppressWarnings("unchecked")
 	public static String buildUpdateBatchSql(Object objectC, FlyingModel flyingModel)
 			throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		DefaultSqlSession.StrictMap<Object> valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
+		HashMap<String, Object> valueC = getCollectionObjectMap(objectC);
 		StringBuilder tableSql = new StringBuilder();
 		StringBuilder whereSql = new StringBuilder();
 		String ignoreTag = flyingModel.getIgnoreTag();
