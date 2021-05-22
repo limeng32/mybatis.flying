@@ -1,6 +1,7 @@
 package indi.mybatis.flying.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,7 @@ public class AccountService {
 		return mapper.updateSimpleNoName(t);
 	}
 
-	public Collection<Account_> selectAll(Account_ t) {
+	public List<Account_> selectAll(Account_ t) {
 		return mapper.selectAll(t);
 	}
 

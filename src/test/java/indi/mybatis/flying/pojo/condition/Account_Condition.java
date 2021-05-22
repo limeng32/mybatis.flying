@@ -65,11 +65,20 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "Email", conditionType = ConditionType.LIKE)
 	private String emailLike;
 
+	@ConditionMapperAnnotation(dbFieldName = "Email", conditionType = ConditionType.NOT_LIKE)
+	private String emailNotLike;
+
 	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.HEAD_LIKE)
 	private String emailHeadLike;
 
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.NOT_HEAD_LIKE)
+	private String emailNotHeadLike;
+
 	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.TAIL_LIKE)
 	private String emailTailLike;
+
+	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.NOT_TAIL_LIKE)
+	private String emailNotTailLike;
 
 	@ConditionMapperAnnotation(dbFieldName = field_email, conditionType = ConditionType.MULTI_LIKE_AND)
 	private List<String> multiLike;
@@ -391,6 +400,30 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setStatusEquals(StoryStatus_ statusEquals) {
 		this.statusEquals = statusEquals;
+	}
+
+	public String getEmailNotLike() {
+		return emailNotLike;
+	}
+
+	public void setEmailNotLike(String emailNotLike) {
+		this.emailNotLike = emailNotLike;
+	}
+
+	public String getEmailNotHeadLike() {
+		return emailNotHeadLike;
+	}
+
+	public void setEmailNotHeadLike(String emailNotHeadLike) {
+		this.emailNotHeadLike = emailNotHeadLike;
+	}
+
+	public String getEmailNotTailLike() {
+		return emailNotTailLike;
+	}
+
+	public void setEmailNotTailLike(String emailNotTailLike) {
+		this.emailNotTailLike = emailNotTailLike;
 	}
 
 }

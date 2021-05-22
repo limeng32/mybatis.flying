@@ -450,6 +450,18 @@ public class SqlBuilder {
 	private static void dealConditionLike(StringBuilder whereSql, ConditionMapper conditionMapper, ConditionType type,
 			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, conditionMapper, tableName);
+		switch (type) {
+		case NOT_LIKE:
+			whereSql.append(BLANK_NOT);
+			break;
+		case NOT_HEAD_LIKE:
+			whereSql.append(BLANK_NOT);
+			break;
+		case NOT_TAIL_LIKE:
+			whereSql.append(BLANK_NOT);
+			break;
+		default:
+		}
 		whereSql.append(BLANK_LIKE_BLANK_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
@@ -468,10 +480,19 @@ public class SqlBuilder {
 		case LIKE:
 			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
 			break;
+		case NOT_LIKE:
+			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
+			break;
 		case HEAD_LIKE:
 			whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
 			break;
+		case NOT_HEAD_LIKE:
+			whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
+			break;
 		case TAIL_LIKE:
+			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
+			break;
+		case NOT_TAIL_LIKE:
 			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
 			break;
 		default:
@@ -1356,6 +1377,24 @@ public class SqlBuilder {
 					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
 					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
 			break;
+		case NOT_LIKE:
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+			break;
+		case NOT_HEAD_LIKE:
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+			break;
+		case NOT_TAIL_LIKE:
+			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+			break;
 		case NULL_OR_NOT:
 			Boolean isNull = (Boolean) value;
 			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_IS);
@@ -1866,11 +1905,20 @@ public class SqlBuilder {
 		case LIKE:
 			dealConditionLike(whereSql, conditionMapper, ConditionType.LIKE, tableName, temp, isOr, i);
 			break;
+		case NOT_LIKE:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_LIKE, tableName, temp, isOr, i);
+			break;
 		case HEAD_LIKE:
 			dealConditionLike(whereSql, conditionMapper, ConditionType.HEAD_LIKE, tableName, temp, isOr, i);
 			break;
+		case NOT_HEAD_LIKE:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_HEAD_LIKE, tableName, temp, isOr, i);
+			break;
 		case TAIL_LIKE:
 			dealConditionLike(whereSql, conditionMapper, ConditionType.TAIL_LIKE, tableName, temp, isOr, i);
+			break;
+		case NOT_TAIL_LIKE:
+			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_TAIL_LIKE, tableName, temp, isOr, i);
 			break;
 		case GREATER_THAN:
 			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GREATER_THAN, tableName, temp, isOr, i);

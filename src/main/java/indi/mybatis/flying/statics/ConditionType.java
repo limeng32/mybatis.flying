@@ -11,12 +11,18 @@ package indi.mybatis.flying.statics;
 public enum ConditionType {
 	/** Equal */
 	EQUAL,
-	/** Like matching */
+	/** Like matching '%XXX%' */
 	LIKE,
-	/** Start like match */
+	/** Like match 'XXX%' */
 	HEAD_LIKE,
-	/** End like match */
+	/** Like match '%XXX' */
 	TAIL_LIKE,
+	/** Not Like matching */
+	NOT_LIKE,
+	/** Not Like match 'XXX%' */
+	NOT_HEAD_LIKE,
+	/** Not Like match '%XXX' */
+	NOT_TAIL_LIKE,
 	/**
 	 * Multiple like condition matching, and relationship, this operation cannot be
 	 * used under Or annotation.

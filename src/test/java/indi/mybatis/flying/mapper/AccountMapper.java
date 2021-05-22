@@ -34,7 +34,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@Override
 	@Select("{\"action\":\"selectAll\", \"ignore\":\"noPassword\"}")
 	@ResultMap("result")
-	public Collection<Account_> selectAll(Account_ t);
+	public List<Account_> selectAll(Account_ t);
 
 	public Collection<Account_> selectAllPrefix(Account_ t);
 
@@ -47,7 +47,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 
 	@Override
 	public void insert(Account_ t);
-	
+
 	public void insertDirect(Account_ t);
 
 	public void insertBatch(Collection<Account_> t);
@@ -85,7 +85,7 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ selectDirect(Object id);
 
 	public Collection<Account_> selectAllDirect(Map<String, Object> map);
-	
+
 	public Collection<Account_> selectAllDirect(Account_ account);
 
 	public Collection<Account_> selectAccountByRole(Map<String, Object> map);

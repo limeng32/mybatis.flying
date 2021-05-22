@@ -73,6 +73,12 @@ public class ConditionTest {
 		Account_[] accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals(1, accounts.length);
 		Assert.assertEquals("an%%n@live.cn", accounts[0].getEmail());
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmailNotLike("%%");
+		List<Account_> l = accountService.selectAll(ac2);
+		Assert.assertEquals(1, l.size());
+		Assert.assertEquals("bob@live.cn", l.get(0).getEmail());
 	}
 
 	/** 测试condition:like功能2：在parameter为null和为空字符串时的情况 */
@@ -108,6 +114,12 @@ public class ConditionTest {
 		Account_[] accounts2 = c2.toArray(new Account_[c2.size()]);
 		Assert.assertEquals(1, accounts2.length);
 		Assert.assertEquals("_ann@live.cn1", accounts2[0].getEmail());
+
+		Account_Condition ac3 = new Account_Condition();
+		ac3.setEmailNotHeadLike("ann");
+		List<Account_> l = accountService.selectAll(ac3);
+		Assert.assertEquals(1, l.size());
+		Assert.assertEquals("_ann@live.cn1", l.get(0).getEmail());
 	}
 
 	/** 测试condition:tailLike功能 */
@@ -121,6 +133,12 @@ public class ConditionTest {
 		Account_[] accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals(1, accounts.length);
 		Assert.assertEquals("ann@live.cn", accounts[0].getEmail());
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmailNotTailLike("live.cn");
+		List<Account_> l = accountService.selectAll(ac2);
+		Assert.assertEquals(1, l.size());
+		Assert.assertEquals("_ann@live.cn_", l.get(0).getEmail());
 	}
 
 	@Test
