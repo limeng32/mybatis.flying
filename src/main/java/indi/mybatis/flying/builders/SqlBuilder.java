@@ -1587,7 +1587,7 @@ public class SqlBuilder {
 		}
 		if (groupBySql.length() > 0 && groupBySql.indexOf(COMMA) > -1) {
 			groupBySql.delete(groupBySql.lastIndexOf(COMMA), groupBySql.lastIndexOf(COMMA) + 1);
-			System.out.println("group by::" + groupBySql);
+			// prepare for v1.1.0 System.out.println("group by::" + groupBySql);
 		}
 		return selectSql.append(fromSql).append(whereSql).append(groupBySql).toString();
 	}
@@ -1706,10 +1706,10 @@ public class SqlBuilder {
 		}
 
 		if (aggregateMap != null) {
-			System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateMap));
+			// prepare for v1.1.0 System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateMap));
 		}
 		if (groupBySet != null) {
-			System.out.println("groupBySet::" + JSONObject.toJSONString(groupBySet));
+			// prepare for v1.1.0 System.out.println("groupBySet::" + JSONObject.toJSONString(groupBySet));
 		}
 
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
@@ -1740,7 +1740,6 @@ public class SqlBuilder {
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
-//					System.out.println("dbFieldName::" + fieldMapper.getDbFieldName());
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
 							prefix);
 				}
