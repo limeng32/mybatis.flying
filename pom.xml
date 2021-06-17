@@ -55,7 +55,7 @@
 		<logback.version>1.1.7</logback.version>
 		<unitils.version>3.4.2</unitils.version>
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
-		<druid.version>1.1.9</druid.version>
+		<druid.version>1.2.5</druid.version>
 		<spring-boot.version>1.5.7.RELEASE</spring-boot.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<javax.persistence.version>1.0</javax.persistence.version>
@@ -186,12 +186,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-			<version>${spring-boot.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${spring-boot.version}</version>
 			<scope>test</scope>
 		</dependency>
