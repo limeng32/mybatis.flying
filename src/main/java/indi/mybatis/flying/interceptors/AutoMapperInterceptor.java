@@ -46,8 +46,6 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
-
 import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
@@ -104,6 +102,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
 		if (flyingModel.isHasFlyingFeature()) {
 			boolean needHandleLimiterAndSorter = false;
+
 			String newSql = null;
 			switch (flyingModel.getActionType()) {
 			case COUNT:
@@ -120,7 +119,6 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			case SELECT:
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
-//				needHandleLimiterAndSorter = true;
 				break;
 			case SELECT_ALL:
 				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
@@ -128,7 +126,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				break;
 			case SELECT_ONE:
 				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
-//				needHandleLimiterAndSorter = true;
+				needHandleLimiterAndSorter = true;
 				break;
 			case UPDATE:
 				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
@@ -395,9 +393,9 @@ public class AutoMapperInterceptor implements Interceptor {
 						pageSql.append(condition.getSorter().toSql());
 					}
 				}
-				if (condition.getLimiter() != null) {
-					pageSql.append(" limit " + condition.getLimiter().getLimitFrom() + ","
-							+ condition.getLimiter().getPageSize());
+				if (condition.getLimiter() != null && !sql.endsWith(LIMIT_1)) {
+					pageSql.append(" limit ").append(condition.getLimiter().getLimitFrom()).append(",")
+							.append(condition.getLimiter().getPageSize());
 				}
 			}
 			return pageSql.toString();
