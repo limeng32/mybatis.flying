@@ -145,8 +145,46 @@ public class AutoMapperInterceptor implements Interceptor {
 			}
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
-			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlSource.getBoundSql(parameterObject).getSql());
+			String sqlToexecute = sqlSource.getBoundSql(parameterObject).getSql();
+			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
 			metaStatementHandler.setValue(DELEGATE_BOUNDSQL_PARAMETERMAPPINGS, parameterMappings);
+
+			/* Start dealing with paging */
+			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
+					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
+				Conditionable condition = (Conditionable) parameterObject;
+				if (condition.getLimiter() != null) {
+					BoundSql boundSql = statementHandler.getBoundSql();
+					// The total count needs to be identified when encountering "selectAll"
+					if (ActionType.SELECT_ALL.equals(flyingModel.getActionType())) {
+						Connection connection = (Connection) invocation.getArgs()[0];
+						String countSql = new StringBuilder("select count(0) from (").append(sqlToexecute)
+								.append(") myCount").toString();
+						PreparedStatement countStmt = connection.prepareStatement(countSql);
+						BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
+								boundSql.getParameterMappings(), parameterObject);
+						setParameters(countStmt, mappedStatement, countBS, parameterObject);
+						ResultSet rs = countStmt.executeQuery();
+						try {
+							int count = 0;
+							if (rs.next()) {
+								count = rs.getInt(1);
+							}
+							condition.getLimiter().setTotalCount(count);
+						} finally {
+							rs.close();
+							countStmt.close();
+						}
+					}
+					sqlToexecute = generatePageSql(sqlToexecute, condition);
+					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
+				} else if (condition.getSorter() != null) {
+					BoundSql boundSql = statementHandler.getBoundSql();
+					String sql = boundSql.getSql();
+					sqlToexecute = generatePageSql(sql, condition);
+					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
+				}
+			}
 
 			if (loggerDescriptionHandler != null) {
 				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(flyingModel.getId());
@@ -180,43 +218,6 @@ public class AutoMapperInterceptor implements Interceptor {
 						stringBuilder.append("};");
 					}
 					log(logger, loggerLevel, stringBuilder.toString());
-				}
-			}
-			/* Start dealing with paging */
-			if (needHandleLimiterAndSorter && (parameterObject instanceof Conditionable)
-					&& (invocation.getTarget() instanceof RoutingStatementHandler)) {
-				Conditionable condition = (Conditionable) parameterObject;
-				if (condition.getLimiter() != null) {
-					BoundSql boundSql = statementHandler.getBoundSql();
-					String sql = boundSql.getSql();
-					// The total count needs to be identified when encountering "selectAll"
-					if (ActionType.SELECT_ALL.equals(flyingModel.getActionType())) {
-						Connection connection = (Connection) invocation.getArgs()[0];
-						String countSql = new StringBuilder("select count(0) from (").append(sql).append(") myCount")
-								.toString();
-						PreparedStatement countStmt = connection.prepareStatement(countSql);
-						BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
-								boundSql.getParameterMappings(), parameterObject);
-						setParameters(countStmt, mappedStatement, countBS, parameterObject);
-						ResultSet rs = countStmt.executeQuery();
-						try {
-							int count = 0;
-							if (rs.next()) {
-								count = rs.getInt(1);
-							}
-							condition.getLimiter().setTotalCount(count);
-						} finally {
-							rs.close();
-							countStmt.close();
-						}
-					}
-					String pageSql = generatePageSql(sql, condition);
-					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
-				} else if (condition.getSorter() != null) {
-					BoundSql boundSql = statementHandler.getBoundSql();
-					String sql = boundSql.getSql();
-					String pageSql = generatePageSql(sql, condition);
-					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);
 				}
 			}
 		} else if (loggerDescriptionHandler != null) {

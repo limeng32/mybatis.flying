@@ -1,4 +1,4 @@
 <dataset>
-	<account_ NAME="ann" OPLOCK="0" />
-	<account_ NAME="bob" OPLOCK="0" />
+	<account_ NAME="ann" OPLOCK="0" EMAIL="ann@live.cn" />
+	<account_ NAME="bob" OPLOCK="0" EMAIL="ann@live.cn" />
 </dataset>

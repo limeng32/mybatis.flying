@@ -49,12 +49,12 @@ public class SelectOneTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
 	public void testSelectOne2() {
-//		Account_Condition ac = new Account_Condition();
-//		ac.setLimiter(new PageParam(6, 8));
-//		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
-//		ac.setName("ann");
-//		Account_ account = accountService.selectOne(ac);
-//		Assert.assertEquals("ann@live.cn", account.getEmail());
+		Account_Condition ac = new Account_Condition();
+		ac.setLimiter(new PageParam(6, 8));
+		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
+		ac.setName("ann");
+		Account_ account = accountService.selectOne(ac);
+		Assert.assertEquals("ann@live.cn", account.getEmail());
 
 		Account_Condition ac2 = new Account_Condition();
 		ac2.setEmail("ann@live.cn");
@@ -70,9 +70,13 @@ public class SelectOneTest {
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")
 	public void testSelectOne3() {
-		Account_ ac = new Account_();
+		Account_Condition ac = new Account_Condition();
 		Account_ account1 = accountService.selectOne(ac);
 		Assert.assertEquals("ann", account1.getName());
+		ac.setEmail("ann@live.cn");
+		ac.setLimiter(new PageParam(1, 8));
+		ac.setSorter(new SortParam(new Order("id", Sequence.ASC), new Order("name", Sequence.DESC),
+				new Order("id", Sequence.DESC)));
 		Collection<Account_> accountC = accountService.selectAll(ac);
 		Assert.assertEquals(2, accountC.size());
 	}
