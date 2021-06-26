@@ -189,23 +189,26 @@ public class AutoMapperInterceptor implements Interceptor {
 				if (condition.getLimiter() != null) {
 					BoundSql boundSql = statementHandler.getBoundSql();
 					String sql = boundSql.getSql();
-					Connection connection = (Connection) invocation.getArgs()[0];
-					String countSql = new StringBuilder("select count(0) from (").append(sql).append(") myCount")
-							.toString();
-					PreparedStatement countStmt = connection.prepareStatement(countSql);
-					BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
-							boundSql.getParameterMappings(), parameterObject);
-					setParameters(countStmt, mappedStatement, countBS, parameterObject);
-					ResultSet rs = countStmt.executeQuery();
-					try {
-						int count = 0;
-						if (rs.next()) {
-							count = rs.getInt(1);
+					// The total count needs to be identified when encountering "selectAll"
+					if (ActionType.SELECT_ALL.equals(flyingModel.getActionType())) {
+						Connection connection = (Connection) invocation.getArgs()[0];
+						String countSql = new StringBuilder("select count(0) from (").append(sql).append(") myCount")
+								.toString();
+						PreparedStatement countStmt = connection.prepareStatement(countSql);
+						BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
+								boundSql.getParameterMappings(), parameterObject);
+						setParameters(countStmt, mappedStatement, countBS, parameterObject);
+						ResultSet rs = countStmt.executeQuery();
+						try {
+							int count = 0;
+							if (rs.next()) {
+								count = rs.getInt(1);
+							}
+							condition.getLimiter().setTotalCount(count);
+						} finally {
+							rs.close();
+							countStmt.close();
 						}
-						condition.getLimiter().setTotalCount(count);
-					} finally {
-						rs.close();
-						countStmt.close();
 					}
 					String pageSql = generatePageSql(sql, condition);
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, pageSql);

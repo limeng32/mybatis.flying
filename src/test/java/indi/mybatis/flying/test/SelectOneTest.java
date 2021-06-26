@@ -43,68 +43,33 @@ public class SelectOneTest {
 	@Autowired
 	private AccountService accountService;
 
-	/** 测试selectOne1 */
-	@Test
-	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.xml")
-	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.result.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne1.result.xml")
-	public void testSelectOne1() {
-		Account_ a1 = new Account_();
-		a1.setName("ann");
-		a1.setEmail("ann@live.cn");
-		accountService.insert(a1);
-		Account_ a2 = new Account_();
-		a2.setName("bob");
-		a2.setEmail("bob@live.cn");
-		accountService.insert(a2);
-
-		accountService.update(a2);
-		accountService.updatePersistent(a2);
-		Account_ account_ = accountService.select(a2.getId());
-
-		Account_ ac = new Account_();
-		ac.setName("bob");
-		ac.setEmail("bob@live.cn");
-		Account_ account = accountService.selectOne(ac);
-		Assert.assertEquals("bob@live.cn", account.getEmail());
-	}
-
 	/** 测试selectOne2 */
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne2.result.xml")
 	public void testSelectOne2() {
-		Account_ a1 = new Account_();
-		a1.setName("ann");
-		a1.setEmail("ann@live.cn");
-		accountService.insert(a1);
-		Account_ a2 = new Account_();
-		a2.setName("ann");
-		a2.setEmail("bob@live.cn");
-		accountService.insert(a2);
+//		Account_Condition ac = new Account_Condition();
+//		ac.setLimiter(new PageParam(6, 8));
+//		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
+//		ac.setName("ann");
+//		Account_ account = accountService.selectOne(ac);
+//		Assert.assertEquals("ann@live.cn", account.getEmail());
 
-		Account_Condition ac = new Account_Condition();
-		ac.setLimiter(new PageParam(6, 8));
-		ac.setSorter(new SortParam(new Order("id", Sequence.ASC)));
-		ac.setName("ann");
-		Account_ account = accountService.selectOne(ac);
-		Assert.assertEquals("ann@live.cn", account.getEmail());
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setEmail("ann@live.cn");
+		ac2.setSorter(new SortParam(new Order("id", Sequence.DESC)));
+		ac2.setLimiter(new PageParam(2, 2));
+		Account_ account2 = accountService.selectOne(ac2);
+		Assert.assertEquals("elon", account2.getName());
 	}
 
 	/** 测试selectOne3，缓存测试 */
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/selectOneTest/testSelectOne3.result.xml")
 	public void testSelectOne3() {
-		Account_ a1 = new Account_();
-		a1.setName("ann");
-		accountService.insert(a1);
-		Account_ a2 = new Account_();
-		a2.setName("bob");
-		accountService.insert(a2);
-
 		Account_ ac = new Account_();
 		Account_ account1 = accountService.selectOne(ac);
 		Assert.assertEquals("ann", account1.getName());
