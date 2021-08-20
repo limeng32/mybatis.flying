@@ -28,14 +28,8 @@ public class ConditionLikeHandler extends BaseTypeHandler<String> implements Typ
 	@Override
 	public void setNonNullParameter(PreparedStatement ps, int i, String parameter2, JdbcType jdbcType)
 			throws SQLException {
-		String parameter = parameter2;
-		if (parameter.indexOf('%') > -1) {
-			parameter = parameter.replaceAll("%", "\\\\%");
-		}
-		if (parameter.indexOf('_') > -1) {
-			parameter = parameter.replaceAll("_", "\\\\_");
-		}
-		ps.setString(i, "%" + parameter + "%");
+		String parameter = cookParameter(parameter2);
+		ps.setString(i, new StringBuilder("%").append(parameter).append("%").toString());
 	}
 
 	@Override
@@ -53,4 +47,17 @@ public class ConditionLikeHandler extends BaseTypeHandler<String> implements Typ
 		return cs.getString(columnIndex);
 	}
 
+	protected static String cookParameter(String parameter) {
+		String ret = parameter;
+		if (ret.indexOf('\\') > -1) {
+			ret = ret.replaceAll("\\\\", "\\\\\\\\");
+		}
+		if (ret.indexOf('%') > -1) {
+			ret = ret.replaceAll("%", "\\\\%");
+		}
+		if (ret.indexOf('_') > -1) {
+			ret = ret.replaceAll("_", "\\\\_");
+		}
+		return ret;
+	}
 }

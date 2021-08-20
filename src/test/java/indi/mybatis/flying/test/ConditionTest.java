@@ -260,4 +260,32 @@ public class ConditionTest {
 		Assert.assertEquals(3, accounts.length);
 		Assert.assertEquals("bob", accounts[0].getName());
 	}
+
+	/** 测试condition:对含有\的内容进行匹配 */
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testLikeBackslash.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testLikeBackslash.xml")
+	public void testLikeAndBackslash() {
+		Account_Condition ac = new Account_Condition();
+		ac.setNameLike("\\\\");
+		int c = accountService.count(ac);
+		Assert.assertEquals(3, c);
+
+		ac.setNameLike("\\\\\\\\");
+		c = accountService.count(ac);
+		Assert.assertEquals(1, c);
+
+		ac.setNameLike("\\\\\\");
+		c = accountService.count(ac);
+		Assert.assertEquals(2, c);
+
+		ac.setNameLike("\\");
+		c = accountService.count(ac);
+		Assert.assertEquals(4, c);
+
+		ac.setNameLike(null);
+		ac.setName("\\");
+		c = accountService.count(ac);
+		Assert.assertEquals(1, c);
+	}
 }

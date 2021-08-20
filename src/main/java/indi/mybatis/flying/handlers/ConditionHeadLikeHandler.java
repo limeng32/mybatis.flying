@@ -28,14 +28,8 @@ public class ConditionHeadLikeHandler extends BaseTypeHandler<String> implements
 	@Override
 	public void setNonNullParameter(PreparedStatement ps, int i, String parameter2, JdbcType jdbcType)
 			throws SQLException {
-		String parameter = parameter2;
-		if (parameter.indexOf('%') > -1) {
-			parameter = parameter.replaceAll("%", "\\\\%");
-		}
-		if (parameter.indexOf('_') > -1) {
-			parameter = parameter.replaceAll("_", "\\\\_");
-		}
-		ps.setString(i, parameter + "%");
+		String parameter = ConditionLikeHandler.cookParameter(parameter2);
+		ps.setString(i, new StringBuilder(parameter).append("%").toString());
 	}
 
 	@Override
