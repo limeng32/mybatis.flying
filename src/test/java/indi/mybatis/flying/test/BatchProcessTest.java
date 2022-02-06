@@ -305,7 +305,7 @@ public class BatchProcessTest {
 		a2.setPassword("6a690d842935c51f26f473e025c1b97a");
 		a2.setActivated(true);
 		a2.setActivateValue("");
-		a2.setDelegateRoleId(23L);
+		a2.setRoleIdDelegate(23L);
 		ac.add(a2);
 
 		Account_ a3 = new Account_();
@@ -359,7 +359,7 @@ public class BatchProcessTest {
 		a2.setPassword("6a690d842935c51f26f473e025c1b97a");
 		a2.setActivated(true);
 		a2.setActivateValue("");
-		a2.setDelegateRoleId(22L);
+		a2.setRoleIdDelegate(22L);
 		ac.add(a2);
 
 		Account_ a3 = new Account_();
@@ -403,7 +403,7 @@ public class BatchProcessTest {
 		l.add(a2);
 		a3.setId(3L);
 		a3.setName("carl3");
-		a3.setDelegateRoleId(24L);
+		a3.setRoleIdDelegate(24L);
 		l.add(a3);
 		int i = accountService.updateBatch(l);
 		System.out.println("::" + i);
@@ -436,7 +436,7 @@ public class BatchProcessTest {
 		l.add(a2);
 		a3.setId(3L);
 		a3.setName("carl3");
-		a3.setDelegateRoleId(24L);
+		a3.setRoleIdDelegate(24L);
 		l.add(a3);
 		int i = accountService.updateBatch(l);
 		System.out.println("::" + i);
@@ -449,7 +449,7 @@ public class BatchProcessTest {
 		l2.add(a4);
 
 		a5.setId(5L);
-		a5.setDelegateRoleId(24L);
+		a5.setRoleIdDelegate(24L);
 		l2.add(a5);
 		i = accountService.updateBatch(l2);
 		System.out.println("::" + i);

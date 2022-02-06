@@ -57,12 +57,12 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR, whiteListTag = { "simple" })
 	private java.lang.String activateValue;
 
-	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true)
-	private Long delegateRoleId;
-
 	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id", ignoreTag = {
 			"noRole" })
 	private Role_ role;
+
+	@FieldMapperAnnotation(dbFieldName = "role_id", jdbcType = JdbcType.INTEGER, delegate = true)
+	private Long roleIdDelegate;
 
 	@FieldMapperAnnotation(dbFieldName = "deputy_id", jdbcType = JdbcType.INTEGER, dbAssociationUniqueKey = "id")
 	private Role_ roleDeputy;
@@ -143,12 +143,22 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		this.status = status;
 	}
 
-	public Long getDelegateRoleId() {
-		return delegateRoleId;
+	public Role_ getRole() {
+		return role;
 	}
 
-	public void setDelegateRoleId(Long delegateRoleId) {
-		this.delegateRoleId = delegateRoleId;
+	public void setRole(Role_ newRole) {
+		if (this.role == null || this.role != newRole) {
+			if (this.role != null) {
+				Role_ oldRole = this.role;
+				this.role = null;
+				oldRole.removeAccount(this);
+			}
+			if (newRole != null) {
+				this.role = newRole;
+				this.role.addAccount(this);
+			}
+		}
 	}
 
 	public java.util.Collection<LoginLogSource2> getLoginLogSource2() {
@@ -305,24 +315,6 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 		}
 	}
 
-	public Role_ getRole() {
-		return role;
-	}
-
-	public void setRole(Role_ newRole) {
-		if (this.role == null || this.role != newRole) {
-			if (this.role != null) {
-				Role_ oldRole = this.role;
-				this.role = null;
-				oldRole.removeAccount(this);
-			}
-			if (newRole != null) {
-				this.role = newRole;
-				this.role.addAccount(this);
-			}
-		}
-	}
-
 	public Role_ getRoleDeputy() {
 		return roleDeputy;
 	}
@@ -357,6 +349,14 @@ public class Account_ extends PojoSupport<Account_> implements Serializable {
 				this.permission.addAccount(this);
 			}
 		}
+	}
+
+	public Long getRoleIdDelegate() {
+		return roleIdDelegate;
+	}
+
+	public void setRoleIdDelegate(Long roleIdDelegate) {
+		this.roleIdDelegate = roleIdDelegate;
 	}
 
 	@Override

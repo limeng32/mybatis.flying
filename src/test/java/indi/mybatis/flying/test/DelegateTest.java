@@ -2,6 +2,7 @@ package indi.mybatis.flying.test;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -27,11 +28,16 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
+import indi.mybatis.flying.models.Conditionable;
+import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.Page;
 import indi.mybatis.flying.pagination.PageParam;
+import indi.mybatis.flying.pagination.SortParam;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
+import indi.mybatis.flying.pojo.condition.Account_Condition;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
+import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,6 +52,9 @@ public class DelegateTest {
 	@Autowired
 	private DataSource dataSource1;
 
+	@Autowired
+	private AccountService accountService;
+	
 	@Autowired
 	private LoginLogService loginLogService;
 
@@ -146,13 +155,28 @@ public class DelegateTest {
 		lc.setIpLikeFilter("0.1");
 		Account_ a = new Account_();
 		a.setName("ann");
-		a.setDelegateRoleId(3L);
+		a.setRoleIdDelegate(3L);
 		lc.setAccount(a);
 		LoginLog_ loginLog = loginLogService.selectOne(lc);
 		Assert.assertEquals("0.0.0.1", loginLog.getLoginIP());
 
-		a.setDelegateRoleId(4L);
+		a.setRoleIdDelegate(4L);
 		loginLog = loginLogService.selectOne(lc);
 		Assert.assertNull(loginLog);
+	}
+	
+	// 测试delegate与多对一查询是否兼容
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegate2.xml")
+	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/indi/mybatis/flying/test/delegateTest/testDelegate2.result.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegate2.xml")
+	public void testDelegate2() {
+		Account_Condition a = new Account_Condition();
+		a.setRoleIdDelegate(3L);
+		a.setLimiter(new PageParam(1, 10));
+		a.setSorter(new SortParam(new Order("id", Conditionable.Sequence.ASC)));
+		List<Account_> accountC = accountService.selectAll(a);
+		Page<Account_> page = new Page<>(accountC, a.getLimiter());
+		System.out.println(JSONObject.toJSONString(page));
 	}
 }
