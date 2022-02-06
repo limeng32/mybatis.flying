@@ -26,15 +26,19 @@ public interface AccountMapper extends MapperFace<Account_> {
 	public Account_ selectWithoutCache(Object id);
 
 	@Select("{\"action\":\"select#{?}\"}")
-	@ResultMap("result")
+	@ResultMap("resultPrefix")
 	public Account_ selectEverything(Object id);
 
 	public Account_ selectWithoutRole(Object id);
 
 	@Override
 	@Select("{\"action\":\"selectAll\", \"ignore\":\"noPassword\"}")
-	@ResultMap("result")
+	@ResultMap("resultPrefix")
 	public List<Account_> selectAll(Account_ t);
+
+	@Select("{\"action\":\"selectOne\", \"ignore\":\"noPassword\"}")
+	@ResultMap("resultPrefix")
+	public Account_ selectOnePrefix(Account_ t);
 
 	public Collection<Account_> selectAllPrefix(Account_ t);
 
