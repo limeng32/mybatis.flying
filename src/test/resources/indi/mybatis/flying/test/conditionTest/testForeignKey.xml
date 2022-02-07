@@ -1,0 +1,12 @@
+<dataset>
+	<account_ ID="1" NAME="dice" OPLOCK="1" STATUS="p"
+		DEPUTY_ID="1" ROLE_ID="2" />
+	<account_ ID="2" NAME="carl" OPLOCK="1" STATUS="p"
+		DEPUTY_ID="1" ROLE_ID="2" />
+	<account_ ID="3" NAME="bob" OPLOCK="1" STATUS="p"
+		DEPUTY_ID="2" ROLE_ID="1" />
+	<account_ ID="4" NAME="ann" OPLOCK="1" STATUS="p"
+		DEPUTY_ID="1" ROLE_ID="2" />
+	<role_ ID="1" NAME="role1" />
+	<role_ ID="2" NAME="role2" />
+</dataset>

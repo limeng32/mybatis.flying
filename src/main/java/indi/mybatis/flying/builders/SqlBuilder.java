@@ -22,8 +22,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
-import com.alibaba.fastjson.JSONObject;
-
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -378,8 +376,15 @@ public class SqlBuilder {
 					conditionMapper.setCryptKeyAddition(fieldMapper.getCryptKeyAddition());
 					conditionMapper.setDbFieldNameForJoin(fieldMapper.getDbFieldNameForJoin());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
-						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
-						conditionMapper.setForeignKey(true);
+						Class<?> fieldType = field.getType();
+						if (!Long.class.equals(fieldType) && !long.class.equals(fieldType)
+								&& !Integer.class.equals(fieldType) && !int.class.equals(fieldType)
+								&& !Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)
+								&& !String.class.equals(fieldType) && !Collection.class.isAssignableFrom(fieldType)
+								&& !Enum.class.isAssignableFrom(fieldType)) {
+							conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+							conditionMapper.setForeignKey(true);
+						}
 					}
 					if (conditionMapper.isForeignKey()
 							&& (!ConditionType.NULL_OR_NOT.equals(conditionMapper.getConditionType()))
@@ -1706,10 +1711,12 @@ public class SqlBuilder {
 		}
 
 		if (aggregateMap != null) {
-			// prepare for v1.1.0 System.out.println("aggregateJson::" + JSONObject.toJSONString(aggregateMap));
+			// prepare for v1.1.0 System.out.println("aggregateJson::" +
+			// JSONObject.toJSONString(aggregateMap));
 		}
 		if (groupBySet != null) {
-			// prepare for v1.1.0 System.out.println("groupBySet::" + JSONObject.toJSONString(groupBySet));
+			// prepare for v1.1.0 System.out.println("groupBySet::" +
+			// JSONObject.toJSONString(groupBySet));
 		}
 
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);

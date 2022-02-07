@@ -18,6 +18,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -287,5 +288,22 @@ public class ConditionTest {
 		ac.setName("\\");
 		c = accountService.count(ac);
 		Assert.assertEquals(1, c);
+	}
+
+	/* 测试在Condition类中使用外键字段做条件属性 */
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testForeignKey.xml")
+	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testForeignKey.xml")
+	public void testForeignKey() {
+		Account_Condition ac = new Account_Condition();
+		ac.setDeputyRoleIdNotEquals(1L);
+		Account_ account = accountService.selectOne(ac);
+		System.out.println(JSONObject.toJSONString(account));
+		Assert.assertEquals(3, account.getId().intValue());
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setRoleIdNotEquals(2L);
+		Account_ account2 = accountService.selectOne(ac2);
+		Assert.assertEquals(3, account2.getId().intValue());
 	}
 }

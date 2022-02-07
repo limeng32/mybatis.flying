@@ -166,6 +166,12 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.EQUAL, customTypeHandler = StoryStatusHandler.class)
 	private StoryStatus_ statusEquals;
 
+	@ConditionMapperAnnotation(dbFieldName = "deputy_id", conditionType = ConditionType.NOT_EQUAL)
+	private Long deputyRoleIdNotEquals;
+
+	@ConditionMapperAnnotation(dbFieldName = "role_id", conditionType = ConditionType.NOT_EQUAL)
+	private Long roleIdNotEquals;
+
 	@Override
 	public Limitable getLimiter() {
 		return limiter;
@@ -424,6 +430,22 @@ public class Account_Condition extends Account_ implements Conditionable {
 
 	public void setEmailNotTailLike(String emailNotTailLike) {
 		this.emailNotTailLike = emailNotTailLike;
+	}
+
+	public Long getDeputyRoleIdNotEquals() {
+		return deputyRoleIdNotEquals;
+	}
+
+	public void setDeputyRoleIdNotEquals(Long deputyRoleIdNotEquals) {
+		this.deputyRoleIdNotEquals = deputyRoleIdNotEquals;
+	}
+
+	public Long getRoleIdNotEquals() {
+		return roleIdNotEquals;
+	}
+
+	public void setRoleIdNotEquals(Long roleIdNotEquals) {
+		this.roleIdNotEquals = roleIdNotEquals;
 	}
 
 }
