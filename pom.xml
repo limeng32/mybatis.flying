@@ -52,7 +52,7 @@
 		<mybatis-355.version>3.5.5</mybatis-355.version>
 		<mybatis-356.version>3.5.6</mybatis-356.version>
 		<mybatis-spring.version>1.3.0</mybatis-spring.version>
-		<logback.version>1.2.0</logback.version>
+		<logback.version>1.2.9</logback.version>
 		<unitils.version>3.4.2</unitils.version>
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
 		<druid.version>1.2.5</druid.version>
