@@ -3,6 +3,8 @@ package indi.mybatis.flying.pojo.condition;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.ibatis.type.LongTypeHandler;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
 import indi.mybatis.flying.models.Conditionable;
@@ -121,6 +123,13 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL),
 			@ConditionMapperAnnotation(dbFieldName = "loginIP", conditionType = ConditionType.EQUAL) })
 	private Object[] statusIsNullOrLoginIPEquals;
+
+	@Or({ @ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class, delegate = true),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.EQUAL, customTypeHandler = LongTypeHandler.class, delegate = true),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.GREATER_THAN, customTypeHandler = LongTypeHandler.class, delegate = true),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.LIKE, customTypeHandler = LongTypeHandler.class, delegate = true),
+			@ConditionMapperAnnotation(dbFieldName = "accountId", conditionType = ConditionType.NULL_OR_NOT), })
+	private Object[] accountEqualsOr;
 
 	@Override
 	public Limitable getLimiter() {
@@ -372,6 +381,14 @@ public class LoginLog_Condition extends LoginLog_ implements Conditionable {
 
 	public void setStatusIsNullOrLoginIPEquals(Object... statusIsNullOrLoginIPEquals) {
 		this.statusIsNullOrLoginIPEquals = statusIsNullOrLoginIPEquals;
+	}
+
+	public Object[] getAccountEqualsOr() {
+		return accountEqualsOr;
+	}
+
+	public void setAccountEqualsOr(Object... accountEqualsOr) {
+		this.accountEqualsOr = accountEqualsOr;
 	}
 
 }

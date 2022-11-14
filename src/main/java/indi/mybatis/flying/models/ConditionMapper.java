@@ -94,6 +94,8 @@ public class ConditionMapper implements Mapperable {
 	 */
 	private Class<?> subTarget;
 
+	private boolean isDelegate = false;
+
 	private AssociationType associationType;
 
 	private FieldMapper[] cryptKeyField;
@@ -270,4 +272,11 @@ public class ConditionMapper implements Mapperable {
 		this.cryptKeyAddition = cryptKeyAddition;
 	}
 
+	public boolean isDelegate() {
+		return isDelegate;
+	}
+
+	public void setDelegate(boolean isDelegate) {
+		this.isDelegate = isDelegate;
+	}
 }

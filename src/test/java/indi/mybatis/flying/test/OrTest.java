@@ -270,6 +270,21 @@ public class OrTest {
 		Assert.assertEquals(4, i);
 	}
 
+	/* 一个dbAssociationTypeHandler型外键的或逻辑测试用例 */
+	@Test
+	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/orTest/testOr8.xml")
+	@ExpectedDatabase(connection = "dataSource1", assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/orTest/testOr8.result.xml")
+	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/orTest/testOr8.result.xml")
+	public void testOr8() {
+		LoginLog_Condition loginLog = new LoginLog_Condition();
+		loginLog.setAccountEqualsOr(1L, 2L, 10L, "8", true);
+		int i = loginLogService.count(loginLog);
+		Assert.assertEquals(7, i);
+
+		Collection<LoginLog_> c = loginLogService.selectAll(loginLog);
+		Assert.assertEquals(7, c.size());
+	}
+
 	/* 一个在缓存状态下或逻辑查询的测试用例 */
 	/* 需要同时涉及同库外键和跨库外键 */
 	@Test

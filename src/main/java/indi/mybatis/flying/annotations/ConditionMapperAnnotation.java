@@ -74,4 +74,15 @@ public @interface ConditionMapperAnnotation {
 	 * @since 1.1.0
 	 */
 	AggregateFunction aggregateFunction() default AggregateFunction.NONE;
+	
+	/**
+	 * 
+	 * Is a delegate mode or not. In delegate mode you can get the primary key of
+	 * the associated objects treated as a normal attributes. The default is false 
+	 * meaning delegate mode if off.
+	 * 
+	 * @return boolean
+	 * @since 1.0.16
+	 */
+	boolean delegate() default false;
 }

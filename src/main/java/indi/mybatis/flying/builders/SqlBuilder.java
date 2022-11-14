@@ -344,6 +344,7 @@ public class SqlBuilder {
 		conditionMapper.setConditionType(conditionMapperAnnotation.conditionType());
 		conditionMapper.setSubTarget(conditionMapperAnnotation.subTarget());
 		conditionMapper.setTypeHandlerPath(conditionMapperAnnotation.customTypeHandler());
+		conditionMapper.setDelegate(conditionMapperAnnotation.delegate());
 		for (Field pojoField : pojoClass.getDeclaredFields()) {
 			for (Annotation oan : pojoField.getDeclaredAnnotations()) {
 				boolean b1 = oan instanceof FieldMapperAnnotation && ((FieldMapperAnnotation) oan).dbFieldName()
@@ -376,15 +377,8 @@ public class SqlBuilder {
 					conditionMapper.setCryptKeyAddition(fieldMapper.getCryptKeyAddition());
 					conditionMapper.setDbFieldNameForJoin(fieldMapper.getDbFieldNameForJoin());
 					if (!"".equals(fieldMapper.getDbAssociationUniqueKey())) {
-						Class<?> fieldType = field.getType();
-						if (!Long.class.equals(fieldType) && !long.class.equals(fieldType)
-								&& !Integer.class.equals(fieldType) && !int.class.equals(fieldType)
-								&& !Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)
-								&& !String.class.equals(fieldType) && !Collection.class.isAssignableFrom(fieldType)
-								&& !Enum.class.isAssignableFrom(fieldType)) {
-							conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
-							conditionMapper.setForeignKey(true);
-						}
+						conditionMapper.setDbAssociationUniqueKey(fieldMapper.getDbAssociationUniqueKey());
+						conditionMapper.setForeignKey(true);
 					}
 					if (conditionMapper.isForeignKey()
 							&& (!ConditionType.NULL_OR_NOT.equals(conditionMapper.getConditionType()))
@@ -471,7 +465,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (conditionMapper.isForeignKey()) {
+		if (conditionMapper.isForeignKey() && !conditionMapper.isDelegate()) {
 			whereSql.append(conditionMapper.getFieldName()).append(DOT).append(conditionMapper.getForeignFieldName());
 		} else {
 			whereSql.append(conditionMapper.getFieldName());
@@ -550,7 +544,7 @@ public class SqlBuilder {
 					if (fieldNamePrefix != null) {
 						tempWhereSql.append(fieldNamePrefix).append(DOT);
 					}
-					if (conditionMapper.isForeignKey()) {
+					if (conditionMapper.isForeignKey() && !conditionMapper.isDelegate()) {
 						tempWhereSql.append(conditionMapper.getFieldName()).append(DOT)
 								.append(conditionMapper.getForeignFieldName()).append(OPENBRACKET).append(j)
 								.append(CLOSEBRACKET);
@@ -599,7 +593,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (mapper.isForeignKey()) {
+		if (mapper.isForeignKey() && !mapper.isDelegate()) {
 			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
@@ -646,7 +640,7 @@ public class SqlBuilder {
 		if (fieldNamePrefix != null) {
 			whereSql.append(fieldNamePrefix).append(DOT);
 		}
-		if (mapper.isForeignKey()) {
+		if (mapper.isForeignKey() && !mapper.isDelegate()) {
 			whereSql.append(mapper.getFieldName()).append(DOT).append(mapper.getForeignFieldName());
 		} else {
 			whereSql.append(mapper.getFieldName());
@@ -1710,14 +1704,14 @@ public class SqlBuilder {
 			}
 		}
 
-		if (aggregateMap != null) {
-			// prepare for v1.1.0 System.out.println("aggregateJson::" +
-			// JSONObject.toJSONString(aggregateMap));
-		}
-		if (groupBySet != null) {
-			// prepare for v1.1.0 System.out.println("groupBySet::" +
-			// JSONObject.toJSONString(groupBySet));
-		}
+//		if (aggregateMap != null) {
+		// prepare for v1.1.0 System.out.println("aggregateJson::" +
+		// JSONObject.toJSONString(aggregateMap));
+//		}
+//		if (groupBySet != null) {
+		// prepare for v1.1.0 System.out.println("groupBySet::" +
+		// JSONObject.toJSONString(groupBySet));
+//		}
 
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
 		Class<?> tempClass = getTableMappedClass(objectType);

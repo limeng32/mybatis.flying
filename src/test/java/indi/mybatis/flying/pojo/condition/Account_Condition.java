@@ -166,10 +166,10 @@ public class Account_Condition extends Account_ implements Conditionable {
 	@ConditionMapperAnnotation(dbFieldName = "status", conditionType = ConditionType.EQUAL, customTypeHandler = StoryStatusHandler.class)
 	private StoryStatus_ statusEquals;
 
-	@ConditionMapperAnnotation(dbFieldName = "deputy_id", conditionType = ConditionType.NOT_EQUAL)
+	@ConditionMapperAnnotation(dbFieldName = "deputy_id", conditionType = ConditionType.NOT_EQUAL, delegate = true)
 	private Long deputyRoleIdNotEquals;
 
-	@ConditionMapperAnnotation(dbFieldName = "role_id", conditionType = ConditionType.NOT_EQUAL)
+	@ConditionMapperAnnotation(dbFieldName = "role_id", conditionType = ConditionType.NOT_EQUAL, delegate = true)
 	private Long roleIdNotEquals;
 
 	@Override

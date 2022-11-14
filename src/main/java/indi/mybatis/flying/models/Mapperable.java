@@ -49,4 +49,6 @@ public interface Mapperable {
 	String getDbFieldNameForJoin();
 
 	String getCryptKeyAddition();
+	
+	boolean isDelegate();
 }
