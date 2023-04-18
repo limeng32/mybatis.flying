@@ -22,6 +22,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
+import com.alibaba.fastjson.JSONObject;
+
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
@@ -40,6 +42,7 @@ import indi.mybatis.flying.models.OrMapper;
 import indi.mybatis.flying.models.QueryMapper;
 import indi.mybatis.flying.models.TableMapper;
 import indi.mybatis.flying.models.TableName;
+import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.statics.ConditionType;
 import indi.mybatis.flying.statics.HandlerPaths;
 import indi.mybatis.flying.statics.OpLockType;
@@ -1556,6 +1559,11 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel) throws IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
+		return buildSelectAllSql(object, flyingModel, null);
+	}
+
 	/**
 	 * The query SQL statement is generated from the incoming object
 	 * 
@@ -1563,8 +1571,9 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectAllSql(Object object, FlyingModel flyingModel) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel, List<Order> orders)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException,
+			InstantiationException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
 		}
@@ -1704,14 +1713,14 @@ public class SqlBuilder {
 			}
 		}
 
-//		if (aggregateMap != null) {
+		// if (aggregateMap != null) {
 		// prepare for v1.1.0 System.out.println("aggregateJson::" +
 		// JSONObject.toJSONString(aggregateMap));
-//		}
-//		if (groupBySet != null) {
+		// }
+		// if (groupBySet != null) {
 		// prepare for v1.1.0 System.out.println("groupBySet::" +
 		// JSONObject.toJSONString(groupBySet));
-//		}
+		// }
 
 		Map<String, Object> dtoFieldMap = objectIsClass ? Collections.emptyMap() : PropertyUtils.describe(object);
 		Class<?> tempClass = getTableMappedClass(objectType);

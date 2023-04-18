@@ -1,5 +1,9 @@
 package indi.mybatis.flying.models;
 
+import java.util.List;
+
+import indi.mybatis.flying.pagination.Order;
+
 /**
  * 
  * @date 2019年12月18日 11:56:08
@@ -12,5 +16,9 @@ public interface Sortable {
 
 	public void addOrder();
 
-	public String toSql();
+	public StringBuilder toSql();
+	
+	public Object getObject();
+	
+	public List<Order> getOrderList();
 }

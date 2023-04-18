@@ -19,10 +19,15 @@ public class SortParam implements Sortable {
 		list = new LinkedList<>();
 		for (Order order : orders) {
 			list.add(order);
+			if (order.getObject() != null) {
+				object = order.getObject();
+			}
 		}
 	}
 
 	List<Order> list;
+
+	Object object = null;
 
 	@Override
 	public void addOrder() {
@@ -30,7 +35,7 @@ public class SortParam implements Sortable {
 	}
 
 	@Override
-	public String toSql() {
+	public StringBuilder toSql() {
 		StringBuilder ret = new StringBuilder();
 		if (list != null) {
 			ret.append(" order by");
@@ -41,7 +46,17 @@ public class SortParam implements Sortable {
 				ret.deleteCharAt(ret.length() - 1);
 			}
 		}
-		return ret.toString();
+		return ret;
+	}
+
+	@Override
+	public Object getObject() {
+		return object;
+	}
+
+	@Override
+	public List<Order> getOrderList() {
+		return list;
 	}
 
 }

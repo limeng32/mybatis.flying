@@ -13,21 +13,22 @@ import indi.mybatis.flying.models.Queryable;
  */
 public class Order {
 
-	public static final String DOT = ".";
-
 	public Order(String field, Conditionable.Sequence sequence) {
 		this.field = field;
 		this.sequence = sequence.toString();
 	}
 
-	public Order(Queryable queryable, Conditionable.Sequence sequence) {
-		this.field = queryable.getTableName() + DOT + queryable.value();
+	public Order(String field, Conditionable.Sequence sequence, Object object) {
+		this.field = field;
 		this.sequence = sequence.toString();
+		this.object = object;
 	}
 
 	private String field;
 
 	private String sequence;
+
+	private Object object;
 
 	public String getField() {
 		return field;
@@ -45,7 +46,15 @@ public class Order {
 		this.sequence = sequence;
 	}
 
-	public String toSql() {
-		return new StringBuilder().append(" ").append(field).append(" ").append(sequence).append(",").toString();
+	public Object getObject() {
+		return object;
+	}
+
+	public void setObject(Object object) {
+		this.object = object;
+	}
+
+	public StringBuilder toSql() {
+		return new StringBuilder(" ").append(field).append(" ").append(sequence).append(",");
 	}
 }

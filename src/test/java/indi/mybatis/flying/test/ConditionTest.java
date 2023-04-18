@@ -29,6 +29,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
+import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.models.Conditionable.Sequence;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.SortParam;
@@ -255,7 +256,7 @@ public class ConditionTest {
 		Account_Condition ac = new Account_Condition();
 		ac.setRole(rc1);
 		ac.setRoleDeputy(rc2);
-		ac.setSorter(new SortParam(new Order("name", Sequence.ASC)));
+		ac.setSorter(new SortParam(new Order("name", Sequence.ASC, ac)));
 		Collection<Account_> accountC = accountService.selectAll(ac);
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertEquals(3, accounts.length);

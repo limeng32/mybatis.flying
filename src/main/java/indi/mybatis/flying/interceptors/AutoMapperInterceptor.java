@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -121,6 +122,14 @@ public class AutoMapperInterceptor implements Interceptor {
 				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 				break;
 			case SELECT_ALL:
+//				if (parameterObject instanceof Conditionable && ((Conditionable) parameterObject).getSorter() != null
+//						&& ((Conditionable) parameterObject).getSorter().getObject() != null) {
+//					System.out.println("!!!!!!!" + ((Conditionable) parameterObject).getSorter().getObject());
+//					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel,
+//							((Conditionable) parameterObject).getSorter().getOrderList());
+//				} else {
+//					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+//				}
 				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
 				needHandleLimiterAndSorter = true;
 				break;

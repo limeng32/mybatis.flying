@@ -5,7 +5,7 @@
 		DEPUTY_ID="2" />
 	<account_ ID="3" NAME="bob" OPLOCK="1" STATUS="p" ROLE_ID="1"
 		DEPUTY_ID="2" />
-	<account_ ID="4" NAME="ann" OPLOCK="1" STATUS="p" />
+	<account_ ID="4" NAME="ann" OPLOCK="1" STATUS="p" ROLE_ID="1" />
 	<role_ ID="1" NAME="role1" />
 	<role_ ID="2" NAME="role2" />
 </dataset>
