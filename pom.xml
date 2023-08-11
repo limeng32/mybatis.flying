@@ -56,7 +56,7 @@
 		<unitils.version>3.4.2</unitils.version>
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
 		<druid.version>1.2.5</druid.version>
-		<spring-boot.version>1.5.7.RELEASE</spring-boot.version>
+		<spring-boot.version>2.5.12</spring-boot.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<javax.persistence.version>1.0</javax.persistence.version>
 		<cglib.version>3.2.5</cglib.version>
