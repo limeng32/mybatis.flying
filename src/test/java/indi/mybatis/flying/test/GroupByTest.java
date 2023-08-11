@@ -61,10 +61,8 @@ public class GroupByTest {
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/groupByTest/test1.datasource.xml") })
 	public void test1() {
 		List<Map<String, Object>> m = accountMapper.selectGroupBy2();
-		System.out.println("::" + m);
 		Account_ a = new Account_();
 		a.setName("ann");
 		List<Map<String, Object>> m2 = accountMapper.selectGroupBy(a);
-		System.out.println("::" + m2);
 	}
 }

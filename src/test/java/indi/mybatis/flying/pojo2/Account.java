@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.ForeignAssociation;
 import indi.mybatis.flying.pojo.Permission;
@@ -57,7 +55,6 @@ public class Account extends PojoSupport<Account> implements Serializable {
 					"simple" })
 	private Permission permission;
 
-	@JSONField(serialize = false)
 	private java.util.Collection<LoginLog> loginLog;
 
 	@Override

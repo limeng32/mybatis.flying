@@ -4,8 +4,6 @@ import java.util.Date;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.handler.ByteArrayHandler;
@@ -113,7 +111,6 @@ public class EmpScore {
 	 */
 	@FieldMapperAnnotation(dbFieldName = "checker_name", jdbcType = JdbcType.VARCHAR)
 	private String checkerName;
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	@FieldMapperAnnotation(dbFieldName = "create_time", jdbcType = JdbcType.TIMESTAMP)
 	private Date createTime;
 	@FieldMapperAnnotation(dbFieldName = "cont_degree", jdbcType = JdbcType.DOUBLE)
@@ -125,7 +122,6 @@ public class EmpScore {
 	 */
 	@FieldMapperAnnotation(dbFieldName = "unpass_reason", jdbcType = JdbcType.VARCHAR)
 	private String unpassReason;
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	@FieldMapperAnnotation(dbFieldName = "update_time", jdbcType = JdbcType.TIMESTAMP)
 	private Date updateTime;
 
@@ -133,7 +129,6 @@ public class EmpScore {
 			"staff_id", "year", "staff_name", "staff_id" }, cryptKeyAdditional = MyCryptKeyAddition.class)
 	private String secret2;
 
-	@JSONField(serialize = false)
 	private java.util.Collection<Account3> account3;
 
 	public Date getUpdateTime() {

@@ -1,9 +1,11 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +15,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -55,7 +55,6 @@ import indi.mybatis.flying.service2.TransactiveService3;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -304,12 +303,18 @@ public class AccountTest {
 		Assert.assertNull(a4.getStatus());
 	}
 
-	/** 测试ignoreTag功能 */
+	/**
+	 * 测试ignoreTag功能
+	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 */
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testIgnoredSelect.xml")
-	public void testIgnoreTag() {
+	public void testIgnoreTag() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Account_ account = accountService.select(1);
 		Assert.assertNull(account.getPassword());
 
@@ -330,7 +335,9 @@ public class AccountTest {
 		LoginLog_ lc2 = new LoginLog_();
 		lc2.setAccount(ac2);
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc2);
-		System.out.println("::::" + JSONObject.toJSONString(loginLogC));
+		for (LoginLog_ e : loginLogC) {
+			System.out.println("::::" + BeanUtils.describe(e));
+		}
 		Assert.assertEquals(1, loginLogC.size());
 		for (LoginLog_ l : loginLogC) {
 			Assert.assertEquals("0.0.0.1", l.getLoginIP());

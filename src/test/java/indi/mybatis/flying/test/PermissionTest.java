@@ -11,7 +11,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -31,7 +30,6 @@ import indi.mybatis.flying.service.AccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -76,7 +74,7 @@ public class PermissionTest {
 		int c = accountService.count(a);
 		Assert.assertEquals(2, c);
 	}
-	
+
 	@Test
 	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/permissionTest/testSecret.datasource.xml")
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/permissionTest/testSecret.datasource.result.xml")
@@ -87,15 +85,15 @@ public class PermissionTest {
 		permission.setSalt("sa");
 		permission.setSecret2("asd".getBytes());
 		permissionService.insert(permission);
-		
+
 		Permission permission2 = permissionService.select(1);
 		System.out.println(new String(permission2.getSecret2()));
-		
+
 		Permission p3 = new Permission();
 		p3.setId(3);
 		p3.setSalt("sa2");
 		permissionService.insertAes(p3);
-		
+
 		Permission p4 = new Permission();
 		p4.setSalt("sa2");
 		Permission permission3 = permissionService.selectAes(p4);

@@ -15,7 +15,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -37,7 +36,6 @@ import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -65,7 +63,7 @@ public class ConditionInTest {
 		nameC.add("bob");
 		Collection<Account_> c2 = accountService.selectAll(ac);
 		Assert.assertEquals(2, c2.size());
-		
+
 		ac.setNameIn(null);
 		ac.setNameNotIn(nameC);
 		c2 = accountService.selectAll(ac);

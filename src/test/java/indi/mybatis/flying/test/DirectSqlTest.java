@@ -13,7 +13,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -34,7 +33,6 @@ import indi.mybatis.flying.service.AccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -77,12 +75,12 @@ public class DirectSqlTest {
 		Account_ a1 = new Account_();
 		a1.setName("bob");
 		a1.setEmail("bob@live.cn");
-		
+
 		Collection<Account_> c = accountMapper.selectAllDirect(a1);
 		for (Account_ t : c) {
 			Assert.assertEquals("5a690d842935c51f26f473e025c1b97b", t.getPassword());
 		}
-		
+
 		Collection<Account_> c2 = accountService.selectAll(a1);
 		for (Account_ t : c2) {
 			Assert.assertNull(t.getPassword());

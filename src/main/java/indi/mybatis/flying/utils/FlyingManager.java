@@ -1,25 +1,20 @@
 package indi.mybatis.flying.utils;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
-
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.handlers.MilliSecondKeyHandler;
 import indi.mybatis.flying.handlers.SnowFlakeKeyHandler;
 import indi.mybatis.flying.handlers.UuidKeyHandler;
 import indi.mybatis.flying.handlers.UuidWithoutLineKeyHandler;
-import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.statics.FlyingKeyword;
@@ -59,7 +54,7 @@ public class FlyingManager {
 		// 在CookOriginalSql中采用迭代的方式获取configuration中其它的元素的引用
 		FlyingModel ret = new FlyingModel();
 		try {
-			JSONObject json = JSONObject.parseObject(originalSql);
+			JSONObject json = new JSONObject(originalSql);
 			buildFlyingModel(ret, json, originalSql, id, true, null, null);
 			dealInnerPropertiesIteration(id, json, configuration, ret);
 			flyingModelCache.put(id, ret);
@@ -70,58 +65,90 @@ public class FlyingManager {
 		}
 	}
 
+	public static String getStringSafe(JSONObject json, String name) {
+		try {
+			return json.getString(name);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static JSONArray getJSONArraySafe(JSONObject json, String name) {
+		try {
+			return json.getJSONArray(name);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static JSONObject getJSONObjectSafe(JSONObject json, String name) {
+		try {
+			JSONObject temp = json.getJSONObject(name);
+			return temp;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	private static void buildFlyingModel(FlyingModel flyingModel, JSONObject json, String originalSql, String id,
 			boolean b, JSONObject innerJson, String outerPrefix) {
 		if (b) {
-			String temp = json.getString(FlyingKeyword.ACTION);
+			String temp = getStringSafe(json, FlyingKeyword.ACTION);
 			if (temp.endsWith("?")) {
 				temp = temp.substring(0, temp.length() - 1);
 			}
 			ActionType actionType = ActionType.forValue(temp);
 			flyingModel.setActionType(actionType);
-			dealKeyHandler(actionType, json.getString(FlyingKeyword.KEY_GENERATOR), originalSql, flyingModel);
+			dealKeyHandler(actionType, getStringSafe(json, FlyingKeyword.KEY_GENERATOR), originalSql, flyingModel);
 		}
 		flyingModel.setId(id);
 		flyingModel.setHasFlyingFeature(true);
 		if (innerJson == null) {
-			flyingModel.setIgnoreTag(json.getString(FlyingKeyword.IGNORE));
-			flyingModel.setWhiteListTag(json.getString(FlyingKeyword.WHITE_LIST));
-			flyingModel.setIndex(json.getString(FlyingKeyword.INDEX));
+			flyingModel.setIgnoreTag(getStringSafe(json, FlyingKeyword.IGNORE));
+			flyingModel.setWhiteListTag(getStringSafe(json, FlyingKeyword.WHITE_LIST));
+			flyingModel.setIndex(getStringSafe(json, FlyingKeyword.INDEX));
 		} else {
 			// inner json need ignore tag and white list tag
-			flyingModel.setIgnoreTag(innerJson.getString(FlyingKeyword.IGNORE));
-			flyingModel.setWhiteListTag(innerJson.getString(FlyingKeyword.WHITE_LIST));
+			flyingModel.setIgnoreTag(getStringSafe(innerJson, FlyingKeyword.IGNORE));
+			flyingModel.setWhiteListTag(getStringSafe(innerJson, FlyingKeyword.WHITE_LIST));
 			// but not need index
 		}
-		flyingModel.setUnstablePrefix(json.getString(FlyingKeyword.PREFIX));
+		flyingModel.setUnstablePrefix(getStringSafe(json, FlyingKeyword.PREFIX));
 		flyingModel.setPrefix(outerPrefix == null ? (flyingModel.getUnstablePrefix())
 				: (outerPrefix + flyingModel.getUnstablePrefix()));
-		if (json.getJSONObject("aggregate") != null) {
-			Map<String, AggregateModel> temp = JSONObject.parseObject(json.getJSONObject("aggregate").toJSONString(),
-					new TypeReference<Map<String, AggregateModel>>() {
-					});
-			Map<String, Set<AggregateModel>> temp2 = new HashMap<>();
-			for (Map.Entry<String, AggregateModel> e : temp.entrySet()) {
-				if (e.getValue() != null) {
-					AggregateModel am = e.getValue();
-					if (temp2.containsKey(am.getColumn())) {
-						am.setAlias(e.getKey());
-						temp2.get(am.getColumn()).add(am);
-					} else {
-						Set<AggregateModel> set = new LinkedHashSet<>();
-						am.setAlias(e.getKey());
-						set.add(am);
-						temp2.put(am.getColumn(), set);
-					}
-				}
-			}
-			flyingModel.getAggregate().putAll(temp2);
-		}
-		if (json.getJSONArray("groupBy") != null) {
-			flyingModel.getGroupBy().addAll(JSONObject.parseObject(json.getJSONArray("groupBy").toJSONString(),
-					new TypeReference<Set<String>>() {
-					}));
-		}
+		// 下一版特性：
+//		if (getJSONObjectSafe(json, "aggregate") != null) {
+//			Map<String, Object> temp = getJSONObjectSafe(json, "aggregate").toMap();
+//			Map<String, Set<AggregateModel>> temp2 = new HashMap<>();
+//			for (Map.Entry<String, Object> e : temp.entrySet()) {
+//				if (e.getValue() != null) {
+//					Map<String, Object> m = (HashMap<String, Object>) e.getValue();
+//					AggregateModel am = new AggregateModel();
+//					if (temp2.containsKey(m.get("column"))) {
+//						am.setAlias(e.getKey());
+//						am.setColumn(m.get("column").toString());
+//						am.setFunction(AggregateFunction.forValue(m.get("function").toString()));
+//						temp2.get(am.getColumn()).add(am);
+//					} else {
+//						Set<AggregateModel> set = new LinkedHashSet<>();
+//						am.setAlias(e.getKey());
+//						am.setColumn(m.get("column").toString());
+//						am.setFunction(AggregateFunction.forValue(m.get("function").toString()));
+//						set.add(am);
+//						temp2.put(am.getColumn(), set);
+//					}
+//				}
+//			}
+//			flyingModel.getAggregate().putAll(temp2);
+//		}
+//		if (getJSONArraySafe(json, "groupBy") != null) {
+//			List<Object> m = getJSONArraySafe(json, "groupBy").toList();
+//			for (Object o : m) {
+//				if (o != null) {
+//					flyingModel.getGroupBy().add(o.toString());
+//				}
+//			}
+//		}
 	}
 
 	private static JSONObject dealInnerPropertiesIteration(String id, JSONObject flyingJson,
@@ -129,19 +156,19 @@ public class FlyingManager {
 		if (flyingModel2ndCache.get(id) != null) {
 			return flyingModel2ndCache.get(id);
 		}
-		JSONObject threshold = flyingJson.getJSONObject("properties");
+		JSONObject threshold = getJSONObjectSafe(flyingJson, "properties");
 		if (threshold == null || threshold.isEmpty()) {
 			return flyingJson;
 		}
-		for (Map.Entry<String, Object> e : threshold.getInnerMap().entrySet()) {
-			JSONObject json = (JSONObject) e.getValue();
-			if (json.containsKey(FlyingKeyword.ID)) {
-				String innerId = json.getString(FlyingKeyword.ID);
+		for (Map.Entry<String, Object> e : threshold.toMap().entrySet()) {
+			JSONObject json = (JSONObject) JSONObject.wrap(e.getValue());
+			String innerId = getStringSafe(json, FlyingKeyword.ID);
+			if (innerId != null) {
 				if (innerId.indexOf('.') == -1 && id.indexOf('.') > -1) {
 					innerId = new StringBuilder(id.substring(0, id.lastIndexOf('.') + 1)).append(innerId).toString();
 				}
 				String originalSql = configuration.getMappedStatement(innerId).getBoundSql(null).getSql();
-				JSONObject innerJson = JSONObject.parseObject(originalSql);
+				JSONObject innerJson = new JSONObject(originalSql);
 				FlyingModel innerFlyingModel = new FlyingModel();
 				buildFlyingModel(innerFlyingModel, json, originalSql, innerId, false, innerJson,
 						flyingModel.getPrefix());

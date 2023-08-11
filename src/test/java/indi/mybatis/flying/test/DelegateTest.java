@@ -1,10 +1,12 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +16,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -33,12 +33,10 @@ import indi.mybatis.flying.pagination.PageParam;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.LoginLog_;
 import indi.mybatis.flying.pojo.condition.LoginLog_Condition;
-import indi.mybatis.flying.service.AccountService;
 import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -52,9 +50,6 @@ public class DelegateTest {
 	private AccountMapper accountMapper;
 
 	@Autowired
-	private AccountService accountService;
-
-	@Autowired
 	private LoginLogService loginLogService;
 
 	@Test
@@ -66,7 +61,7 @@ public class DelegateTest {
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/delegateTest/testDelegate.xml")
 	@ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/delegateTest/testDelegate.result.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/delegateTest/testDelegate.xml")
-	public void testDelegate() {
+	public void testDelegate() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		LoginLog_ l = new LoginLog_();
 		l.setDelegateAccountId(11L);
 		LoginLog_ loginLog = loginLogService.selectOnePrefix(l);
@@ -82,7 +77,7 @@ public class DelegateTest {
 		l2.setLimiter(new PageParam(1, 2));
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(l2);
 		Page<LoginLog_> page2 = new Page<>(loginLogC, l2.getLimiter());
-		System.out.println("::" + JSONObject.toJSONString(page2));
+		System.out.println("::" + BeanUtils.describe(page2));
 
 	}
 

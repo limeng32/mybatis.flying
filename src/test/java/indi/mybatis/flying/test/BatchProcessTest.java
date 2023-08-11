@@ -1,10 +1,13 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +17,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -38,7 +39,6 @@ import indi.mybatis.flying.service.AccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -282,7 +282,7 @@ public class BatchProcessTest {
 			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchInsert.datasource.result.xml") })
 	@DatabaseTearDowns({
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/batchProcessTest/testBatchInsert.datasource.result.xml") })
-	public void testBatchInsert() {
+	public void testBatchInsert() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Collection<Account_> ac = new ArrayList<>();
 		Role_ r1 = new Role_(), r2 = new Role_(), r3 = new Role_();
 		r1.setId(1);
@@ -318,7 +318,7 @@ public class BatchProcessTest {
 		a3.setRole(r3);
 		ac.add(a3);
 		accountService.insertBatch(ac);
-		System.out.println(JSONObject.toJSONString(ac));
+		System.out.println(new org.json.JSONObject(ac));
 
 		Collection<Account_> ac2 = new ArrayList<>();
 		try {
@@ -328,7 +328,7 @@ public class BatchProcessTest {
 		} catch (Exception e) {
 
 		}
-		System.out.println(JSONObject.toJSONString(ac2));
+		System.out.println(BeanUtils.describe(ac2));
 	}
 
 	@Test

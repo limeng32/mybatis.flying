@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.TableMapperAnnotation;
 import indi.mybatis.flying.pojoHelper.PojoSupport;
@@ -44,7 +42,6 @@ public class Account22 extends PojoSupport<Account22> implements Serializable {
 	 * 激活码
 	 * 
 	 */
-	@JSONField(serialize = false)
 	@FieldMapperAnnotation(dbFieldName = "activateValue", jdbcType = JdbcType.VARCHAR)
 	private java.lang.String activateValue;
 

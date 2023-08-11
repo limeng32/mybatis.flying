@@ -1,5 +1,6 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +18,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -29,7 +29,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
-import indi.mybatis.flying.builders.SqlBuilder;
 import indi.mybatis.flying.models.Conditionable.Sequence;
 import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.pagination.SortParam;
@@ -43,7 +42,6 @@ import indi.mybatis.flying.service.LoginLogService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -295,11 +293,11 @@ public class ConditionTest {
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/conditionTest/testForeignKey.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/conditionTest/testForeignKey.xml")
-	public void testForeignKey() {
+	public void testForeignKey() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Account_Condition ac = new Account_Condition();
 		ac.setDeputyRoleIdNotEquals(1L);
 		Account_ account = accountService.selectOne(ac);
-		System.out.println(JSONObject.toJSONString(account));
+		System.out.println(BeanUtils.describe(account));
 		Assert.assertEquals(3, account.getId().intValue());
 
 		Account_Condition ac2 = new Account_Condition();

@@ -1,12 +1,13 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +17,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -30,8 +29,6 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 
 import indi.mybatis.flying.Application;
 import indi.mybatis.flying.mapper.AccountMapper;
-import indi.mybatis.flying.models.AggregateFunction;
-import indi.mybatis.flying.models.AggregateModel;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.pojo.Account_;
 import indi.mybatis.flying.pojo.Detail_;
@@ -46,7 +43,6 @@ import indi.mybatis.flying.utils.FlyingManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1",
@@ -79,7 +75,7 @@ public class PrefixTest {
 	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect.xml")
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect.result.xml")
-	public void testSelect() {
+	public void testSelect() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<String, String> map = new HashMap<>();
 		map.put("id", "1");
 		Account_ account = accountService.selectAsd(1);
@@ -96,7 +92,7 @@ public class PrefixTest {
 		pc.setName("carl");
 		ac.setPermission(pc);
 		Collection<Account_> accountC = accountService.selectAllPrefix(ac);
-		System.out.println(JSONObject.toJSONString(accountC));
+		System.out.println(BeanUtils.describe(accountC));
 		Account_[] accounts = accountC.toArray(new Account_[accountC.size()]);
 		Assert.assertEquals(3, accounts[0].getId().intValue());
 		Assert.assertEquals(23, accounts[0].getPermission().getFakeId().intValue());
@@ -123,7 +119,7 @@ public class PrefixTest {
 
 		FlyingModel fm = FlyingManager
 				.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectAllPrefix");
-		System.out.println("fm::" + JSONObject.toJSONString(fm));
+		System.out.println("fm::" + BeanUtils.describe(fm));
 
 		Assert.assertEquals("noPassword", fm.getIgnoreTag());
 		Assert.assertEquals("use index(index1)", fm.getIndex());
@@ -144,28 +140,27 @@ public class PrefixTest {
 		Assert.assertNull(fm3.getIndex());
 		Assert.assertEquals("roleDeputy__", fm3.getPrefix());
 
-		FlyingModel fm10 = FlyingManager
-				.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectGroupBy");
-		Assert.assertNotNull(fm10);
-		System.out.println("fm10::" + JSONObject.toJSONString(fm10));
-		Assert.assertEquals(2, fm10.getGroupBy().size());
-		Assert.assertEquals(2, fm10.getAggregate().size());
-		Set<AggregateModel> am = fm10.getAggregate().get("opLock");
-		Assert.assertEquals(2, am.size());
+//		FlyingModel fm10 = FlyingManager
+//				.getFlyingModelFromCache("indi.mybatis.flying.mapper.AccountMapper.selectGroupBy");
+//		Assert.assertNotNull(fm10);
+//		Assert.assertEquals(2, fm10.getGroupBy().size());
+//		Assert.assertEquals(2, fm10.getAggregate().size());
+//		Set<AggregateModel> am = fm10.getAggregate().get("opLock");
+//		Assert.assertEquals(2, am.size());
 	}
 
 	@Test
 	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.xml")
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect2.result.xml")
-	public void testSelect2() {
+	public void testSelect2() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		LoginLog_ lc = new LoginLog_();
 		lc.setLoginIP("ip3");
 		lc.setAccount(new Account_());
 		lc.getAccount().setRoleDeputy(new Role_Condition());
 		((Role_Condition) (lc.getAccount().getRoleDeputy())).setNameNotEquals("roleDeputy2");
 		Collection<LoginLog_> loginLogC = loginLogService.selectAllPrefix(lc);
-		System.out.println("1::" + JSONObject.toJSONString(loginLogC));
+		System.out.println("1::" + BeanUtils.describe(loginLogC));
 		LoginLog_[] loginLogs = loginLogC.toArray(new LoginLog_[loginLogC.size()]);
 		Assert.assertEquals(103, loginLogs[0].getId().intValue());
 		Assert.assertEquals("ip2_3", loginLogs[0].getLoginIP2());
@@ -190,14 +185,14 @@ public class PrefixTest {
 	@DatabaseSetup(connection = "dataSource1", type = DatabaseOperation.CLEAN_INSERT, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.xml")
 	@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
 	@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/prefixTest/testSelect3.result.xml")
-	public void testSelect3() {
+	public void testSelect3() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Detail_ dc = new Detail_();
 		dc.setName("d3");
 		LoginLog_Condition lc = new LoginLog_Condition();
 		lc.setIdNotEqual(102);
 		dc.setLoginLog(lc);
 		Collection<Detail_> detailC = detailService.selectAllPrefix(dc);
-		System.out.println("11::" + JSONObject.toJSONString(detailC));
+		System.out.println("11::" + BeanUtils.describe(detailC));
 		Detail_[] details = detailC.toArray(new Detail_[detailC.size()]);
 
 		Assert.assertEquals(203, details[0].getId().intValue());

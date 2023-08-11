@@ -1,10 +1,13 @@
 package indi.mybatis.flying.test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +17,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -37,7 +38,6 @@ import indi.mybatis.flying.pojo.ProjRatio;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = { "dataSource1" })
@@ -64,11 +64,11 @@ public class GroupTest {
 			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.result.xml") })
 	@DatabaseTearDowns({
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/groupTest/test1.datasource.xml") })
-	public void test1() {
+	public void test1() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		ProjRatio projRatio = projRatioMapper.select(1);
-		System.out.println("::" + JSONObject.toJSONString(projRatio));
+		System.out.println("::" + BeanUtils.describe(projRatio));
 		EmpScore2 empScore = empScore2Mapper.select(1L);
-		System.out.println("::" + JSONObject.toJSONString(empScore));
+		System.out.println("::" + BeanUtils.describe(empScore));
 		Assert.assertEquals(1, empScore.getProjRatio().getId().intValue());
 
 		EmpScore2 e = new EmpScore2();
@@ -102,23 +102,23 @@ public class GroupTest {
 			@ExpectedDatabase(connection = "dataSource1", override = false, assertionMode = DatabaseAssertionMode.NON_STRICT, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.result.xml") })
 	@DatabaseTearDowns({
 			@DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/groupTest/test2.datasource.xml") })
-	public void test2() {
+	public void test2() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		EmpScore2 e = new EmpScore2();
 		e.setState("0");
 		int c = empScore2Mapper.count(e);
 		Assert.assertEquals(3, c);
-		System.out.println("::" + JSONObject.toJSONString(e));
+		System.out.println("::" + BeanUtils.describe(e));
 
 		List<EmpScore2> l = empScore2Mapper.selectAll(e);
 		Assert.assertEquals(3, l.size());
-		System.out.println("::" + JSONObject.toJSONString(e));
+		System.out.println("::" + BeanUtils.describe(e));
 
 		EmpScore2 emp1 = empScore2Mapper.select(1L);
 		emp1.setState("2");
 		empScore2Mapper.update(emp1);
 
 		EmpScore2 emp2 = empScore2Mapper.select(2L);
-		System.out.println("::" + JSONObject.toJSONString(emp2));
+		System.out.println("::" + BeanUtils.describe(emp2));
 		emp2.setState(null);
 		empScore2Mapper.updatePersistent(emp2);
 

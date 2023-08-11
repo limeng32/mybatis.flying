@@ -22,8 +22,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
-import com.alibaba.fastjson.JSONObject;
-
 import indi.mybatis.flying.annotations.ConditionMapperAnnotation;
 import indi.mybatis.flying.annotations.FieldMapperAnnotation;
 import indi.mybatis.flying.annotations.Or;
