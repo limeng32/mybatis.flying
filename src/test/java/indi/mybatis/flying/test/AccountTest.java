@@ -277,6 +277,10 @@ public class AccountTest {
 		Assert.assertEquals(2, accounts.length);
 		Assert.assertEquals(4, accounts[0].getId().intValue());
 		Assert.assertEquals(3, accounts[1].getId().intValue());
+
+		Account_Condition ac2 = new Account_Condition();
+		ac2.setLimiter(new PageParam(2, 2));
+		c = accountService.selectAll(ac2);
 	}
 
 	/** 测试CostumizeStatus功能 */

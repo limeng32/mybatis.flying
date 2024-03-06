@@ -28,6 +28,7 @@
 			<!-- 对自动生成的sql的打印级别，可接受none、trace、debug、warn、error，默认为none，即不打印日志 -->
 			<property name="logLevel" value="none" />
 			<property name="loggerDescription" value="indi.mybatis.flying.model.LoggerDescriptionHandler" />
+			<property name="localism" value="useLimitOffset" />
 		</plugin>
 	</plugins>
 </configuration>
