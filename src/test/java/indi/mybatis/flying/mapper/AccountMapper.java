@@ -109,4 +109,6 @@ public interface AccountMapper extends MapperFace<Account_> {
 	@Select("select * from account_ as a  use INDEX (index1)  where a.name = #{name} and a.email = #{email}")
 	@ResultMap("result")
 	public Collection<Account_> selectAllDirect4(@Param("email") String email, @Param("name") String name);
+
+	public List<Account_> selectUseOffset(@Param("limit") int limit, @Param("offset") int offset);
 }
