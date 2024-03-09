@@ -51,6 +51,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
+import indi.mybatis.flying.models.LoggerDescriptionHandler;
 import indi.mybatis.flying.models.LoggerDescriptionable;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.FlyingManager;
@@ -69,12 +70,21 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static final String DIALECT = "dialect";
 	private static final String LOG_LEVEL = "logLevel";
-	private static final String LOGGER_DESCRIPTION = "loggerDescription";
+	private static final String FATAL_ALERT = "!!!FATAL!!! ";
 
 	private static final String LOCALISM = "localism";
 	private static final String USE_LIMIT_OFFSET = "useLimitOffset";
 	private String localismValue;
 	private static boolean useLimitOffset = false;
+
+	private static final String LOGGER_FATAL = "loggerFatal";
+	private String loggerFatalValue;
+	private static final String LOGGER_ERROR = "loggerError";
+	private String loggerErrorValue;
+	private static final String LOGGER_WARN = "loggerWarn";
+	private String loggerWarnValue;
+	private static final String LOGGER_INFO = "loggerInfo";
+	private String loggerInfoValue;
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
@@ -173,9 +183,9 @@ public class AutoMapperInterceptor implements Interceptor {
 						String countSql = new StringBuilder("select count(0) from (").append(sqlToexecute)
 								.append(") myCount").toString();
 						PreparedStatement countStmt = connection.prepareStatement(countSql);
-						BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
+						BoundSql countBs = new BoundSql(mappedStatement.getConfiguration(), countSql,
 								boundSql.getParameterMappings(), parameterObject);
-						setParameters(countStmt, mappedStatement, countBS, parameterObject);
+						setParameters(countStmt, mappedStatement, countBs, parameterObject);
 						ResultSet rs = countStmt.executeQuery();
 						try {
 							int count = 0;
@@ -279,7 +289,7 @@ public class AutoMapperInterceptor implements Interceptor {
 				logger.trace(log);
 				break;
 			case FATAL:
-				logger.error(new StringBuilder("!!!FATAL!!! ").append(log).toString());
+				logger.error(new StringBuilder(FATAL_ALERT).append(log).toString());
 				break;
 			default:
 				break;
@@ -316,14 +326,13 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setProperties(Properties properties) {
 		localismValue = properties.getProperty(LOCALISM);
 		if (localismValue != null) {
-			String[] localisms = localismValue.split(" ");
+			String[] localisms = localismValue.split(",");
 			for (String s : localisms) {
-				if (USE_LIMIT_OFFSET.equals(s)) {
+				if (USE_LIMIT_OFFSET.equals(s.trim())) {
 					useLimitOffset = true;
 				}
 			}
@@ -349,16 +358,37 @@ public class AutoMapperInterceptor implements Interceptor {
 			logLevel = LogLevel.NONE;
 		}
 
-		String loggerDescriptionClassPath = properties.getProperty(LOGGER_DESCRIPTION);
-		if (loggerDescriptionClassPath != null) {
-			try {
-				Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
-						.forName(loggerDescriptionClassPath);
-				loggerDescriptionHandler = clazz.newInstance();
-			} catch (Exception e) {
-				loggerDescriptionHandler = null;
-				logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
-						.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());
+		loggerDescriptionHandler = new LoggerDescriptionHandler();
+		loggerFatalValue = properties.getProperty(LOGGER_FATAL);
+		if (loggerFatalValue != null) {
+			String[] loggerFatals = loggerFatalValue.split(",");
+			for (String s : loggerFatals) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.FATAL);
+			}
+		}
+		loggerErrorValue = properties.getProperty(LOGGER_ERROR);
+		if (loggerErrorValue != null) {
+			String[] loggerErrors = loggerErrorValue.split(",");
+			for (String s : loggerErrors) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.ERROR);
+			}
+		}
+		loggerWarnValue = properties.getProperty(LOGGER_WARN);
+		if (loggerWarnValue != null) {
+			String[] loggerWarns = loggerWarnValue.split(",");
+			for (String s : loggerWarns) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.WARN);
+			}
+		}
+		loggerInfoValue = properties.getProperty(LOGGER_INFO);
+		if (loggerInfoValue != null) {
+			String[] loggerInfos = loggerInfoValue.split(",");
+			for (String s : loggerInfos) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.INFO);
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<settings>
@@ -11,14 +11,14 @@
 		<setting name="proxyFactory" value="CGLIB" />
 		<setting name="lazyLoadTriggerMethods" value="" />
 		<setting name="multipleResultSetsEnabled" value="true" />
-		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
 	</settings>
 	<typeAliases>
 		<package name="indi.mybatis.flying.handlers" />
 		<package name="org.apache.ibatis.type" />
 	</typeAliases>
 	<typeHandlers>
-		<typeHandler handler="BooleanHandler" />
+		<typeHandler handler="AdvancedBooleanHandler" />
 		<typeHandler handler="AdvancedStringTypeHandler" />
 	</typeHandlers>
 	<plugins>
@@ -27,8 +27,11 @@
 			<property name="dialect" value="h2" />
 			<!-- 对自动生成的sql的打印级别，可接受none、trace、debug、warn、error，默认为none，即不打印日志 -->
 			<property name="logLevel" value="none" />
-			<property name="loggerDescription" value="indi.mybatis.flying.model.LoggerDescriptionHandler" />
-			<property name="localism" value="useLimitOffset" />
+			<property name="loggerDescription"
+				value="indi.mybatis.flying.models.XXX" />
+			<property name="localism" value="useLimitOffset," />
+			<property name="loggerError"
+				value="indi.mybatis.flying.mapper.AccountMapper.insert, indi.mybatis.flying.mapper.AccountMapper.selectUseOffset, indi.mybatis.flying.mapper.AccountMapper.selectOne, " />
 		</plugin>
 	</plugins>
 </configuration>

@@ -54,15 +54,15 @@ public class PostgreTest {
     @DatabaseTearDown(connection = "dataSource1", type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/postgreTest/testSelect.result.xml")
     public void testSelect() {
         List<Account_> c1 = accountService.selectUseOffset(2, 1);
-        System.out.println("c1::" + c1);
+        // System.out.println("c1::" + c1);
         Assert.assertEquals("bob", c1.get(0).getName());
 
         Account_Condition ac = new Account_Condition();
         ac.setLimiter(new PageParam(1, 2));
         Collection<Account_> c = accountService.selectAll(ac);
-        System.out.println("accounts::" + c);
+        // System.out.println("accounts::" + c);
 
         Account_ account_ = accountService.selectOne(ac);
-        System.out.println("account_::" + account_);
+        // System.out.println("account_::" + account_);
     }
 }
