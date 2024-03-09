@@ -202,60 +202,63 @@ public class AutoMapperInterceptor implements Interceptor {
 			}
 			if (loggerDescriptionHandler != null) {
 				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(flyingModel.getId());
-				if (!LogLevel.NONE.equals(loggerLevel)) {
-					BoundSql boundSqlTemp = statementHandler.getBoundSql();
-					String sqlTemp = boundSqlTemp.getSql();
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
-					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-					if (ActionType.SELECT.equals(flyingModel.getActionType())) {
-						stringBuilder.append("Bound value: {").append(parameterMappings.get(0).getProperty())
-								.append("=").append(parameterObject).append("};");
-					} else {
-						MetaObject metaObject = parameterObject == null ? null
-								: configuration.newMetaObject(parameterObject);
-						stringBuilder.append("Bound value: {");
-						boolean b = true;
-						for (ParameterMapping parameterMapping : parameterMappings) {
-							if (parameterMapping.getMode() != ParameterMode.OUT) {
-								Object value;
-								String propertyName = parameterMapping.getProperty();
-								value = metaObject == null ? null : metaObject.getValue(propertyName);
-								if (b) {
-									b = false;
-								} else {
-									stringBuilder.append(", ");
-								}
-								stringBuilder.append(propertyName).append("=").append(value);
-							}
-						}
-						stringBuilder.append("};");
-					}
-					log(logger, loggerLevel, stringBuilder.toString());
-				}
+				dealLoggerForFlying(loggerLevel, statementHandler, flyingModel,
+						parameterMappings, parameterObject, configuration);
 			}
 		} else if (loggerDescriptionHandler != null) {
 			LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(mappedStatement.getId());
-			if (!LogLevel.NONE.equals(loggerLevel)) {
-				String sqlTemp = statementHandler.getBoundSql().getSql();
-				StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
-				stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-				stringBuilder.append("Bound value: ").append(parameterObject).append(";");
-				log(logger, loggerLevel, stringBuilder.toString());
-			}
+			dealLoggerForNormal(loggerLevel, statementHandler,
+					mappedStatement, parameterObject);
 		}
 
-		/*
-		 * Call the original statementHandler's prepare method to complete the original
-		 * logic.
-		 */
-		// statementHandler = (StatementHandler)
-		// metaStatementHandler.getOriginalObject();
-		// statementHandler.prepare((Connection) invocation.getArgs()[0],
-		// mappedStatement.getTimeout());
-		/* Pass to the next interceptor. */
 		return invocation.proceed();
+	}
+
+	private void dealLoggerForFlying(LogLevel loggerLevel, StatementHandler statementHandler, FlyingModel flyingModel,
+			List<ParameterMapping> parameterMappings, Object parameterObject, Configuration configuration) {
+		if (!LogLevel.NONE.equals(loggerLevel)) {
+			BoundSql boundSqlTemp = statementHandler.getBoundSql();
+			String sqlTemp = boundSqlTemp.getSql();
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
+			stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+			if (ActionType.SELECT.equals(flyingModel.getActionType())) {
+				stringBuilder.append("Bound value: {").append(parameterMappings.get(0).getProperty())
+						.append("=").append(parameterObject).append("};");
+			} else {
+				MetaObject metaObject = parameterObject == null ? null
+						: configuration.newMetaObject(parameterObject);
+				stringBuilder.append("Bound value: {");
+				boolean b = true;
+				for (ParameterMapping parameterMapping : parameterMappings) {
+					if (parameterMapping.getMode() != ParameterMode.OUT) {
+						Object value;
+						String propertyName = parameterMapping.getProperty();
+						value = metaObject == null ? null : metaObject.getValue(propertyName);
+						if (b) {
+							b = false;
+						} else {
+							stringBuilder.append(", ");
+						}
+						stringBuilder.append(propertyName).append("=").append(value);
+					}
+				}
+				stringBuilder.append("};");
+			}
+			log(logger, loggerLevel, stringBuilder.toString());
+		}
+	}
+
+	private void dealLoggerForNormal(LogLevel loggerLevel, StatementHandler statementHandler,
+			MappedStatement mappedStatement, Object parameterObject) {
+		if (!LogLevel.NONE.equals(loggerLevel)) {
+			String sqlTemp = statementHandler.getBoundSql().getSql();
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
+			stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+			stringBuilder.append("Bound value: ").append(parameterObject).append(";");
+			log(logger, loggerLevel, stringBuilder.toString());
+		}
 	}
 
 	private static void log(Logger logger, LogLevel level, String log) {
@@ -283,18 +286,21 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
+	private static final String H = "h";
+	private static final String TARGET = "target";
+
 	private MetaObject getRealObj(Object obj) {
 		MetaObject metaStatement = MetaObject.forObject(obj, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 				DEFAULT_REFLECTOR_FACTORY);
 		/* Separating the proxy object chain */
-		while (metaStatement.hasGetter("h")) {
-			Object object = metaStatement.getValue("h");
+		while (metaStatement.hasGetter(H)) {
+			Object object = metaStatement.getValue(H);
 			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 					DEFAULT_REFLECTOR_FACTORY);
 		}
 		/* Isolate the target class of the last proxy object. */
-		while (metaStatement.hasGetter("target")) {
-			Object object = metaStatement.getValue("target");
+		while (metaStatement.hasGetter(TARGET)) {
+			Object object = metaStatement.getValue(TARGET);
 			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 					DEFAULT_REFLECTOR_FACTORY);
 		}
