@@ -451,16 +451,16 @@ public class SqlBuilder {
 			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, conditionMapper, tableName);
 		switch (type) {
-		case NOT_LIKE:
-			whereSql.append(BLANK_NOT);
-			break;
-		case NOT_HEAD_LIKE:
-			whereSql.append(BLANK_NOT);
-			break;
-		case NOT_TAIL_LIKE:
-			whereSql.append(BLANK_NOT);
-			break;
-		default:
+			case NOT_LIKE:
+				whereSql.append(BLANK_NOT);
+				break;
+			case NOT_HEAD_LIKE:
+				whereSql.append(BLANK_NOT);
+				break;
+			case NOT_TAIL_LIKE:
+				whereSql.append(BLANK_NOT);
+				break;
+			default:
 		}
 		whereSql.append(BLANK_LIKE_BLANK_POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -477,26 +477,26 @@ public class SqlBuilder {
 		whereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
 				.append(COMMA_TYPEHANDLER_EQUAL);
 		switch (type) {
-		case LIKE:
-			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
-			break;
-		case NOT_LIKE:
-			whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
-			break;
-		case HEAD_LIKE:
-			whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
-			break;
-		case NOT_HEAD_LIKE:
-			whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
-			break;
-		case TAIL_LIKE:
-			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
-			break;
-		case NOT_TAIL_LIKE:
-			whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
-			break;
-		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
+			case LIKE:
+				whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
+				break;
+			case NOT_LIKE:
+				whereSql.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH);
+				break;
+			case HEAD_LIKE:
+				whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
+				break;
+			case NOT_HEAD_LIKE:
+				whereSql.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH);
+				break;
+			case TAIL_LIKE:
+				whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
+				break;
+			case NOT_TAIL_LIKE:
+				whereSql.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH);
+				break;
+			default:
+				throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 		if (isOr) {
 			whereSql.append(CLOSEBRACE_OR_BLANK);
@@ -511,14 +511,14 @@ public class SqlBuilder {
 			throw new BuildSqlException(BuildSqlExceptionEnum.THIS_CONDITION_NOT_SUPPORT_OR);
 		}
 		switch (type) {
-		case IN:
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, false, tableName);
-			break;
-		case NOT_IN:
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, true, tableName);
-			break;
-		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
+			case IN:
+				dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, false, tableName);
+				break;
+			case NOT_IN:
+				dealWhereSqlOfIn(value, whereSql, conditionMapper, fieldNamePrefix, true, tableName);
+				break;
+			default:
+				throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 	}
 
@@ -556,30 +556,30 @@ public class SqlBuilder {
 					tempWhereSql.append(COMMA).append(JDBCTYPE_EQUAL).append(conditionMapper.getJdbcType().toString())
 							.append(COMMA_TYPEHANDLER_EQUAL);
 					switch (type) {
-					case MULTI_LIKE_AND:
-						tempWhereSql.append(CONDITIONLIKEHANDLER);
-						tempWhereSql.append(CLOSEBRACE_AND_BLANK);
-						break;
-					case MULTI_LIKE_OR:
-						tempWhereSql.append(CONDITIONLIKEHANDLER);
-						tempWhereSql.append(CLOSEBRACE_OR_BLANK);
-						break;
-					default:
-						throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
+						case MULTI_LIKE_AND:
+							tempWhereSql.append(CONDITIONLIKEHANDLER);
+							tempWhereSql.append(CLOSEBRACE_AND_BLANK);
+							break;
+						case MULTI_LIKE_OR:
+							tempWhereSql.append(CONDITIONLIKEHANDLER);
+							tempWhereSql.append(CLOSEBRACE_OR_BLANK);
+							break;
+						default:
+							throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 					}
 				}
 			}
 			if (!allNull) {
 				switch (type) {
-				case MULTI_LIKE_AND:
-					tempWhereSql.delete(tempWhereSql.lastIndexOf(BLANK_AND_BLANK),
-							tempWhereSql.lastIndexOf(BLANK_AND_BLANK) + 5);
-					break;
-				case MULTI_LIKE_OR:
-					tempWhereSql.delete(tempWhereSql.lastIndexOf(BLANK_OR_BLANK),
-							tempWhereSql.lastIndexOf(BLANK_OR_BLANK) + 4);
-					break;
-				default:
+					case MULTI_LIKE_AND:
+						tempWhereSql.delete(tempWhereSql.lastIndexOf(BLANK_AND_BLANK),
+								tempWhereSql.lastIndexOf(BLANK_AND_BLANK) + 5);
+						break;
+					case MULTI_LIKE_OR:
+						tempWhereSql.delete(tempWhereSql.lastIndexOf(BLANK_OR_BLANK),
+								tempWhereSql.lastIndexOf(BLANK_OR_BLANK) + 4);
+						break;
+					default:
 				}
 				tempWhereSql.append(CLOSEPAREN_BLANK_AND_BLANK);
 				whereSql.append(tempWhereSql);
@@ -619,23 +619,23 @@ public class SqlBuilder {
 			TableName tableName, String fieldNamePrefix, boolean isOr, int i) {
 		handleWhereSql(whereSql, mapper, tableName);
 		switch (type) {
-		case GREATER_THAN:
-			whereSql.append(BLANK_GREATER_BLANK);
-			break;
-		case GREATER_OR_EQUAL:
-			whereSql.append(BLANK_GREATER_EQUAL_BLANK);
-			break;
-		case LESS_THAN:
-			whereSql.append(BLANK_LESS_BLANK);
-			break;
-		case LESS_OR_EQUAL:
-			whereSql.append(BLANK_LESS_EQUAL_BLANK);
-			break;
-		case NOT_EQUAL:
-			whereSql.append(BLANK_LESS_GREATER_BLANK);
-			break;
-		default:
-			throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
+			case GREATER_THAN:
+				whereSql.append(BLANK_GREATER_BLANK);
+				break;
+			case GREATER_OR_EQUAL:
+				whereSql.append(BLANK_GREATER_EQUAL_BLANK);
+				break;
+			case LESS_THAN:
+				whereSql.append(BLANK_LESS_BLANK);
+				break;
+			case LESS_OR_EQUAL:
+				whereSql.append(BLANK_LESS_EQUAL_BLANK);
+				break;
+			case NOT_EQUAL:
+				whereSql.append(BLANK_LESS_GREATER_BLANK);
+				break;
+			default:
+				throw new BuildSqlException(BuildSqlExceptionEnum.AMBIGUOUS_CONDITION);
 		}
 		whereSql.append(POUND_OPENBRACE);
 		if (fieldNamePrefix != null) {
@@ -849,12 +849,12 @@ public class SqlBuilder {
 			collectionObjectClassName = objectC.getClass().getSimpleName();
 		}
 		switch (collectionObjectClassName) {
-		case "StrictMap":
-			valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
-			break;
-		default:
-			valueC = (MapperMethod.ParamMap<Object>) objectC;
-			break;
+			case "StrictMap":
+				valueC = (DefaultSqlSession.StrictMap<Object>) objectC;
+				break;
+			default:
+				valueC = (MapperMethod.ParamMap<Object>) objectC;
+				break;
 		}
 		return valueC;
 	}
@@ -1335,84 +1335,87 @@ public class SqlBuilder {
 	private static void dealBatchCondition(ConditionType conditionType, StringBuilder whereSql,
 			ConditionMapper conditionMapper, Object value) {
 		switch (conditionType) {
-		case EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case LESS_OR_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_EQUAL_BLANK);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case LESS_THAN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_BLANK);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case GREATER_OR_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_EQUAL_BLANK);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case GREATER_THAN:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_BLANK);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case NOT_EQUAL:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_GREATER_BLANK);
-			dealBatchWhere(whereSql, conditionMapper);
-			break;
-		case LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case HEAD_LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case TAIL_LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case NOT_LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case NOT_HEAD_LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case NOT_TAIL_LIKE:
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
-					.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
-					.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
-					.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
-			break;
-		case NULL_OR_NOT:
-			Boolean isNull = (Boolean) value;
-			whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_IS);
-			if (!isNull) {
-				whereSql.append(BLANK_NOT);
-			}
-			whereSql.append(BLANK_NULL).append(BLANK_AND_BLANK);
-			break;
-		case IN:
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, null, false, null);
-			break;
-		case NOT_IN:
-			dealWhereSqlOfIn(value, whereSql, conditionMapper, null, true, null);
-			break;
-		default:
-			throw new BuildSqlException(
-					new StringBuilder(BuildSqlExceptionEnum.UNKOWN_CONDITION_FOR_BATCH_PROCESS.toString())
-							.append(conditionMapper.getDbFieldName()).toString());
+			case EQUAL:
+				whereSql.append(conditionMapper.getDbFieldName()).append(EQUAL);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case LESS_OR_EQUAL:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_EQUAL_BLANK);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case LESS_THAN:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_BLANK);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case GREATER_OR_EQUAL:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_EQUAL_BLANK);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case GREATER_THAN:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_GREATER_BLANK);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case NOT_EQUAL:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LESS_GREATER_BLANK);
+				dealBatchWhere(whereSql, conditionMapper);
+				break;
+			case LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case HEAD_LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case TAIL_LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case NOT_LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT)
+						.append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case NOT_HEAD_LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT)
+						.append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_HEAD_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case NOT_TAIL_LIKE:
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_NOT)
+						.append(BLANK_LIKE_BLANK_POUND_OPENBRACE)
+						.append(conditionMapper.getFieldName()).append(COMMA).append(JDBCTYPE_EQUAL)
+						.append(conditionMapper.getJdbcType().toString()).append(COMMA_TYPEHANDLER_EQUAL)
+						.append(HandlerPaths.CONDITION_TAIL_LIKE_HANDLER_PATH).append(CLOSEBRACE_AND_BLANK);
+				break;
+			case NULL_OR_NOT:
+				Boolean isNull = (Boolean) value;
+				whereSql.append(conditionMapper.getDbFieldName()).append(BLANK_IS);
+				if (!isNull) {
+					whereSql.append(BLANK_NOT);
+				}
+				whereSql.append(BLANK_NULL).append(BLANK_AND_BLANK);
+				break;
+			case IN:
+				dealWhereSqlOfIn(value, whereSql, conditionMapper, null, false, null);
+				break;
+			case NOT_IN:
+				dealWhereSqlOfIn(value, whereSql, conditionMapper, null, true, null);
+				break;
+			default:
+				throw new BuildSqlException(
+						new StringBuilder(BuildSqlExceptionEnum.UNKOWN_CONDITION_FOR_BATCH_PROCESS.toString())
+								.append(conditionMapper.getDbFieldName()).toString());
 		}
 	}
 
@@ -1540,7 +1543,7 @@ public class SqlBuilder {
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, null, ai, flyingModel,
-				null, null, null, null);
+				null, null, null, null, Collections.emptySet());
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
@@ -1569,7 +1572,7 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectAllSql(Object object, FlyingModel flyingModel, List<Order> orders)
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel, Set<Order> orders)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException,
 			InstantiationException {
 		if (null == object) {
@@ -1581,7 +1584,7 @@ public class SqlBuilder {
 		StringBuilder groupBySql = new StringBuilder();
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, groupBySql, ai,
-				flyingModel, null, null, null, null);
+				flyingModel, null, null, null, null, orders);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1615,7 +1618,7 @@ public class SqlBuilder {
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, null, ai, flyingModel,
-				null, null, null, null);
+				null, null, null, null, Collections.emptySet());
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1685,7 +1688,8 @@ public class SqlBuilder {
 	private static void dealMapperAnnotationIterationForSelectAll(boolean objectIsClass, Object object,
 			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, StringBuilder groupBySql,
 			AtomicInteger index, FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper,
-			String fieldPerfix, TableName lastTableName) throws IllegalAccessException, InvocationTargetException,
+			String fieldPerfix, TableName lastTableName, Set<Order> orders)
+			throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		Class<?> objectType = objectIsClass ? (Class<?>) object : object.getClass();
 		String ignoreTag = null;
@@ -1732,6 +1736,15 @@ public class SqlBuilder {
 		} else {
 			tableName = new TableName(tableMapper, indexValue, lastTableName.getMap());
 		}
+
+		if (orders != null) {
+			for (Order o : orders) {
+				if (o.getTableName() == null && o.getObject() == object) {
+					o.setTableName(tableName);
+				}
+			}
+		}
+
 		/*
 		 * If originFieldMapper is null, it is considered to be the first traversal. In
 		 * the first iteration, handle fromSql.
@@ -1817,7 +1830,7 @@ public class SqlBuilder {
 				dealMapperAnnotationIterationForSelectAll(value instanceof Class<?>, value, selectSql, fromSql,
 						whereSql, null, index,
 						flyingModel == null ? (null) : (flyingModel.getProperties().get(fieldMapper.getFieldName())),
-						tableName, fieldMapper, temp, tableName);
+						tableName, fieldMapper, temp, tableName, orders);
 			} else {
 				dealConditionEqual(whereSql, fieldMapper, tableName, temp, false, 0);
 			}
@@ -1906,61 +1919,62 @@ public class SqlBuilder {
 	private static void dealConditionMapper(ConditionMapper conditionMapper, Object value, StringBuilder whereSql,
 			TableName tableName, String temp, boolean isOr, int i) {
 		switch (conditionMapper.getConditionType()) {
-		case EQUAL:
-			dealConditionEqual(whereSql, conditionMapper, tableName, temp, isOr, i);
-			break;
-		case LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.LIKE, tableName, temp, isOr, i);
-			break;
-		case NOT_LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_LIKE, tableName, temp, isOr, i);
-			break;
-		case HEAD_LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.HEAD_LIKE, tableName, temp, isOr, i);
-			break;
-		case NOT_HEAD_LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_HEAD_LIKE, tableName, temp, isOr, i);
-			break;
-		case TAIL_LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.TAIL_LIKE, tableName, temp, isOr, i);
-			break;
-		case NOT_TAIL_LIKE:
-			dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_TAIL_LIKE, tableName, temp, isOr, i);
-			break;
-		case GREATER_THAN:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GREATER_THAN, tableName, temp, isOr, i);
-			break;
-		case GREATER_OR_EQUAL:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GREATER_OR_EQUAL, tableName, temp, isOr, i);
-			break;
-		case LESS_THAN:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LESS_THAN, tableName, temp, isOr, i);
-			break;
-		case LESS_OR_EQUAL:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LESS_OR_EQUAL, tableName, temp, isOr, i);
-			break;
-		case NOT_EQUAL:
-			dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NOT_EQUAL, tableName, temp, isOr, i);
-			break;
-		case MULTI_LIKE_AND:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_AND, tableName, temp,
-					isOr);
-			break;
-		case MULTI_LIKE_OR:
-			dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_OR, tableName, temp,
-					isOr);
-			break;
-		case IN:
-			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.IN, tableName, temp, isOr);
-			break;
-		case NOT_IN:
-			dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NOT_IN, tableName, temp, isOr);
-			break;
-		case NULL_OR_NOT:
-			dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, isOr);
-			break;
-		default:
-			break;
+			case EQUAL:
+				dealConditionEqual(whereSql, conditionMapper, tableName, temp, isOr, i);
+				break;
+			case LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.LIKE, tableName, temp, isOr, i);
+				break;
+			case NOT_LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_LIKE, tableName, temp, isOr, i);
+				break;
+			case HEAD_LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.HEAD_LIKE, tableName, temp, isOr, i);
+				break;
+			case NOT_HEAD_LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_HEAD_LIKE, tableName, temp, isOr, i);
+				break;
+			case TAIL_LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.TAIL_LIKE, tableName, temp, isOr, i);
+				break;
+			case NOT_TAIL_LIKE:
+				dealConditionLike(whereSql, conditionMapper, ConditionType.NOT_TAIL_LIKE, tableName, temp, isOr, i);
+				break;
+			case GREATER_THAN:
+				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GREATER_THAN, tableName, temp, isOr, i);
+				break;
+			case GREATER_OR_EQUAL:
+				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.GREATER_OR_EQUAL, tableName, temp, isOr,
+						i);
+				break;
+			case LESS_THAN:
+				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LESS_THAN, tableName, temp, isOr, i);
+				break;
+			case LESS_OR_EQUAL:
+				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.LESS_OR_EQUAL, tableName, temp, isOr, i);
+				break;
+			case NOT_EQUAL:
+				dealConditionNotEqual(whereSql, conditionMapper, ConditionType.NOT_EQUAL, tableName, temp, isOr, i);
+				break;
+			case MULTI_LIKE_AND:
+				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_AND, tableName, temp,
+						isOr);
+				break;
+			case MULTI_LIKE_OR:
+				dealConditionMultiLike(value, whereSql, conditionMapper, ConditionType.MULTI_LIKE_OR, tableName, temp,
+						isOr);
+				break;
+			case IN:
+				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.IN, tableName, temp, isOr);
+				break;
+			case NOT_IN:
+				dealConditionInOrNot(value, whereSql, conditionMapper, ConditionType.NOT_IN, tableName, temp, isOr);
+				break;
+			case NULL_OR_NOT:
+				dealConditionNullOrNot(value, whereSql, conditionMapper, tableName, isOr);
+				break;
+			default:
+				break;
 		}
 	}
 

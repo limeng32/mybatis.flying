@@ -1,7 +1,7 @@
 package indi.mybatis.flying.pagination;
 
 import indi.mybatis.flying.models.Conditionable;
-import indi.mybatis.flying.models.Queryable;
+import indi.mybatis.flying.models.TableName;
 
 /**
  * 
@@ -30,6 +30,8 @@ public class Order {
 
 	private Object object;
 
+	private TableName tableName;
+
 	public String getField() {
 		return field;
 	}
@@ -54,7 +56,20 @@ public class Order {
 		this.object = object;
 	}
 
+	public TableName getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(TableName tableName) {
+		this.tableName = tableName;
+	}
+
 	public StringBuilder toSql() {
-		return new StringBuilder(" ").append(field).append(" ").append(sequence).append(",");
+		if (tableName == null) {
+			return new StringBuilder(" ").append(field).append(" ").append(sequence).append(",");
+		} else {
+			return new StringBuilder(" ").append(tableName.sqlWhere()).append(field).append(" ").append(sequence)
+					.append(",");
+		}
 	}
 }

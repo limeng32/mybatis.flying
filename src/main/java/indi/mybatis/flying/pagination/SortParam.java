@@ -1,7 +1,7 @@
 package indi.mybatis.flying.pagination;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import indi.mybatis.flying.models.Sortable;
 
@@ -16,7 +16,7 @@ import indi.mybatis.flying.models.Sortable;
 public class SortParam implements Sortable {
 
 	public SortParam(Order... orders) {
-		list = new LinkedList<>();
+		list = new HashSet<>();
 		for (Order order : orders) {
 			list.add(order);
 			if (order.getObject() != null) {
@@ -25,7 +25,7 @@ public class SortParam implements Sortable {
 		}
 	}
 
-	List<Order> list;
+	Set<Order> list;
 
 	Object object = null;
 
@@ -55,7 +55,7 @@ public class SortParam implements Sortable {
 	}
 
 	@Override
-	public List<Order> getOrderList() {
+	public Set<Order> getOrderList() {
 		return list;
 	}
 

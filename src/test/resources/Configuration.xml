@@ -31,7 +31,8 @@
 				value="indi.mybatis.flying.models.XXX" />
 			<property name="localism" value="useLimitOffset," />
 			<property name="loggerError"
-				value="indi.mybatis.flying.mapper.AccountMapper.insert, indi.mybatis.flying.mapper.AccountMapper.selectUseOffset, indi.mybatis.flying.mapper.AccountMapper.selectOne, " />
+				value="indi.mybatis.flying.mapper.AccountMapper.insert, indi.mybatis.flying.mapper.AccountMapper.selectUseOffset, 
+				indi.mybatis.flying.mapper.AccountMapper.selectOne, indi.mybatis.flying.mapper.AccountMapper.selectAll," />
 		</plugin>
 	</plugins>
 </configuration>
