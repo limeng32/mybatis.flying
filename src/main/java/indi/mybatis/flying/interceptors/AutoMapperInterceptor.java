@@ -52,7 +52,6 @@ import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.LoggerDescriptionHandler;
-import indi.mybatis.flying.models.LoggerDescriptionable;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.LogLevel;
@@ -104,7 +103,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private SqlSourceBuilder builder;
 
-	private LoggerDescriptionable loggerDescriptionHandler;
+	private LoggerDescriptionHandler loggerDescriptionHandler;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
