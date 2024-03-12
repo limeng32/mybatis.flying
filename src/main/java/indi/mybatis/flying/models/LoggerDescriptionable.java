@@ -19,13 +19,4 @@ public interface LoggerDescriptionable {
 	 * @return LogLevel
 	 */
 	public LogLevel getLogLevel(String methodId);
-
-	/**
-	 * Put methodId and logLevel in the loggerMap
-	 * 
-	 * @param methodId mybatis method id
-	 * @param logLevel logLevel of the mothod
-	 * @return LogLevel
-	 */
-	public LogLevel loggerMapPut(String methodId, LogLevel logLevel);
 }
