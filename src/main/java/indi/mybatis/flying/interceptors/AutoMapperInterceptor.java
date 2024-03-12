@@ -51,7 +51,7 @@ import indi.mybatis.flying.exception.AutoMapperException;
 import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
-import indi.mybatis.flying.models.LoggerDescriptionable;
+import indi.mybatis.flying.models.LoggerDescriptionHandler;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.LogLevel;
@@ -69,7 +69,21 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private static final String DIALECT = "dialect";
 	private static final String LOG_LEVEL = "logLevel";
-	private static final String LOGGER_DESCRIPTION = "loggerDescription";
+	private static final String FATAL_ALERT = "!!!FATAL!!! ";
+
+	private static final String LOCALISM = "localism";
+	private static final String USE_LIMIT_OFFSET = "useLimitOffset";
+	private String localismValue;
+	private static boolean useLimitOffset = false;
+
+	private static final String LOGGER_FATAL = "loggerFatal";
+	private String loggerFatalValue;
+	private static final String LOGGER_ERROR = "loggerError";
+	private String loggerErrorValue;
+	private static final String LOGGER_WARN = "loggerWarn";
+	private String loggerWarnValue;
+	private static final String LOGGER_INFO = "loggerInfo";
+	private String loggerInfoValue;
 
 	private static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 	private static final String DELEGATE_BOUNDSQL_PARAMETEROBJECT = "delegate.boundSql.parameterObject";
@@ -89,7 +103,7 @@ public class AutoMapperInterceptor implements Interceptor {
 
 	private SqlSourceBuilder builder;
 
-	private LoggerDescriptionable loggerDescriptionHandler;
+	private LoggerDescriptionHandler loggerDescriptionHandler;
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -105,51 +119,50 @@ public class AutoMapperInterceptor implements Interceptor {
 
 			String newSql = null;
 			switch (flyingModel.getActionType()) {
-			case COUNT:
-				newSql = SqlBuilder.buildCountSql(parameterObject, flyingModel);
-				break;
-			case DELETE:
-				newSql = SqlBuilder.buildDeleteSql(parameterObject);
-				break;
-			case INSERT:
-				newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
-				break;
-			case INSERT_BATCH:
-				newSql = SqlBuilder.buildInsertBatchSql(parameterObject, flyingModel);
-				break;
-			case SELECT:
-				newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
-				break;
-			case SELECT_ALL:
-//				if (parameterObject instanceof Conditionable && ((Conditionable) parameterObject).getSorter() != null
-//						&& ((Conditionable) parameterObject).getSorter().getObject() != null) {
-//					System.out.println("!!!!!!!" + ((Conditionable) parameterObject).getSorter().getObject());
-//					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel,
-//							((Conditionable) parameterObject).getSorter().getOrderList());
-//				} else {
-//					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
-//				}
-				newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
-				needHandleLimiterAndSorter = true;
-				break;
-			case SELECT_ONE:
-				newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
-				needHandleLimiterAndSorter = true;
-				break;
-			case UPDATE:
-				newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
-				break;
-			case UPDATE_BATCH:
-				newSql = SqlBuilder.buildUpdateBatchSql(parameterObject, flyingModel);
-				break;
-			case UPDATE_PERSISTENT:
-				newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
-				break;
-			default:
-				break;
-			}
-			if (!LogLevel.NONE.equals(logLevel)) {
-				log(logger, logLevel, new StringBuilder("Auto generated sql: ").append(newSql).toString());
+				case COUNT:
+					newSql = SqlBuilder.buildCountSql(parameterObject, flyingModel);
+					break;
+				case DELETE:
+					newSql = SqlBuilder.buildDeleteSql(parameterObject);
+					break;
+				case INSERT:
+					newSql = SqlBuilder.buildInsertSql(parameterObject, flyingModel);
+					break;
+				case INSERT_BATCH:
+					newSql = SqlBuilder.buildInsertBatchSql(parameterObject, flyingModel);
+					break;
+				case SELECT:
+					newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
+					break;
+				case SELECT_ALL:
+					// if (parameterObject instanceof Conditionable && ((Conditionable)
+					// parameterObject).getSorter() != null
+					// && ((Conditionable) parameterObject).getSorter().getObject() != null) {
+					// System.out.println("!!!!!!!" + ((Conditionable)
+					// parameterObject).getSorter().getObject());
+					// newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel,
+					// ((Conditionable) parameterObject).getSorter().getOrderList());
+					// } else {
+					// newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+					// }
+					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+					needHandleLimiterAndSorter = true;
+					break;
+				case SELECT_ONE:
+					newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
+					needHandleLimiterAndSorter = true;
+					break;
+				case UPDATE:
+					newSql = SqlBuilder.buildUpdateSql(parameterObject, flyingModel);
+					break;
+				case UPDATE_BATCH:
+					newSql = SqlBuilder.buildUpdateBatchSql(parameterObject, flyingModel);
+					break;
+				case UPDATE_PERSISTENT:
+					newSql = SqlBuilder.buildUpdatePersistentSql(parameterObject, flyingModel);
+					break;
+				default:
+					break;
 			}
 			SqlSource sqlSource = buildSqlSource(configuration, newSql, parameterObject.getClass());
 			List<ParameterMapping> parameterMappings = sqlSource.getBoundSql(parameterObject).getParameterMappings();
@@ -169,9 +182,9 @@ public class AutoMapperInterceptor implements Interceptor {
 						String countSql = new StringBuilder("select count(0) from (").append(sqlToexecute)
 								.append(") myCount").toString();
 						PreparedStatement countStmt = connection.prepareStatement(countSql);
-						BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql,
+						BoundSql countBs = new BoundSql(mappedStatement.getConfiguration(), countSql,
 								boundSql.getParameterMappings(), parameterObject);
-						setParameters(countStmt, mappedStatement, countBS, parameterObject);
+						setParameters(countStmt, mappedStatement, countBs, parameterObject);
 						ResultSet rs = countStmt.executeQuery();
 						try {
 							int count = 0;
@@ -193,100 +206,110 @@ public class AutoMapperInterceptor implements Interceptor {
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
 				}
 			}
-
+			if (!LogLevel.NONE.equals(logLevel)) {
+				log(logger, logLevel, new StringBuilder("Auto generated sql: ").append(sqlToexecute).toString());
+			}
 			if (loggerDescriptionHandler != null) {
 				LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(flyingModel.getId());
-				if (!LogLevel.NONE.equals(loggerLevel)) {
-					BoundSql boundSqlTemp = statementHandler.getBoundSql();
-					String sqlTemp = boundSqlTemp.getSql();
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
-					stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-					if (ActionType.SELECT.equals(flyingModel.getActionType())) {
-						stringBuilder.append("Bound value: {").append(parameterMappings.get(0).getProperty())
-								.append("=").append(parameterObject).append("};");
-					} else {
-						MetaObject metaObject = parameterObject == null ? null
-								: configuration.newMetaObject(parameterObject);
-						stringBuilder.append("Bound value: {");
-						boolean b = true;
-						for (ParameterMapping parameterMapping : parameterMappings) {
-							if (parameterMapping.getMode() != ParameterMode.OUT) {
-								Object value;
-								String propertyName = parameterMapping.getProperty();
-								value = metaObject == null ? null : metaObject.getValue(propertyName);
-								if (b) {
-									b = false;
-								} else {
-									stringBuilder.append(", ");
-								}
-								stringBuilder.append(propertyName).append("=").append(value);
-							}
-						}
-						stringBuilder.append("};");
-					}
-					log(logger, loggerLevel, stringBuilder.toString());
-				}
+				dealLoggerForFlying(loggerLevel, statementHandler, flyingModel,
+						parameterMappings, parameterObject, configuration);
 			}
 		} else if (loggerDescriptionHandler != null) {
 			LogLevel loggerLevel = loggerDescriptionHandler.getLogLevel(mappedStatement.getId());
-			if (!LogLevel.NONE.equals(loggerLevel)) {
-				String sqlTemp = statementHandler.getBoundSql().getSql();
-				StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
-				stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
-				stringBuilder.append("Bound value: ").append(parameterObject).append(";");
-				log(logger, loggerLevel, stringBuilder.toString());
-			}
+			dealLoggerForNormal(loggerLevel, statementHandler,
+					mappedStatement, parameterObject);
 		}
 
-		/*
-		 * Call the original statementHandler's prepare method to complete the original
-		 * logic.
-		 */
-//		statementHandler = (StatementHandler) metaStatementHandler.getOriginalObject();
-//		statementHandler.prepare((Connection) invocation.getArgs()[0], mappedStatement.getTimeout());
-		/* Pass to the next interceptor. */
 		return invocation.proceed();
+	}
+
+	private void dealLoggerForFlying(LogLevel loggerLevel, StatementHandler statementHandler, FlyingModel flyingModel,
+			List<ParameterMapping> parameterMappings, Object parameterObject, Configuration configuration) {
+		if (!LogLevel.NONE.equals(loggerLevel)) {
+			BoundSql boundSqlTemp = statementHandler.getBoundSql();
+			String sqlTemp = boundSqlTemp.getSql();
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("Method: ").append(flyingModel.getId()).append("\r\n");
+			stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+			if (ActionType.SELECT.equals(flyingModel.getActionType())) {
+				stringBuilder.append("Bound value: {").append(parameterMappings.get(0).getProperty())
+						.append("=").append(parameterObject).append("};");
+			} else {
+				MetaObject metaObject = parameterObject == null ? null
+						: configuration.newMetaObject(parameterObject);
+				stringBuilder.append("Bound value: {");
+				boolean b = true;
+				for (ParameterMapping parameterMapping : parameterMappings) {
+					if (parameterMapping.getMode() != ParameterMode.OUT) {
+						Object value;
+						String propertyName = parameterMapping.getProperty();
+						value = metaObject == null ? null : metaObject.getValue(propertyName);
+						if (b) {
+							b = false;
+						} else {
+							stringBuilder.append(", ");
+						}
+						stringBuilder.append(propertyName).append("=").append(value);
+					}
+				}
+				stringBuilder.append("};");
+			}
+			log(logger, loggerLevel, stringBuilder.toString());
+		}
+	}
+
+	private void dealLoggerForNormal(LogLevel loggerLevel, StatementHandler statementHandler,
+			MappedStatement mappedStatement, Object parameterObject) {
+		if (!LogLevel.NONE.equals(loggerLevel)) {
+			String sqlTemp = statementHandler.getBoundSql().getSql();
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("Method: ").append(mappedStatement.getId()).append("\r\n");
+			stringBuilder.append("Bound sql: ").append(sqlTemp).append("\r\n");
+			stringBuilder.append("Bound value: ").append(parameterObject).append(";");
+			log(logger, loggerLevel, stringBuilder.toString());
+		}
 	}
 
 	private static void log(Logger logger, LogLevel level, String log) {
 		switch (level) {
-		case ERROR:
-			logger.error(log);
-			break;
-		case WARN:
-			logger.warn(log);
-			break;
-		case INFO:
-			logger.info(log);
-			break;
-		case DEBUG:
-			logger.debug(log);
-			break;
-		case TRACE:
-			logger.trace(log);
-			break;
-		case FATAL:
-			logger.error(new StringBuilder("!!!FATAL!!! ").append(log).toString());
-			break;
-		default:
-			break;
+			case ERROR:
+				logger.error(log);
+				break;
+			case WARN:
+				logger.warn(log);
+				break;
+			case INFO:
+				logger.info(log);
+				break;
+			case DEBUG:
+				logger.debug(log);
+				break;
+			case TRACE:
+				logger.trace(log);
+				break;
+			case FATAL:
+				logger.error(new StringBuilder(FATAL_ALERT).append(log).toString());
+				break;
+			default:
+				break;
 		}
 	}
+
+	private static final String H = "h";
+	private static final String TARGET = "target";
 
 	private MetaObject getRealObj(Object obj) {
 		MetaObject metaStatement = MetaObject.forObject(obj, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 				DEFAULT_REFLECTOR_FACTORY);
 		/* Separating the proxy object chain */
-		while (metaStatement.hasGetter("h")) {
-			Object object = metaStatement.getValue("h");
+		while (metaStatement.hasGetter(H)) {
+			Object object = metaStatement.getValue(H);
 			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 					DEFAULT_REFLECTOR_FACTORY);
 		}
 		/* Isolate the target class of the last proxy object. */
-		while (metaStatement.hasGetter("target")) {
-			Object object = metaStatement.getValue("target");
+		while (metaStatement.hasGetter(TARGET)) {
+			Object object = metaStatement.getValue(TARGET);
 			metaStatement = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
 					DEFAULT_REFLECTOR_FACTORY);
 		}
@@ -302,9 +325,18 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setProperties(Properties properties) {
+		localismValue = properties.getProperty(LOCALISM);
+		if (localismValue != null) {
+			String[] localisms = localismValue.split(",");
+			for (String s : localisms) {
+				if (USE_LIMIT_OFFSET.equals(s.trim())) {
+					useLimitOffset = true;
+				}
+			}
+		}
+
 		dialectValue = properties.getProperty(DIALECT);
 		if (dialectValue == null || "".equals(dialectValue)) {
 			logger.error(AutoMapperExceptionEnum.DIALECT_PROPERTY_CANNOT_FOUND.description());
@@ -325,16 +357,37 @@ public class AutoMapperInterceptor implements Interceptor {
 			logLevel = LogLevel.NONE;
 		}
 
-		String loggerDescriptionClassPath = properties.getProperty(LOGGER_DESCRIPTION);
-		if (loggerDescriptionClassPath != null) {
-			try {
-				Class<? extends LoggerDescriptionable> clazz = (Class<? extends LoggerDescriptionable>) Class
-						.forName(loggerDescriptionClassPath);
-				loggerDescriptionHandler = clazz.newInstance();
-			} catch (Exception e) {
-				loggerDescriptionHandler = null;
-				logger.error(new StringBuilder(AutoMapperExceptionEnum.WRONG_LOGGER_DESCRIPTION.description())
-						.append(loggerDescriptionClassPath).append(" because of ").append(e).toString());
+		loggerDescriptionHandler = new LoggerDescriptionHandler();
+		loggerFatalValue = properties.getProperty(LOGGER_FATAL);
+		if (loggerFatalValue != null) {
+			String[] loggerFatals = loggerFatalValue.split(",");
+			for (String s : loggerFatals) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.FATAL);
+			}
+		}
+		loggerErrorValue = properties.getProperty(LOGGER_ERROR);
+		if (loggerErrorValue != null) {
+			String[] loggerErrors = loggerErrorValue.split(",");
+			for (String s : loggerErrors) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.ERROR);
+			}
+		}
+		loggerWarnValue = properties.getProperty(LOGGER_WARN);
+		if (loggerWarnValue != null) {
+			String[] loggerWarns = loggerWarnValue.split(",");
+			for (String s : loggerWarns) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.WARN);
+			}
+		}
+		loggerInfoValue = properties.getProperty(LOGGER_INFO);
+		if (loggerInfoValue != null) {
+			String[] loggerInfos = loggerInfoValue.split(",");
+			for (String s : loggerInfos) {
+				loggerDescriptionHandler.loggerMapPut(s.trim(),
+						LogLevel.INFO);
 			}
 		}
 	}
@@ -406,8 +459,13 @@ public class AutoMapperInterceptor implements Interceptor {
 					}
 				}
 				if (condition.getLimiter() != null && !sql.endsWith(LIMIT_1)) {
-					pageSql.append(" limit ").append(condition.getLimiter().getLimitFrom()).append(",")
-							.append(condition.getLimiter().getPageSize());
+					if (useLimitOffset) {
+						pageSql.append(" limit ").append(condition.getLimiter().getPageSize()).append(" offset ")
+								.append(condition.getLimiter().getLimitFrom());
+					} else {
+						pageSql.append(" limit ").append(condition.getLimiter().getLimitFrom()).append(",")
+								.append(condition.getLimiter().getPageSize());
+					}
 				}
 			}
 			return pageSql.toString();

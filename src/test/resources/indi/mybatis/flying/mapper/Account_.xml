@@ -160,6 +160,12 @@
 		group by email,name having (avg(opLock) = '1' or avg(opLock) = '2');
 	</select>
 
+	<select id="selectUseOffset" resultMap="result">
+		select 
+		name,email from account_ 
+		limit #{limit} offset #{offset};
+	</select>
+
 	<resultMap id="result" type="Account_" autoMapping="true">
 		<id property="id" column="id" />
 		<result property="status" column="status" typeHandler="indi.mybatis.flying.handler.StoryStatusHandler"/>

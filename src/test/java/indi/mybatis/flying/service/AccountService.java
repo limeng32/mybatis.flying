@@ -153,4 +153,7 @@ public class AccountService {
 		return mapper.updateBatch(t);
 	}
 
+	public List<Account_> selectUseOffset(int limit, int offset) {
+		return mapper.selectUseOffset(limit, offset);
+	}
 }
