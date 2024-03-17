@@ -1,6 +1,6 @@
 package indi.mybatis.flying.models;
 
-import java.util.Set;
+import java.util.List;
 
 import indi.mybatis.flying.pagination.Order;
 
@@ -20,5 +20,5 @@ public interface Sortable {
 	
 	public Object getObject();
 	
-	public Set<Order> getOrderList();
+	public List<Order> getOrderList();
 }

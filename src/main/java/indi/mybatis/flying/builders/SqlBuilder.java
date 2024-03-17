@@ -1543,7 +1543,7 @@ public class SqlBuilder {
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(true, clazz, selectSql, fromSql, whereSql, null, ai, flyingModel,
-				null, null, null, null, Collections.emptySet());
+				null, null, null, null, Collections.emptyList());
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
 		}
@@ -1572,7 +1572,7 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectAllSql(Object object, FlyingModel flyingModel, Set<Order> orders)
+	public static String buildSelectAllSql(Object object, FlyingModel flyingModel, List<Order> orders)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException,
 			InstantiationException {
 		if (null == object) {
@@ -1618,7 +1618,7 @@ public class SqlBuilder {
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, null, ai, flyingModel,
-				null, null, null, null, Collections.emptySet());
+				null, null, null, null, Collections.emptyList());
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);
@@ -1688,7 +1688,7 @@ public class SqlBuilder {
 	private static void dealMapperAnnotationIterationForSelectAll(boolean objectIsClass, Object object,
 			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, StringBuilder groupBySql,
 			AtomicInteger index, FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper,
-			String fieldPerfix, TableName lastTableName, Set<Order> orders)
+			String fieldPerfix, TableName lastTableName, List<Order> orders)
 			throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		Class<?> objectType = objectIsClass ? (Class<?>) object : object.getClass();

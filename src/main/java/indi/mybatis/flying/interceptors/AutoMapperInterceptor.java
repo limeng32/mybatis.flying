@@ -17,7 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
@@ -116,7 +115,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
-		Set<Order> orderList = null;
+		List<Order> orderList = null;
 		if (flyingModel.isHasFlyingFeature()) {
 			boolean needHandleLimiterAndSorter = false;
 
@@ -444,11 +443,11 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	private String generatePageSql(String sql, Conditionable condition, Set<Order> orderList) {
+	private String generatePageSql(String sql, Conditionable condition, List<Order> orderList) {
 		if (orderList != null) {
-			System.out.println("!!!!!!!" + orderList.size());
+			System.out.println("!!!!!!!");
 			for (Order o : orderList) {
-				System.out.println(o.getTableName().sqlWhere().toString());
+				System.out.println(o.toSql().toString());
 			}
 		}
 		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
