@@ -67,6 +67,10 @@ public class SqlBuilder {
 	/* Cache QueryMapper */
 	private static final Map<Class<?>, QueryMapper> queryMapperCache = new ConcurrentHashMap<Class<?>, QueryMapper>(
 			128);
+	private static final Map<Class<?>, Boolean> annotationCache = new ConcurrentHashMap<Class<?>, Boolean>(
+			128);
+	private static final Map<Class<?>, Class<?>> tableMappedClassCache = new ConcurrentHashMap<Class<?>, Class<?>>(
+			128);
 
 	private static String collectionObjectClassName = null;
 
@@ -407,15 +411,24 @@ public class SqlBuilder {
 	 * @return
 	 */
 	private static Class<?> getTableMappedClass(Class<?> clazz) {
-		Class<?> c = clazz;
-		while (!interview(c) && !(c.equals(Object.class))) {
-			c = c.getSuperclass();
+
+		Class<?> ret = tableMappedClassCache.get(clazz);
+		if (ret != null) {
+			return ret;
+		} else {
+			Class<?> c = clazz;
+			while (!interview(c) && !(c.equals(Object.class))) {
+				c = c.getSuperclass();
+			}
+			if (c.equals(Object.class)) {
+				throw new BuildSqlException(
+						new StringBuilder(BuildSqlExceptionEnum.NO_TABLE_MAPPER_ANNOTATION.toString())
+								.append(clazz.getName()).toString());
+			} else {
+				tableMappedClassCache.put(clazz, c);
+				return c;
+			}
 		}
-		if (c.equals(Object.class)) {
-			throw new BuildSqlException(new StringBuilder(BuildSqlExceptionEnum.NO_TABLE_MAPPER_ANNOTATION.toString())
-					.append(clazz.getName()).toString());
-		}
-		return c;
 	}
 
 	/**
@@ -427,15 +440,22 @@ public class SqlBuilder {
 	 * @return
 	 */
 	private static boolean interview(Class<?> clazz) {
-		Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
-		if (classAnnotations.length > 0) {
-			for (Annotation an : classAnnotations) {
-				if (an instanceof TableMapperAnnotation || an instanceof Table) {
-					return true;
+		Boolean ret = annotationCache.get(clazz);
+		if (ret == null) {
+			Annotation[] classAnnotations = clazz.getDeclaredAnnotations();
+			if (classAnnotations.length > 0) {
+				for (Annotation an : classAnnotations) {
+					if (an instanceof TableMapperAnnotation || an instanceof Table) {
+						annotationCache.put(clazz, true);
+						return true;
+					}
 				}
 			}
+			annotationCache.put(clazz, false);
+			return false;
+		} else {
+			return ret;
 		}
-		return false;
 	}
 
 	private static void dealCryptKeyAddition(boolean b, StringBuilder stringBuilder, Mapperable mapper) {
@@ -1188,7 +1208,6 @@ public class SqlBuilder {
 		}
 		tableSql.delete(tableSql.lastIndexOf(COMMA), tableSql.lastIndexOf(COMMA) + 1);
 
-		// Start processing queryMapper for batch update
 		boolean useBatch = false;
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
@@ -1492,7 +1511,6 @@ public class SqlBuilder {
 		StringBuilder sql = new StringBuilder();
 		sql.append(DELETE_FROM_BLANK).append(tableName).append(WHERE_BLANK);
 
-		// Start processing queryMapper for batch delete
 		boolean useBatch = false;
 		for (ConditionMapper conditionMapper : queryMapper.getConditionMapperCache().values()) {
 			Object value = dtoFieldMap.get(conditionMapper.getFieldName());
@@ -1594,11 +1612,14 @@ public class SqlBuilder {
 		} else if (whereSql.indexOf(AND) > -1) {
 			whereSql.delete(whereSql.lastIndexOf(AND), whereSql.lastIndexOf(AND) + 3);
 		}
-		if (groupBySql.length() > 0 && groupBySql.indexOf(COMMA) > -1) {
-			groupBySql.delete(groupBySql.lastIndexOf(COMMA), groupBySql.lastIndexOf(COMMA) + 1);
-			// prepare for v1.1.0 System.out.println("group by::" + groupBySql);
-		}
-		return selectSql.append(fromSql).append(whereSql).append(groupBySql).toString();
+		// // prepare for v1.1.0 System.out.println("group by::" + groupBySql);
+		// if (groupBySql.length() > 0 && groupBySql.indexOf(COMMA) > -1) {
+		// groupBySql.delete(groupBySql.lastIndexOf(COMMA),
+		// groupBySql.lastIndexOf(COMMA) + 1);
+		// }
+		return selectSql.append(fromSql).append(whereSql)
+				// .append(groupBySql)
+				.toString();
 	}
 
 	/**
@@ -1608,7 +1629,8 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectOneSql(Object object, FlyingModel flyingModel, List<Order> orders) throws IllegalAccessException,
+	public static String buildSelectOneSql(Object object, FlyingModel flyingModel, List<Order> orders)
+			throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
@@ -1759,6 +1781,7 @@ public class SqlBuilder {
 
 		if (flyingModel != null) {
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
+				// TODO 此处有优化空间
 				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
 						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
