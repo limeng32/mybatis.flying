@@ -1608,7 +1608,7 @@ public class SqlBuilder {
 	 * @param flyingModel FlyingModel
 	 * @return sql
 	 */
-	public static String buildSelectOneSql(Object object, FlyingModel flyingModel) throws IllegalAccessException,
+	public static String buildSelectOneSql(Object object, FlyingModel flyingModel, List<Order> orders) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
 		if (null == object) {
 			throw new BuildSqlException(BuildSqlExceptionEnum.NULL_OBJECT);
@@ -1618,7 +1618,7 @@ public class SqlBuilder {
 		StringBuilder whereSql = new StringBuilder(WHERE_BLANK);
 		AtomicInteger ai = new AtomicInteger(0);
 		dealMapperAnnotationIterationForSelectAll(false, object, selectSql, fromSql, whereSql, null, ai, flyingModel,
-				null, null, null, null, Collections.emptyList());
+				null, null, null, null, orders);
 
 		if (selectSql.indexOf(COMMA) > -1) {
 			selectSql.delete(selectSql.lastIndexOf(COMMA), selectSql.lastIndexOf(COMMA) + 1);

@@ -146,11 +146,18 @@ public class AutoMapperInterceptor implements Interceptor {
 					} else {
 						newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
 					}
-					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
 					needHandleLimiterAndSorter = true;
 					break;
 				case SELECT_ONE:
-					newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
+					if (parameterObject instanceof Conditionable
+							&& ((Conditionable) parameterObject).getSorter() != null
+							&& ((Conditionable) parameterObject).getSorter().getObject() != null) {
+						orderList = ((Conditionable) parameterObject).getSorter().getOrderList();
+						newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel,
+								((Conditionable) parameterObject).getSorter().getOrderList());
+					} else {
+						newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel, null);
+					}
 					needHandleLimiterAndSorter = true;
 					break;
 				case UPDATE:
@@ -444,12 +451,6 @@ public class AutoMapperInterceptor implements Interceptor {
 	}
 
 	private String generatePageSql(String sql, Conditionable condition, List<Order> orderList) {
-		if (orderList != null) {
-			System.out.println("!!!!!!!");
-			for (Order o : orderList) {
-				System.out.println(o.toSql().toString());
-			}
-		}
 		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
 			StringBuilder pageSql = new StringBuilder();
 			if (isMysqlOrH2) {

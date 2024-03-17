@@ -261,6 +261,12 @@ public class AccountTest {
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals("ann", accounts[3].getName());
+
+		ac.setSorter(new SortParam(new Order("name", Conditionable.Sequence.DESC, ac),
+				new Order("name", Conditionable.Sequence.ASC, ac),
+				new Order("name", Conditionable.Sequence.ASC, ac.getRole())));
+		Account_ account = accountService.selectOne(ac);
+		Assert.assertEquals("carl", account.getName());
 	}
 
 	/** 测试limiter功能 */
