@@ -255,7 +255,7 @@ public class AccountTest {
 				new Order(Account_Condition.field_password, Conditionable.Sequence.DESC)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
-		Assert.assertEquals(new Long(4), accounts[0].getId());
+		Assert.assertEquals(4, accounts[0].getId().longValue());
 		ac.setSorter(new SortParam(new Order("name", Conditionable.Sequence.DESC, ac),
 				new Order("name", Conditionable.Sequence.ASC, ac)));
 		c = accountService.selectAll(ac);
@@ -267,6 +267,7 @@ public class AccountTest {
 				new Order("name", Conditionable.Sequence.ASC, ac.getRole())));
 		Account_ account = accountService.selectOne(ac);
 		Assert.assertEquals("carl", account.getName());
+		Assert.assertNull(account.getPassword());
 	}
 
 	/** 测试limiter功能 */

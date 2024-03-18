@@ -1035,7 +1035,7 @@ public class SqlBuilder {
 					continue;
 				}
 				if (m == null) {
-					m = new HashMap<>();
+					m = new HashMap<>(16);
 				}
 				FieldMapper maybeDelegate = fieldMapper.isHasDelegate() ? fieldMapper.getDelegate() : fieldMapper;
 				if (fieldMapper.isOpVersionLock()) {
@@ -1707,6 +1707,13 @@ public class SqlBuilder {
 		return selectSql.append(fromSql).append(whereSql).toString();
 	}
 
+	private static boolean dealVisiable(boolean useWhiteList, FieldMapper fieldMapper, String whiteListTag,
+			String ignoreTag) {
+		// TODO 此处有优化空间
+		return (!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
+				&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag));
+	}
+
 	private static void dealMapperAnnotationIterationForSelectAll(boolean objectIsClass, Object object,
 			StringBuilder selectSql, StringBuilder fromSql, StringBuilder whereSql, StringBuilder groupBySql,
 			AtomicInteger index, FlyingModel flyingModel, TableName tn, Mapperable originFieldMapper,
@@ -1781,9 +1788,8 @@ public class SqlBuilder {
 
 		if (flyingModel != null) {
 			for (FieldMapper fieldMapper : tableMapper.getFieldMapperCache().values()) {
-				// TODO 此处有优化空间
-				if ((!useWhiteList || fieldMapper.getWhiteListTagSet().contains(whiteListTag))
-						&& (!fieldMapper.getIgnoreTagSet().contains(ignoreTag))) {
+				boolean visiable = dealVisiable(useWhiteList, fieldMapper, whiteListTag, ignoreTag);
+				if (visiable) {
 					dtoFieldMap = dealSelectSql(flyingModel, fieldMapper, dtoFieldMap, index, selectSql, tableName,
 							prefix);
 				}
