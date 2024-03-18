@@ -52,6 +52,7 @@ import indi.mybatis.flying.exception.AutoMapperExceptionEnum;
 import indi.mybatis.flying.models.Conditionable;
 import indi.mybatis.flying.models.FlyingModel;
 import indi.mybatis.flying.models.LoggerDescriptionHandler;
+import indi.mybatis.flying.pagination.Order;
 import indi.mybatis.flying.statics.ActionType;
 import indi.mybatis.flying.utils.FlyingManager;
 import indi.mybatis.flying.utils.LogLevel;
@@ -114,6 +115,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		Object parameterObject = metaStatementHandler.getValue(DELEGATE_BOUNDSQL_PARAMETEROBJECT);
 		MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue(DELEGATE_MAPPEDSTATEMENT);
 		FlyingModel flyingModel = FlyingManager.fetchFlyingFeatureNew(originalSql, configuration, mappedStatement);
+		List<Order> orderList = null;
 		if (flyingModel.isHasFlyingFeature()) {
 			boolean needHandleLimiterAndSorter = false;
 
@@ -135,21 +137,27 @@ public class AutoMapperInterceptor implements Interceptor {
 					newSql = SqlBuilder.buildSelectSql(mappedStatement.getResultMaps().get(0).getType(), flyingModel);
 					break;
 				case SELECT_ALL:
-					// if (parameterObject instanceof Conditionable && ((Conditionable)
-					// parameterObject).getSorter() != null
-					// && ((Conditionable) parameterObject).getSorter().getObject() != null) {
-					// System.out.println("!!!!!!!" + ((Conditionable)
-					// parameterObject).getSorter().getObject());
-					// newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel,
-					// ((Conditionable) parameterObject).getSorter().getOrderList());
-					// } else {
-					// newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
-					// }
-					newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+					if (parameterObject instanceof Conditionable
+							&& ((Conditionable) parameterObject).getSorter() != null
+							&& ((Conditionable) parameterObject).getSorter().getObject() != null) {
+						orderList = ((Conditionable) parameterObject).getSorter().getOrderList();
+						newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel,
+								((Conditionable) parameterObject).getSorter().getOrderList());
+					} else {
+						newSql = SqlBuilder.buildSelectAllSql(parameterObject, flyingModel);
+					}
 					needHandleLimiterAndSorter = true;
 					break;
 				case SELECT_ONE:
-					newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel);
+					if (parameterObject instanceof Conditionable
+							&& ((Conditionable) parameterObject).getSorter() != null
+							&& ((Conditionable) parameterObject).getSorter().getObject() != null) {
+						orderList = ((Conditionable) parameterObject).getSorter().getOrderList();
+						newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel,
+								((Conditionable) parameterObject).getSorter().getOrderList());
+					} else {
+						newSql = SqlBuilder.buildSelectOneSql(parameterObject, flyingModel, null);
+					}
 					needHandleLimiterAndSorter = true;
 					break;
 				case UPDATE:
@@ -197,12 +205,12 @@ public class AutoMapperInterceptor implements Interceptor {
 							countStmt.close();
 						}
 					}
-					sqlToexecute = generatePageSql(sqlToexecute, condition);
+					sqlToexecute = generatePageSql(sqlToexecute, condition, orderList);
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
 				} else if (condition.getSorter() != null) {
 					BoundSql boundSql = statementHandler.getBoundSql();
 					String sql = boundSql.getSql();
-					sqlToexecute = generatePageSql(sql, condition);
+					sqlToexecute = generatePageSql(sql, condition, orderList);
 					metaStatementHandler.setValue(DELEGATE_BOUNDSQL_SQL, sqlToexecute);
 				}
 			}
@@ -442,7 +450,7 @@ public class AutoMapperInterceptor implements Interceptor {
 		}
 	}
 
-	private String generatePageSql(String sql, Conditionable condition) {
+	private String generatePageSql(String sql, Conditionable condition, List<Order> orderList) {
 		if ((condition != null) && (dialectValue != null) && (!dialectValue.equals(""))) {
 			StringBuilder pageSql = new StringBuilder();
 			if (isMysqlOrH2) {

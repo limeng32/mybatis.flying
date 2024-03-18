@@ -242,20 +242,32 @@ public class AccountTest {
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/indi/mybatis/flying/test/accountTest/testSorter.xml")
 	public void testSorter() {
 		Account_Condition ac = new Account_Condition();
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC)));
+		System.out.println("1:" + ac.hashCode());
+		Role_ r = new Role_();
+		ac.setRole(r);
+		ac.setSorter(new SortParam(new Order("name", Conditionable.Sequence.DESC, ac),
+				new Order("name", Conditionable.Sequence.DESC, r)));
 		Collection<Account_> c = accountService.selectAll(ac);
 		Account_[] accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals("ann", accounts[3].getName());
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC),
+		ac.setSorter(new SortParam(new Order(Account_Condition.field_name,
+				Conditionable.Sequence.DESC),
 				new Order(Account_Condition.field_password, Conditionable.Sequence.DESC)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
-		Assert.assertEquals(new Long(4), accounts[0].getId());
-		ac.setSorter(new SortParam(new Order(Account_Condition.field_name, Conditionable.Sequence.DESC),
-				new Order(Account_Condition.field_name, Conditionable.Sequence.ASC)));
+		Assert.assertEquals(4, accounts[0].getId().longValue());
+		ac.setSorter(new SortParam(new Order("name", Conditionable.Sequence.DESC, ac),
+				new Order("name", Conditionable.Sequence.ASC, ac)));
 		c = accountService.selectAll(ac);
 		accounts = c.toArray(new Account_[c.size()]);
 		Assert.assertEquals("ann", accounts[3].getName());
+
+		ac.setSorter(new SortParam(new Order("name", Conditionable.Sequence.DESC, ac),
+				new Order("name", Conditionable.Sequence.ASC, ac),
+				new Order("name", Conditionable.Sequence.ASC, ac.getRole())));
+		Account_ account = accountService.selectOne(ac);
+		Assert.assertEquals("carl", account.getName());
+		Assert.assertNull(account.getPassword());
 	}
 
 	/** 测试limiter功能 */

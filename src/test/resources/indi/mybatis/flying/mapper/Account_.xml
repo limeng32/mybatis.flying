@@ -52,8 +52,9 @@
 	</select>
 
 	<select id="selectOne" resultMap="result">
-		{"action":"selectOne", "index":"use index(index1)",
-		"ignore":"noPassword"}
+		{"action":"selectOne", "index":"use index(index1)", "ignore":"noPassword", "properties":{
+			"role":{"id":"indi.mybatis.flying.mapper.RoleMapper.select", "prefix":"role__"}
+		}}
 	</select>
 
 	<select id="count" resultType="int">
